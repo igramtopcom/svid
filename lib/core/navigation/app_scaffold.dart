@@ -52,9 +52,11 @@ import '../../features/converter/presentation/screens/forge_screen.dart';
 import '../../features/youtube_search/presentation/providers/youtube_explore_provider.dart';
 import '../../features/youtube_search/presentation/screens/youtube_explore_screen.dart';
 import 'navigation_constants.dart';
+import '../../features/downloads/presentation/providers/batch_selection_provider.dart';
+import 'left_nav_rail.dart';
 import 'right_panel.dart';
 import 'right_panel_provider.dart';
-import 'top_navigation_bar.dart';
+import 'window_top_strip.dart';
 
 /// Main application scaffold — Split Panel layout
 /// Top nav bar + content area (varies by active tab) + bottom player bar
@@ -897,6 +899,15 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
   Widget build(BuildContext context) {
     final selectedIndex = ref.watch(navigationProvider);
     final availableTabs = ref.watch(availableTabsProvider);
+    // The right panel is now contextual: it appears only when a download is
+    // selected (detail) or several are (multi-select) — not as a persistent
+    // Quick-start sidebar.
+    final panelState = ref.watch(rightPanelProvider);
+    final batchSelection = ref.watch(batchSelectionProvider);
+    final panelHasContent =
+        batchSelection.length > 1 ||
+        (panelState.mode == RightPanelMode.detail &&
+            panelState.selectedDownload != null);
     final miniPlayerState = ref.watch(miniPlayerStateProvider);
     final miniVideoPlayerState = ref.watch(miniVideoPlayerStateProvider);
 
@@ -931,11 +942,13 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
             // Main content
             Column(
               children: [
-                // Top Navigation Bar
-                TopNavigationBar(
-                  selectedIndex: selectedIndex,
-                  onDestinationSelected:
-                      (index) => _handleNavigationTap(index, ref),
+                // Slim window strip: logo + drag + window controls.
+                WindowTopStrip(
+                  onLogoTap:
+                      () => _handleNavigationTap(
+                        NavigationConstants.homeIndex,
+                        ref,
+                      ),
                 ),
 
                 // yt-dlp update progress indicator (thin bar)
@@ -1004,6 +1017,11 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
 
                       return Row(
                         children: [
+                          LeftNavRail(
+                            selectedIndex: selectedIndex,
+                            onDestinationSelected:
+                                (index) => _handleNavigationTap(index, ref),
+                          ),
                           Expanded(
                             child: Stack(
                               children: [
@@ -1035,7 +1053,8 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
                             ),
                           ),
                           Visibility(
-                            visible: isDownloadTab && hasSpace,
+                            visible:
+                                isDownloadTab && hasSpace && panelHasContent,
                             maintainState: true,
                             maintainAnimation: true,
                             maintainSize: false,

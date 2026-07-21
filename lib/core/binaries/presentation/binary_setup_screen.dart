@@ -40,7 +40,6 @@ class _BinarySetupScreenState extends ConsumerState<BinarySetupScreen>
   // users aren't blindsided by a feature being silently broken.
   List<BinaryType> _skippedOptional = const [];
   String? _error;
-  bool _showDetails = false;
 
   // Track progress per binary
   final Map<BinaryType, _BinaryDownloadState> _binaryStates = {};
@@ -138,7 +137,6 @@ class _BinarySetupScreenState extends ConsumerState<BinarySetupScreen>
     setState(() {
       _isDownloading = true;
       _error = null;
-      _showDetails = false;
       for (final type in missing) {
         _binaryStates[type]!.status = _BinaryStatus.starting;
       }
@@ -166,7 +164,6 @@ class _BinarySetupScreenState extends ConsumerState<BinarySetupScreen>
           } else if (progress.status == BinaryManagerStatus.error) {
             _error = progress.error ?? 'Download failed';
             _isDownloading = false;
-            _showDetails = true; // Auto-expand on error
           }
         });
       }
@@ -188,7 +185,6 @@ class _BinarySetupScreenState extends ConsumerState<BinarySetupScreen>
         setState(() {
           _error = e.toString();
           _isDownloading = false;
-          _showDetails = true;
         });
       }
     }
@@ -503,78 +499,141 @@ class _BinarySetupScreenState extends ConsumerState<BinarySetupScreen>
     );
   }
 
+  /// Always-visible checklist of the components being installed. Each row
+  /// pairs the real tool name with a plain-language description and a live
+  /// status, so first-run users can follow exactly what is happening.
   Widget _buildDetailSection(ThemeData theme, ColorScheme colorScheme) {
-    return Column(
-      children: [
-        const SizedBox(height: AppSpacing.md),
-        // Toggle link
-        GestureDetector(
-          onTap: () => setState(() => _showDetails = !_showDetails),
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: Text(
-              _showDetails ? 'Hide details' : 'Show details',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.primary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+    final binaries = BinaryManager.requiredBinaries;
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.lg),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.xs,
+        ),
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: AppOpacity.strong),
           ),
         ),
-        // Detail list (animated)
-        AnimatedCrossFade(
-          firstChild: const SizedBox.shrink(),
-          secondChild: Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.smMd),
-            child: Column(
-              children: BinaryManager.requiredBinaries.map((type) {
-                final state = _binaryStates[type]!;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: Row(
-                    children: [
-                      _buildDetailStatusIcon(state.status, colorScheme),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Text(
-                          type.displayName,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurface.withValues(alpha: AppOpacity.strong),
-                          ),
-                        ),
-                      ),
-                      if (state.status == _BinaryStatus.downloading)
-                        Text(
-                          '${state.percentage}%',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: colorScheme.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      if (state.status == _BinaryStatus.completed)
-                        Icon(Icons.check, size: 14,
-                            color: AppColors.success(context)),
-                      if (state.status == _BinaryStatus.error)
-                        Icon(Icons.close, size: 14, color: colorScheme.error),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          crossFadeState: _showDetails
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
-          duration: const Duration(milliseconds: 200),
+        child: Column(
+          children: [
+            for (var i = 0; i < binaries.length; i++) ...[
+              if (i > 0)
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: colorScheme.outlineVariant
+                      .withValues(alpha: AppOpacity.divider),
+                ),
+              _buildComponentRow(binaries[i], theme, colorScheme),
+            ],
+          ],
         ),
-      ],
+      ),
     );
   }
 
+  Widget _buildComponentRow(
+      BinaryType type, ThemeData theme, ColorScheme colorScheme) {
+    final state = _binaryStates[type]!;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.smMd),
+      child: Row(
+        children: [
+          _buildDetailStatusIcon(state.status, colorScheme),
+          const SizedBox(width: AppSpacing.smMd),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  type.displayName,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  _binaryDescription(type),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    height: 1.25,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          _buildComponentTrailing(state, theme, colorScheme),
+        ],
+      ),
+    );
+  }
+
+  /// Compact right-aligned status: percentage while downloading, a check when
+  /// done, or a short word for the other states.
+  Widget _buildComponentTrailing(
+      _BinaryDownloadState state, ThemeData theme, ColorScheme colorScheme) {
+    switch (state.status) {
+      case _BinaryStatus.completed:
+        return Icon(Icons.check_rounded,
+            size: 18, color: AppColors.success(context));
+      case _BinaryStatus.downloading:
+        return Text(
+          '${state.percentage}%',
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: colorScheme.primary,
+            fontWeight: FontWeight.w700,
+          ),
+        );
+      case _BinaryStatus.error:
+        return Text(
+          'Failed',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: colorScheme.error,
+            fontWeight: FontWeight.w600,
+          ),
+        );
+      case _BinaryStatus.starting:
+      case _BinaryStatus.extracting:
+        return Text(
+          state.status == _BinaryStatus.extracting ? 'Installing' : 'Starting',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w500,
+          ),
+        );
+      case _BinaryStatus.pending:
+        return Text(
+          'Waiting',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: colorScheme.onSurfaceVariant
+                .withValues(alpha: AppOpacity.medium),
+          ),
+        );
+    }
+  }
+
+  /// Plain-language description of what each component does, so the setup
+  /// screen is meaningful to non-technical users.
+  String _binaryDescription(BinaryType type) {
+    return switch (type) {
+      BinaryType.ytDlp => 'Downloads video & audio from 1,000+ sites',
+      BinaryType.ffmpeg => 'Merges & converts audio and video',
+      BinaryType.galleryDl => 'Downloads photo galleries & carousels',
+      BinaryType.deno => 'Runs the YouTube extraction engine',
+    };
+  }
+
   Widget _buildDetailStatusIcon(_BinaryStatus status, ColorScheme colorScheme) {
-    const size = 14.0;
+    const size = 18.0;
     return switch (status) {
-      _BinaryStatus.pending => Icon(Icons.circle_outlined,
+      _BinaryStatus.pending => Icon(Icons.radio_button_unchecked,
           size: size, color: colorScheme.outline),
       _BinaryStatus.starting || _BinaryStatus.downloading ||
       _BinaryStatus.extracting =>
@@ -582,7 +641,7 @@ class _BinarySetupScreenState extends ConsumerState<BinarySetupScreen>
           width: size,
           height: size,
           child: CircularProgressIndicator(
-            strokeWidth: 1.5,
+            strokeWidth: 2.0,
             color: colorScheme.primary,
           ),
         ),

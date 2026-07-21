@@ -1,6 +1,6 @@
 # Pass 01 — Home Content SCAN
 
-**Scope**: Toàn bộ text/string user-facing trong feature `lib/features/home/` (30 file Dart) + i18n keys home đang dùng từ `assets/translations/{en,vi}.json`. SSvid + VidCombo, macOS + Windows.
+**Scope**: Toàn bộ text/string user-facing trong feature `lib/features/home/` (30 file Dart) + i18n keys home đang dùng từ `assets/translations/{en,vi}.json`. Svid + VidCombo, macOS + Windows.
 **Mục tiêu vòng này**: Phơi bày sự thật content hiện tại — KHÔNG rewrite. Rewrite ở pass sau.
 **Pre-condition**: V2 redesign đang chạy (`v2/home-redesign-foundation`). Hyperplan 2F đã chốt 9 phase, Polish phase mới đụng i18n nhưng chỉ ở mức "vi/en 2-lang ship" — KHÔNG audit chất lượng content.
 
@@ -11,7 +11,7 @@
 | Câu hỏi | Trả lời |
 |---|---|
 | App có content guideline? | ❌ Không |
-| Có voice/tone definition per brand? | ❌ Không (dùng chung 1 string cho SSvid + VidCombo) |
+| Có voice/tone definition per brand? | ❌ Không (dùng chung 1 string cho Svid + VidCombo) |
 | Content có được audit? | ❌ Chưa từng |
 | Hardcoded strings (bypass i18n)? | ✅ 47 chỗ trong home — bao gồm cả file v2 mới |
 | Strings phi lý / sai persona? | ✅ Cả namespace `missionBriefing` (25 keys) — đây là "báo cáo nhiệm vụ" Chairman flag |
@@ -113,7 +113,7 @@ Dialog này nên đổi voice từ **military RPG** sang **personal media tool**
 | `customize_icon_button.dart` | 1 | VI hardcode | Tooltip |
 | `home_download_mixin.dart` | 1 | EN hardcode | "Checking premium license. Please try again in a moment." |
 | `download_grouped_image_card.dart` | 1 | EN hardcode | "View Images" |
-| `preset_popover.dart` | 1 | VI hardcode value | "Downloads/SSvid" — leak SSvid brand vào VidCombo |
+| `preset_popover.dart` | 1 | VI hardcode value | "Downloads/Svid" — leak Svid brand vào VidCombo |
 
 ### 3.2 Highlight nguy hiểm
 
@@ -132,11 +132,11 @@ label: 'Hủy', / 'Tạm dừng', / 'Tiếp tục', / 'Thử lại', / 'Xóa', /
 ```
 → V2 đang dựng mà bypass i18n từ đầu. EN user mở app sẽ thấy text VI nguyên. **Phải fix trước khi V2 ship.**
 
-**2. `preset_popover.dart` — leak SSvid brand vào string mặc định**
+**2. `preset_popover.dart` — leak Svid brand vào string mặc định**
 ```dart
-const _QuickCustomizeRow(label: 'Vị trí lưu', value: 'Downloads/SSvid'),
+const _QuickCustomizeRow(label: 'Vị trí lưu', value: 'Downloads/Svid'),
 ```
-→ Trên build VidCombo, user thấy "Downloads/SSvid". Vi phạm `R8 — Hardcoded copy leak SSvid context` mà hyperplan 2F đã flag.
+→ Trên build VidCombo, user thấy "Downloads/Svid". Vi phạm `R8 — Hardcoded copy leak Svid context` mà hyperplan 2F đã flag.
 
 **3. `home_download_mixin.dart:1713`**
 ```dart
@@ -224,7 +224,7 @@ Nhiều VI có emoji ngay đầu chuỗi:
 - `home.preferenceSaved = "💾 Đã lưu {quality} làm mặc định cho {platform}"`
 - `home.autoDownloading = "⚡ Tự động tải {title} với tùy chọn {platform} đã lưu"`
 
-→ **Có lúc có, có lúc không** — không có rule nào. Nếu giữ emoji thì phải thống nhất per surface (snackbar success luôn ✅, snackbar fail luôn ❌, …) và per brand (SSvid OK với emoji ấm; VidCombo Arctic Command có thể không hợp). V2 phải quyết: **all-in** hoặc **all-out**, không nửa vời.
+→ **Có lúc có, có lúc không** — không có rule nào. Nếu giữ emoji thì phải thống nhất per surface (snackbar success luôn ✅, snackbar fail luôn ❌, …) và per brand (Svid OK với emoji ấm; VidCombo Arctic Command có thể không hợp). V2 phải quyết: **all-in** hoặc **all-out**, không nửa vời.
 
 ### 4.5 Pattern E: VI = EN (chưa dịch)
 
@@ -257,7 +257,7 @@ Nhiều VI có emoji ngay đầu chuỗi:
 | URL section header | `home_screen.dart` | `home.sectionLinkOrKeyword` | 🟢 |
 | Smart CTA button | `smart_cta_button.dart` | `home.cta.{batchDownload,openBrowser,search,viewChannel,viewPlaylist}` | 🟢 OK |
 | Customize icon | `customize_icon_button.dart` | (none — hardcoded 'Tuỳ chỉnh trước khi tải') | 💀 Hardcode VI |
-| Preset popover | `preset_popover.dart` | `home.preset.*` | 💀 6 hardcoded VI + leak `Downloads/SSvid` |
+| Preset popover | `preset_popover.dart` | `home.preset.*` | 💀 6 hardcoded VI + leak `Downloads/Svid` |
 | Preset chip dropdown | `command_bar_preset_chip.dart` + `preset_dropdown_button.dart` | `home.preset.*` | 🟠 4 format-name hardcodes (chấp nhận được) |
 | Quota banner | `home_screen_banners.dart` | `home.quota.*`, `home.requiredUpdate`, `home.updateAvailable`, `home.insufficientSpace` | 🟢 |
 | Filter chips | `filter_chips.dart` | `downloadFilter.*`, `downloadStatus.*` | 🟢 |
@@ -279,7 +279,7 @@ Nhiều VI có emoji ngay đầu chuỗi:
 |---|---|---|
 | Q8: i18n cut 5 lang → 2 lang (vi/en) for V2 | Decided | Quality vẫn chưa audit |
 | R4: vi/en overflow risk | Tracked | Cần measure thực tế khi rewrite |
-| R8: hardcoded copy leak SSvid context | Tracked | **Đã confirm leak: `'Downloads/SSvid'` ở `preset_popover.dart`** |
+| R8: hardcoded copy leak Svid context | Tracked | **Đã confirm leak: `'Downloads/Svid'` ở `preset_popover.dart`** |
 | P1: "Đã hoàn thành" → "Đã tải" | Phase 1B | OK — chỉ là 1 cập nhật. Chưa giải quyết được pattern lớn. |
 | Polish §I i18n | 0.5d budget | **0.5d KHÔNG đủ** để rewrite ~382 keys home + audit 2168 keys total. Cần phase riêng. |
 | Voice / brand persona / UX writing | **Không tồn tại trong 2F** | ⛔ Vacancy — content session này lấp |
@@ -292,7 +292,7 @@ Nhiều VI có emoji ngay đầu chuỗi:
 |---|---|---|---|
 | **L1 — Phi lý / sai persona** | Vocabulary lệch hẳn user mental model | "BÁO CÁO NHIỆM VỤ", "KHỞI ĐỘNG TẢI", "MỤC TIÊU INTEL" | 🔴 P0 — phải rewrite trước V2 |
 | **L2 — Hardcoded i18n bypass** | String chưa qua localization, bao gồm V2 component mới | 47 chỗ trong home, 18 trong `right_panel_item_view.dart` | 🔴 P0 — phải fix trước V2 |
-| **L3 — Brand leak** | "SSvid" hardcode rò vào VidCombo build | `'Downloads/SSvid'` value | 🔴 P0 — vi phạm R8 |
+| **L3 — Brand leak** | "Svid" hardcode rò vào VidCombo build | `'Downloads/Svid'` value | 🔴 P0 — vi phạm R8 |
 | **L4 — Inconsistent terminology** | Cùng concept nhiều nhãn | "Cancel/Hủy/HỦY BỎ/Abort" | 🟠 P1 — terminology dictionary giải quyết |
 | **L5 — Title Case dại trong VI** | Viết hoa từng từ kiểu Anh | "Chất Lượng Tốt Nhất" | 🟠 P1 — sweep đại trà |
 | **L6 — Engineer/marketing leak** | Tên tool, slogan kỹ thuật xuất hiện trong UI | "powered by Rust + Flutter", "yt-dlp will merge … using ffmpeg" | 🟡 P2 — voice rewrite |
@@ -306,7 +306,7 @@ Em đề xuất 5 pass tiếp theo, theo thứ tự:
 
 1. **Pass 02 — VOICE & TERMINOLOGY** (~1d)
    Định nghĩa voice guide + terminology dictionary cho **2 brand × VI/EN = 4 mặt**:
-   - SSvid voice: thân thiện-cinematic-lite, **không** military jargon. Mượt, ấm, đời thường.
+   - Svid voice: thân thiện-cinematic-lite, **không** military jargon. Mượt, ấm, đời thường.
    - VidCombo voice: gọn-utility-clean, không drama, không emoji.
    - Terminology dictionary cho 30 concept phổ biến (download, audio, quality, chapter, …) — chốt 1 nhãn/concept/locale.
    - Capitalization rule: VI = sentence case.
@@ -323,7 +323,7 @@ Em đề xuất 5 pass tiếp theo, theo thứ tự:
    - i18n change: thêm ~50 key mới
 
 4. **Pass 05 — ROLL OUT** (~0.5d)
-   - Build + smoke test SSvid (mac+win) + VidCombo (mac+win)
+   - Build + smoke test Svid (mac+win) + VidCombo (mac+win)
    - Soak test EN locale (đảm bảo không VI rò vào)
    - Verify analyze + tests still green
 
@@ -341,7 +341,7 @@ Em đề xuất 5 pass tiếp theo, theo thứ tự:
    Em recommend: **2 voice riêng** cho user-facing surfaces có brand impact (welcome, premium, marketing copy, missionBriefing equivalent). Common surfaces (button, error, dialog cơ bản) dùng chung. Ratio ~70 chung / 30 brand-specific.
 
 3. **Emoji policy?**
-   Em recommend: **all-out cho VidCombo** (Arctic Command — clean utility), **selective cho SSvid** (chỉ ở snackbar + onboarding, KHÔNG ở dialog/error/setting).
+   Em recommend: **all-out cho VidCombo** (Arctic Command — clean utility), **selective cho Svid** (chỉ ở snackbar + onboarding, KHÔNG ở dialog/error/setting).
 
 4. **Title Case sweep (VI)?**
    Em recommend: **Sweep toàn bộ về sentence case**, sửa 1 lần. Chairman OK?

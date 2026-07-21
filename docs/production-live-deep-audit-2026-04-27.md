@@ -3,7 +3,7 @@
 > Historical snapshot only. For current production-live status and codebase execution intake, use [production-live-checklist-2026-05-06.md](production-live-checklist-2026-05-06.md).
 
 Primary snapshot window: `2026-04-27 18:37:41 +07` to `2026-04-27 19:12:00 +07`  
-System scope: `SSvid app`, `VidCombo app`, `backend dashboard API`, and `legacy VidCombo admin feedback surface`
+System scope: `Svid app`, `VidCombo app`, `backend dashboard API`, and `legacy VidCombo admin feedback surface`
 
 Important note: production counters moved slightly during the audit window. When two surfaces disagree, this document treats `raw device / crash / ticket / feedback surfaces` as the source of truth and treats dashboard cards as derived views that may still have definition drift.
 
@@ -11,7 +11,7 @@ Important note: production counters moved slightly during the audit window. When
 
 The system is live and serving users. Backend health is good, device growth is still strong, and the admin/dashboard API is responding across all critical surfaces today. However, production is not in a clean steady state.
 
-The most serious issue is still `VidCombo 1.6.3` shipping a real crash on local legacy thumbnails. Raw crash records confirm new `1.6.3` reports on `2026-04-27`, so this is not only a historical group attribution problem. `SSvid 1.3.6` currently looks safer, but the sample is still small.
+The most serious issue is still `VidCombo 1.6.3` shipping a real crash on local legacy thumbnails. Raw crash records confirm new `1.6.3` reports on `2026-04-27`, so this is not only a historical group attribution problem. `Svid 1.3.6` currently looks safer, but the sample is still small.
 
 The second major issue is `download reliability and tooling quality`. The dashboard shows high download usage, but the error surface is still large and user feedback confirms real failures such as `gallery-dl` setup problems and generic `cannot download` reports.
 
@@ -67,7 +67,7 @@ This is a release traceability gap. Production should identify the exact artifac
 ### Rollout and Adoption
 
 - Total devices: `1718`
-- By brand: `1285 VidCombo`, `433 SSvid`
+- By brand: `1285 VidCombo`, `433 Svid`
 - Active today from raw device timestamps: `199`
 - New today from raw device timestamps: `70`
 
@@ -75,18 +75,18 @@ Version adoption:
 
 - `VidCombo 1.6.2`: `1005 devices`
 - `VidCombo 1.6.3`: `36 devices`
-- `SSvid 1.3.6`: `24 devices`
+- `Svid 1.3.6`: `24 devices`
 
 Latest 50 device mix:
 
 - `36` are `VidCombo 1.6.2`
 - `5` are `VidCombo 1.6.3`
-- `2` are `SSvid 1.3.6`
+- `2` are `Svid 1.3.6`
 
 Interpretation:
 
 - The new releases are live.
-- `VidCombo 1.6.3` and `SSvid 1.3.6` are not yet the dominant production cohorts.
+- `VidCombo 1.6.3` and `Svid 1.3.6` are not yet the dominant production cohorts.
 - Most real user traffic is still coming from `VidCombo 1.6.2`.
 
 ## Critical Findings
@@ -174,11 +174,11 @@ Interpretation:
 
 ## Significant Non-Critical Findings
 
-### SSvid is healthier than VidCombo, but not clean
+### Svid is healthier than VidCombo, but not clean
 
 Positive signals:
 
-- `SSvid 1.3.6` has `24 devices`
+- `Svid 1.3.6` has `24 devices`
 - No current raw evidence of a new `1.3.6` crash cluster in the latest crash page
 - Launch/intake/download remain usable
 
@@ -280,7 +280,7 @@ That makes severity less useful for triage and alerting.
 - Backend stability is good.
 - Admin/dashboard surfaces are reachable today.
 - Release adoption has started for both new app versions.
-- `SSvid 1.3.6` does not yet show a clear new P0 crash cluster.
+- `Svid 1.3.6` does not yet show a clear new P0 crash cluster.
 - VidCombo launch/intake/download usage is still strong, so the app is not universally unusable.
 
 ## What Apps Need To Fix Next
@@ -292,7 +292,7 @@ That makes severity less useful for triage and alerting.
 3. Re-check player lifecycle handling because `Player has been disposed` is still active.
 4. Re-test packaged builds with legacy imported data present, especially on `macOS`, because raw `1.6.3` crashes are showing there.
 
-### SSvid app team
+### Svid app team
 
 1. Audit the `RenderFlex overflow` cluster and confirm whether it is only noisy UI error reporting or a user-visible blocker.
 2. Investigate why `1.3.5` still dominates support and crash residue.
@@ -338,7 +338,7 @@ Secondary risks are:
 
 If this document is used as the current source of truth, the correct headline is:
 
-`Backend is stable, SSvid is comparatively safer, but VidCombo remains the primary production risk and still needs app-side fixes before the system can be called genuinely stable.`
+`Backend is stable, Svid is comparatively safer, but VidCombo remains the primary production risk and still needs app-side fixes before the system can be called genuinely stable.`
 
 ## Evidence Appendix
 

@@ -20,7 +20,7 @@ Cụ thể tầng vô hình em đào ra ở Pass 02:
 5. 🟠 **229 keys VI dùng Title Case** — pattern lan rộng, không chỉ home.
 6. 🟠 **88 keys leak tên tool kỹ thuật** (yt-dlp, ffmpeg, cookie, API) cho user.
 7. 🟢 **Pronoun pattern OK** — "bạn" + "Bạn" + "của bạn" = ~67 use, nhất quán. Không có honorific (anh/chị/quý khách). Đây là điểm sáng để giữ.
-8. 🟢 **Brand-aware pattern OK** — không có hardcode "SSvid" hay "VidCombo" trong vi.json, dùng `{appName}` 16 chỗ. Code-side mới có 1 leak (`Downloads/SSvid` ở preset_popover) — fix trong Pass 03.
+8. 🟢 **Brand-aware pattern OK** — không có hardcode "Svid" hay "VidCombo" trong vi.json, dùng `{appName}` 16 chỗ. Code-side mới có 1 leak (`Downloads/Svid` ở preset_popover) — fix trong Pass 03.
 
 ---
 
@@ -289,7 +289,7 @@ Output Pass 03 sẽ chốt **30 concept canonical** × 2 locale × 2 brand = 120
 
 Sample (preview, sẽ chốt ở Pass 03):
 
-| Concept | EN canonical | VI canonical (SSvid) | VI canonical (VidCombo) |
+| Concept | EN canonical | VI canonical (Svid) | VI canonical (VidCombo) |
 |---|---|---|---|
 | download (action) | Download | Tải | Tải |
 | download (noun) | Download | Lượt tải | Lượt tải |
@@ -329,7 +329,7 @@ Còn lại 80+ keys ở settings page (apiFallback, autoUpdateBinaries, updateYt
 ### 6.1 User là ai?
 
 Kiểm tra evidence từ store/marketing/onboarding của các brand này:
-- SSvid (ssvid.app) + VidCombo (vidcombo.com): consumer-grade landing, chữ to, CTA "Tải xuống ngay".
+- Svid (svid.app) + VidCombo (vidcombo.com): consumer-grade landing, chữ to, CTA "Tải xuống ngay".
 - Onboarding step: "Dán URL → chọn chất lượng → tải" — người dùng phổ thông, không phải dev.
 - Anti-evidence: missionBriefing voice + Rust+Flutter tagline.
 
@@ -359,15 +359,15 @@ VI app dùng "bạn"/"Bạn"/"của bạn" toàn bộ:
 
 → EN: dùng "you" mặc định (hiện tại OK). Không royal "we" trong UI thường. Trong marketing/onboarding, có thể dùng "we" (we'll remember your preferences, …).
 
-### 6.3 SSvid voice ≠ VidCombo voice — but how different?
+### 6.3 Svid voice ≠ VidCombo voice — but how different?
 
 Em recommend **70/30 split**:
 - 70% strings dùng chung — concept-driven (button labels, error messages, settings, status). Một voice "Friendly Conversational" duy nhất.
 - 30% strings có voice riêng:
-  - **Onboarding** — SSvid có thể cinematic-warm ("Thư viện video của bạn, ở mọi nơi"); VidCombo gọn-utility ("Tải video nhanh, lưu sạch").
-  - **Marketing copy / app subtitle** — SSvid premium-warm; VidCombo direct-clean.
-  - **Empty state hero text** — SSvid có thể có dramatic line; VidCombo plain.
-  - **Premium upsell** — SSvid emotional appeal; VidCombo feature list.
+  - **Onboarding** — Svid có thể cinematic-warm ("Thư viện video của bạn, ở mọi nơi"); VidCombo gọn-utility ("Tải video nhanh, lưu sạch").
+  - **Marketing copy / app subtitle** — Svid premium-warm; VidCombo direct-clean.
+  - **Empty state hero text** — Svid có thể có dramatic line; VidCombo plain.
+  - **Premium upsell** — Svid emotional appeal; VidCombo feature list.
 
 → Trong VOICE.md (Pass 03), em sẽ chốt cụ thể list 30% surface nào có brand voice riêng.
 
@@ -399,7 +399,7 @@ Bây giờ em đã có đủ data để vào Pass 03. Pass 03 sẽ deliver:
 ### 7.4 Phá active bug
 - Plural bug ({plural} → câu không phụ thuộc số)
 - emptySubtitle out-of-sync (EN/VI rewrite cùng nói "Dán link phía trên...")
-- `Downloads/SSvid` brand leak ở preset_popover.dart
+- `Downloads/Svid` brand leak ở preset_popover.dart
 
 ---
 

@@ -1,4 +1,4 @@
-# Backend CTO Response — SSvid v1.2.1
+# Backend CTO Response — Svid v1.2.1
 
 **Date**: 2026-03-27
 **From**: Backend CTO
@@ -9,14 +9,14 @@
 
 ## Issue 1: License Verification 404 — CLOSED (Not a bug)
 
-**Root cause**: Key `SSVID-1e71-538d-ebb5-f8e1` is a **legacy test key** (27 chars) from pre-backend development. Backend generates 45-char keys: `SSVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`. This key was never registered in the DB — 404 is correct behavior.
+**Root cause**: Key `SVID-1e71-538d-ebb5-f8e1` is a **legacy test key** (27 chars) from pre-backend development. Backend generates 45-char keys: `SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`. This key was never registered in the DB — 404 is correct behavior.
 
 **Audit confirmed**:
 - Route `GET /api/v1/premium/licenses/verify` exists, mounted, accepts `key` query param
 - Handler returns 404 only when key not found in DB — working as designed
 - 0 licenses in DB because 0 completed payments (17 abandoned checkouts)
 
-**Resolution**: Legacy key cleared from Chairman's device (`~/Library/Preferences/com.ssvid.app.plist`). App resets to free tier, no more 404 or grace period.
+**Resolution**: Legacy key cleared from Chairman's device (`~/Library/Preferences/com.svid.app.plist`). App resets to free tier, no more 404 or grace period.
 
 **End-to-end payment flow verified**:
 ```
@@ -29,7 +29,7 @@ Customer pays → Stripe webhook → FindOrCreateLicenseForSession()
 - Frontend regex validates exact 45-char format
 - Retry logic: `pendingLicenseKey` survives storage failures
 
-**Action for Desktop CTO**: Consider adding a key format guard — if stored key doesn't match `^SSVID-[0-9A-Fa-f]{4}(-[0-9A-Fa-f]{4}){7}$`, clear it instead of entering grace period.
+**Action for Desktop CTO**: Consider adding a key format guard — if stored key doesn't match `^SVID-[0-9A-Fa-f]{4}(-[0-9A-Fa-f]{4}){7}$`, clear it instead of entering grace period.
 
 ---
 

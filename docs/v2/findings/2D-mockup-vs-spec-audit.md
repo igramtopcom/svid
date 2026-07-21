@@ -1,7 +1,7 @@
 # Pass 2D — Mockup vs Spec Audit
 
 **Mockup**: `docs/v2/mockups/home-v2-mockup-001.jpg` (1152×776, 248K)
-**Specs**: `SSvid_v2_Design_Spec.md` v1.2 + `SSvid_Home_Download_Manager_UI_Spec_v1.1.md` v1.5
+**Specs**: `Svid_v2_Design_Spec.md` v1.2 + `Svid_Home_Download_Manager_UI_Spec_v1.1.md` v1.5
 **Mục tiêu**: Pixel-by-pixel + copy-by-copy audit, identify mọi divergence, classify priority (P0 must-fix / P1 spec wins / P2 mockup wins / P3 cosmetic).
 
 ---
@@ -18,11 +18,11 @@
 
 5. **🟢 Filter chip set [Tất cả/Video/Audio/Playlist]**: Mockup OK với UI Spec §8.1 — filter chip row tách rời với filter popover. "Playlist" chip filter list theo media type (video chứa playlist source).
 
-6. **🟠 P2 brand color render**: Mockup CTA + active tab dùng **blue tone** (~`#2563EB`-`#3B82F6`). Spec v1.2 mandate **Wine Red `#8D021F`** cho brand. → Mockup được render trước v1.2 brand fix; visual đã obsolete cho SSvid identity. Phải re-render mockup khi triển khai.
+6. **🟠 P2 brand color render**: Mockup CTA + active tab dùng **blue tone** (~`#2563EB`-`#3B82F6`). Spec v1.2 mandate **Wine Red `#8D021F`** cho brand. → Mockup được render trước v1.2 brand fix; visual đã obsolete cho Svid identity. Phải re-render mockup khi triển khai.
 
 7. **🟢 5 row state demo subset OK**: Mockup show completed + downloading + queued + failed + completed-audio. Spec mandate 9 states; mockup là DEMO subset, không phải requirement subset.
 
-8. **🟢 Free tier banner copy "Bạn còn 15 lượt tải hôm nay" + "Nâng cấp ngay →"** — match UI Spec §7 plan strip exactly. SSvid 15-quota correct.
+8. **🟢 Free tier banner copy "Bạn còn 15 lượt tải hôm nay" + "Nâng cấp ngay →"** — match UI Spec §7 plan strip exactly. Svid 15-quota correct.
 
 9. **🟢 Right rail layout OK**: Bắt đầu nhanh 3-step + Mở nhanh website 3×3 (9 sites + "Thêm") + Tip card. Match spec §6.
 
@@ -34,7 +34,7 @@
 
 | Element | Mockup | Spec §2/§3 | Status |
 |---|---|---|---|
-| Logo | "SSvid" với squircle red logo + wine icon | Logo present | ✅ |
+| Logo | "Svid" với squircle red logo + wine icon | Logo present | ✅ |
 | Tab 1 | "Trang chủ" (active, blue underline) | Trang chủ ✓ | ✅ |
 | Tab 2 | "Đăng ký" với play icon | Đăng ký ✓ | ✅ |
 | Tab 3 | "Chuyển đổi" với refresh icon | Chuyển đổi ✓ | ✅ |
@@ -78,7 +78,7 @@ Mockup show popover OPEN with header "Tùy chọn tải mặc định" + 5 rows.
 | Row 1: Định dạng MP4 (Video) | ✅ Match | ✅ |
 | Row 2: Chất lượng 1080p | ✅ Match | ✅ |
 | Row 3: Khi không có chất lượng → Gần nhất | ✅ Match | ✅ |
-| Row 4: Vị trí lưu Downloads/SSvid `[Đổi]` | ✅ Match (no `[Đổi]` button) | 🟠 P2 — `[Đổi]` button missing in mockup, spec has it |
+| Row 4: Vị trí lưu Downloads/Svid `[Đổi]` | ✅ Match (no `[Đổi]` button) | 🟠 P2 — `[Đổi]` button missing in mockup, spec has it |
 | Header "── Tùy chọn nâng cao ──" | 🔴 **MISSING** | 🔴 |
 | Toggle "Tuỳ chỉnh chuyên sâu trước khi tải" + helper text | 🔴 **MISSING** | 🔴 Spec wins — Tier 2 toggle MUST be present |
 | "Mở cài đặt tải nâng cao →" link | ✅ Match (last row "Mở cài đặt tải nâng cao →") | ✅ |
@@ -99,7 +99,7 @@ Mockup show popover OPEN with header "Tùy chọn tải mặc định" + 5 rows.
 | "Nâng cấp ngay →" CTA | "Nâng cấp ngay →" link blue | spec L438 say "Nâng cấp →" — mockup adds "ngay" | 🟠 P3 cosmetic — "Nâng cấp" vs "Nâng cấp ngay". Either acceptable. |
 | Layout placement | Below smart input, above tabs | Spec §2 layout map ✓ | ✅ |
 
-**Verdict**: ✅ Plan strip aligned. SSvid 15-quota matches BrandConfig. **VidCombo would show 10 (per CLAUDE.md flutter-frontend rules)** — multi-brand handling at runtime via BrandConfig.
+**Verdict**: ✅ Plan strip aligned. Svid 15-quota matches BrandConfig. **VidCombo would show 10 (per CLAUDE.md flutter-frontend rules)** — multi-brand handling at runtime via BrandConfig.
 
 ---
 
@@ -172,7 +172,7 @@ Mockup show popover OPEN with header "Tùy chọn tải mặc định" + 5 rows.
 | Element | Mockup | Spec | Status |
 |---|---|---|---|
 | Left: "● Sẵn sàng" with green dot | Yes | Spec không explicit | ✅ Acceptable (status indicator) |
-| Right: "SSvid v2.0.0" | Yes | Per CLAUDE.md "Never hardcode version — use package_info_plus" | ✅ Conceptually OK; implementation MUST use `package_info_plus` not hardcoded "2.0.0" |
+| Right: "Svid v2.0.0" | Yes | Per CLAUDE.md "Never hardcode version — use package_info_plus" | ✅ Conceptually OK; implementation MUST use `package_info_plus` not hardcoded "2.0.0" |
 
 ---
 
@@ -188,7 +188,7 @@ Mockup show popover OPEN with header "Tùy chọn tải mặc định" + 5 rows.
 | Plan strip "Nâng cấp ngay →" link | Blue | (no mandate, link can be info color) | 🟠 P2 |
 | Onboarding step icons background | Light blue | Spec §2.0 + Pass 2A: brand Wine Red | 🟠 P2 |
 
-**Critical insight**: Mockup được render trong v1.0/v1.1 spec era khi brand color = Tailwind blue. **Spec v1.2 changelog L10 explicit revert to Wine Red**. → Mockup obsolete cho final brand identity. Implementation **MUST use Wine Red** per Spec v1.2 + existing `BrandConfig.SSvidBrand.colors.brand = #8D021F`. Mockup re-render needed when implementation done.
+**Critical insight**: Mockup được render trong v1.0/v1.1 spec era khi brand color = Tailwind blue. **Spec v1.2 changelog L10 explicit revert to Wine Red**. → Mockup obsolete cho final brand identity. Implementation **MUST use Wine Red** per Spec v1.2 + existing `BrandConfig.SvidBrand.colors.brand = #8D021F`. Mockup re-render needed when implementation done.
 
 ---
 
@@ -201,7 +201,7 @@ Mockup chỉ light mode. UI Spec §13 + Design Spec §13 mandate dark mode compl
 | Light mode ✅ visible in mockup | OK |
 | Dark mode 🔴 NOT in mockup | Implementation phải build cả 2; mockup re-render dark variant later |
 
-→ **Pass 2A Q4 decision**: SSvid default `ThemeMode.dark` (Nocturne Cinematic), mockup chỉ là 1 mode demo.
+→ **Pass 2A Q4 decision**: Svid default `ThemeMode.dark` (Nocturne Cinematic), mockup chỉ là 1 mode demo.
 
 ---
 
@@ -230,7 +230,7 @@ Mockup chỉ light mode. UI Spec §13 + Design Spec §13 mandate dark mode compl
 |---|---|---|
 | P2.1 | Tip card visible (mockup) vs hidden default (spec) | **CTO decision**: keep visible (mockup mạch lạc UX hơn). Override spec §6 hidden-by-default rule. |
 | P2.2 | Icon labels below History/Batch (mockup) vs tooltip-only (spec) | Em đề xuất giữ labels (better discoverability). |
-| P2.3 | "Vị trí lưu Downloads/SSvid" — `[Đổi]` button missing in mockup | Implementation add per spec |
+| P2.3 | "Vị trí lưu Downloads/Svid" — `[Đổi]` button missing in mockup | Implementation add per spec |
 | P2.4 | Queued row metadata "50 video · 0 B / 3.24 GB · Chờ xử lý" verbose | Trim per spec L513 format `Đang chờ · 0 B / 3.24 GB`. |
 | P2.5 | "Nâng cấp ngay →" vs "Nâng cấp →" | Either OK; em đề xuất "ngay" cho stronger CTA. |
 

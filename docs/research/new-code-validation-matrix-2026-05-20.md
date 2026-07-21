@@ -18,19 +18,19 @@ exercised from a CI runner. They must be run on real hardware.
 |---|---|---|---|
 | `69b57a44` mirror chain | `binary_downloader.dart` | ✅ `binary_downloader_inline_sha256_test.dart`, `binary_info_test.dart` | Kill primary mirror (block `github.com` at DNS) → confirm `ghfast.top` fallback finishes within 90 s × 3 binaries |
 | `455314ca` BrandResolver | `brand_download_path_resolver.dart` | ✅ `brand_download_path_resolver_test.dart` | Boot fresh VidCombo on Windows with OneDrive-redirected Documents → verify `~/Documents/VidCombo/` legacy folder is detected, not stranded |
-| `149a24cd` license preserve | `startup_service.dart` | ✅ `startup_service_marker_preserve_test.dart` | Delete `%TEMP%\vidcombo_installer_ran.txt` 3× consecutively → confirm SSVID-* and VIDCOMBO-* license keys survive each cycle |
+| `149a24cd` license preserve | `startup_service.dart` | ✅ `startup_service_marker_preserve_test.dart` | Delete `%TEMP%\vidcombo_installer_ran.txt` 3× consecutively → confirm SVID-* and VIDCOMBO-* license keys survive each cycle |
 | `9afc5bcb` ClipboardService | `core/services/clipboard_service.dart` | ✅ `clipboard_service_test.dart` | Open OneDrive, hold a sync write on a file → trigger app clipboard read → confirm graceful fallback (no MissingPluginException, no Sentry event) |
 | `6db8e76f` disk preflight | `core/services/disk_space_service.dart` | ✅ `disk_space_service_test.dart` | Mount a 10 MB ramdisk as the download target → start a 50 MB download → confirm dialog refuses with the localized low-disk message |
 | `3ba87427` exit-time fix | `app_scaffold.dart` + Windows `main.cpp` | ❌ native-only | 100 launch / exit cycles on Win10 → 0 tray zombie, 0 Sentry "exit-time APPCRASH" |
 | `8f9431bd` WebView2 watchdog | `_RobustInAppWebViewBuilder` | ❌ private widget, needs real WebView2 | Inject WebView2 init delay of 5 s / 15 s / 30 s × 50 trials → verify recovery UI shows after 15 s+ and re-mount on retry succeeds |
-| `e74a1af2` legacy import | `silent_legacy_importer.dart` + brand wiring | ❌ filesystem fixture missing | Lab: drop a mixed-brand `~/Documents/VidCombo/{ssvid,vidcombo}` tree → first launch must adopt VidCombo subtree, surface a one-shot import toast |
+| `e74a1af2` legacy import | `silent_legacy_importer.dart` + brand wiring | ❌ filesystem fixture missing | Lab: drop a mixed-brand `~/Documents/VidCombo/{svid,vidcombo}` tree → first launch must adopt VidCombo subtree, surface a one-shot import toast |
 | `2089d5ae` Sentry suppress | `vidcombo_backend_adapter.dart` | ❌ requires Sentry hub mock | Lab: pull network mid-`checkkey.php` → confirm `http.error` breadcrumb fires, `captureException` does NOT |
 
 ---
 
 ## Lab harness rules
 
-- Use the production Windows lab VM (`ssvid-qa`, 192.168.31.75 per memory)
+- Use the production Windows lab VM (`svid-qa`, 192.168.31.75 per memory)
   for all 4 manual entries. macOS results are advisory only — Windows is
   the residual cluster.
 - One commit per session — do not interleave because the 9 commits touch

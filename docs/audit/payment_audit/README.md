@@ -36,7 +36,7 @@ Each wave goes through this loop before the next wave starts:
    Iterate fixes until Codex returns `push-to-main` (or the explicit
    plan deviations it endorses).
 4. **Push** — push to origin/main, verify production deploy SHA via
-   `curl https://api.ssvid.app/health`.
+   `curl https://api.svid.app/health`.
 
 Why two gates: pre-review catches plan-level bugs (security holes,
 hidden dependencies, missing fixtures) before any code is written.

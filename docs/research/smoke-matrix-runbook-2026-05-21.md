@@ -79,7 +79,7 @@ one from the same category and note it in the result CSV.
 
 Before running:
 
-1. **App rebuilt from current HEAD** (`scripts/dev.sh ssvid release`
+1. **App rebuilt from current HEAD** (`scripts/dev.sh svid release`
    on Mac, equivalent on Windows). Hot reload does NOT propagate
    the Phase-1b enum changes — full rebuild required.
 2. **Cookies cleared** for half the cells, fresh-logged for the

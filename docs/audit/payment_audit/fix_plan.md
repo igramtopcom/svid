@@ -141,7 +141,7 @@ expiresAt := AddBillingCycleToTime(time.Now(), req.BillingCycle)
 1. `POST /api/v1/premium/web-restore { email }` → look up active license by email → if found, **enqueue (goroutine)** signed email send via `internal/pkg/email`. Always respond `{"sent": true}` **immediately** regardless of whether email matched. Email send is off the request path so found-email vs unknown-email responses are timing-indistinguishable.
 2. `POST /api/v1/premium/web-portal { email }` → same flow. Portal lookup uses a new `FindActiveStripeByEmail` (prefers licenses with non-null `StripeCustomerID` so an email with a newer manual/crypto license + older Stripe license still gets a working portal link).
 3. New endpoint: `POST /api/v1/premium/redeem { token, scope }` → verify HMAC-SHA256 JWT (`typ=magic_link`, `scope`, `license_id`, `email_normalized`, `iat`, `nbf`, `exp=10min`, `jti`), one-time use via Redis `SETNX magic_link:redeemed:<sha256(jti)> 1 EX <ttl>`, respond with license_key (restore) or Stripe portal URL (portal). POST (not GET) so the token never lands in browser history, server logs, or referrer headers. The website's magic-link landing page reads the token from the URL fragment client-side and POSTs to this endpoint.
-4. Token = JWS with HS256 over `{ typ: "magic_link", iss: "ssvid-backend", aud: "ssvid-magic-link", scope, license_id, email_normalized, jti, iat, nbf, exp }` using existing `JWT_SECRET`. 10-min TTL. **Pin alg=HS256** at verify time — reject any other alg in the header. Scope is enforced from the claim, not the request — a portal-scoped token must not redeem against restore and vice versa.
+4. Token = JWS with HS256 over `{ typ: "magic_link", iss: "svid-backend", aud: "svid-magic-link", scope, license_id, email_normalized, jti, iat, nbf, exp }` using existing `JWT_SECRET`. 10-min TTL. **Pin alg=HS256** at verify time — reject any other alg in the header. Scope is enforced from the claim, not the request — a portal-scoped token must not redeem against restore and vice versa.
 5. **Email normalization:** `strings.ToLower(strings.TrimSpace(email))` before lookup, signing, Redis key, and rate-limit key. `FindActiveByEmail` currently does exact equality (`license_repository.go:145`); update to compare against the normalized form (one-time migration: normalize all `contact_email` rows pre-deploy — safe, lowercase is idempotent).
 6. **Re-verify at redeem time:** look up license by `license_id`, confirm it is still `tier='premium'` and not cancelled, and matches the signed normalized email and scope before returning the secret.
 
@@ -153,7 +153,7 @@ expiresAt := AddBillingCycleToTime(time.Now(), req.BillingCycle)
   }
   ```
   Production passes `*email.Service` (already satisfies the interface). Tests pass a `mockEmailSender` recording calls. Avoids real SMTP and timing-dependent goroutine sleeps in tests. Update `cmd/api/main.go:273` to pass the interface.
-- `internal/config/config.go` gets a new `MagicLinkConfig { BaseURLSSvid, BaseURLVidCombo string; TTLMinutes int }` with env binds `MAGIC_LINK_BASE_SSVID` (default `https://ssvid.app/restore`), `MAGIC_LINK_BASE_VIDCOMBO` (default `https://vidcombo.com/restore`), `MAGIC_LINK_TTL_MIN` (default 10). The email body uses the brand-specific base URL with `#token=...&scope=...` fragment.
+- `internal/config/config.go` gets a new `MagicLinkConfig { BaseURLSvid, BaseURLVidCombo string; TTLMinutes int }` with env binds `MAGIC_LINK_BASE_SVID` (default `https://svid.app/restore`), `MAGIC_LINK_BASE_VIDCOMBO` (default `https://vidcombo.com/restore`), `MAGIC_LINK_TTL_MIN` (default 10). The email body uses the brand-specific base URL with `#token=...&scope=...` fragment.
 
 **Email-write normalization (codebase-wide):**
 Add a single helper `func NormalizeEmail(s string) string { return strings.ToLower(strings.TrimSpace(s)) }` in `internal/premium/service/email_util.go` (or similar). **Every site that persists `contact_email` must call it** — otherwise post-deploy a new mixed-case row will be unrestorable. Audit grep BEFORE implementation:
@@ -262,7 +262,7 @@ If the count is < 10k, accept the AutoMigrate lock (sub-second). If ≥ 10k: run
 - Block `devices.brand` mutation in `Heartbeat` if the device has any active `license_devices` rows. Force user to detach (call new admin/support path) before brand switch.
 - Pre-deploy SQL audit: `SELECT count(*) FROM license_devices ld JOIN premium_licenses pl ON ld.license_id=pl.id JOIN devices d ON ld.device_id=d.id WHERE pl.brand != d.brand;`. If N > 0 → contact affected users individually before deploy. Expected: 0.
 
-**Tests:** matrix (SSvid license × VidCombo device) + (heartbeat brand change attempt on a device with licenses).
+**Tests:** matrix (Svid license × VidCombo device) + (heartbeat brand change attempt on a device with licenses).
 
 **Deploy risk:** medium. SQL audit gate before deploy is mandatory.
 
@@ -279,7 +279,7 @@ If the count is < 10k, accept the AutoMigrate lock (sub-second). If ≥ 10k: run
 **Files:** `webhook_handler.go:560-580` (upsert branch), new `cmd/backfill_invoice_license_link/main.go`.
 
 **Change:**
-1. In the upsert branch, when `existing.LicenseID == nil && record.LicenseID != nil` → assign and persist. Same defensive backfill for `Brand` when `existing.Brand` is the default `"ssvid"` and `record.Brand` is non-default (e.g., `"vidcombo"`).
+1. In the upsert branch, when `existing.LicenseID == nil && record.LicenseID != nil` → assign and persist. Same defensive backfill for `Brand` when `existing.Brand` is the default `"svid"` and `record.Brand` is non-default (e.g., `"vidcombo"`).
 2. Per Codex, also update `period_start/end`, `amount_due_cents`, `billing_reason` on upsert when the incoming record has higher-confidence values (paid invoice has more info than finalized).
 3. **Backfill safety (per Codex):** only link orphan invoices when (a) the invoice's price_id is whitelisted (`BrandFromPriceID` returns `ok=true`) AND (b) exactly one local license matches the subscription_id. Skip ambiguous matches; log them for manual review.
 
@@ -287,14 +287,14 @@ If the count is < 10k, accept the AutoMigrate lock (sub-second). If ≥ 10k: run
 
 **Deploy risk:** low.
 
-### W2.5 — **NEW from review:** `resolveBrandFromDevice` mis-attributes deleted devices to SSvid
+### W2.5 — **NEW from review:** `resolveBrandFromDevice` mis-attributes deleted devices to Svid
 **File:** `webhook_handler.go:483-493`
 
-**Trigger:** Admin or GDPR delete prunes a device row. A subsequent renewal webhook on that license calls `resolveBrandFromDevice(deviceID)` → row missing → defaults to `"ssvid"` even if the license belongs to vidcombo.
+**Trigger:** Admin or GDPR delete prunes a device row. A subsequent renewal webhook on that license calls `resolveBrandFromDevice(deviceID)` → row missing → defaults to `"svid"` even if the license belongs to vidcombo.
 
-**Change:** lookup priority becomes (1) device row brand, (2) `license.Brand`, (3) `"ssvid"` last resort. Pass the license in or change the call signature to `resolveBrand(license)`.
+**Change:** lookup priority becomes (1) device row brand, (2) `license.Brand`, (3) `"svid"` last resort. Pass the license in or change the call signature to `resolveBrand(license)`.
 
-**Test:** unit on `resolveBrandFromDevice` with a deleted device + non-ssvid license.
+**Test:** unit on `resolveBrandFromDevice` with a deleted device + non-svid license.
 
 **Deploy risk:** zero.
 
@@ -312,7 +312,7 @@ If the count is < 10k, accept the AutoMigrate lock (sub-second). If ≥ 10k: run
 ### W2.7 — **NEW from review:** `GetPremiumStats.RevenueByBillingCycle` ignores brand filter
 **File:** `premium_service.go:851` (RevenueByBillingCycle call), `repository/transaction_repository.go` (the method itself).
 
-**Trigger:** Admin dashboard renders revenue stats filtered by brand (e.g., "show SSvid revenue"). The handler correctly filters `total_revenue` by brand, but the per-cycle revenue calls (`"monthly"`, `"yearly"`) don't pass the brand → returns cross-brand totals → dashboard pie chart inflates one brand with the other's revenue.
+**Trigger:** Admin dashboard renders revenue stats filtered by brand (e.g., "show Svid revenue"). The handler correctly filters `total_revenue` by brand, but the per-cycle revenue calls (`"monthly"`, `"yearly"`) don't pass the brand → returns cross-brand totals → dashboard pie chart inflates one brand with the other's revenue.
 
 **Change:** add brand param to `RevenueByBillingCycle(cycle, brand string)`. Update the 2 callsites in `GetPremiumStats`.
 
@@ -355,17 +355,17 @@ _, err = refund.New(refundParams)
 
 **Change:** replace with `binding:"required,license_key"`. The custom validator (registered in W0.2) accepts the two known prefixes via regex:
 ```
-^(SSVID|VIDCOMBO)(-[0-9a-f]{4}){8}$
+^(SVID|VIDCOMBO)(-[0-9a-f]{4}){8}$
 ```
 
 **Codex flagged:** before tightening, audit existing `premium_licenses.license_key` values for legacy formats:
 ```sql
 SELECT license_key FROM premium_licenses
-WHERE license_key !~ '^(SSVID|VIDCOMBO)(-[0-9a-f]{4}){8}$';
+WHERE license_key !~ '^(SVID|VIDCOMBO)(-[0-9a-f]{4}){8}$';
 ```
 If any rows are found, document them and either migrate or widen the regex.
 
-**Test:** DTO unit test for valid SSvid (45 ch) + valid VidCombo (48 ch) + invalid prefix + invalid length.
+**Test:** DTO unit test for valid Svid (45 ch) + valid VidCombo (48 ch) + invalid prefix + invalid length.
 
 **Deploy risk:** low. Loosens a validator. Audit query is the gate.
 
@@ -440,7 +440,7 @@ Total: ~1 week of focused work, 4-5 deploys.
 | W2.2 | VerifyLicense no brand check | Codex | high |
 | W2.3 | invoice.paid no status/amount gate | Both | medium |
 | W2.4 | invoice.finalized orphans not linked | Claude | high |
-| W2.5 | resolveBrandFromDevice → ssvid on deleted device | Claude (review) | medium |
+| W2.5 | resolveBrandFromDevice → svid on deleted device | Claude (review) | medium |
 | W2.6 | invoice.payment_failed races renewal | Claude (review) | medium |
 | W2.7 | GetPremiumStats per-cycle revenue ignores brand | Codex (review) | medium |
 | W3.1 | MarkProcessing webhook retry race | Both | medium |

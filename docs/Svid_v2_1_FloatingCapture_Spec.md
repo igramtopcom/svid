@@ -1,13 +1,13 @@
-# SSvid v2.1 — Floating Capture Specification
+# Svid v2.1 — Floating Capture Specification
 
 **Version:** Draft v1.2
 **Date:** 2026-05-05
 **Status:** Approved for v2.1 (post v2.0 launch, ~2-3 months out)
 **Scope:** System-level floating window for clipboard URL capture
 **Companion to:**
-- [SSvid_Home_Download_Manager_UI_Spec_v1.1.md](SSvid_Home_Download_Manager_UI_Spec_v1.1.md) (functional v1.5)
-- [SSvid_v2_Design_Spec.md](SSvid_v2_Design_Spec.md) (visual v1.2)
-- [SSvid_v2_Implementation_Roadmap.md](SSvid_v2_Implementation_Roadmap.md)
+- [Svid_Home_Download_Manager_UI_Spec_v1.1.md](Svid_Home_Download_Manager_UI_Spec_v1.1.md) (functional v1.5)
+- [Svid_v2_Design_Spec.md](Svid_v2_Design_Spec.md) (visual v1.2)
+- [Svid_v2_Implementation_Roadmap.md](Svid_v2_Implementation_Roadmap.md)
 
 ## Changelog v1.1 → v1.2 — Codex external audit fixes
 
@@ -46,7 +46,7 @@
 
 ### 1.1 Feature description
 
-Khi user copy link video bất kỳ (YouTube/TikTok/Instagram/etc.) vào clipboard, SSvid hiển thị một **floating window** nhỏ ngoài app — hoạt động như mini-app độc lập — chứa thumbnail + title + format/quality controls + nút Tải xuống. User download trực tiếp từ floating window mà không cần switch sang main app.
+Khi user copy link video bất kỳ (YouTube/TikTok/Instagram/etc.) vào clipboard, Svid hiển thị một **floating window** nhỏ ngoài app — hoạt động như mini-app độc lập — chứa thumbnail + title + format/quality controls + nút Tải xuống. User download trực tiếp từ floating window mà không cần switch sang main app.
 
 Pattern này gọi là **"capture popup"** hoặc **"link grabber"** — Internet Download Manager (IDM) là precedent kinh điển trong ~20 năm.
 
@@ -68,7 +68,7 @@ Pattern này gọi là **"capture popup"** hoặc **"link grabber"** — Interne
 | Free Download Manager | Browser ext + popup | ~60% similar |
 | 4K Video Downloader — Smart Mode | Captures clipboard → main window | ~40% similar (no floating) |
 
-→ SSvid v2.1 floating capture = IDM-grade UX, modern desktop implementation.
+→ Svid v2.1 floating capture = IDM-grade UX, modern desktop implementation.
 
 ---
 
@@ -91,11 +91,11 @@ Pattern này gọi là **"capture popup"** hoặc **"link grabber"** — Interne
 | 11 | Auto-dismiss timeout | Never — user manually dismisses or interacts |
 | 12 | Linux support | Skipped in v2.1 (only macOS + Windows). Linux deferred v2.2 |
 | 13 | Snooze duration options | 30 min / 1 hour / 4 hours / 1 day / Permanent (5 options) |
-| 14 | Tray menu structure | Minimal: "Mở SSvid" + "Thoát" only |
+| 14 | Tray menu structure | Minimal: "Mở Svid" + "Thoát" only |
 | 15 | Focus stealing | Popup does NOT steal focus from active app |
 | 16 | Tray icon visual states | Same icon always (no badge for snoozed) |
 | 17 | Default format/quality | Reuse main app's active FormatPreset / per-platform pref |
-| 18 | Non-video URLs | Popup with "Mở trong SSvid" button (route to main app sheets) |
+| 18 | Non-video URLs | Popup with "Mở trong Svid" button (route to main app sheets) |
 | 19 | Multi-monitor positioning | Follow mouse cursor monitor |
 | 20 | Settings → Capture | Progressive disclosure, no reset buttons |
 | 21 | Telemetry | None (no event tracking) |
@@ -122,7 +122,7 @@ Pattern này gọi là **"capture popup"** hoặc **"link grabber"** — Interne
 │                                                                  │
 │  ┌─ Tray Service (NSStatusItem / NotifyIcon / GtkStatusIcon) ─┐ │
 │  │ • Icon                                                      │ │
-│  │ • Menu: "Mở SSvid" + "Thoát"                                │ │
+│  │ • Menu: "Mở Svid" + "Thoát"                                │ │
 │  │ • Click → show/hide main window                             │ │
 │  └────────────────────────────────────────────────────────────┘ │
 │                                                                  │
@@ -160,7 +160,7 @@ Pattern này gọi là **"capture popup"** hoặc **"link grabber"** — Interne
 │  └────────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────┘
               │
-              │ MethodChannel "ssvid.floating_capture"
+              │ MethodChannel "svid.floating_capture"
               │ (only IPC bridge — no shared state)
               ▼
 ┌─ Floating Window (SEPARATE Flutter engine instance) ─────────────┐
@@ -176,7 +176,7 @@ Pattern này gọi là **"capture popup"** hoặc **"link grabber"** — Interne
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-**⚠️ Critical architectural rule**: Floating window engine has NO direct access to main app's Riverpod ProviderContainer. All state/download interactions go through MethodChannel `ssvid.floating_capture` (see §3.3). When Q26 says "shared service with main app", it means **functional equivalence** (download appears identical in main app's history) — NOT shared in-memory state.
+**⚠️ Critical architectural rule**: Floating window engine has NO direct access to main app's Riverpod ProviderContainer. All state/download interactions go through MethodChannel `svid.floating_capture` (see §3.3). When Q26 says "shared service with main app", it means **functional equivalence** (download appears identical in main app's history) — NOT shared in-memory state.
 
 ### 3.2 Multi-window approach — hybrid (plugin + native)
 
@@ -212,7 +212,7 @@ Floating window runs as **separate Flutter engine instance** (per `desktop_multi
 └────────────────────────────────────────┘    └───────────────────────────┘
 ```
 
-**Channel name**: `ssvid.floating_capture`
+**Channel name**: `svid.floating_capture`
 
 **Messages from Main → Floating** (commands):
 | Method | Args | Purpose |
@@ -331,7 +331,7 @@ Phase 1A.2 (platform integration):
 Phase 1A.3 (window):
 7. `desktop_multi_window` plugin integration spike
 8. `FloatingWindowManager` (Dart side)
-9. Method channel bridge `ssvid.floating_capture`
+9. Method channel bridge `svid.floating_capture`
 
 Phase 1A.4 (UI):
 10. Floating window UI (all 7 states)
@@ -459,7 +459,7 @@ class VideoPreview {
    - User clicks Tải xuống → popup auto-close + system notification
    - User clicks ✕ → popup hides, queue cleared
    - User clicks ⋮ → snooze action → popup hides, queue cleared
-   - User clicks "Mở trong SSvid" → main window focus, popup hides
+   - User clicks "Mở trong Svid" → main window focus, popup hides
 ```
 
 **Key transition rules**:
@@ -491,7 +491,7 @@ class VideoPreview {
 │                                      │
 │  ▼ Tuỳ chọn nâng cao              │  ← 12px link, secondary
 │                                      │
-│  💡 SSvid tự bắt link khi copy.    │  ← First-run hint only
+│  💡 Svid tự bắt link khi copy.    │  ← First-run hint only
 │     Bấm ⋮ để tạm tắt nếu cần.       │  ← 12px muted, removable
 │                                      │
 │  Top-right corner: [⋮] [✕]         │  ← 32×32 icon buttons
@@ -575,7 +575,7 @@ class VideoPreview {
 │  50 video                             │
 │                                       │
 │  ┌──────────────────────────────┐   │
-│  │  📂 Mở trong SSvid           │   │  ← Route to main app sheet
+│  │  📂 Mở trong Svid           │   │  ← Route to main app sheet
 │  └──────────────────────────────┘   │
 │                                       │
 │  Popup không tải playlist trực tiếp.  │  ← Explain limitation
@@ -611,7 +611,7 @@ Click `⋮` icon → popup menu:
 │ ─────────────────────     │
 │ Tắt cho đến khi bật lại   │
 │ ─────────────────────     │
-│ Mở SSvid                   │
+│ Mở Svid                   │
 │ Cài đặt...                 │
 └────────────────────────────┘
 ```
@@ -766,7 +766,7 @@ App start ──▶ ClipboardMonitor active
                         ├─ User clicks Tải xuống → trigger shared download flow → close popup → system notification
                         ├─ User clicks ✕ → close popup, queue cleared
                         ├─ User snoozes → close popup, queue cleared, set snooze state
-                        ├─ User clicks "Mở trong SSvid" → bring main window to focus, route URL → close popup
+                        ├─ User clicks "Mở trong Svid" → bring main window to focus, route URL → close popup
                         ├─ User drags → save position
                         └─ New URL captured → push to queue
 ```
@@ -855,7 +855,7 @@ Energy considerations:
 let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 statusItem.button?.image = NSImage(named: "TrayIcon")
 let menu = NSMenu()
-menu.addItem(withTitle: "Mở SSvid", action: #selector(openMain), keyEquivalent: "")
+menu.addItem(withTitle: "Mở Svid", action: #selector(openMain), keyEquivalent: "")
 menu.addItem(NSMenuItem.separator())
 menu.addItem(withTitle: "Thoát", action: #selector(quit), keyEquivalent: "q")
 statusItem.menu = menu
@@ -896,7 +896,7 @@ nid.hWnd = hwndMain;
 nid.uID = TRAY_ICON_ID;
 nid.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
 nid.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TRAYICON));
-wcscpy(nid.szTip, L"SSvid");
+wcscpy(nid.szTip, L"Svid");
 nid.uCallbackMessage = WM_TRAYICON;
 Shell_NotifyIconW(NIM_ADD, &nid);
 ```
@@ -907,7 +907,7 @@ HKEY hKey;
 RegOpenKeyExW(HKEY_CURRENT_USER,
   L"Software\\Microsoft\\Windows\\CurrentVersion\\Run",
   0, KEY_SET_VALUE, &hKey);
-RegSetValueExW(hKey, L"SSvid", 0, REG_SZ,
+RegSetValueExW(hKey, L"Svid", 0, REG_SZ,
   (BYTE*)exePath, (wcslen(exePath) + 1) * sizeof(wchar_t));
 ```
 
@@ -922,7 +922,7 @@ AddClipboardFormatListener(hwndMain);
 Reasons for deferral:
 - Wayland clipboard isolation strict (modern Ubuntu/Fedora default)
 - Multiple display servers (X11/Wayland) → 2x implementation
-- Smaller user base for SSvid Linux
+- Smaller user base for Svid Linux
 
 When implemented (v2.2): use `desktop_multi_window` plugin if mature, otherwise GTK4 native window with `_NET_WM_STATE_ABOVE`.
 
@@ -942,9 +942,9 @@ When implemented (v2.2): use `desktop_multi_window` plugin if mature, otherwise 
 ### 7.2 Menu (per Q14)
 
 ```
-SSvid
+Svid
 ─────────────────
-Mở SSvid           ⌘O / Ctrl+O
+Mở Svid           ⌘O / Ctrl+O
 ─────────────────
 Thoát              ⌘Q / Ctrl+Q
 ```
@@ -954,17 +954,17 @@ Thoát              ⌘Q / Ctrl+Q
 | Action | macOS | Windows |
 |--------|-------|---------|
 | Left-click / single-click | Show menu (NSStatusItem default) | Toggle main window (show if hidden, hide if shown) |
-| Right-click | Show menu | Show menu (Q14 minimal: Mở SSvid + Thoát) |
+| Right-click | Show menu | Show menu (Q14 minimal: Mở Svid + Thoát) |
 | Double-click | (no action) | Show main window (Windows convention) |
 
 Rationale: macOS users expect left-click → menu (matching system tray apps like Bartender, Stats). Windows users expect left-click → toggle (matching Discord, Slack tray pattern).
 
-Both platforms: menu items "Mở SSvid" and "Thoát" function identically.
+Both platforms: menu items "Mở Svid" and "Thoát" function identically.
 
 ### 7.3 Lifecycle behavior
 
 - **App start**: Create tray icon. If auto-launch enabled, app may have started without main window visible (boot-time launch).
-- **User clicks tray "Mở SSvid"**: Show main window, focus.
+- **User clicks tray "Mở Svid"**: Show main window, focus.
 - **User clicks tray "Thoát"**: Quit app fully (clipboard monitor stops, no more capture).
 - **Main window close (X)**: Hide main window, app continues in background.
 
@@ -1064,12 +1064,12 @@ Add to `assets/translations/{vi,en,ja,pt,es}.json` under namespace `capture`:
 {
   "capture": {
     "popupTitle": "...",
-    "popupHintFirstRun": "SSvid tự bắt link khi copy. Bấm ⋮ để tạm tắt nếu không cần.",
+    "popupHintFirstRun": "Svid tự bắt link khi copy. Bấm ⋮ để tạm tắt nếu không cần.",
     "fetchFailed": "Không lấy được thông tin video",
     "downloadButton": "Tải xuống",
     "downloadAttemptButton": "Tải xuống thử",
     "upgradePremiumButton": "⭐ Nâng cấp Premium",
-    "openInAppButton": "Mở trong SSvid",
+    "openInAppButton": "Mở trong Svid",
     "advancedOptionsLabel": "Tuỳ chọn nâng cao",
     "collapseLabel": "Thu gọn",
     "queueHeader": "Link {current}/{total}",
@@ -1090,7 +1090,7 @@ Add to `assets/translations/{vi,en,ja,pt,es}.json` under namespace `capture`:
     "settingsAutoLaunchToggle": "Tự khởi động cùng máy",
     "settingsAdvanced": "Tuỳ chọn nâng cao",
     "settingsDefaultPosition": "Vị trí mặc định",
-    "trayMenuOpen": "Mở SSvid",
+    "trayMenuOpen": "Mở Svid",
     "trayMenuQuit": "Thoát",
     "playlistTypeLabel": "Playlist {platform}",
     "channelTypeLabel": "Kênh {platform}",
@@ -1131,7 +1131,7 @@ class FeatureFlags {
 **Scope correction (per audit P1-4)**: This is a **local-only compile-time flag**, not a remote kill switch. Flipping it requires app update.
 
 **Why no remote kill switch in v2.1**:
-- Current backend (`api.ssvid.app`) does not expose feature-flag config endpoint
+- Current backend (`api.svid.app`) does not expose feature-flag config endpoint
 - Sentry feature flags integration not implemented in current SDK setup
 - Adding remote config infrastructure is out-of-scope for v2.1
 
@@ -1230,7 +1230,7 @@ void onTrayQuit() async {
 | E2 | Queue full (5 items), 6th URL arrives | Drop oldest (FIFO) |
 | E3 | User snoozed, app suspended, wakes after expiry | `DateTime.now() > snoozeUntil` → auto-resume |
 | E4 | Multi-monitor, primary disconnected during session | Validate position in active monitor bounds, fallback default |
-| E5 | YouTube channel URL copied (not video) | Show "Mở trong SSvid" popup |
+| E5 | YouTube channel URL copied (not video) | Show "Mở trong Svid" popup |
 | E6 | Free user quota = 0 | Show popup with "Nâng cấp Premium" CTA |
 | E7 | oEmbed network timeout | Fallback popup with platform icon + URL + "Tải xuống thử" |
 | E8 | URL with `?t=120s` timestamp | Preserve in `VideoPreview.startTimestamp` for Section trim |
@@ -1396,7 +1396,7 @@ Tools:
 | First install → copy URL → see popup | ☐ | ☐ |
 | Click Tải xuống → download in main app history | ☐ | ☐ |
 | Copy 6 URLs rapidly → queue shows 5 (oldest drop) | ☐ | ☐ |
-| Click "Mở trong SSvid" on playlist URL → main app sheet | ☐ | ☐ |
+| Click "Mở trong Svid" on playlist URL → main app sheet | ☐ | ☐ |
 | Snooze 30m, copy URL during → no popup | ☐ | ☐ |
 | Snooze 30m, wait 31m, copy URL → popup | ☐ | ☐ |
 | Permanent snooze, restart app, copy URL → no popup | ☐ | ☐ |
@@ -1440,7 +1440,7 @@ Tools:
 | Smart context detection (DnD, fullscreen apps) | Quality-of-life if user demand grows |
 | Telemetry (opt-in) | Data-driven iteration if needed |
 | Floating window themes (compact/comfortable) | Customization |
-| Voice control: "Hey SSvid, tải video này" | Long-tail innovation |
+| Voice control: "Hey Svid, tải video này" | Long-tail innovation |
 | Cross-device handoff (phone copy → desktop popup) | Differentiation |
 
 ---
@@ -1454,7 +1454,7 @@ Tools:
 - [ ] Snooze persists across restarts and system sleep
 - [ ] Capture default ON after fresh install (per Q6)
 - [ ] Auto-launch default ON after fresh install (per Q7)
-- [ ] Tray menu has only "Mở SSvid" + "Thoát" (per Q14)
+- [ ] Tray menu has only "Mở Svid" + "Thoát" (per Q14)
 - [ ] No focus stealing verified (typing in another app continues uninterrupted)
 - [ ] System notification fires after Tải xuống (per Q26)
 - [ ] Download from popup shows in main app history identical to in-app download

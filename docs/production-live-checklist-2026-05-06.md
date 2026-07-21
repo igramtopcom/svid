@@ -1,8 +1,8 @@
-# Production Live Checklist — SSvid + VidCombo
+# Production Live Checklist — Svid + VidCombo
 
 Snapshot: 2026-05-06 10:16 UTC+7  
-Source: Go backend admin API (`api.ssvid.app`) + legacy VidCombo feedback admin  
-Scope: telemetry/users currently connected to SSvid + VidCombo production apps  
+Source: Go backend admin API (`api.svid.app`) + legacy VidCombo feedback admin  
+Scope: telemetry/users currently connected to Svid + VidCombo production apps  
 Rule: do not treat memory or old reports as current truth; this document is based on the live snapshot above.
 
 ## Executive Verdict
@@ -91,7 +91,7 @@ This section is the handoff boundary for codebase agents. Treat it as the implem
 - Crashes: `/admin/v1/crashes`, 60 pages fetched
 - Crash groups: `/admin/v1/crash-groups`, 2 pages fetched
 - Download errors: `/admin/v1/analytics/download-errors`, 18 pages fetched
-- Download error stats: all brands + SSvid + VidCombo
+- Download error stats: all brands + Svid + VidCombo
 - Bugs: `/admin/v1/bugs`, `/admin/v1/bugs/stats`
 - Tickets: `/admin/v1/tickets`
 - Releases: `/admin/v1/releases`
@@ -129,7 +129,7 @@ All brands:
 - Windows: about 2,190
 - macOS: about 469
 
-SSvid:
+Svid:
 
 - Total devices: about 521
 - Active today: 9
@@ -160,15 +160,15 @@ Risks:
 
 Active latest records:
 
-- SSvid 1.3.8 Windows: active, mandatory false, published 2026-04-28
-- SSvid 1.3.8 macOS: active, mandatory false, published 2026-04-28
+- Svid 1.3.8 Windows: active, mandatory false, published 2026-04-28
+- Svid 1.3.8 macOS: active, mandatory false, published 2026-04-28
 - VidCombo 1.6.5 Windows: active, mandatory false, published 2026-04-28
 - VidCombo 1.6.5 macOS: active, mandatory false, published 2026-04-28
 
 Risks:
 
 - `mandatory=false` means users can remain on old builds.
-- Many old releases are still `is_active=true`, including older SSvid and VidCombo versions. If the update-check contract selects latest correctly this is acceptable, but operationally it increases ambiguity.
+- Many old releases are still `is_active=true`, including older Svid and VidCombo versions. If the update-check contract selects latest correctly this is acceptable, but operationally it increases ambiguity.
 - No backend release record for VidCombo 1.6.6 despite 3 devices.
 
 ## Crash / Runtime Checklist
@@ -176,10 +176,10 @@ Risks:
 Rolling 24h crash records: 189
 
 - VidCombo: 177
-- SSvid: 12
+- Svid: 12
 - VidCombo 1.6.5: 177
-- SSvid 1.3.7: 10
-- SSvid 1.3.5: 2
+- Svid 1.3.7: 10
+- Svid 1.3.5: 2
 - Windows: 176
 - macOS: 13
 - Severity: 9 critical, 40 high, 136 medium, 4 low
@@ -187,7 +187,7 @@ Rolling 24h crash records: 189
 Rolling 72h crash records: 332
 
 - VidCombo: 319
-- SSvid: 13
+- Svid: 13
 - VidCombo 1.6.5: 318
 - Windows: 318
 - macOS: 14
@@ -195,11 +195,11 @@ Rolling 72h crash records: 332
 Rolling 168h crash records: 479
 
 - VidCombo: 439
-- SSvid: 40
+- Svid: 40
 - VidCombo 1.6.5: 416
-- SSvid 1.3.7: 32
+- Svid 1.3.7: 32
 - VidCombo 1.6.2: 22
-- SSvid 1.3.8: 6
+- Svid 1.3.8: 6
 
 ### P0/P1 Current Runtime Watchlist
 
@@ -325,27 +325,27 @@ Dashboard:
 Rolling 24h raw download errors: 164
 
 - VidCombo: 162
-- SSvid: 2
+- Svid: 2
 - VidCombo 1.6.5: 158
 - VidCombo 1.6.2: 3
-- SSvid 1.3.8: 2
+- Svid 1.3.8: 2
 - VidCombo 1.6.1: 1
 
 Rolling 72h raw download errors: 506
 
 - VidCombo: 459
-- SSvid: 47
+- Svid: 47
 - VidCombo 1.6.5: 392
 - VidCombo 1.6.2: 59
-- SSvid 1.3.8: 35
+- Svid 1.3.8: 35
 
 Rolling 168h raw download errors: 946
 
 - VidCombo: 831
-- SSvid: 115
+- Svid: 115
 - VidCombo 1.6.5: 718
 - VidCombo 1.6.2: 88
-- SSvid 1.3.8: 87
+- Svid 1.3.8: 87
 
 ### Download Error Categories
 
@@ -445,8 +445,8 @@ All 10 open bugs remain `new`.
 - 2026-04-23: VidCombo 1.6.2 macOS, YouTube loginRequired
 - 2026-04-23: VidCombo 1.6.2 macOS, cannot download
 - 2026-04-23: VidCombo 1.6.2 Windows, Chinese cannot download
-- 2026-04-18: SSvid 1.3.5 Windows, YouTube unknown
-- 2026-03-25: SSvid 1.2.0 macOS, CTO audit test
+- 2026-04-18: Svid 1.3.5 Windows, YouTube unknown
+- 2026-03-25: Svid 1.2.0 macOS, CTO audit test
 
 Risks:
 
@@ -500,13 +500,13 @@ Revenue:
 - Month-to-date: $105.79
 - Today: $0 at snapshot time
 - Refunds: $0
-- SSvid month-to-date: $7.99
+- Svid month-to-date: $7.99
 - VidCombo month-to-date: $97.80
 - 2026-05-05 revenue: $55.86 from 3 payments, all VidCombo
 
 Risks:
 
-- SSvid monetization remains weak compared with VidCombo.
+- Svid monetization remains weak compared with VidCombo.
 - No refund signal in this snapshot.
 
 ## Prioritized Action Checklist

@@ -3,12 +3,12 @@
 Use this gate after hardening/perf commits and before merging to `main`.
 
 ## 1. Cold-Start Baseline
-- Run `bash scripts/profile_startup_macos.sh ssvid`
+- Run `bash scripts/profile_startup_macos.sh svid`
 - Run `bash scripts/profile_startup_macos.sh vidcombo`
 - Record `first_frame_presented`, `media_kit_prewarm_ready`, and `backend_startup_ready`
 
 Current baseline on `2026-04-21`:
-- `ssvid`: `first_frame_presented 425ms`, `media_kit_prewarm_ready 842ms`, `backend_startup_ready 636ms`
+- `svid`: `first_frame_presented 425ms`, `media_kit_prewarm_ready 842ms`, `backend_startup_ready 636ms`
 - `vidcombo`: `first_frame_presented 412ms`, `media_kit_prewarm_ready 763ms`, `backend_startup_ready 982ms`
 
 Post-frame note:

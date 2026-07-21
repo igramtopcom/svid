@@ -1,6 +1,6 @@
 # Pass 2B — UI Spec v1.1 Deep Dive (Home + Download Manager)
 
-**Spec đọc**: `docs/SSvid_Home_Download_Manager_UI_Spec_v1.1.md` v1.5 (1090 dòng) — full
+**Spec đọc**: `docs/Svid_Home_Download_Manager_UI_Spec_v1.1.md` v1.5 (1090 dòng) — full
 **Code đối chiếu**: `format_presets_service.dart`, `home_download_mixin.dart`, `app_database.dart`, `collection_entity.dart`, `playback_queue_service.dart`, plus existing infrastructure
 **Mục tiêu**: Map mỗi spec section ra existing code surface, identify exact build/refactor delta.
 

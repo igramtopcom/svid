@@ -96,7 +96,7 @@ proper integration harness (deferred; CI cannot supply a residential
 IP or a clean cookie profile), drive the matrix manually via either:
 
 **Path A — through the production app** (signal-rich, slow):
-  1. `scripts/dev.sh ssvid release` (build the same artifact users
+  1. `scripts/dev.sh svid release` (build the same artifact users
      run).
   2. Use Settings → yt-dlp Engine to flip player_client / POT.
   3. Capture stderr from the application log file.
@@ -105,8 +105,8 @@ IP or a clean cookie profile), drive the matrix manually via either:
 
 ```bash
 DENO=$(which deno)
-YTDLP=~/.local/share/com.ssvid.app/binaries/yt-dlp
-COOKIES=~/.local/share/com.ssvid.app/cookies/youtube.txt
+YTDLP=~/.local/share/com.svid.app/binaries/yt-dlp
+COOKIES=~/.local/share/com.svid.app/cookies/youtube.txt
 
 for PLAYER_CLIENT in default tv,mweb web_safari android ios; do
   for POT in true false; do

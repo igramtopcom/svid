@@ -2,7 +2,7 @@
 
 **Aggregated input**: Pass 2A (Design Spec), 2B (UI Spec), 2C (Roadmap), 2D (Mockup), 2E (Multi-brand). 5 findings docs, 1402 dòng tổng.
 **Status**: This is the **final research deliverable**. After Chairman approves Q-decisions below, em chuyển sang Pass 3 implementation.
-**Scope**: SSvid v2.0.0 ship (VidCombo v2.1.0 deferred per Pass 2E).
+**Scope**: Svid v2.0.0 ship (VidCombo v2.1.0 deferred per Pass 2E).
 
 ---
 
@@ -16,11 +16,11 @@
 
 ### Critical findings (high-impact)
 
-1. **Phantom Inter font silent bug** — pubspec fonts section commented; SSvid Windows/Linux render system fallback. Fix ở Phase 0 (1d).
+1. **Phantom Inter font silent bug** — pubspec fonts section commented; Svid Windows/Linux render system fallback. Fix ở Phase 0 (1d).
 2. **Schema rename v15→v16 → v18→v19** — 6 vị trí spec/roadmap cần sync. CTO autonomous fix.
 3. **Mockup Tab 2 = "Hàng đợi tải" violates spec** = "Playlist của tôi". Implementation theo spec.
 4. **F3 player queue 80% sẵn sàng** — saving 0.5d on Phase §10.
-5. **Multi-brand HYBRID strategy chosen**: SSvid v2.0 first, VidCombo v2.1 +1 cycle.
+5. **Multi-brand HYBRID strategy chosen**: Svid v2.0 first, VidCombo v2.1 +1 cycle.
 
 ### Realistic timeline
 
@@ -39,10 +39,10 @@
 | Milestone | Target |
 |---|---|
 | V2 dev start (after Chairman approve Q-list) | 2026-05-12 |
-| SSvid v2.0.0 internal alpha (after Phase 1A+§5) | 2026-05-26 (week 2) |
-| SSvid v2.0.0 internal beta (after 1B+1C) | 2026-06-09 (week 4) |
-| SSvid v2.0.0 closed beta (after §10) | 2026-06-23 (week 6) |
-| **SSvid v2.0.0 public release** | **2026-06-30 (week 7)** |
+| Svid v2.0.0 internal alpha (after Phase 1A+§5) | 2026-05-26 (week 2) |
+| Svid v2.0.0 internal beta (after 1B+1C) | 2026-06-09 (week 4) |
+| Svid v2.0.0 closed beta (after §10) | 2026-06-23 (week 6) |
+| **Svid v2.0.0 public release** | **2026-06-30 (week 7)** |
 | VidCombo v2.1.0 port start | 2026-07-07 |
 | **VidCombo v2.1.0 public release** | **2026-07-21 (week 9)** |
 
@@ -64,9 +64,9 @@ Phase 0  → Phase 1A → Phase §5 (overlap 1A) → Phase 1B → Phase 1C → P
 | §10 | Playlist của tôi + F3 player + AddToPlaylistMenu | 9d | `feat/v2-user-playlists` | Closed beta |
 | Polish | Dark mode + a11y + i18n 2-lang + perf + telemetry + What's New | 2.75d | `feat/v2-polish` | Pre-release |
 | Buffer | QA + bug fix + multi-brand smoke + rollback test | 3d | `feat/v2-buffer` | Public release |
-| **TOTAL** | **36.75d** | | | SSvid v2.0.0 |
+| **TOTAL** | **36.75d** | | | Svid v2.0.0 |
 
-**Plus**: VidCombo v2.1.0 port = 5.75d ≈ 1.5 weeks after SSvid v2.0 stable.
+**Plus**: VidCombo v2.1.0 port = 5.75d ≈ 1.5 weeks after Svid v2.0 stable.
 
 ---
 
@@ -120,7 +120,7 @@ Phase 0  → Phase 1A → Phase §5 (overlap 1A) → Phase 1B → Phase 1C → P
 ### Test plan
 
 - Visual: Inter renders 4 weights (400/500/600/700) on 3 platforms.
-- Build smoke: `fvm flutter build macos|windows|linux --dart-define=BRAND=ssvid`.
+- Build smoke: `fvm flutter build macos|windows|linux --dart-define=BRAND=svid`.
 - Build smoke VidCombo too: `--dart-define=BRAND=vidcombo` — verify no regression.
 - Window resize test: cannot drag below 1024×720.
 
@@ -168,7 +168,7 @@ Phase 0  → Phase 1A → Phase §5 (overlap 1A) → Phase 1B → Phase 1C → P
 | `lib/features/home/presentation/screens/home_screen.dart` | Replace top section with `SmartInputBar` (gated by `FeatureFlags.homeV2Enabled`) |
 | `lib/features/home/presentation/screens/home_download_mixin.dart` | Refactor `handleDownloadDecision` Rule chain (Rule 4 → 1 → 2 → 3' → 3) — see Pass 2B §2.4 |
 | `lib/features/home/presentation/widgets/home_screen_banners.dart` | Refactor free-tier banner to use `BrandConfig.current.freeDailyDownloads` (not hardcoded "15"). **Per Pass 2E §4.2 multi-brand audit** |
-| `lib/core/config/brand_config.dart` | Add `int get freeDailyDownloads` getter (SSvid: 15, VidCombo: 10) |
+| `lib/core/config/brand_config.dart` | Add `int get freeDailyDownloads` getter (Svid: 15, VidCombo: 10) |
 | `assets/translations/{vi,en}.json` | New keys: `home.cta.*`, `home.preset.*` (2 lang only — Q8 default) |
 
 ### Hidden tasks (Pass 2A + 2D + 2E findings)
@@ -180,7 +180,7 @@ Phase 0  → Phase 1A → Phase §5 (overlap 1A) → Phase 1B → Phase 1C → P
 ### Tasks (17 from roadmap + 3 from finding passes)
 
 [Same as Roadmap §1A tasks 1-17, plus:]
-- 18: Add `int get freeDailyDownloads` to `BrandConfig` (SSvid 15, VidCombo 10)
+- 18: Add `int get freeDailyDownloads` to `BrandConfig` (Svid 15, VidCombo 10)
 - 19: Refactor home_screen_banners.dart to use the getter
 - 20: Verify mockup's missing ⚙️ icon present in `SmartInputBar`
 
@@ -190,7 +190,7 @@ Phase 0  → Phase 1A → Phase §5 (overlap 1A) → Phase 1B → Phase 1C → P
 - Unit: `SmartInputProvider` debounce 500ms verified
 - Widget: `SmartInputBar` renders all 5 controls (history/batch/⚙️/preset/CTA)
 - Widget: `SmartCTAButton` label per state
-- Widget: free-tier banner shows 15 (SSvid) / 10 (VidCombo) per BrandConfig
+- Widget: free-tier banner shows 15 (Svid) / 10 (VidCombo) per BrandConfig
 - Manual: paste 5 URL types, verify CTA + dialog routing
 - Multi-brand build: `--dart-define=BRAND=vidcombo` build OK no errors
 
@@ -204,7 +204,7 @@ Phase 0  → Phase 1A → Phase §5 (overlap 1A) → Phase 1B → Phase 1C → P
 - [ ] Tier 2 toggle persistence + `*` indicator on dropdown label
 - [ ] Active preset deleted → fallback to `auto` + clear currentConfig + toast
 - [ ] Free-tier banner uses `BrandConfig.freeDailyDownloads` (verify 15 vs 10)
-- [ ] FeatureFlag.homeV2Enabled brand-conditional (SSvid default false during dev)
+- [ ] FeatureFlag.homeV2Enabled brand-conditional (Svid default false during dev)
 
 ### Risks (consolidated)
 
@@ -297,7 +297,7 @@ Phase 0  → Phase 1A → Phase §5 (overlap 1A) → Phase 1B → Phase 1C → P
 | Task | Effort | Note |
 |---|---:|---|
 | 1 Dark mode tokens applied to all V2 widgets | 0.5d | BrandConfig.darkColorScheme exists |
-| 2 WCAG AA contrast verify (SSvid only this cycle) | 0.5d | |
+| 2 WCAG AA contrast verify (Svid only this cycle) | 0.5d | |
 | 3 Reduced motion respect (MediaQuery.disableAnimations) | 0.5d | |
 | 4 i18n complete vi/en (~30 new keys × 2 = 60 strings) | 0.5d | **Cut from 5 lang per Q8** |
 | 5 Performance (virtualization + 3 indexes + debounce verify) | 0.5d | |
@@ -319,7 +319,7 @@ Phase 0  → Phase 1A → Phase §5 (overlap 1A) → Phase 1B → Phase 1C → P
 | Bug triage + fix | 0.5d |
 | Release notes draft | 0.25d |
 | Migration smoke test (v1.x DB → v2 startup) | 0.25d |
-| **Hidden** Multi-brand smoke test (SSvid V2 + VidCombo v1.x verify FF) | 0.5d (within 1d QA) |
+| **Hidden** Multi-brand smoke test (Svid V2 + VidCombo v1.x verify FF) | 0.5d (within 1d QA) |
 | **Hidden** Rollback test (v2.0 user data → v1.x app) | 0.5d (within 1d QA) |
 | **Total** | **3d** ✅ |
 
@@ -337,7 +337,7 @@ Phase 0  → Phase 1A → Phase §5 (overlap 1A) → Phase 1B → Phase 1C → P
 
 ### 10.2 Multi-brand discipline
 
-- Mọi widget V2 verify build cả 2 brand: `--dart-define=BRAND=ssvid|vidcombo`
+- Mọi widget V2 verify build cả 2 brand: `--dart-define=BRAND=svid|vidcombo`
 - CI gate Phase 0 + Buffer: dual build smoke test
 - VidCombo continues v1.x home until v2.1 (feature flag default false)
 
@@ -351,11 +351,11 @@ Phase 0  → Phase 1A → Phase §5 (overlap 1A) → Phase 1B → Phase 1C → P
 ```dart
 // lib/core/feature_flags.dart
 class FeatureFlags {
-  // SSvid: alpha → beta → public flips this default
+  // Svid: alpha → beta → public flips this default
   // VidCombo: stays false until v2.1 cycle
   static bool get homeV2Enabled {
     if (BrandConfig.current.brand == Brand.vidcombo) return false;
-    return _kSSvidV2Default; // toggled at each rollout milestone
+    return _kSvidV2Default; // toggled at each rollout milestone
   }
 
   static bool get playlistContextEnabled {
@@ -396,8 +396,8 @@ class FeatureFlags {
 | **Q1** | Spec §2.1/§2.2/§2.4 Tailwind blue tables — DELETE or keep as deprecated reference? | Delete (cleaner) |
 | **Q2** | Spec §3.2 Type scale (display.xl 32) vs code Material 3 (displayLarge 48) — align which? | Code wins (spec §3.0 already say "use existing classes") |
 | **Q3** | VidCombo font — keep DM Sans hay unify Inter? | Keep DM Sans (brand differentiation) |
-| **Q4** | SSvid V2 default theme = dark hay light? | Keep dark default (Nocturne) |
-| **Q5** | Card radius: spec 8px default vs SSvid 3px Nocturne | Brand wins (3px for SSvid brand-defining components) |
+| **Q4** | Svid V2 default theme = dark hay light? | Keep dark default (Nocturne) |
+| **Q5** | Card radius: spec 8px default vs Svid 3px Nocturne | Brand wins (3px for Svid brand-defining components) |
 | **Q6** | Mission Briefing + Home Dark Operator tokens — preserve hay refactor? | Preserve (35+69 call sites pre-existing investment) |
 | **Q8** | i18n: 5 lang spec vs 2 lang reality | Cut to 2 (vi/en) for V2 ship; ja/pt/es defer to v2.1 |
 | **Q14** | Timeline acceptance: spec 28.5-31.5d vs realistic 36-37d single-dev | Accept truth (or run 2-dev parallel for 25-28d) |
@@ -416,8 +416,8 @@ class FeatureFlags {
 | R4 | i18n overflow (vi/en strings longer than English) | M | L | `Flexible`/`maxLines` constraints in widgets; build-time key existence check |
 | R5 | Performance regression with 1000+ items | M | M | ListView.builder verified; profiling before merge |
 | R6 | Per-platform pref auto-save flow breaks | L | H | Rule 2 untouched per spec §5.6; integration test |
-| R7 | **VidCombo regression during SSvid V2 dev** (shared core code) | M | H | CI dual-brand build gate each PR |
-| R8 | **Hardcoded copy strings leak SSvid context** | H | M | Lint rule no "15"/"10" literal; audit Phase 1A end |
+| R7 | **VidCombo regression during Svid V2 dev** (shared core code) | M | H | CI dual-brand build gate each PR |
+| R8 | **Hardcoded copy strings leak Svid context** | H | M | Lint rule no "15"/"10" literal; audit Phase 1A end |
 | R9 | **Phantom Inter silent regression on macOS** (system → bundle metric diff) | M | L | Visual diff before/after on 3 weights × 3 platforms |
 | R10 | **Spec/code v15→v19 grep confusion** | M | L | Single commit rename ALL 6 places + CHANGELOG |
 | R11 | **EffectiveConfigResolver merge edge cases** (15-field) | M | M | Dedicated unit matrix ≥30 cases; ship as separate PR |
@@ -455,7 +455,7 @@ class FeatureFlags {
 - v2 → v1 rollback: data preservation, no crash
 
 ### 13.4 Multi-brand smoke (Buffer phase)
-- SSvid build with `homeV2Enabled = true`
+- Svid build with `homeV2Enabled = true`
 - VidCombo build with `homeV2Enabled = false` — verify v1.x home unchanged
 
 ### 13.5 Cross-platform (Buffer phase)
@@ -500,16 +500,16 @@ class FeatureFlags {
 
 ## 16. Rollback plan
 
-### 16.1 SSvid v2.0 → v1.x rollback paths
+### 16.1 Svid v2.0 → v1.x rollback paths
 
 | Trigger | Action | Mechanism |
 |---|---|---|
 | Feature flag remote toggle (backend) | `homeV2Enabled` server-side flip → next app launch shows v1.x home | Backend flag + 5-min cache bust |
 | Local user opt-out | Settings toggle "Use classic home" → restart | SharedPreferences local override |
-| Critical bug emergency | Hotfix release v2.0.1 with `_kSSvidV2Default = false` | Standard release |
+| Critical bug emergency | Hotfix release v2.0.1 with `_kSvidV2Default = false` | Standard release |
 | DB rollback | v19 → v18 user (downgrade) | Spec §17.3 backward-compat: v1.x ignores unknown JSON fields, v19 tables tồn tại nhưng v1.x không touch — safe |
 
-### 16.2 VidCombo (always v1.x during SSvid v2.0 cycle)
+### 16.2 VidCombo (always v1.x during Svid v2.0 cycle)
 
 - Feature flag `homeV2Enabled` brand-conditional default `false`
 - Even if shared core code regresses, VidCombo never sees V2 code path
@@ -531,8 +531,8 @@ class FeatureFlags {
 2. Em start Pass 3 implementation Phase 0 (1.5d)
 3. Phase 0 done → start Phase 1A + §5 parallel (if 2-dev) or serial (if 1-dev)
 4. Each phase ship as separate PR with feature flag gate
-5. After Phase §10 ships → SSvid v2.0.0 closed beta
-6. After Polish + Buffer → SSvid v2.0.0 public release
+5. After Phase §10 ships → Svid v2.0.0 closed beta
+6. After Polish + Buffer → Svid v2.0.0 public release
 7. +1 cycle (VidCombo port 5.75d) → VidCombo v2.1.0 public release
 
 ### What em WILL NOT do without explicit Chairman go

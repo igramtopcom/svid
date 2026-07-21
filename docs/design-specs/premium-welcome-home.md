@@ -19,13 +19,13 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  [●] [●] [●]         SSvid Premium                  [✕]         │  ← macOS title bar (40px)
+│  [●] [●] [●]         Svid Premium                  [✕]         │  ← macOS title bar (40px)
 ├──────────────────────────────────────────────────────────────────┤
 │  [Background: dark surface + radial glow + shimmer dots + orbs]  │
 │                                                                  │
 │  ┌────────────────────────────────────────────────────────────┐  │
 │  │                                                            │  │  ← Scrollable content area
-│  │              Welcome to SSvid Premium                      │  │  ← shimmer gradient heading
+│  │              Welcome to Svid Premium                      │  │  ← shimmer gradient heading
 │  │           The Auteur's Experience Begins Now               │  │  ← subtitle
 │  │                                                            │  │
 │  │  ┌──────────────────────────────────────────────────────┐  │  │
@@ -47,7 +47,7 @@
 │  │  │          │ Downloads│  Backup  │ Collections│           │  │
 │  │  └──────────┴──────────┴──────────┴──────────┘            │  │
 │  │                                                            │  │
-│  │         [  Start Exploring SSvid Premium  ]                │  │  ← primary gradient CTA
+│  │         [  Start Exploring Svid Premium  ]                │  │  ← primary gradient CTA
 │  │                    Manage Subscription                     │  │  ← secondary text button
 │  │                                                            │  │
 │  └────────────────────────────────────────────────────────────┘  │
@@ -465,7 +465,7 @@ class _CelebrationHeaderState extends State<_CelebrationHeader>
                 ).createShader(bounds);
               },
               child: Text(
-                'Welcome to SSvid Premium',
+                'Welcome to Svid Premium',
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: Colors.white, // ShaderMask requires opaque color
@@ -942,7 +942,7 @@ class _WelcomeCtasState extends State<_WelcomeCtas> {
                   ),
                 ),
                 child: Text(
-                  'Start Exploring SSvid Premium',
+                  'Start Exploring Svid Premium',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
@@ -1098,7 +1098,7 @@ All spacing is expressed as inline `SizedBox` with explicit pixel values. `AppTr
 
 ### 9.1 macOS
 - Full-page screen, window chrome native — no manual title bar recreation
-- `window_manager.setTitle('SSvid Premium')` during this screen, restore on pop
+- `window_manager.setTitle('Svid Premium')` during this screen, restore on pop
 - `BackdropFilter` with `blur` is GPU-accelerated on macOS — no perf concern
 - `MouseRegion` hover effects: ✅ native desktop support
 
@@ -1144,4 +1144,4 @@ All spacing is expressed as inline `SizedBox` with explicit pixel values. `AppTr
 - [ ] Light mode: all tokens render correctly, glass card uses white/70 bg
 - [ ] Navigator back / escape exits screen (paymentProvider reset on pop)
 - [ ] Screen navigable from Members Lounge (not only from payment flow)
-- [ ] Window title set to "SSvid Premium" on entry, restored on exit
+- [ ] Window title set to "Svid Premium" on entry, restored on exit

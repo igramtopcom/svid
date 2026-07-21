@@ -19,7 +19,7 @@
 
 ```
 ┌──────────────────────────────────────────────────┐
-│ [●] [●] [●]     SSvid Setup           [?] [⚙]  │  ← macOS title bar (40px)
+│ [●] [●] [●]     Svid Setup           [?] [⚙]  │  ← macOS title bar (40px)
 ├──────────────────────────────────────────────────┤
 │                                                   │
 │                                                   │
@@ -29,7 +29,7 @@
 │              │ └───┘ │     (wine red, play icon)   │
 │              └───────┘                             │
 │                                                   │
-│            Welcome to SSvid                       │  ← 28px semibold
+│            Welcome to Svid                       │  ← 28px semibold
 │         Preparing your experience...              │  ← 14px medium
 │                                                   │
 │         ████████████░░░░░░░░░░░░                 │  ← gradient progress bar
@@ -134,7 +134,7 @@
 |---|---------|--------|--------|
 | 1 | PNG logo (100×100, ClipRRect) | **Overlapping rotated squares** (80×80) with play_arrow icon | Widget replacement |
 | 2 | 3 binary cards with individual progress | **Single progress bar** with "N of 3" counter | Layout simplification |
-| 3 | Title: "Setting Up SSvid" | "Welcome to SSvid" | Text change |
+| 3 | Title: "Setting Up Svid" | "Welcome to Svid" | Text change |
 | 4 | Subtitle: "Downloading required components..." | "Preparing your experience..." | Text change |
 | 5 | No background effects | Radial glow (dark) / blur circles (light) | Add decorative layer |
 | 6 | No footer | "This only happens once" footer | Add widget |
@@ -189,7 +189,7 @@ Scaffold(
               Gap.lg,  // 24px
 
               // Welcome heading
-              Text("Welcome to SSvid", ...),
+              Text("Welcome to Svid", ...),
 
               Gap.sm,  // 8px
 
@@ -473,7 +473,7 @@ All spacings covered. The 12px gap (between progress bar and text) = custom inli
 - Flutter handles native traffic lights automatically
 - Do NOT recreate the HTML header — it's Stitch visual reference only
 - `window_manager` already configured — title bar is native
-- The "SSvid Setup" title text in the design → could set via `window_manager.setTitle('SSvid Setup')`
+- The "Svid Setup" title text in the design → could set via `window_manager.setTitle('Svid Setup')`
 
 ### 8.2 Windows
 - No traffic lights — Windows title bar has minimize/maximize/close
@@ -509,5 +509,5 @@ All spacings covered. The 12px gap (between progress bar and text) = custom inli
 - [ ] Auto-proceed after success (500ms delay)
 - [ ] `flutter analyze` passes with 0 issues
 - [ ] Theme toggle: dark ↔ light works correctly on this screen
-- [ ] Window title shows "SSvid Setup" during this screen
+- [ ] Window title shows "Svid Setup" during this screen
 - [ ] All existing binary download logic preserved (no functional regression)

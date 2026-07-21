@@ -52,7 +52,7 @@
 - Tagline replacement (vi + en)
 - Title Case → sentence case sweep (vi only)
 - emptySubtitle semantic mismatch fix (vi + en)
-- Brand leak fix (`Downloads/SSvid` → `Downloads/{appName}`)
+- Brand leak fix (`Downloads/Svid` → `Downloads/{appName}`)
 - Plural bug fix — migrate sang plural API (vi + en hand-write)
 
 ### Tier 2 — Mechanical safety fixes (apply 13 non-vi/en locale)
@@ -89,7 +89,7 @@ Mỗi file sẽ có 3 loại change:
 | `lib/features/home/presentation/screens/home_download_mixin.dart` | Tương tự + 1 hardcoded EN snackbar | T1 |
 | `lib/features/home/presentation/screens/home_batch_download_mixin.dart` | 3 hardcoded EN status messages | T1 |
 | `lib/features/home/presentation/widgets/right_panel_item_view.dart` | 18 hardcoded VI strings → i18n | T1 |
-| `lib/features/home/presentation/widgets/preset_popover.dart` | 6 hardcoded VI + leak `Downloads/SSvid` | T1 |
+| `lib/features/home/presentation/widgets/preset_popover.dart` | 6 hardcoded VI + leak `Downloads/Svid` | T1 |
 | `lib/features/home/presentation/widgets/smart_input_bar.dart` | 4 hardcoded VI tooltips/hint | T1 |
 | `lib/features/home/presentation/widgets/customize_icon_button.dart` | 1 hardcoded VI tooltip | T1 |
 | `lib/features/home/presentation/widgets/download_list_helpers.dart` | 4 hardcoded EN snackbar messages | T1 |
@@ -109,7 +109,7 @@ Mỗi file sẽ có 3 loại change:
 Per probe: `BrandConfig.appDescription` is dead → drop. Tagline phải qua i18n.
 
 i18n key design:
-- `app.subtitle.ssvid` — SSvid tagline
+- `app.subtitle.svid` — Svid tagline
 - `app.subtitle.vidcombo` — VidCombo tagline
 
 Code resolve:
@@ -121,8 +121,8 @@ static String get appSubtitle =>
 ```
 
 i18n value (vi + en):
-- `app.subtitle.ssvid.en` = "Save video. Simple. Beautiful."
-- `app.subtitle.ssvid.vi` = "Tải video. Đơn giản. Đẹp."
+- `app.subtitle.svid.en` = "Save video. Simple. Beautiful."
+- `app.subtitle.svid.vi` = "Tải video. Đơn giản. Đẹp."
 - `app.subtitle.vidcombo.en` = "Download fast. Save clean."
 - `app.subtitle.vidcombo.vi` = "Tải nhanh. Lưu sạch."
 
@@ -323,7 +323,7 @@ Khi áp manifest này, em sẽ update VOICE.md + TERMINOLOGY.md cho khớp:
 | VOICE §3.6 line 277 brand table tagline cũ | Update sang "Tải video. Đơn giản. Đẹp." |
 | VOICE §9.1 line 506 length table tagline cũ | Update tương tự |
 | VOICE §5.3 BrandConfig literal getter pattern | Đổi sang i18n key suffix pattern (`app.subtitle.${brand}.tr()`) |
-| VOICE §8 SSvid emoji selective | Cập nhật: bỏ emoji khỏi i18n hoàn toàn, AppSnackBar icon component lo |
+| VOICE §8 Svid emoji selective | Cập nhật: bỏ emoji khỏi i18n hoàn toàn, AppSnackBar icon component lo |
 | VOICE §10 plural Option A "(s)" suffix EN | Cập nhật: dùng easy_localization plural API |
 | TERMINOLOGY §3.4 status badge | Verify map đúng với DownloadStatus enum migration |
 
@@ -338,9 +338,9 @@ Theo thứ tự:
 2. **`fvm flutter analyze --no-pub`**: phải pass (output "snakeloader").
 3. **`fvm flutter test test/core/l10n/localization_key_parity_test.dart`**: phải pass.
 4. **`fvm flutter test`** full: phải pass — đảm bảo không phá test khác.
-5. **Smoke build SSvid macOS**: `fvm flutter build macos --debug --dart-define=BRAND=ssvid`.
+5. **Smoke build Svid macOS**: `fvm flutter build macos --debug --dart-define=BRAND=svid`.
 6. **Smoke build VidCombo macOS**: `fvm flutter build macos --debug --dart-define=BRAND=vidcombo`.
-7. **Manual smoke test (Chairman)**: Open SSvid + VidCombo, switch en/vi, verify:
+7. **Manual smoke test (Chairman)**: Open Svid + VidCombo, switch en/vi, verify:
    - Mission Briefing dialog → "Tùy chọn tải" / "Download Options"
    - Snackbar không double-icon
    - Empty state subtitle đúng surface
@@ -379,7 +379,7 @@ Tất cả ghi nhận → backlog v2.1 hoặc Pass 04.
 | Parity test fail do placeholder mismatch | Python script atomic apply 15 file; verify placeholder set per-key trước commit |
 | 13 locale fallback EN string | Document rõ trong commit message + manifest "Tier 2 fallback — TODO v2.1" |
 | Emoji strip phá meaning | Negative test: read mỗi string post-strip và verify tự nó còn rõ nghĩa |
-| Brand leak `Downloads/SSvid` regression | Test build VidCombo + verify default save path không có "SSvid" |
+| Brand leak `Downloads/Svid` regression | Test build VidCombo + verify default save path không có "Svid" |
 | Voice rewrite vi + en mất nghĩa | Cross-check với raw_home_strings.md original để đảm bảo intent preserved |
 | Code call site rename leak | Grep all `missionBriefing` post-rename → 0 hits |
 | AppSnackBar layout broken sau strip emoji | Visual smoke test snackbar success/error/info on home screen |
@@ -507,7 +507,7 @@ Probe verify: `appSubtitle` getter + `homeSubtitle` getter exist trong app_local
 - `app.subtitle` + `home.subtitle` keys giữ nguyên trong i18n (dead value, không hại).
 - Khi nào team thực sự muốn render tagline → Pass 04 (out of scope V2 content).
 
-→ Save 4-5 i18n cell × 15 locale + 1 BrandConfig change. Manifest §3.4 (SSvid tagline B) + VOICE.md §3.4 + §4.4 vẫn ghi nhận tagline cho **future use** — nhưng implement defer.
+→ Save 4-5 i18n cell × 15 locale + 1 BrandConfig change. Manifest §3.4 (Svid tagline B) + VOICE.md §3.4 + §4.4 vẫn ghi nhận tagline cho **future use** — nhưng implement defer.
 
 ### 12.4 Plural 13 locale fallback — safe spec (was: §3.4)
 
@@ -556,12 +556,12 @@ Probe lại post-recent-commits:
 3. Plural API migration (4 keys → `{one, other}` form, 15 file JSON, app_localizations.dart helper rewrite, 2 call site rewrite — `downloads_history_screen.dart` + `home_download_mixin.dart`).
 4. Emoji strip (15 file JSON mechanical sweep).
 5. Enum i18n migrate: `DownloadStatus.displayLabel` + `DownloadPriority.displayLabel` → return `AppLocalizations.X.tr()`. Add 12 new i18n keys (8 status + 3 priority + buffer).
-6. Brand leak fix: `'Downloads/SSvid'` → `'Downloads/${BrandConfig.current.appName}'` ở `preset_popover.dart`.
+6. Brand leak fix: `'Downloads/Svid'` → `'Downloads/${BrandConfig.current.appName}'` ở `preset_popover.dart`.
 7. **Verify gate**:
    - `flutter analyze --no-pub` pass (output "snakeloader")
    - `flutter test test/core/l10n/localization_key_parity_test.dart` pass
    - `flutter test` full pass
-   - Smoke build SSvid macOS debug
+   - Smoke build Svid macOS debug
 8. **Commit "checkpoint A: mechanical content infra"**. Stop. Chairman verify.
 
 **Checkpoint B — en/vi voice rewrite**:
@@ -572,7 +572,7 @@ Probe lại post-recent-commits:
 5. **Verify gate**:
    - `flutter analyze` pass
    - parity test pass
-   - Smoke build SSvid + VidCombo macOS debug
+   - Smoke build Svid + VidCombo macOS debug
    - Manual smoke screen-by-screen
 6. **Commit "checkpoint B: en/vi voice rewrite"**. Stop. Chairman verify.
 

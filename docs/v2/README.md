@@ -4,7 +4,7 @@
 **Base**: `main @ d5545a71` (2026-05-04 — last Windows installer hardening)
 **Setup turn**: 2026-05-05
 
-Mục tiêu nhánh này: **chuyển hóa 3 input từ CEO Ngọc Kỳ thành 1 working set rõ ràng + đầy đủ**, sẵn sàng cho campaign nâng cấp UI/UX toàn app (SSvid + VidCombo).
+Mục tiêu nhánh này: **chuyển hóa 3 input từ CEO Ngọc Kỳ thành 1 working set rõ ràng + đầy đủ**, sẵn sàng cho campaign nâng cấp UI/UX toàn app (Svid + VidCombo).
 
 > **Định vị tổ chức**
 > - **CEO Ngọc Kỳ** (kynndev) = REQUIREMENT layer — ship spec / mockup / design tokens
@@ -29,9 +29,9 @@ Mục tiêu nhánh này: **chuyển hóa 3 input từ CEO Ngọc Kỳ thành 1 w
 
 | File | Size | Vai trò |
 |---|---:|---|
-| `docs/SSvid_Home_Download_Manager_UI_Spec_v1.1.md` | 51K | **PRIMARY UI SPEC** — "v1.5 content" sau Gemini external review fix 4 P1 |
-| `docs/SSvid_v2_Implementation_Roadmap.md` | 22K | **PRIMARY PLAN** — phase / milestone |
-| `docs/SSvid_v2_Design_Spec.md` | 49K | **DESIGN SYSTEM** — tokens, font, color, component spec |
+| `docs/Svid_Home_Download_Manager_UI_Spec_v1.1.md` | 51K | **PRIMARY UI SPEC** — "v1.5 content" sau Gemini external review fix 4 P1 |
+| `docs/Svid_v2_Implementation_Roadmap.md` | 22K | **PRIMARY PLAN** — phase / milestone |
+| `docs/Svid_v2_Design_Spec.md` | 49K | **DESIGN SYSTEM** — tokens, font, color, component spec |
 | `assets/fonts/InterVariable.ttf` | 859K | Variable font weights 100-900 |
 | `assets/fonts/Inter-LICENSE.txt` | 4.3K | SIL OFL v1.1 |
 
@@ -39,7 +39,7 @@ Mục tiêu nhánh này: **chuyển hóa 3 input từ CEO Ngọc Kỳ thành 1 w
 
 | File | Size | Vai trò |
 |---|---:|---|
-| `docs/SSvid_Home_Download_Manager_UI_Spec.md` | 18K | Bản v1.0 cũ — superseded by v1.1, giữ làm history |
+| `docs/Svid_Home_Download_Manager_UI_Spec.md` | 18K | Bản v1.0 cũ — superseded by v1.1, giữ làm history |
 | `docs/FIGMA-MCP-CLAUDE-SETUP.md` | 17K | Figma MCP setup (đã có sẵn trên main, không phải V2-specific) |
 | `docs/v2/mockups/home-v2-mockup-001.jpg` | 248K | Visual reference Home V2 |
 | `docs/v2/requirements-from-ceo-ky.md` | — | Chat nguyên văn + 3 feature flags + open questions |
@@ -66,12 +66,12 @@ Mục tiêu nhánh này: **chuyển hóa 3 input từ CEO Ngọc Kỳ thành 1 w
 
 1. **Setup turn (turn này)** — chuyển hóa 3 input → working set. Không commit, không code.
 2. **Discussion turns (sắp tới, one-by-one)** — đào sâu từng topic theo thứ tự:
-   - (A) Đọc `SSvid_v2_Design_Spec.md` → lập design tokens nền
-   - (B) Đọc `SSvid_Home_Download_Manager_UI_Spec_v1.1.md` → UI logic
-   - (C) Đọc `SSvid_v2_Implementation_Roadmap.md` → phase hóa
+   - (A) Đọc `Svid_v2_Design_Spec.md` → lập design tokens nền
+   - (B) Đọc `Svid_Home_Download_Manager_UI_Spec_v1.1.md` → UI logic
+   - (C) Đọc `Svid_v2_Implementation_Roadmap.md` → phase hóa
    - (D) Đối chiếu spec ↔ mockup, flag mọi divergence
    - (E) Audit code hiện tại vs spec (3 feature mới F1/F2/F3 đặc biệt)
-   - (F) Multi-brand consideration (SSvid vs VidCombo)
+   - (F) Multi-brand consideration (Svid vs VidCombo)
 3. **Implementation turns (sau khi anh duyệt strategy)** — code, theo phase đã chốt.
 
 ---
@@ -79,5 +79,5 @@ Mục tiêu nhánh này: **chuyển hóa 3 input từ CEO Ngọc Kỳ thành 1 w
 ## 5. Cảnh báo
 
 - Branch nguồn `kynndev/claude/sharp-diffie-f83a32` phân kỳ rất xa khỏi `origin/main` (983 files, +44k/-200k). **TUYỆT ĐỐI KHÔNG `git merge` thẳng** — sẽ xóa các Windows installer hardening fix vừa ship. Đây là lý do em selective extract chỉ requirement files.
-- Spec V2 chưa xác định scope multi-brand. VidCombo có 25× user base SSvid Go DB — quyết định scope sai sẽ block release.
+- Spec V2 chưa xác định scope multi-brand. VidCombo có 25× user base Svid Go DB — quyết định scope sai sẽ block release.
 - Mockup có thể đã lệch khỏi spec v1.1 (v1.1 = post-Gemini-review fix). Khi đào, ưu tiên spec text > mockup > chat intent — escalate khi mâu thuẫn.

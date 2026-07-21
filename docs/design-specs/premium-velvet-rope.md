@@ -201,7 +201,7 @@ Feature description strings (new, need addition to `AppLocalizations` or inline 
 | `bandwidthScheduling` | `wifi` | Set bandwidth limits by time of day |
 | `downloadTemplates` | `bookmarks` | Save format/quality presets for one-tap downloads |
 | `smartCollections` | `folder_special` | Auto-organize downloads by channel, tag, or date |
-| `privacyDashboard` | `privacy_tip` | Review and control all data SSvid stores |
+| `privacyDashboard` | `privacy_tip` | Review and control all data Svid stores |
 | `null` (generic) | `dynamic_feed` | Download entire playlists and channels in one click |
 
 ## 5. Widget Spec — Flutter Implementation
@@ -665,7 +665,7 @@ if (result == true) {
 | `bandwidthScheduling` | `wifi` | "Bandwidth Scheduling" | "Set bandwidth limits by time of day." |
 | `downloadTemplates` | `bookmarks` | "Download Templates" | "Save format/quality presets for one-tap downloads." |
 | `smartCollections` | `folder_special` | "Smart Collections" | "Auto-organize downloads by channel, tag, or date." |
-| `privacyDashboard` | `privacy_tip` | "Privacy Dashboard" | "Review and control all data SSvid stores." |
+| `privacyDashboard` | `privacy_tip` | "Privacy Dashboard" | "Review and control all data Svid stores." |
 
 Note: `_featureDisplayName()` already exists and covers the Title column above. Only `_featureDescription()` is new — add as a private static method inside `UpgradePromptDialog`.
 

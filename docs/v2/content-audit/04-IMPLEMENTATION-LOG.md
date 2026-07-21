@@ -39,7 +39,7 @@
 
 ### Phase 4 — Brand leak + call site renames
 
-- **Brand leak fix**: `preset_popover.dart:130` `'Downloads/SSvid'` → `'Downloads/${BrandConfig.current.appName}'`. VidCombo build no longer leaks "SSvid" string.
+- **Brand leak fix**: `preset_popover.dart:130` `'Downloads/Svid'` → `'Downloads/${BrandConfig.current.appName}'`. VidCombo build no longer leaks "Svid" string.
 - **3 missionBriefing render files** rename getter call sites:
   - `download_config_dialog.dart` (5 unique getters)
   - `config_preferences_panel.dart` (1)
@@ -97,7 +97,7 @@ New i18n namespaces created: `rightPanel.*` (22 keys for state cards + actions +
 - ✅ Locale parity test — strict 15-locale parity now enforceable
 - ✅ Enum migration test — passes with new locale-agnostic contract
 - ✅ Full test suite — 2960+ pass (1 pre-existing unrelated failure)
-- ⚠ Smoke build SSvid + VidCombo macOS — NOT YET RUN (Chairman to verify on local desktop)
+- ⚠ Smoke build Svid + VidCombo macOS — NOT YET RUN (Chairman to verify on local desktop)
 
 ---
 

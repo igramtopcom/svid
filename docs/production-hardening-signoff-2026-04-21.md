@@ -3,15 +3,15 @@
 ## Preconditions
 - Latest readiness report file: `/tmp/production_readiness_20260421_140037.log`
 - `bash scripts/verify_production_readiness.sh 5`: `Pass`
-- Baseline brand restored to `ssvid`: `Pass`
+- Baseline brand restored to `svid`: `Pass`
 - `git status` reviewed for unrelated dirty files: `Pass`
   - Outside this lane: `.github/workflows/release.yml`, `docs/qa_checklist.md`, `scripts/preflight_yubikey.sh`, `scripts/sign_windows_artifacts.sh`, and Windows signing docs/scripts
 
 ## Startup Evidence
-- `ssvid`: `first_frame_presented 495ms`, `backend_startup_ready 901ms`, `media_kit_prewarm_ready 984ms`
+- `svid`: `first_frame_presented 495ms`, `backend_startup_ready 901ms`, `media_kit_prewarm_ready 984ms`
 - `vidcombo`: `first_frame_presented 426ms`, `backend_startup_ready 1022ms`, `media_kit_prewarm_ready 800ms`
 
-## SSvid
+## Svid
 | # | Scenario | Status | Notes |
 | --- | --- | --- | --- |
 | 1 | Open a local video, then play, pause, and seek | Not enough evidence | Agent cannot truthfully claim GUI playback interaction without manual execution |
@@ -47,7 +47,7 @@ Reason:
 
 ## Final Manual Gate
 To upgrade this branch from `Not enough evidence` to `Pass`, execute and record these remaining scenarios in [production-hardening-signoff.md](production-hardening-signoff.md):
-- `SSvid` local playback `play / pause / seek`
-- `SSvid` fullscreen close -> reopen same media
-- `SSvid` system PiP `Back to App / Open Player / Close`
+- `Svid` local playback `play / pause / seek`
+- `Svid` fullscreen close -> reopen same media
+- `Svid` system PiP `Back to App / Open Player / Close`
 - `VidCombo` fullscreen -> mini/PiP -> reopen current media

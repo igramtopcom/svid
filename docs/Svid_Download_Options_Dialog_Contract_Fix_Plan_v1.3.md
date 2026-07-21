@@ -1,12 +1,12 @@
-# SSvid Download Options Dialog - Contract Fix Implementation Plan v1.3
+# Svid Download Options Dialog - Contract Fix Implementation Plan v1.3
 
 Scope: fix semantic, download-logic, persistence, and advanced-option contradictions found after the first single-item dialog redesign.
 
 Reference docs:
 
-- `docs/SSvid_Download_Options_Dialog_PRD_v1.1.md`
-- `docs/SSvid_Download_Options_Dialog_Implementation_Plan_v1.0.md`
-- `docs/SSvid_Download_Options_Dialog_Iteration03_Audit_v1.0.md`
+- `docs/Svid_Download_Options_Dialog_PRD_v1.1.md`
+- `docs/Svid_Download_Options_Dialog_Implementation_Plan_v1.0.md`
+- `docs/Svid_Download_Options_Dialog_Iteration03_Audit_v1.0.md`
 
 Primary audit findings addressed:
 

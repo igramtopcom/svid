@@ -1,4 +1,4 @@
-# SSvid v2.1 Floating Capture — Implementation Status
+# Svid v2.1 Floating Capture — Implementation Status
 
 > Single-source-of-truth for the floating capture feature on branch
 > `claude/sharp-diffie-f83a32`. Update this when shipping new slices.
@@ -6,7 +6,7 @@
 **Status**: Architecturally complete. End-to-end functional on macOS + Windows.
 Pending native polish + i18n.
 
-**Last verified**: CI run [25385777302](https://github.com/kynndev/ssvid_app/actions/runs/25385777302) — covers all Codex-audit fixes through P1 #2 (queue UX). 287 tests passing, all P0 + P1 closed.
+**Last verified**: CI run [25385777302](https://github.com/kynndev/svid_app/actions/runs/25385777302) — covers all Codex-audit fixes through P1 #2 (queue UX). 287 tests passing, all P0 + P1 closed.
 
 ---
 
@@ -19,36 +19,36 @@ hash to inspect the diff.
 
 | Slice | Commit | Lines | Tests added |
 |---|---|---|---|
-| 1A.1 — URL classifier + oEmbed preview service | [`6bb40de3`](https://github.com/kynndev/ssvid_app/commit/6bb40de3) + audit [`8b7aee77`](https://github.com/kynndev/ssvid_app/commit/8b7aee77) | ~600 | ~80 |
-| 1A.2 — Native clipboard (macOS Swift + Windows C++) | [`d8114264`](https://github.com/kynndev/ssvid_app/commit/d8114264) → [`0ae54c50`](https://github.com/kynndev/ssvid_app/commit/0ae54c50) + audits | ~750 | ~30 |
-| 1A.3 — FloatingWindow architecture | spike [`ac4f1685`](https://github.com/kynndev/ssvid_app/commit/ac4f1685) → 3a/3b/3c [`956dde37`](https://github.com/kynndev/ssvid_app/commit/956dde37)/[`33b103d2`](https://github.com/kynndev/ssvid_app/commit/33b103d2)/[`ad755277`](https://github.com/kynndev/ssvid_app/commit/ad755277) + audit [`0309c143`](https://github.com/kynndev/ssvid_app/commit/0309c143) | ~1500 | ~50 |
-| 1A.4 — Popup UI design (Wine Red, 300×420) | [`41778634`](https://github.com/kynndev/ssvid_app/commit/41778634) + audit [`f570831b`](https://github.com/kynndev/ssvid_app/commit/f570831b) | ~700 | (UI only) |
-| 1A.5 — CaptureService coordinator | [`226269b9`](https://github.com/kynndev/ssvid_app/commit/226269b9) + audit [`4c80e476`](https://github.com/kynndev/ssvid_app/commit/4c80e476) | ~900 | +39 |
-| 1A.6a — Provider wiring + side-effect router | [`8dbb696d`](https://github.com/kynndev/ssvid_app/commit/8dbb696d) | ~390 | +9 |
-| 1A.6b — Auto-start in main.dart | [`c67b37e9`](https://github.com/kynndev/ssvid_app/commit/c67b37e9) | ~330 | +10 |
-| 1A.7 — Settings UI + boot gate | [`5bfbd047`](https://github.com/kynndev/ssvid_app/commit/5bfbd047) + audit [`bb77a816`](https://github.com/kynndev/ssvid_app/commit/bb77a816) | ~410 | +13 |
-| 1A.8 — pause/resume lifecycle | [`97be4844`](https://github.com/kynndev/ssvid_app/commit/97be4844) | ~110 | +5 |
+| 1A.1 — URL classifier + oEmbed preview service | [`6bb40de3`](https://github.com/kynndev/svid_app/commit/6bb40de3) + audit [`8b7aee77`](https://github.com/kynndev/svid_app/commit/8b7aee77) | ~600 | ~80 |
+| 1A.2 — Native clipboard (macOS Swift + Windows C++) | [`d8114264`](https://github.com/kynndev/svid_app/commit/d8114264) → [`0ae54c50`](https://github.com/kynndev/svid_app/commit/0ae54c50) + audits | ~750 | ~30 |
+| 1A.3 — FloatingWindow architecture | spike [`ac4f1685`](https://github.com/kynndev/svid_app/commit/ac4f1685) → 3a/3b/3c [`956dde37`](https://github.com/kynndev/svid_app/commit/956dde37)/[`33b103d2`](https://github.com/kynndev/svid_app/commit/33b103d2)/[`ad755277`](https://github.com/kynndev/svid_app/commit/ad755277) + audit [`0309c143`](https://github.com/kynndev/svid_app/commit/0309c143) | ~1500 | ~50 |
+| 1A.4 — Popup UI design (Wine Red, 300×420) | [`41778634`](https://github.com/kynndev/svid_app/commit/41778634) + audit [`f570831b`](https://github.com/kynndev/svid_app/commit/f570831b) | ~700 | (UI only) |
+| 1A.5 — CaptureService coordinator | [`226269b9`](https://github.com/kynndev/svid_app/commit/226269b9) + audit [`4c80e476`](https://github.com/kynndev/svid_app/commit/4c80e476) | ~900 | +39 |
+| 1A.6a — Provider wiring + side-effect router | [`8dbb696d`](https://github.com/kynndev/svid_app/commit/8dbb696d) | ~390 | +9 |
+| 1A.6b — Auto-start in main.dart | [`c67b37e9`](https://github.com/kynndev/svid_app/commit/c67b37e9) | ~330 | +10 |
+| 1A.7 — Settings UI + boot gate | [`5bfbd047`](https://github.com/kynndev/svid_app/commit/5bfbd047) + audit [`bb77a816`](https://github.com/kynndev/svid_app/commit/bb77a816) | ~410 | +13 |
+| 1A.8 — pause/resume lifecycle | [`97be4844`](https://github.com/kynndev/svid_app/commit/97be4844) | ~110 | +5 |
 
 ### Phase 1B — cross-feature integration
 
 | Slice | Commit | What |
 |---|---|---|
-| 1B.1 — onDownload | [`cc7f0008`](https://github.com/kynndev/ssvid_app/commit/cc7f0008) + audit [`d67c1ae1`](https://github.com/kynndev/ssvid_app/commit/d67c1ae1) | popup Download click → HomeScreen.startDownload via pendingProvider |
-| 1B.2 — onOpenInApp | [`f6d2a9df`](https://github.com/kynndev/ssvid_app/commit/f6d2a9df) | popup Open-in-SSvid → HomeScreen URL field + focus (no auto-start) |
-| 1B.3 — onOpenSettings | [`6c913a03`](https://github.com/kynndev/ssvid_app/commit/6c913a03) | popup menu Settings → navigationProvider tab change |
+| 1B.1 — onDownload | [`cc7f0008`](https://github.com/kynndev/svid_app/commit/cc7f0008) + audit [`d67c1ae1`](https://github.com/kynndev/svid_app/commit/d67c1ae1) | popup Download click → HomeScreen.startDownload via pendingProvider |
+| 1B.2 — onOpenInApp | [`f6d2a9df`](https://github.com/kynndev/svid_app/commit/f6d2a9df) | popup Open-in-Svid → HomeScreen URL field + focus (no auto-start) |
+| 1B.3 — onOpenSettings | [`6c913a03`](https://github.com/kynndev/svid_app/commit/6c913a03) | popup menu Settings → navigationProvider tab change |
 
 ### Phase 1C — native polish
 
 | Slice | Commit | What |
 |---|---|---|
-| 1C.1 — Floating-panel attributes | [`dcc1ff4b`](https://github.com/kynndev/ssvid_app/commit/dcc1ff4b) | macOS `level=.statusBar` + cross-Spaces; Windows HWND_TOPMOST + WS_EX_NOACTIVATE |
-| 1C.2 — Drag-saved popup position | [`ddab63ec`](https://github.com/kynndev/ssvid_app/commit/ddab63ec) + audit M1 [`cdecb20a`](https://github.com/kynndev/ssvid_app/commit/cdecb20a) | popup respects user's drag; popup-side show() removes first-spawn flicker |
+| 1C.1 — Floating-panel attributes | [`dcc1ff4b`](https://github.com/kynndev/svid_app/commit/dcc1ff4b) | macOS `level=.statusBar` + cross-Spaces; Windows HWND_TOPMOST + WS_EX_NOACTIVATE |
+| 1C.2 — Drag-saved popup position | [`ddab63ec`](https://github.com/kynndev/svid_app/commit/ddab63ec) + audit M1 [`cdecb20a`](https://github.com/kynndev/svid_app/commit/cdecb20a) | popup respects user's drag; popup-side show() removes first-spawn flicker |
 
 ### Phase 1D — i18n
 
 | Slice | Commit | What |
 |---|---|---|
-| 1D — Localization (5 langs) | [`ee63dadf`](https://github.com/kynndev/ssvid_app/commit/ee63dadf) | en + vi proper translations; es/pt/ja English placeholder. Settings card uses easy_localization; popup engine has inline string table to keep boot fast. |
+| 1D — Localization (5 langs) | [`ee63dadf`](https://github.com/kynndev/svid_app/commit/ee63dadf) | en + vi proper translations; es/pt/ja English placeholder. Settings card uses easy_localization; popup engine has inline string table to keep boot fast. |
 
 ### Phase 1E — Codex external audit fixes
 
@@ -57,18 +57,18 @@ findings the self-review missed. Each commit is one batch.
 
 | Slice | Commit | Findings |
 |---|---|---|
-| Batch 1 — critical path | [`f413c15a`](https://github.com/kynndev/ssvid_app/commit/f413c15a) | P0 dismiss desync, P1 #1 terminal auto-close, P1 #5 Windows panel show-before-noactivate, P1 #6 search URL filter |
-| Lifecycle wins | [`a6677e1c`](https://github.com/kynndev/ssvid_app/commit/a6677e1c) | P1 #3 cancellation token, P2 macOS onCancel timer, P2 subscribe-before-start (+ dispose ordering bug found while testing) |
-| P1 #4 — ready-ack handshake | [`d5891a63`](https://github.com/kynndev/ssvid_app/commit/d5891a63) | Popup signals `popupReady` after registering its handler so main side's first invokeMethod doesn't race the popup's setMethodCallHandler. 3-second timeout fallback. |
-| P1 #7 — snooze "1 day" | [`25a4886f`](https://github.com/kynndev/ssvid_app/commit/25a4886f) | `untilEndOfDay` (midnight today, 10 min at 23:50) → `oneDay` (literal 24h). Legacy wireKey accepted for migration. |
-| P1 #2 — queue UX | [`eb010d5f`](https://github.com/kynndev/ssvid_app/commit/eb010d5f) + mockups [`ac34fd17`](https://github.com/kynndev/ssvid_app/commit/ac34fd17) | Bounded queue (max 5 + drop-oldest) with selectedIndex, _QueueThumbnailStrip widget (variant 3 from Codex-generated mockups), per-item action targeting via _currentPreview getter. |
+| Batch 1 — critical path | [`f413c15a`](https://github.com/kynndev/svid_app/commit/f413c15a) | P0 dismiss desync, P1 #1 terminal auto-close, P1 #5 Windows panel show-before-noactivate, P1 #6 search URL filter |
+| Lifecycle wins | [`a6677e1c`](https://github.com/kynndev/svid_app/commit/a6677e1c) | P1 #3 cancellation token, P2 macOS onCancel timer, P2 subscribe-before-start (+ dispose ordering bug found while testing) |
+| P1 #4 — ready-ack handshake | [`d5891a63`](https://github.com/kynndev/svid_app/commit/d5891a63) | Popup signals `popupReady` after registering its handler so main side's first invokeMethod doesn't race the popup's setMethodCallHandler. 3-second timeout fallback. |
+| P1 #7 — snooze "1 day" | [`25a4886f`](https://github.com/kynndev/svid_app/commit/25a4886f) | `untilEndOfDay` (midnight today, 10 min at 23:50) → `oneDay` (literal 24h). Legacy wireKey accepted for migration. |
+| P1 #2 — queue UX | [`eb010d5f`](https://github.com/kynndev/svid_app/commit/eb010d5f) + mockups [`ac34fd17`](https://github.com/kynndev/svid_app/commit/ac34fd17) | Bounded queue (max 5 + drop-oldest) with selectedIndex, _QueueThumbnailStrip widget (variant 3 from Codex-generated mockups), per-item action targeting via _currentPreview getter. |
 
 ### Infrastructure
 
 | What | Commit |
 |---|---|
-| Add CI workflow (analyze + macOS + Windows debug builds) | [`9fb74b1b`](https://github.com/kynndev/ssvid_app/commit/9fb74b1b) |
-| Fix Windows linker — link `flutter_wrapper_plugin` for inline plugins | [`2f1da886`](https://github.com/kynndev/ssvid_app/commit/2f1da886) |
+| Add CI workflow (analyze + macOS + Windows debug builds) | [`9fb74b1b`](https://github.com/kynndev/svid_app/commit/9fb74b1b) |
+| Fix Windows linker — link `flutter_wrapper_plugin` for inline plugins | [`2f1da886`](https://github.com/kynndev/svid_app/commit/2f1da886) |
 
 ---
 
@@ -94,7 +94,7 @@ findings the self-review missed. Each commit is one batch.
 │       │                  │            │  ┌────────────────────┐  │
 │       ▼                  │            │  │ thumbnail / title  │  │
 │  FloatingWindow          │  WindowMethodChannel               │
-│  (DesktopMultiWindow…)   │  ssvid.floating_capture           │  │
+│  (DesktopMultiWindow…)   │  svid.floating_capture           │  │
 │       │                  ├──showPreview / pushQueue / setQuota│  │
 │       │                  │  ◄──onDownload / onSnoozeSelected /│  │
 │       │                  │     onMenuOpenApp / OpenSettings…  │  │
@@ -157,8 +157,8 @@ sharedPreferencesProvider          (existing global)
 
 | Plugin | Where | Channel | Role |
 |--------|-------|---------|------|
-| ClipboardMonitorPlugin | main engine only | `ssvid.clipboard_monitor/{methods,events}` | macOS NSPasteboard.changeCount poll / Windows AddClipboardFormatListener |
-| FloatingCapturePanelPlugin | popup engines only | `ssvid.floating_capture.native` | macOS NSWindow.level / Windows HWND_TOPMOST + WS_EX_NOACTIVATE |
+| ClipboardMonitorPlugin | main engine only | `svid.clipboard_monitor/{methods,events}` | macOS NSPasteboard.changeCount poll / Windows AddClipboardFormatListener |
+| FloatingCapturePanelPlugin | popup engines only | `svid.floating_capture.native` | macOS NSWindow.level / Windows HWND_TOPMOST + WS_EX_NOACTIVATE |
 | desktop_multi_window | both | `mixin.one/desktop_multi_window` | Plugin-managed; auto-registered via setOnWindowCreatedCallback |
 
 ---
@@ -220,21 +220,21 @@ To validate the full flow on macOS:
 1. Build + run debug:
    ```bash
    flutter build macos --debug
-   open build/macos/Build/Products/Debug/ssvid.app
+   open build/macos/Build/Products/Debug/svid.app
    ```
 
 2. App launch — check logs for `[CaptureLifecycle] started` (Phase G post-frame)
 3. Navigate to Settings → General → "Floating capture" toggle should be ON
 4. Open Safari / any browser; copy a YouTube URL: `https://youtube.com/watch?v=dQw4w9WgXcQ`
 5. Within ~500ms a 300×420 popup should appear with:
-   - Wine Red brand dot + "SSvid" header
+   - Wine Red brand dot + "Svid" header
    - 16:9 thumbnail (or fallback if oEmbed fails)
    - Video title + uploader
    - "Download" primary button + Snooze + Dismiss
 6. Click Download — main app brings itself to front, URL field populated, extraction starts
 7. Copy a playlist URL: `https://www.youtube.com/playlist?list=PL...`
    - Popup updates in place
-   - Primary button now reads "Open in SSvid"
+   - Primary button now reads "Open in Svid"
    - Click it — main app forward, URL field populated, no auto-extract
 8. Open popup menu (3-dot) → "Settings" — main app navigates to Settings tab
 9. In Settings, snooze for 30 minutes — popup hides

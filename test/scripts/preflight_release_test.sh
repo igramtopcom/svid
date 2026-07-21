@@ -104,7 +104,7 @@ case_strict_alias() {
 # version exists. We test Gate 3 SKIP path when no version specified.
 # -----------------------------------------------------------------------------
 case_gate3_skip_when_no_version() {
-  unset PREFLIGHT_VERSION_SSVID PREFLIGHT_VERSION_VIDCOMBO || true
+  unset PREFLIGHT_VERSION_SVID PREFLIGHT_VERSION_VIDCOMBO || true
   out=$(ADMIN_EMAIL="${ADMIN_EMAIL:-}" ADMIN_PASSWORD="${ADMIN_PASSWORD:-}" \
     bash "$PREFLIGHT" --allow-warnings 2>&1)
   # The summary table emits status BEFORE the gate id (`SKIP G3.records …`)

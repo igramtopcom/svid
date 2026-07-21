@@ -1,4 +1,4 @@
-# SSvid Payment Subsystem Audit Findings
+# Svid Payment Subsystem Audit Findings
 
 Audit date: 2026-05-20. Read-only review of `backend/internal/premium/*` plus
 related routes. The already-fixed `subscription_create` double-extend bug
@@ -314,8 +314,8 @@ _, err = refund.New(refundParams)
 semiannual yearly lifetime lifetime1 lifetime2 lifetime3"` accepts it.
 
 **Evidence:**
-- `AmountCentsForBillingCycle("lifetime", "ssvid")` returns **0**
-  (`premium_service.go:1099-1112`, no `"lifetime"` case in ssvid switch).
+- `AmountCentsForBillingCycle("lifetime", "svid")` returns **0**
+  (`premium_service.go:1099-1112`, no `"lifetime"` case in svid switch).
 - `resolvePriceID("lifetime", brand)` returns "" → `ErrInvalidBillingCycle`
   in Stripe checkout — so Stripe path is safe.
 - But crypto checkout (`crypto_service.go:111`) calls

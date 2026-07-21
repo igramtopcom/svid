@@ -21,12 +21,12 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  [●][●][●]   SSvid Premium                          top bar     │
+│  [●][●][●]   Svid Premium                          top bar     │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                   │
 │  ┌───────────────────────────────────────────────────────────┐  │
 │  │  [VIP Access ●]                               gradient bg │  │
-│  │  👑 SSvid Premium Member                                  │  │  ← Membership Header
+│  │  👑 Svid Premium Member                                  │  │  ← Membership Header
 │  │  Member since October 2024 • Annual Plan                  │  │
 │  └───────────────────────────────────────────────────────────┘  │
 │                                                                   │
@@ -306,14 +306,14 @@ Widget _MembershipHeader({required PremiumLicense license}) {
             _VipBadge(),
             const SizedBox(height: 16),
 
-            // Title row: crown icon + "SSvid Premium Member"
+            // Title row: crown icon + "Svid Premium Member"
             Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Text glow title — see §5.3 for text glow technique
                 _GlowText(
-                  'SSvid Premium Member',
+                  'Svid Premium Member',
                   style: tt.displaySmall?.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.04 * (tt.displaySmall?.fontSize ?? 36),

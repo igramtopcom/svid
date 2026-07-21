@@ -1,4 +1,4 @@
-# SSvid Home / Download Manager UI Spec
+# Svid Home / Download Manager UI Spec
 
 **Version:** Draft v1.0  
 **Date:** 2026-05-04  
@@ -94,7 +94,7 @@ Preset dropdown là control riêng biệt, dùng để cấu hình mặc định
 | Định dạng | MP4 Video | MP4 Video, MP3 Audio, Auto |
 | Chất lượng | 1080p | Best available, 1080p, 720p, 480p, audio bitrate nếu MP3 |
 | Khi không có chất lượng đã chọn | Chọn gần nhất | Chọn gần nhất, hỏi lại tôi |
-| Vị trí lưu | Downloads/SSvid | Chọn thư mục khác |
+| Vị trí lưu | Downloads/Svid | Chọn thư mục khác |
 | Advanced | Collapsed link | Mở cài đặt tải nâng cao |
 
 Rules:

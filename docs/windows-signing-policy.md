@@ -1,6 +1,6 @@
 # Windows Signing Policy
 
-Applies to all Windows release artifacts for `SSvid` and `VidCombo`, including installer `.exe`, portable `.zip` payloads, and any shipped PE binaries (`.exe`, `.dll`).
+Applies to all Windows release artifacts for `Svid` and `VidCombo`, including installer `.exe`, portable `.zip` payloads, and any shipped PE binaries (`.exe`, `.dll`).
 
 ## Purpose
 
@@ -13,7 +13,7 @@ Prevent Windows install and in-app update failures caused by non-compliant code-
 3. **ECC certificates are prohibited** for Windows release signing because Microsoft Smart App Control does not support ECC-signed apps.
 4. Every shipped Windows PE file must be signed and timestamped:
    - installer `*-windows-x64-setup.exe`
-   - app executable (`ssvid.exe` / `vidcombo.exe`)
+   - app executable (`svid.exe` / `vidcombo.exe`)
    - native libraries such as `native.dll`
    - any future shipped updater/helper PE binaries
 5. Windows payload signing must happen **before packaging**:

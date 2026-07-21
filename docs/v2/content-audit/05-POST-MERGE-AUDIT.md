@@ -52,17 +52,17 @@
 
 ### 1.5 🔴 5 brand leak strings
 
-**Symptom**: Literal "SSvid" trong i18n value sẽ render nguyên trên VidCombo build:
-- `configDialog.containerChangedWarning` (en+vi) — "SSvid will use {resolved}"
-- `configDialog.qualityFallbackWarning` (en+vi) — "SSvid will use {resolved}"
-- `floatingCapture.popupBrand` (15 locale) — literal "SSvid"
-- `floatingCapture.popupActionOpenInApp` (15 locale) — "Open in SSvid"
-- `floatingCapture.popupMenuOpenApp` (15 locale) — "Open SSvid"
+**Symptom**: Literal "Svid" trong i18n value sẽ render nguyên trên VidCombo build:
+- `configDialog.containerChangedWarning` (en+vi) — "Svid will use {resolved}"
+- `configDialog.qualityFallbackWarning` (en+vi) — "Svid will use {resolved}"
+- `floatingCapture.popupBrand` (15 locale) — literal "Svid"
+- `floatingCapture.popupActionOpenInApp` (15 locale) — "Open in Svid"
+- `floatingCapture.popupMenuOpenApp` (15 locale) — "Open Svid"
 
-**Cause**: PR #233 floatingCapture + PR #234 dialog contract authored với SSvid context, không sử dụng `{appName}` placeholder.
+**Cause**: PR #233 floatingCapture + PR #234 dialog contract authored với Svid context, không sử dụng `{appName}` placeholder.
 
 **Fix**: 
-- Replaced literal "SSvid" → `{appName}` placeholder trong 5 keys × 15 locale = 75 cell
+- Replaced literal "Svid" → `{appName}` placeholder trong 5 keys × 15 locale = 75 cell
 - Updated `configDialogQualityFallbackWarning` + `configDialogContainerChangedWarning` getters trong app_localizations.dart để pass `appName: BrandConfig.current.appName` vào namedArgs
 - floatingCapture popup: `floating_window_main.dart:111` đã có `replaceAll('{appName}', BrandConfig.current.appName)` substitution — fix là parity-compliant
 
@@ -93,7 +93,7 @@
 | AP3 — `{plural}` literal placeholder | 0 | ✅ 0 |
 | AP4 — `missionBriefingX` getter call site | 0 | ✅ 0 |
 | AP5 — Zombie `missionBriefingX` getter declarations | **9** 🔴 | ✅ 0 |
-| AP6 — Brand leak (literal "SSvid"/"VidCombo") | **5** 🔴 | ✅ 0 |
+| AP6 — Brand leak (literal "Svid"/"VidCombo") | **5** 🔴 | ✅ 0 |
 | AP7 — Leading emoji in i18n strings | 0 | ✅ 0 |
 
 ---
@@ -110,7 +110,7 @@
 | Emoji strip 15 locale | ✅ Preserved |
 | 49 hardcoded → i18n migration | ✅ Preserved |
 | Title Case → sentence case sweep VI 201 keys | ✅ Preserved |
-| Brand leak fix `Downloads/SSvid` → `{appName}` | ✅ Preserved |
+| Brand leak fix `Downloads/Svid` → `{appName}` | ✅ Preserved |
 | Enum `displayLabel` migration | ✅ Preserved |
 | 7 strategic voice rewrite (emptySubtitle, tagline, etc.) | ✅ Preserved |
 | 60 missing keys parity fix | ✅ Preserved |
@@ -185,7 +185,7 @@
 
 ✅ Em không ký:
 - Visual UI (lane của session khác — Opus/agent visual)
-- Smoke build SSvid + VidCombo macOS (Chairman manual verify trên desktop)
+- Smoke build Svid + VidCombo macOS (Chairman manual verify trên desktop)
 - Test failure 15 pre-existing (premium payment integration / hardware fingerprint / window service — pre-existing trước merge, không phải scope content)
 
 ---
@@ -193,7 +193,7 @@
 ## 7. Recommendation tiếp theo
 
 **Em đề xuất Chairman / Opus session khác**:
-1. Smoke build cả 2 brand (SSvid + VidCombo) macOS debug → verify visual không regress
+1. Smoke build cả 2 brand (Svid + VidCombo) macOS debug → verify visual không regress
 2. Manual sample read: switch language en/vi trên running app, verify content render đúng
 3. Verify `floatingCapture` popup brand-aware substitution actually works on VidCombo build (visual smoke)
 4. Quyết commit boundary: em đề xuất 1 commit duy nhất `fix(home-v2): post-merge content regressions — JSON parse + parity + brand leak + zombie getters`

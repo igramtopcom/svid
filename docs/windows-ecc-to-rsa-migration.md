@@ -5,7 +5,7 @@ This runbook migrates Windows release signing from the current ECC certificate t
 ## Goal
 
 - Restore compatibility with Windows 11 Smart App Control
-- Keep `SSvid` and `VidCombo` Windows upgrades stable
+- Keep `Svid` and `VidCombo` Windows upgrades stable
 - Add guardrails so the same signing mistake cannot recur
 
 ## Success Criteria
@@ -23,7 +23,7 @@ This runbook migrates Windows release signing from the current ECC certificate t
 - Prepare test coverage:
   - Windows 10 machine
   - Windows 11 fresh install with Smart App Control ON
-  - one machine with an older installed `SSvid`
+  - one machine with an older installed `Svid`
   - one machine with an older installed `VidCombo`
 - Back up the current local signer materials:
   - `~/Desktop/yubikey-cert/leaf.pem`
@@ -112,7 +112,7 @@ Expected outcome:
 - signed ZIP is built from the signed bundle, not from unsigned build output
 - signed installer payload is built from the signed bundle, not from unsigned build output
 - signed installer verifies cleanly
-- signed zip payload contains signed `ssvid.exe` / `vidcombo.exe` and shipped DLLs
+- signed zip payload contains signed `svid.exe` / `vidcombo.exe` and shipped DLLs
 - signing uses slot `9C` without touching the legacy ECC material in `9A`
 
 ## Phase 5: Windows Validation
@@ -134,7 +134,7 @@ Pass criteria:
 
 ## Phase 6: Rollout Plan
 
-1. Cut one patch release for `SSvid` and one patch release for `VidCombo` with RSA signing only.
+1. Cut one patch release for `Svid` and one patch release for `VidCombo` with RSA signing only.
 2. Validate download + installer from the public release URL.
 3. Validate in-app update against the released Windows build.
 4. Monitor support inbox, release analytics, and update-failure reports for 48-72 hours.

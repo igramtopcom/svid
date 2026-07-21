@@ -113,7 +113,7 @@ en.json: 2394 keys
 - **Owner**: Same translator pool as R2.
 
 ### Residual R4 — Visual smoke matrix doc
-- **What**: 15 locales × 2 brands (SSvid/VidCombo) × 2 themes (light/dark) ×
+- **What**: 15 locales × 2 brands (Svid/VidCombo) × 2 themes (light/dark) ×
   N key surfaces (home, downloads, player, premium, assistant, settings,
   floating capture popup), plus Arabic RTL screenshot bundle.
 - **Why deferred**: Doc is captured-screenshot QA artifact, not a code change.
@@ -121,7 +121,7 @@ en.json: 2394 keys
   workstream.
 - **Acceptance criteria**: Doc in `docs/v2/content-audit/08-VISUAL-SMOKE-MATRIX.md`
   before next production tag dispatch.
-- **Owner**: QA / Chairman direct (Mac→Windows SSH `ssvid-qa` available per
+- **Owner**: QA / Chairman direct (Mac→Windows SSH `svid-qa` available per
   memory `reference_windows_qa_ssh.md`).
 
 ---
@@ -155,7 +155,7 @@ Across rounds 1 through 8.5 + closure gate A (`a679034a`) + closure gate B
 - ALL CAPS engineer-console blocks → sentence case.
 - "Tải xuống" → "Tải" across all VI surfaces.
 - Emoji prefix in i18n strings → AppSnackBar icon API.
-- Brand leak ("Downloads/SSvid") → `{appName}` placeholder.
+- Brand leak ("Downloads/Svid") → `{appName}` placeholder.
 - Raw `$e` exception leakage → `AppLocalizations.errorFeedbackHint(code)`.
 
 **Documentation:**
@@ -177,7 +177,7 @@ Across rounds 1 through 8.5 + closure gate A (`a679034a`) + closure gate B
 |---------|-----------|----------|---------|
 | H1 — Translator capacity request | Chairman + translator lead | This report §3 R2 (locale-tagged leakage list available via `scripts/i18n_leak_gate.py` filter) | When translator bandwidth opens |
 | H2 — Plural pilot validation | Native ar/ru speakers | 4 plural keys + 8 count cases (R3) | Same as H1 |
-| H3 — Visual smoke matrix | QA via `ssvid-qa` Windows VM + Mac local | Test plan in R4 | Pre next prod tag dispatch |
+| H3 — Visual smoke matrix | QA via `svid-qa` Windows VM + Mac local | Test plan in R4 | Pre next prod tag dispatch |
 | H4 — Diagnostics refactor (R1) | Next state-machine workstream owner | This report §3 R1 acceptance criteria | When diagnostics UX cycle starts |
 
 Handoffs are continuous-improvement tracks. They do **not** unblock production
@@ -219,7 +219,7 @@ sufficient** for a production release; the four-platform release pipeline
 1. ~~**R1 (diagnostics refactor)**~~ — **CLOSED 2026-05-18.** No longer a waiver; refactor was completed in Closure Fixup. See §3 R1 for resolution details.
 2. **R2 (EN-leakage long-tail in es/pt/ja deep namespaces)** — waived because en-engineer translation would violate `feedback_localization_quality_overstating.md`. Gate freezes leakage at baseline; drift = hard fail.
 3. **R3 (plural pilot ar/ru)** — waived pending native-speaker validation. Linguistic risk, not engineering risk.
-4. **R4 (visual smoke matrix)** — waived as QA artifact, not engineering deliverable. To be produced pre next prod tag dispatch via `ssvid-qa` Windows VM + local Mac.
+4. **R4 (visual smoke matrix)** — waived as QA artifact, not engineering deliverable. To be produced pre next prod tag dispatch via `svid-qa` Windows VM + local Mac.
 
 **Reviewer Codex contract**: any future PR that adds a hard-fail gate violation
 must either (a) include a baseline update with explicit rationale or (b) fix

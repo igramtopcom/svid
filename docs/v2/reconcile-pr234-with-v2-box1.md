@@ -29,7 +29,7 @@ passing).
 
 ✅ **PR #233 Floating Capture v2.1** — clean merge + brand bleed fix
 (`{appName}` template + BrandConfig.current.appName substitution).
-VidCombo no longer shows "Open SSvid".
+VidCombo no longer shows "Open Svid".
 
 ## V2 Surface Added Back (Phase 3 work)
 
@@ -47,7 +47,7 @@ These V2 features were missing in PR #234's base; em restored:
 
 ### Category 1: ExtractVideoInfoUseCase signature (~3-4 errors)
 
-V2 has 3 positional args (SSvidApiService + YtDlpDataSource + ?), PR #234 has 2.
+V2 has 3 positional args (SvidApiService + YtDlpDataSource + ?), PR #234 has 2.
 download_providers.dart wires V2 types but PR #234 constructor expects different.
 **Decision needed:** Which constructor wins, or union both signatures via factory.
 
@@ -61,7 +61,7 @@ signatures that PR #234's batch mixin assumes return Future<DownloadStartResult>
 ### Category 3: download_providers types (~3 errors)
 
 V2 wired `YtDlpDataSource` + `GalleryDlDataSource` but PR #234 changed signatures
-to `SSvidApiService` + `YtDlpDataSource`.
+to `SvidApiService` + `YtDlpDataSource`.
 **Decision needed:** Which data sources go where in extraction chain.
 
 ### Category 4: SettingsRepository missing methods (~5 errors)

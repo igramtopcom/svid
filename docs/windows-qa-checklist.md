@@ -31,7 +31,7 @@ Before starting, confirm:
 - [ ] User is a **non-administrator** standard account (elevate via UAC
       when prompted)
 - [ ] Network can reach `github.com`, `ffmpeg.martin-riedl.de`,
-      `api.ssvid.app`, `api.vidcombo.net`
+      `api.svid.app`, `api.vidcombo.net`
 - [ ] **No VPN** (corporate SSL-scanning proxies trip the binary TLS
       handshake; run clean first, then retry under VPN as a separate
       scenario)
@@ -40,7 +40,7 @@ Before starting, confirm:
 
 From the GitHub release page **or** a signed CI artefact:
 
-- `SSvid-<version>-windows-x64-setup.exe`
+- `Svid-<version>-windows-x64-setup.exe`
 - `VidCombo-<version>-windows-x64-setup.exe`
 
 Do not `xattr -c` / Unblock-File these — the Zone.Identifier ADS check
@@ -48,16 +48,16 @@ below needs them marked-of-web as a real user would receive them.
 
 ---
 
-## Scenario 1 — Fresh install, SSvid, new machine
+## Scenario 1 — Fresh install, Svid, new machine
 
-**Precondition:** no SSvid installed, no VidCombo installed, no legacy
+**Precondition:** no Svid installed, no VidCombo installed, no legacy
 BLUEBYTE VidCombo entries.
 
 1. Run the automated harness:
 
    ```powershell
    pwsh -File scripts/windows_qa_smoke.ps1 `
-        -Installer <path-to-ssvid-setup.exe> -Brand ssvid
+        -Installer <path-to-svid-setup.exe> -Brand svid
    ```
 
    - [ ] All gates PASS / SKIP (no FAIL, no WARN on W3.3 RSA check)
@@ -75,7 +75,7 @@ BLUEBYTE VidCombo entries.
 
 4. First launch:
 
-   - [ ] App icon in taskbar is the SSvid icon (not the default Flutter
+   - [ ] App icon in taskbar is the Svid icon (not the default Flutter
          icon or a generic chrome rectangle)
    - [ ] App window renders the Nocturne Cinematic theme within ~3s of
          double-click
@@ -96,7 +96,7 @@ BLUEBYTE VidCombo entries.
 
 Same as Scenario 1, substituting VidCombo brand. Additional checks:
 
-- [ ] Tray icon is the VidCombo Arctic Blue variant (not SSvid red)
+- [ ] Tray icon is the VidCombo Arctic Blue variant (not Svid red)
 - [ ] First launch contacts `api.vidcombo.net/checkkey.php` (visible in
       Fiddler/Wireshark if hooked up)
 - [ ] Free-tier limit is **10 downloads/day**, not 15
@@ -174,7 +174,7 @@ check. Easiest: point `lib/core/binaries/binary_info.dart`'s
 `_ytDlpChecksumsUrl` at a static fixture manifest that lists a wrong
 hash, or use a test environment with a local manifest.
 
-1. Delete `%LOCALAPPDATA%\ssvid\bin\yt-dlp.exe`.
+1. Delete `%LOCALAPPDATA%\svid\bin\yt-dlp.exe`.
 2. Trigger a download inside the app — forces a yt-dlp re-download.
 3. Confirm:
 
@@ -218,5 +218,5 @@ Attachments:
   - harness output JSON
 ```
 
-Post the report to the release tracking issue on `mydinh-studio/ssvid-desktop`
+Post the report to the release tracking issue on `mydinh-studio/svid-desktop`
 under the label `windows-qa`.

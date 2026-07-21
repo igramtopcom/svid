@@ -19,7 +19,7 @@
 
 ```
 ┌──────────────────────────────────────────────────┐
-│ [SSvid]  Downloads  YouTube  Subs    [+] [?] [⚙]│  ← TopNavigationBar (52px)
+│ [Svid]  Downloads  YouTube  Subs    [+] [?] [⚙]│  ← TopNavigationBar (52px)
 ├──────────────────────────────────────────────────┤
 │  [🔍 Search YouTube videos...]          [Search] │  ← Search bar (always visible)
 ├──────────────────────────────────────────────────┤

@@ -1,11 +1,11 @@
-# SSvid v2.2 Floating Capture — Stitch Creative Brief
+# Svid v2.2 Floating Capture — Stitch Creative Brief
 
 **For:** Stitch Creative Director (Gemini 3.1 Pro)
-**Project:** SSvid Desktop — Final UI Design (ID: 10022260214920217805)
+**Project:** Svid Desktop — Final UI Design (ID: 10022260214920217805)
 **Author:** CTO Frontend (Desktop)
 **Date:** 2026-05-07
 **Version:** v1.1 (post ultra self-review)
-**Companion to:** [SSvid_v2_2_FloatingCapture_Improvement_Spec.md](SSvid_v2_2_FloatingCapture_Improvement_Spec.md)
+**Companion to:** [Svid_v2_2_FloatingCapture_Improvement_Spec.md](Svid_v2_2_FloatingCapture_Improvement_Spec.md)
 
 **v1.0 → v1.1 changelog:**
 - VidCombo accent color corrected: `#0066CC` Ocean Blue + `#03BEFE` Cyan (verified `brand_config.dart:795` — em đoán sai `#2E7CD6` ở v1.0)
@@ -13,7 +13,7 @@
 - Queue strip metaphor: "browser tabs" (m3 — film-negative metaphor không universal)
 - State 4 channel avatar fallback: text-only chip + platform logo (m4 — YouTube oEmbed channels rarely returns avatar)
 - State 6 auto-close: 4s (was 2s — m2 too rushed for non-English readers)
-- Stitch generation order: hero (State 2 SSvid) → review → State 2 VidCombo → review → 18 còn lại parallel (M9 — batch with checkpoints)
+- Stitch generation order: hero (State 2 Svid) → review → State 2 VidCombo → review → 18 còn lại parallel (M9 — batch with checkpoints)
 - VidCombo paywall flow: Stripe checkout (B4 — `hasStripeCheckout: true` confirmed)
 
 ---
@@ -22,10 +22,10 @@
 
 Đây là creative brief cho **redesign popup floating capture v2.2** — không phải spec UI thuần. Stitch hiểu Visual Descriptions tốt hơn technical specs.
 
-**Active Stitch project**: "SSvid Desktop — Final UI Design" (ID: 10022260214920217805) — design system đã setup. Brief này thêm 20 screens mới (10 variants × 2 brands).
+**Active Stitch project**: "Svid Desktop — Final UI Design" (ID: 10022260214920217805) — design system đã setup. Brief này thêm 20 screens mới (10 variants × 2 brands).
 
 **Trước khi đọc tiếp**: Stitch hãy lướt qua `STITCH.md` (registry) + `DESIGN.md` (design tokens) trong root repo. Brand identity 2 dòng:
-- **SSvid**: "Nocturne Cinematic" — dark wine red (#8D021F) + crimson (#C41E3A), Inter font, tonal layering, "blood-dark wine red for tension"
+- **Svid**: "Nocturne Cinematic" — dark wine red (#8D021F) + crimson (#C41E3A), Inter font, tonal layering, "blood-dark wine red for tension"
 - **VidCombo**: "Arctic Command" — cool arctic blue, white-on-deep-blue, calmer mood
 
 ---
@@ -63,7 +63,7 @@ Popup không cố gắng thay app. Nó là **bàn tay phụ thứ ba** — user 
 
 Floating panel — corner-rounded **16pt**, drop shadow soft (như "whisper-soft"), no titlebar chrome (custom drag region top 24pt), backdrop opaque (NOT translucent — translucent thường gây lag perception trên Windows + readability kém trên dark wallpaper).
 
-### Brand SSvid — "Nocturne Cinematic"
+### Brand Svid — "Nocturne Cinematic"
 
 ```
 Background:     Pressurized void  #121212  (almost-black, NOT pure black)
@@ -107,7 +107,7 @@ Error:          Coral pink        #FB7185
 
 **Note for Stitch**: Brand dot in top bar = Cyan `#03BEFE` (lighter, vibrant). Primary action button bg = Ocean Blue `#0066CC` (deeper, decisive). The 2-color play creates visual layering — dot is the "spark", button is the "mass".
 
-**Vibe direction**: như "command center của icebreaker ship" — calmer, more procedural. Ocean Blue is decisive, less emotional than Wine Red. Cyan accents add "active circuitry" energy — VidCombo is "pro-grade tool", SSvid is "cinematic experience". Same hierarchy structure, different temperature + slightly different brand personality.
+**Vibe direction**: như "command center của icebreaker ship" — calmer, more procedural. Ocean Blue is decisive, less emotional than Wine Red. Cyan accents add "active circuitry" energy — VidCombo is "pro-grade tool", Svid is "cinematic experience". Same hierarchy structure, different temperature + slightly different brand personality.
 
 ### Typography (both brands)
 
@@ -135,7 +135,7 @@ Error:          Coral pink        #FB7185
 ## 3. The 10 State Variants
 
 Generate **10 screens × 2 brands = 20 total**. Naming convention:
-`floating-popup-{state}-{brand}` (e.g., `floating-popup-loading-ssvid`).
+`floating-popup-{state}-{brand}` (e.g., `floating-popup-loading-svid`).
 
 ### State 1 — Loading
 
@@ -194,7 +194,7 @@ Generate **10 screens × 2 brands = 20 total**. Naming convention:
 - Thumbnail area: stylized icon centered (40pt) — playlist icon for playlists, search magnifier for search, channel avatar shape for channels (m4 fix: YouTube oEmbed for channel rarely returns avatar — fallback to **stylized circular chip với initial letter from channel name** if available, else **platform logo** centered).
 - Title: generated text — "YouTube Playlist (24 videos)" / "TikTok Channel @username" / "YouTube search" (use whatever metadata oEmbed returns; gracefully degrade fields)
 - Meta line: link nguồn truncated to ~30 chars
-- Primary action **CHANGES**: **`Mở trong SSvid`** / **`Mở trong VidCombo`** (cùng button style as Tải ngay nhưng label khác — uses brand-aware appName substitution)
+- Primary action **CHANGES**: **`Mở trong Svid`** / **`Mở trong VidCombo`** (cùng button style as Tải ngay nhưng label khác — uses brand-aware appName substitution)
 - Secondary action: ẩn (chỉ 1 primary — no "Tuỳ chọn" since this isn't a video)
 - Footer: quota text persists
 
@@ -204,12 +204,12 @@ Generate **10 screens × 2 brands = 20 total**. Naming convention:
 
 ### State 5 — Quota=0 Paywall
 
-**When:** Free tier dùng hết quota daily (SSvid: 15, VidCombo: 10)
+**When:** Free tier dùng hết quota daily (Svid: 15, VidCombo: 10)
 
 **Layout:**
 - Same skeleton as State 2 (thumbnail + title still shows)
 - BUT primary button: **`👑 Nâng cấp Premium`** with subtle gold/amber gradient overlay (not garish)
-- Below button: small text "Bạn đã dùng hết 15/15 lượt hôm nay" (SSvid) / "10/10" (VidCombo)
+- Below button: small text "Bạn đã dùng hết 15/15 lượt hôm nay" (Svid) / "10/10" (VidCombo)
 - Secondary action: `Hôm nay đến đây thôi` (dismiss popup, accept rate limit)
 - Footer: "Reset trong: 4h 23m" countdown (calculated from midnight reset)
 
@@ -341,7 +341,7 @@ Mỗi state generate qua `generate_screen_from_text` với prompt format dưới
 ### Reusable design system prompt
 
 ```
-DESIGN SYSTEM — SSvid Floating Capture v2.2 / SSvid brand:
+DESIGN SYSTEM — Svid Floating Capture v2.2 / Svid brand:
 - Platform: Desktop, Dark mode mandatory
 - Form: Floating panel 300×420 portrait, 16pt corner radius, whisper-soft shadow
 - Background: Pressurized void #121212, surface onyx #1A1A1A, elevated graphite #242424
@@ -364,7 +364,7 @@ DESIGN SYSTEM — VidCombo brand variant:
 ### Prompt template per state
 
 ```
-[State name] of the SSvid v2.2 floating capture popup.
+[State name] of the Svid v2.2 floating capture popup.
 
 CONTEXT: User just copied a {URL_TYPE} URL while browsing. Popup appears
 in top-right corner of screen, floats above all other windows. This is
@@ -394,7 +394,7 @@ on dark mode wallpaper background to show floating panel context.
 
 Stitch là Creative Director, không phải executor. Specifically:
 
-1. **Color temperature** — em đề xuất Wine Red (SSvid) + Arctic Blue (VidCombo) nhưng Stitch có thể nhìn từ user emotional journey perspective (anxiety reduction khi click Download? tension build for upgrade?) → counter-propose nếu thấy Wine Red không đủ.
+1. **Color temperature** — em đề xuất Wine Red (Svid) + Arctic Blue (VidCombo) nhưng Stitch có thể nhìn từ user emotional journey perspective (anxiety reduction khi click Download? tension build for upgrade?) → counter-propose nếu thấy Wine Red không đủ.
 
 2. **Information density** — em propose "title + channel + duration + views" trong State 2 — Stitch có thể thấy quá nặng, propose strip xuống còn title + 1 meta line.
 
@@ -413,7 +413,7 @@ Stitch là Creative Director, không phải executor. Specifically:
 ## 8. Constraints (MUST OBEY)
 
 1. **No sidebar.** Đây là popup, không phải app — pattern không apply nhưng nhắc lại để rõ context.
-2. **Brand-aware mọi UI surface.** SSvid Wine Red KHÔNG được leak vào VidCombo. Stitch tạo separate screens per brand, không 1 set screens "swap colors".
+2. **Brand-aware mọi UI surface.** Svid Wine Red KHÔNG được leak vào VidCombo. Stitch tạo separate screens per brand, không 1 set screens "swap colors".
 3. **Inter font only.** Không google_fonts mới. Đã ship.
 4. **No translucent backdrop.** Whisper-soft shadow OK. Vibrancy/blur thường gây lag perception.
 5. **No emoji trong button label.** Use Lucide icons + text. (Spec dùng "⚡" ở đầu là illustrative; final dùng Lucide `Zap` icon.)
@@ -427,8 +427,8 @@ Stitch là Creative Director, không phải executor. Specifically:
 
 Stitch produce:
 
-1. **1 design system entry**: "SSvid Floating Capture v2.2 — SSvid brand"
-2. **1 design system entry**: "SSvid Floating Capture v2.2 — VidCombo brand"
+1. **1 design system entry**: "Svid Floating Capture v2.2 — Svid brand"
+2. **1 design system entry**: "Svid Floating Capture v2.2 — VidCombo brand"
 3. **20 screens**: 10 states × 2 brands, named per §3
 4. **2-3 motion sketches** (optional): hover state transitions, ✓ scale-in animation as side-by-side mockup variants
 5. **2 reference compositions** (optional): popup-in-context (popup floating over a YouTube browser tab screenshot) — 1 per brand — để Chairman thấy popup real-world feel
@@ -442,13 +442,13 @@ Each Stitch generation = 30s-2min. 20 screens = 10-40 min total compute. Em paus
 **Stage 1 — Foundation (1 generation × 2 design system entries)**
 1. Stitch acknowledge brief understood, push back on §7 anywhere needed
 2. Chairman approve Stitch pushbacks → final direction frozen
-3. Stitch generate 2 design system entries (SSvid + VidCombo)
+3. Stitch generate 2 design system entries (Svid + VidCombo)
    - **Cost:** ~1 minute total (DS entries are fast)
    - **Checkpoint:** Chairman review color tokens, font, roundness
 
 **Stage 2 — Hero (2 generations)**
-4. Stitch generate State 2 (default success) — SSvid brand
-   - **Checkpoint:** Chairman approve hero shot SSvid before continuing
+4. Stitch generate State 2 (default success) — Svid brand
+   - **Checkpoint:** Chairman approve hero shot Svid before continuing
 5. Stitch generate State 2 (default success) — VidCombo brand
    - **Checkpoint:** Chairman approve brand parity (Ocean Blue vs Wine Red feel right?)
 
@@ -459,7 +459,7 @@ Each Stitch generation = 30s-2min. 20 screens = 10-40 min total compute. Em paus
 
 **Stage 4 — Export + Implement**
 7. Stitch export design tokens (color hex, spacing scale, font sizes, shadow specs) for Flutter implementation
-8. CTO implement Phase 2B per `SSvid_v2_2_FloatingCapture_Improvement_Spec.md` §3.2B
+8. CTO implement Phase 2B per `Svid_v2_2_FloatingCapture_Improvement_Spec.md` §3.2B
 
 **Pause point**: Chairman directed em report **before** invoking Stitch generation. Em deliver brief + spec → Chairman approves → em invoke Stage 1 + 2 with explicit cost expectation. Stage 3 only after Stage 2 hero approved.
 
@@ -481,9 +481,9 @@ Stitch không cần touch:
 
 ## 12. Reference
 
-- v2.2 Spec: [SSvid_v2_2_FloatingCapture_Improvement_Spec.md](SSvid_v2_2_FloatingCapture_Improvement_Spec.md)
-- v2.1 Spec: [SSvid_v2_1_FloatingCapture_Spec.md](SSvid_v2_1_FloatingCapture_Spec.md)
-- Active Stitch project: SSvid Desktop — Final UI Design (ID: 10022260214920217805)
+- v2.2 Spec: [Svid_v2_2_FloatingCapture_Improvement_Spec.md](Svid_v2_2_FloatingCapture_Improvement_Spec.md)
+- v2.1 Spec: [Svid_v2_1_FloatingCapture_Spec.md](Svid_v2_1_FloatingCapture_Spec.md)
+- Active Stitch project: Svid Desktop — Final UI Design (ID: 10022260214920217805)
 - Design tokens: [DESIGN.md](../DESIGN.md)
 - Stitch registry: [STITCH.md](../STITCH.md)
-- Brand identity: SSvid "Nocturne Cinematic", VidCombo "Arctic Command"
+- Brand identity: Svid "Nocturne Cinematic", VidCombo "Arctic Command"

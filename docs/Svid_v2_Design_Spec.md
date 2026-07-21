@@ -1,4 +1,4 @@
-# SSvid v2 — Design Specification
+# Svid v2 — Design Specification
 
 **Version:** v1.2
 **Date:** 2026-05-05
@@ -7,7 +7,7 @@
 
 Self-audit pass discovered 5 issues từ v1.1 (em đã sót khi không check existing code):
 
-- **🔥 Brand color FIX**: v1.1 dùng Tailwind Blue `#2563EB` làm primary — SAI. App SSvid existing brand là **Wine Red `#8D021F`** ([app_colors.dart](../lib/core/theme/app_colors.dart)). v1.2 revert to Wine Red as authoritative brand source.
+- **🔥 Brand color FIX**: v1.1 dùng Tailwind Blue `#2563EB` làm primary — SAI. App Svid existing brand là **Wine Red `#8D021F`** ([app_colors.dart](../lib/core/theme/app_colors.dart)). v1.2 revert to Wine Red as authoritative brand source.
 - **Naming conflict FIX**: v1.1 tạo class `AppColors` và `AppTypography` trong `design_tokens.dart` mà KHÔNG check existing `lib/core/theme/`. Đã có cả 2 classes này (existing với 95+ widget usages). v1.2 removed duplicates from design_tokens.dart; existing classes are authoritative source.
 - **Font migration**: existing `app_typography.dart` dùng `GoogleFonts.inter()` (runtime download). v1.2 migrate to bundled `assets/fonts/InterVariable.ttf` per design spec. `google_fonts: ^6.3.2` dependency removed from pubspec.
 - **Section 2 Color** rewritten to defer to existing `lib/core/theme/app_colors.dart` (Wine Red brand + 56 existing tokens).
@@ -60,10 +60,10 @@ External design comparison merge — distill best information from alternate spe
 - Mobile breakpoints (xs/sm/md) — app is desktop-only
 
 
-**Companion to:** [SSvid_Home_Download_Manager_UI_Spec_v1.1.md](SSvid_Home_Download_Manager_UI_Spec_v1.1.md) (functional), [design_tokens.dart](../lib/core/design/design_tokens.dart) (code reference)
+**Companion to:** [Svid_Home_Download_Manager_UI_Spec_v1.1.md](Svid_Home_Download_Manager_UI_Spec_v1.1.md) (functional), [design_tokens.dart](../lib/core/design/design_tokens.dart) (code reference)
 **Audience:** Frontend engineers, designers, QA visual reviewers
 
-This spec defines visual design system for SSvid v2 redesign. Engineers reference [design_tokens.dart](../lib/core/design/design_tokens.dart) as single source of truth — this doc provides rationale + usage guidelines.
+This spec defines visual design system for Svid v2 redesign. Engineers reference [design_tokens.dart](../lib/core/design/design_tokens.dart) as single source of truth — this doc provides rationale + usage guidelines.
 
 ---
 
@@ -908,7 +908,7 @@ Material's `CircularProgressIndicator`:
 
 - Window controls ở góc phải, chiếm ~140px
 - Title bar height 32px
-- Browser feature **không có** (xem [§6.2 PRD](SSvid_Home_Download_Manager_UI_Spec_v1.1.md))
+- Browser feature **không có** (xem [§6.2 PRD](Svid_Home_Download_Manager_UI_Spec_v1.1.md))
 - Font: Segoe UI Variable (Windows 11) / Segoe UI (Windows 10)
 - Ctrl as modifier key
 
@@ -1066,8 +1066,8 @@ Material Icons từ `package:flutter/material.dart`:
 `assets/icons/`:
 
 ```
-logo-ssvid-light.svg
-logo-ssvid-dark.svg
+logo-svid-light.svg
+logo-svid-dark.svg
 app-icon-16.png
 app-icon-32.png
 app-icon-64.png
@@ -1081,7 +1081,7 @@ app-icon-linux.png
 ```
 
 Naming rules:
-- Logo: `logo-ssvid-{variant}.svg` — variants: `light`, `dark`
+- Logo: `logo-svid-{variant}.svg` — variants: `light`, `dark`
 - App icon raster: `app-icon-{size}.png` — sizes: 16, 32, 64, 128, 256, 512, 1024
 - Platform-specific: `app-icon-{platform}.{ext}` — `.icns` (macOS), `.ico` (Windows), `.png` (Linux)
 - SVG preferred for logos (scalable)
@@ -1253,7 +1253,7 @@ HomeScreen (StatelessWidget)
 Engineer reference: [`lib/core/design/design_tokens.dart`](../lib/core/design/design_tokens.dart).
 
 ```dart
-import 'package:ssvid/core/design/design_tokens.dart';
+import 'package:svid/core/design/design_tokens.dart';
 
 Container(
   padding: const EdgeInsets.all(AppSpacing.lg),

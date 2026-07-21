@@ -1,4 +1,4 @@
-# SSvid Accessibility QA Checklist
+# Svid Accessibility QA Checklist
 
 Manual VoiceOver (macOS) and accessibility audit for Phase 23.4.
 

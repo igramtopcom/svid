@@ -1,6 +1,6 @@
 # Pass 2C — Implementation Roadmap Deep Dive
 
-**Spec đọc**: `docs/SSvid_v2_Implementation_Roadmap.md` v1.0 (513 dòng) — full
+**Spec đọc**: `docs/Svid_v2_Implementation_Roadmap.md` v1.0 (513 dòng) — full
 **Cross-ref**: Pass 2A findings (Design Spec) + Pass 2B findings (UI Spec) + master_roadmap CEO Kỳ
 **Mục tiêu**: Validate 28.5-31.5d ước lượng vs reality, identify hidden work, fix schema rename, plan parallel execution.
 
@@ -237,7 +237,7 @@ Phase 0 — Foundation (1-1.5d, MUST run before Phase 1A)
 
 | **NEW risks Pass 2C identified** |
 |---|
-| **🔴 Multi-brand parity (VidCombo)** — V2 tokens/font/quota assume SSvid only. Risk HIGH that VidCombo test ship breaks. → Mitigation Pass 2E: explicit brand audit per phase + multi-brand smoke test in Buffer. |
+| **🔴 Multi-brand parity (VidCombo)** — V2 tokens/font/quota assume Svid only. Risk HIGH that VidCombo test ship breaks. → Mitigation Pass 2E: explicit brand audit per phase + multi-brand smoke test in Buffer. |
 | **🟠 Phantom Inter font silent regression** — Existing macOS users using system Inter, switch to bundle may render slightly different (kerning, metrics). → Mitigation: visual diff before/after on 3 weights × 3 platforms. |
 | **🟠 Spec/code v15→v19 confusion** — multiple devs may grep "v16 user playlists" and miss the rename. → Mitigation: rename ALL occurrences in 1 commit, add CHANGELOG entry. |
 | **🟠 EffectiveConfigResolver merge edge cases** — 15-field merge with null inheritance has combinatorial test surface. → Mitigation: dedicated unit test matrix (≥30 cases), ship as separate PR before integrating Rule 3. |
@@ -251,7 +251,7 @@ Roadmap section "Rollout strategy" tốt nhưng thiếu detail:
 1. **Internal alpha (after Phase 1A+§5)**: feature flag `homeV2Enabled=false` default. Dev team toggles ON. **Verify**: rollback flag → no crash on existing data.
 2. **Internal beta (after Phase 1B+1C)**: extended team dogfood. Add: telemetry verify events fire, perf metrics baseline.
 3. **Closed beta (after §10)**: ~50 invite users. Add: backend feature flag remote toggle (kill switch nếu critical bug).
-4. **Public release (after Polish+Buffer)**: feature flag flip default ON. **Multi-brand**: ship SSvid first, VidCombo 1 release cycle later (per Pass 2E recommendation).
+4. **Public release (after Polish+Buffer)**: feature flag flip default ON. **Multi-brand**: ship Svid first, VidCombo 1 release cycle later (per Pass 2E recommendation).
 5. **Rollback**: keep v1 home code path 1 release cycle. Definition: if rollback rate >5% → re-investigate.
 
 ---
@@ -280,7 +280,7 @@ Em compile lại tất cả Q hiện tại + thêm Q11-Q14 mới:
 | Q10 | Pass 2B | Backward-compat rollback test — **resolved (yes, add to Buffer)** |
 | **Q11 NEW** | Pass 2C | **Single dev or 2-dev or 3-dev parallel?** Em recommend 2-dev (25-28d, save ~12d vs single) |
 | **Q12 NEW** | Pass 2C | **Phase 1C "Thêm vào playlist" — drop or stub?** Em recommend drop (cleaner UX) |
-| **Q13 NEW** | Pass 2C | **Multi-brand release schedule** — SSvid first, VidCombo +1 cycle? **Pass 2E sẽ deep dive** |
+| **Q13 NEW** | Pass 2C | **Multi-brand release schedule** — Svid first, VidCombo +1 cycle? **Pass 2E sẽ deep dive** |
 | **Q14 NEW** | Pass 2C | **Roadmap timeline acceptance**: spec say 28.5-31.5d, em estimate 36-37d single (5-day delta). Anh accept timeline truth hay tighten scope? |
 
 ---

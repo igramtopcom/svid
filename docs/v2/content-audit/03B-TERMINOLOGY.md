@@ -6,7 +6,7 @@
 - TERMINOLOGY.md = WHAT we call things (vocab, canonical labels).
 - Cả 2 đều phải pass khi viết string mới (xem VOICE.md §15.1 decision tree).
 
-**Brand policy**: 100% concept dưới đây dùng **cùng 1 vocabulary** cho cả SSvid + VidCombo (theo VOICE 70/30 rule §5 — concept-level vocab nằm trong 70% shared). Brand differentiation xảy ra ở **sentence structure + diction** (xem VOICE §3-§4), KHÔNG ở word choice.
+**Brand policy**: 100% concept dưới đây dùng **cùng 1 vocabulary** cho cả Svid + VidCombo (theo VOICE 70/30 rule §5 — concept-level vocab nằm trong 70% shared). Brand differentiation xảy ra ở **sentence structure + diction** (xem VOICE §3-§4), KHÔNG ở word choice.
 
 ---
 
@@ -46,7 +46,7 @@ File này đóng cọc tiêu — biết khi nào "đã có nhãn dùng" và khi 
 **Trong scope**: concept user-facing, xuất hiện ≥3 lần trong app, hoặc concept high-impact (xuất hiện ở button/title/banner).
 
 **Ngoài scope** (KHÔNG cần canonical, đã chuẩn từ nguồn khác):
-- Tên brand (SSvid, VidCombo) → resolve qua `{appName}`
+- Tên brand (Svid, VidCombo) → resolve qua `{appName}`
 - Tên platform (YouTube, TikTok, Instagram, X, Reddit, …) → proper noun, giữ nguyên
 - Tên format (MP4, MP3, MKV, WebM, FLAC, M4A) → acronym standard
 - Tên resolution (4K, 1080p, 720p, HD, FHD, QHD, UHD) → acronym standard
@@ -273,7 +273,7 @@ Trade-off:
 - `tệp` = native VN, formal, government-doc feel.
 - `file` = loanword, informal, gọn, hằng ngày tech user.
 
-Decision rationale: SSvid + VidCombo target consumer tech audience (younger, mobile-first, English-comfortable). "File" gần user mental model hơn "tệp". Reserve "tệp" cho legal/ToS context.
+Decision rationale: Svid + VidCombo target consumer tech audience (younger, mobile-first, English-comfortable). "File" gần user mental model hơn "tệp". Reserve "tệp" cho legal/ToS context.
 
 ### 5.2 link vs URL vs đường dẫn
 
@@ -450,17 +450,17 @@ Em cân nhắc 1 vài case:
 
 Verdict: **không brand split vocab.**
 - Lý do 1: Maintainability — split vocab = double the dictionary, gấp đôi reviewer load.
-- Lý do 2: User cross-brand familiarity — power user dùng cả SSvid + VidCombo (free + premium scenario) sẽ confused nếu vocab khác.
+- Lý do 2: User cross-brand familiarity — power user dùng cả Svid + VidCombo (free + premium scenario) sẽ confused nếu vocab khác.
 - Lý do 3: Brand voice differentiation hiệu quả qua sentence form (xem VOICE Do/Don't tables) — không cần qua vocab.
 
 ### Brand differentiation thực sự xảy ra ở đâu
 
 Không trong dict. Trong:
 - Tagline (VOICE §3.4 + §4.4)
-- Empty state hero (SSvid emotional / VidCombo factual)
-- Onboarding tone (SSvid evocative / VidCombo direct)
-- Snackbar emoji presence (SSvid selective / VidCombo none)
-- Pronoun retention (SSvid keep / VidCombo selective drop)
+- Empty state hero (Svid emotional / VidCombo factual)
+- Onboarding tone (Svid evocative / VidCombo direct)
+- Snackbar emoji presence (Svid selective / VidCombo none)
+- Pronoun retention (Svid keep / VidCombo selective drop)
 
 Tất cả với cùng vocab. → Brand voice = "khẩu khí" mà không phải "từ vựng".
 
@@ -522,10 +522,10 @@ Pass 02 §5.1 đo "delete" có 51 label variant trong codebase. Sau khi áp dict
 3. Migrate 47 hardcoded strings → i18n.
 4. Fix plural bug — bỏ `{plural}` literal append, dùng pattern Option A.
 5. Fix `downloads.emptySubtitle` semantic mismatch.
-6. Fix `'Downloads/SSvid'` brand leak ở `preset_popover.dart`.
+6. Fix `'Downloads/Svid'` brand leak ở `preset_popover.dart`.
 7. Sweep 229 Title Case → sentence case.
-8. Replace tagline "powered by Rust + Flutter" → SSvid "Tải video. Đơn giản. Đẹp." / VidCombo "Tải nhanh. Lưu sạch."
-9. Verify build SSvid + VidCombo, mac + win, en + vi.
+8. Replace tagline "powered by Rust + Flutter" → Svid "Tải video. Đơn giản. Đẹp." / VidCombo "Tải nhanh. Lưu sạch."
+9. Verify build Svid + VidCombo, mac + win, en + vi.
 
 ---
 

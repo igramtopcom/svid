@@ -19,7 +19,7 @@ Do not convert "I cannot personally verify production data" into a blocker when 
 Use Flutter `3.29.3` from `.fvmrc`.
 
 - `./scripts/setup_dev.sh` installs Dart dependencies and regenerates Freezed, Riverpod, and Drift outputs after a clone or pull.
-- `./scripts/dev.sh ssvid` or `./scripts/dev.sh vidcombo` switches branding, rebuilds the Rust library, and runs the macOS app.
+- `./scripts/dev.sh svid` or `./scripts/dev.sh vidcombo` switches branding, rebuilds the Rust library, and runs the macOS app.
 - `fvm flutter analyze --no-pub` checks Dart/Flutter code against `flutter_lints`.
 - `fvm flutter test` runs the app test suite.
 - `cd native && cargo build` rebuilds the Rust crate directly.

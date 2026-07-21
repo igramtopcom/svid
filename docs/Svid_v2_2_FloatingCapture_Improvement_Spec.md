@@ -1,12 +1,12 @@
-# SSvid v2.2 — Floating Capture Improvement Spec
+# Svid v2.2 — Floating Capture Improvement Spec
 
 **Version:** v1.1 (post ultra self-review — 23 issues fixed)
 **Date:** 2026-05-07
 **Status:** Approved direction; pending Stitch design review before Phase 2B implementation
 **Companion to:**
-- [SSvid_v2_1_FloatingCapture_Spec.md](SSvid_v2_1_FloatingCapture_Spec.md) (v2.1 base)
-- [SSvid_v2_1_FloatingCapture_Implementation_Status.md](SSvid_v2_1_FloatingCapture_Implementation_Status.md) (current state, v2.1 — 287 tests passing on `v2/home-redesign-foundation`)
-- [SSvid_v2_2_FloatingCapture_Stitch_Brief.md](SSvid_v2_2_FloatingCapture_Stitch_Brief.md) (visual brief)
+- [Svid_v2_1_FloatingCapture_Spec.md](Svid_v2_1_FloatingCapture_Spec.md) (v2.1 base)
+- [Svid_v2_1_FloatingCapture_Implementation_Status.md](Svid_v2_1_FloatingCapture_Implementation_Status.md) (current state, v2.1 — 287 tests passing on `v2/home-redesign-foundation`)
+- [Svid_v2_2_FloatingCapture_Stitch_Brief.md](Svid_v2_2_FloatingCapture_Stitch_Brief.md) (visual brief)
 
 **Author:** CTO Frontend (Desktop)
 **Approver:** Chairman (anh My)
@@ -17,7 +17,7 @@
 - C3: Real codebase API names — `activePresetProvider`, `_repository.createDownload`, `binaryManagerProvider` — replaces guessed names
 - C4: OG scraping uses realistic browser User-Agent; IG/FB explicitly accept Tier D fallback (privacy + likely block)
 - C5: `_RecentUrlTracker` marks on **successful action**, not popup show — failed-then-retry within cooldown allowed
-- C6: VidCombo brand color = `#0066CC` + `#03BEFE` (verified `brand_config.dart:795`); SSvid + VidCombo both `freeDailyDownloads = 15` (memory `flutter-frontend.md` line "VidCombo=10" is OUT OF DATE per `brand_config.dart:633` code comment)
+- C6: VidCombo brand color = `#0066CC` + `#03BEFE` (verified `brand_config.dart:795`); Svid + VidCombo both `freeDailyDownloads = 15` (memory `flutter-frontend.md` line "VidCombo=10" is OUT OF DATE per `brand_config.dart:633` code comment)
 - M1-M9: Idle pause-on-hover, "Tuỳ chọn…" quota gate, Settings nested-target, IPC version handshake, telemetry endpoint verified, full auth matrix, drag-drop edge detection, snoozed-banner separate form factor, Stitch generation batched
 - m1-m8: Verified 287 baseline; 4s auto-close instead of 2s; "browser tabs" metaphor instead of film negative; State 4 fallback for missing channel avatar; PII rules; YouTube/TikTok geo risk; cooldown 2-min default with override
 - B1-B7 strategic decisions locked (see §10)
@@ -108,7 +108,7 @@ Tier B — oEmbed (existing flow):
 Tier C — OG image meta tag scraping (with realistic browser UA):
   KHÔNG dùng cho Instagram, Facebook (block aggressive — accept Tier D)
   Dùng cho: Threads, Pinterest, LinkedIn, Bilibili
-  Realistic UA: Mozilla/5.0 ... Chrome/120 (NOT 'SSvid/2.1')
+  Realistic UA: Mozilla/5.0 ... Chrome/120 (NOT 'Svid/2.1')
   Single GET, 5s timeout, single retry max
   Privacy: opt-in trong Settings (default ON, document trong privacy policy)
 
@@ -395,7 +395,7 @@ i18n keys: `settingsCaptureAntiSpamCooldown`, `settingsCaptureResetCooldowns`.
 - [ ] Manual smoke macOS: copy YouTube URL 3x → only 1 popup; copy IG URL → Tier D logo shown; click Download → flow as before (no UI change)
 - [ ] Manual smoke Windows: same
 - [ ] VidCombo brand build: same flow OK
-- [ ] Ship target: **v1.3.9 (SSvid) + v1.6.6 (VidCombo)** — tentative 2026-05-21
+- [ ] Ship target: **v1.3.9 (Svid) + v1.6.6 (VidCombo)** — tentative 2026-05-21
 
 ### Phase 2B — Visual Redesign + Direct Download Path → ship v1.4.0
 
@@ -404,7 +404,7 @@ i18n keys: `settingsCaptureAntiSpamCooldown`, `settingsCaptureResetCooldowns`.
 #### 2B.0 — Stitch design (gate before code)
 
 Generate 20 screens (10 states × 2 brands) per Stitch creative brief. **Sequence**:
-1. Generate State 2 (default success) for SSvid → Chairman approve hero
+1. Generate State 2 (default success) for Svid → Chairman approve hero
 2. Generate State 2 for VidCombo → Chairman confirm brand parity
 3. Parallel generate other 9 states × 2 brands (18 more screens)
 4. Stitch export design tokens → CTO consume
@@ -426,7 +426,7 @@ abstract class BrandConfig {
 }
 ```
 
-`SsvidBrand`:
+`SvidBrand`:
 ```dart
 @override Color get popupAccentColor => const Color(0xFF8D021F);     // Wine Red
 @override Color get popupAccentForeground => Colors.white;
@@ -445,7 +445,7 @@ abstract class BrandConfig {
 Replace hardcoded `AppColors.wineRed` references với `BrandConfig.current.popupAccentColor`. The popup engine boots with brand initialized (already done v2.1).
 
 **Reviewer checklist trong PR** (per §7):
-- grep `0x..8D021F\|wineRed\|crimson` trong popup files modified — chỉ được trong `app_colors.dart` (token def) hoặc `ssvid_brand_config.dart`
+- grep `0x..8D021F\|wineRed\|crimson` trong popup files modified — chỉ được trong `app_colors.dart` (token def) hoặc `svid_brand_config.dart`
 - Run `scripts/dev.sh vidcombo` → screenshot popup → verify Ocean Blue (not Wine Red leak)
 
 #### 2B.2 — `StartCaptureDownloadDirectUseCase` (Shift 1 implementation)
@@ -737,7 +737,7 @@ onShowSnoozeToast: () async {
 - [ ] Manual smoke macOS: copy URL → Tier A thumb → click "Tải ngay" → popup shows "Đang tải xuống Downloads/" → 4s auto-close → system notification "Download started" appears → main app Downloads tab shows running download (verify without focus-stealing)
 - [ ] Manual smoke Windows: same
 - [ ] VidCombo build smoke
-- [ ] Ship target: **v1.4.0 (SSvid) + v1.7.0 (VidCombo)** — tentative 2026-06-04
+- [ ] Ship target: **v1.4.0 (Svid) + v1.7.0 (VidCombo)** — tentative 2026-06-04
 
 ### Phase 2C — Polish + Edge Cases → ship v1.4.1
 
@@ -750,7 +750,7 @@ When `_quotaRemaining == 0`:
 - Both brands use Stripe checkout (B4 fix — VidCombo `hasStripeCheckout: true` confirmed `brand_config.dart:638`)
 - Click → invokeMethod('onUpgradeClicked')
 - Main side router: `OpenExternalUrl(BrandConfig.current.upgradeUrl)`
-  - SSvid → `https://ssvid.app/premium`
+  - Svid → `https://svid.app/premium`
   - VidCombo → `https://vidcombo.net/premium`
 
 **"Tuỳ chọn…" cũng gate** (M2 fix): when quota=0, hide secondary button OR change label to "Mở app (giới hạn còn lại 0)" — disable enqueue, allow user to see Downloads tab.
@@ -852,7 +852,7 @@ Wrap popup root với `DropTarget` (package `desktop_drop`).
 - [ ] All previous tests pass (287 + 38 = 325)
 - [ ] +14 new tests (paywall 4, auth matrix 4, multi-monitor 3, hotkey 3)
 - [ ] Manual smoke: paywall flow both brands, auth-required flow, multi-monitor disconnect, hotkey opt-in flow, drag-drop (macOS first, Windows if stable)
-- [ ] Ship target: **v1.4.1 (SSvid) + v1.7.1 (VidCombo)** — tentative 2026-06-18
+- [ ] Ship target: **v1.4.1 (Svid) + v1.7.1 (VidCombo)** — tentative 2026-06-18
 
 ---
 
@@ -1035,17 +1035,17 @@ flutter:
 
 ## 7. Brand Parity Rules (MUST OBEY)
 
-VidCombo = priority equal to SSvid (50,580+ devices vs SSvid Go DB nhỏ hơn). Every UI surface MUST:
+VidCombo = priority equal to Svid (50,580+ devices vs Svid Go DB nhỏ hơn). Every UI surface MUST:
 
 1. Render với `BrandConfig.current.popupAccentColor` — không hardcode `AppColors.wineRed`/`crimson`
-2. Hiển thị `BrandConfig.current.appName` thay "SSvid" trong mọi string
-3. Upgrade URL = `BrandConfig.current.upgradeUrl` (ssvid.app/premium hoặc vidcombo.net/premium) — both Stripe (B4 fix verified `hasStripeCheckout: true`)
+2. Hiển thị `BrandConfig.current.appName` thay "Svid" trong mọi string
+3. Upgrade URL = `BrandConfig.current.upgradeUrl` (svid.app/premium hoặc vidcombo.net/premium) — both Stripe (B4 fix verified `hasStripeCheckout: true`)
 4. Free tier limit: **BOTH brands 15 captures/day** (memory `flutter-frontend.md` line "VidCombo=10" is OUT OF DATE per `brand_config.dart:633` code comment — em update memory file separately)
 5. Smoke test cả 2 brand build trước khi sign-off mỗi phase
 
 **PR reviewer checklist:**
-- [ ] grep `wineRed\|0x..8D021F\|crimson` trong file modified — chỉ trong `app_colors.dart` token def hoặc `ssvid_brand_config.dart`
-- [ ] grep `"SSvid"` trong popup UI files — chỉ trong fallback string table
+- [ ] grep `wineRed\|0x..8D021F\|crimson` trong file modified — chỉ trong `app_colors.dart` token def hoặc `svid_brand_config.dart`
+- [ ] grep `"Svid"` trong popup UI files — chỉ trong fallback string table
 - [ ] Run `scripts/dev.sh vidcombo` → smoke popup → screenshot in PR
 - [ ] Verify `BrandConfig.current.popupAccentColor == 0xFF0066CC` for VidCombo build
 
@@ -1077,7 +1077,7 @@ VidCombo = priority equal to SSvid (50,580+ devices vs SSvid Go DB nhỏ hơn). 
 
 ### Telemetry (M5 fix — verified)
 
-`AnalyticsService.track(eventName, properties)` API confirmed. Backend endpoint via `BackendService.trackEvents(batch)` — works for SSvid Go. **VidCombo PHP backend** — em verify in Phase 2A: if `trackEvents` 404 silently → log warning + continue (no crash). Don't block ship on telemetry.
+`AnalyticsService.track(eventName, properties)` API confirmed. Backend endpoint via `BackendService.trackEvents(batch)` — works for Svid Go. **VidCombo PHP backend** — em verify in Phase 2A: if `trackEvents` 404 silently → log warning + continue (no crash). Don't block ship on telemetry.
 
 Events (Phase 2A first wave):
 - `floating_capture.dedupe_skipped`
@@ -1105,7 +1105,7 @@ Events (Phase 2A first wave):
 | Direct download skips user-preferred subtitle/audio config (preset doesn't cover) | Medium | Low | "Tuỳ chọn…" path covers; default = active preset. Telemetry track `direct_download_attempt` vs `more_options_clicked` ratio to validate 80/20 hypothesis. |
 | YouTube nerfs oEmbed access (precedent: 2019, 2022) | Medium | Medium | Tier A canonical URL works without oEmbed for YT; oEmbed only for title/uploader. Graceful degrade to URL-only metadata. |
 | TikTok geo-block on user's VPN | High | Low | Existing v2.1 timeout 5s → fallback. No regression. |
-| Brand-aware refactor breaks SSvid existing tests | Low | Medium | Add brand override fixtures; run full SSvid + VidCombo CI per PR. |
+| Brand-aware refactor breaks Svid existing tests | Low | Medium | Add brand override fixtures; run full Svid + VidCombo CI per PR. |
 | 60s idle auto-close annoys power user | Medium | Low | Settings adjustable 30/60/120/never (Phase 2B). |
 | Hotkey accessibility prompt scares user | Medium | Medium | Default OFF (B5 fix). Onboarding dialog explains purpose. Skip option visible. |
 | Multi-monitor displayId not stable across Spaces switch on macOS | Medium | Low | Bounds-check fallback at load (works regardless of displayId stability). |
@@ -1126,10 +1126,10 @@ Events (Phase 2A first wave):
 | Q3 | Cooldown URL same? | **2 phút default**, Settings 30s/1m/2m/5m | 5m too aggressive (em wrong v1.0); 2m balances spam prevention + retry comfort. |
 | Q4 | Branch + release? | **`feature/floating-capture-v2.2`** từ `v2/home-redesign-foundation`; **3 releases** v1.3.9 / v1.4.0 / v1.4.1 (re-ordered ultra-review C1) | Phase 2A standalone alone is regression — can't ship without 2B notification UI. Split into logic-fix + visual + polish 3 waves. |
 | Q5 | Stitch first? | **Yes, gate before Phase 2B code** | Vision → implement, per Chairman feedback. |
-| Q6 | VidCombo priority? | **Equal to SSvid** | Both ship same release, both QA. |
+| Q6 | VidCombo priority? | **Equal to Svid** | Both ship same release, both QA. |
 | B2 | Notification on direct download? | **Yes — `notificationService.showDownloadStarted(filename)` after enqueue** | User mất context if popup closes silently. System notification = native pattern. |
 | B3 | Anti-spam strict safety valve? | **Settings "Reset cooldowns" button + verbose debug log per layer** | Allows user-level diagnose when popup appears not to work. |
-| B4 | VidCombo paywall flow? | **Stripe checkout — same as SSvid** | Verified `hasStripeCheckout: true` `brand_config.dart:638`. Em wrong in v1.0 brainstorm assuming manual key only. |
+| B4 | VidCombo paywall flow? | **Stripe checkout — same as Svid** | Verified `hasStripeCheckout: true` `brand_config.dart:638`. Em wrong in v1.0 brainstorm assuming manual key only. |
 | B5 | Global hotkey default? | **OFF — opt-in via Settings with onboarding dialog** | macOS Accessibility prompt is friction. User must understand value first. |
 | B6 | Phase order? | **Logic-first Phase 2A → Visual+UX Phase 2B → Polish Phase 2C** | Re-ordered ultra-review C1 — original "ship 2A standalone" was regression. |
 | B7 | Release dates? | Tentative 2026-05-21 / 2026-06-04 / 2026-06-18 | Subject to RSA cert migration unblock + Stitch generation timing. |
@@ -1163,7 +1163,7 @@ Events (Phase 2A first wave):
 - [ ] Design tokens exported from Stitch
 - [ ] All 6 sub-tasks 2B.0 - 2B.6 implemented
 - [ ] +35 new tests pass (including 20 golden file tests)
-- [ ] Brand parity verified (Ocean Blue VidCombo, Wine Red SSvid)
+- [ ] Brand parity verified (Ocean Blue VidCombo, Wine Red Svid)
 - [ ] Manual smoke covers direct download path + system notification flow
 - [ ] v1.4.0 / v1.7.0 ship
 
@@ -1177,13 +1177,13 @@ Events (Phase 2A first wave):
 
 ## 12. References
 
-- v2.1 Spec: [SSvid_v2_1_FloatingCapture_Spec.md](SSvid_v2_1_FloatingCapture_Spec.md)
-- v2.1 Status: [SSvid_v2_1_FloatingCapture_Implementation_Status.md](SSvid_v2_1_FloatingCapture_Implementation_Status.md)
-- Stitch brief v1.1: [SSvid_v2_2_FloatingCapture_Stitch_Brief.md](SSvid_v2_2_FloatingCapture_Stitch_Brief.md)
+- v2.1 Spec: [Svid_v2_1_FloatingCapture_Spec.md](Svid_v2_1_FloatingCapture_Spec.md)
+- v2.1 Status: [Svid_v2_1_FloatingCapture_Implementation_Status.md](Svid_v2_1_FloatingCapture_Implementation_Status.md)
+- Stitch brief v1.1: [Svid_v2_2_FloatingCapture_Stitch_Brief.md](Svid_v2_2_FloatingCapture_Stitch_Brief.md)
 - Codex audit findings: commits `f413c15a`, `a6677e1c`, `eb010d5f`
 - Competitor reference: Downie 4 (paid $30, single-feature popup app)
 - Design system: [DESIGN.md](../DESIGN.md), [STITCH.md](../STITCH.md)
-- Brand config (verified): [brand_config.dart](../lib/core/config/brand_config.dart) lines 558 (SSvid gradient), 795 (VidCombo gradient), 633 (VidCombo freeDailyDownloads=15)
+- Brand config (verified): [brand_config.dart](../lib/core/config/brand_config.dart) lines 558 (Svid gradient), 795 (VidCombo gradient), 633 (VidCombo freeDailyDownloads=15)
 - Real codebase API (verified):
   - Active preset: `lib/features/home/presentation/screens/home_download_mixin.dart:623` (`activePresetProvider.currentConfig`)
   - Download create+start: `lib/features/downloads/data/repositories/download_repository_impl.dart:91` + `:319`

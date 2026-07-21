@@ -1,4 +1,4 @@
-# SSvid Home / Download Manager UI Spec
+# Svid Home / Download Manager UI Spec
 
 **Version:** Draft v1.5
 **Date:** 2026-05-05
@@ -220,7 +220,7 @@ Rules:
 │ Định dạng:           MP4 (Video)     ▼     │
 │ Chất lượng:          1080p           ▼     │
 │ Khi không có:        Gần nhất       ▼     │
-│ Vị trí lưu:    Downloads/SSvid    [Đổi]    │
+│ Vị trí lưu:    Downloads/Svid    [Đổi]    │
 │                                             │
 │ ── Tuỳ chọn nâng cao ──────────────────── │
 │ ☐ Tuỳ chỉnh chuyên sâu trước khi tải       │

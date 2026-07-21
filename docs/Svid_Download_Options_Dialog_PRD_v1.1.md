@@ -1,4 +1,4 @@
-# SSvid Download Options Dialog - PRD / UI Design Spec v1.1
+# Svid Download Options Dialog - PRD / UI Design Spec v1.1
 
 Scope: Single-item download dialog + Batch download dialog
 
@@ -8,7 +8,7 @@ Priority principle: Most users only care about a few primary options. The defaul
 
 # 1. Executive summary
 
-This spec defines the download option dialogs used after SSvid recognizes a downloadable item or when the user starts a batch download. The dialog must make common downloads fast while keeping advanced controls available but collapsed by default.
+This spec defines the download option dialogs used after Svid recognizes a downloadable item or when the user starts a batch download. The dialog must make common downloads fast while keeping advanced controls available but collapsed by default.
 
 - Single-item dialog: used for one video/audio/subtitle item.
 - Batch dialog: used when multiple selected items will share a common configuration.
@@ -27,7 +27,7 @@ This spec defines the download option dialogs used after SSvid recognizes a down
 | Goals | Reduce cognitive load by hiding codec, raw streams, container, metadata, subtitle details, SponsorBlock, and trim until the user opens Advanced options. |
 | Goals | Support both single-item and batch contexts using shared component anatomy. |
 | Goals | Keep the Download button visually dominant and unambiguous. |
-| Goals | Keep the new dialog compatible with SSvid's existing `DownloadConfig`, `Quality`, platform preference, and save-path behavior. |
+| Goals | Keep the new dialog compatible with Svid's existing `DownloadConfig`, `Quality`, platform preference, and save-path behavior. |
 | Non-goals | Do not build a full stream inspector as the default experience. |
 | Non-goals | Do not force users to pick codec/container before downloading. |
 | Non-goals | Do not make subtitle-only a primary option unless subtitle data is available/relevant. |
@@ -144,7 +144,7 @@ File Type should be represented as selectable cards or compact list items. The s
 
 Subtitle clarification:
 
-- `Subtitle-only` means SSvid creates subtitle files only, such as `.srt` or `.vtt`.
+- `Subtitle-only` means Svid creates subtitle files only, such as `.srt` or `.vtt`.
 - `Download subtitles with video` in Advanced means include or save subtitles alongside a video download.
 - These two modes must use different copy so users do not confuse them.
 
@@ -164,7 +164,7 @@ Quality is a user intent, not a raw stream selector:
 
 | User selection | Engine mapping rule |
 | --- | --- |
-| Đề xuất / Tốt nhất | Use the current SSvid smart/default quality behavior. Prefer a playable merged result without asking the user to choose codec/container. |
+| Đề xuất / Tốt nhất | Use the current Svid smart/default quality behavior. Prefer a playable merged result without asking the user to choose codec/container. |
 | 1080p / 720p | Treat as target vertical resolution. If unavailable, choose the nearest suitable fallback and show a short warning. |
 | Video requiring merge | Automatically pair video-only stream with compatible audio when needed. Surface FFmpeg warnings only if they affect the current choice. |
 | Audio bitrate | Treat as target bitrate/export intent. If exact bitrate is unavailable, choose nearest practical output and keep the raw stream list hidden. |
@@ -176,7 +176,7 @@ Quality is a user intent, not a raw stream selector:
 
 | Element | Required behavior |
 | --- | --- |
-| Current folder | Show compact path, e.g. D:\Downloads\SSvid. If path is long, truncate middle. |
+| Current folder | Show compact path, e.g. D:\Downloads\Svid. If path is long, truncate middle. |
 | Free space | Show if available, e.g. Còn trống: 126.3 GB. |
 | Change folder | Secondary action. Opens native folder picker. |
 | Open folder | Optional secondary action, not primary. |
@@ -185,7 +185,7 @@ Quality is a user intent, not a raw stream selector:
 
 Persistence rules:
 
-- The displayed folder starts from the current SSvid download path setting.
+- The displayed folder starts from the current Svid download path setting.
 - Changing folder inside the dialog is a one-time override for the submitted download or batch.
 - `Ghi nhớ lựa chọn này cho YouTube/TikTok/...` should not persist save location by default.
 - `Lưu làm mặc định` may persist the selected save location as the new global default.
@@ -229,7 +229,7 @@ Advanced changes should not silently break default downloads. If a selected adva
 
 Advanced scope rules:
 
-- Advanced options may expose existing SSvid controls, but they should not be required for a normal download.
+- Advanced options may expose existing Svid controls, but they should not be required for a normal download.
 - Raw stream details should remain behind `Thêm...` or Advanced and must not dominate the default dialog.
 - Unsafe or incompatible combinations should be prevented or explained before submit.
 - The accordion summary should mention only changed advanced settings, e.g. `Codec: H.264, phụ đề: VI`.
@@ -240,7 +240,7 @@ Advanced scope rules:
 
 | Element | Spec |
 | --- | --- |
-| Tải xuống | Primary button, visually dominant, bottom-right, no dropdown arrow. Uses SSvid muted burgundy primary. |
+| Tải xuống | Primary button, visually dominant, bottom-right, no dropdown arrow. Uses Svid muted burgundy primary. |
 | Hủy | Secondary button, bottom-right before Download. Ghost or outline style. |
 | Close X | Top-right icon-only. Same as Cancel behavior unless there are unsaved changes. |
 | Safe-use note | Optional footer note: Tải video chỉ để sử dụng cá nhân. Vui lòng tôn trọng bản quyền. |
@@ -250,7 +250,7 @@ Advanced scope rules:
 
 # 13. Visual design rules
 
-Use SSvid's existing design token system where available, especially `lib/core/design/design_tokens.dart`. The values below are directionally approved fallbacks for designer handoff, not a separate token source of truth.
+Use Svid's existing design token system where available, especially `lib/core/design/design_tokens.dart`. The values below are directionally approved fallbacks for designer handoff, not a separate token source of truth.
 
 | Token/area | Light mode fallback | Dark mode fallback |
 | --- | --- | --- |
@@ -369,7 +369,7 @@ User selects multiple items or pastes multiple URLs
 
 ## 17.1. Suggested data model
 
-This is a conceptual view-model shape, not TypeScript implementation code. In Flutter, map it onto existing SSvid entities such as `DownloadConfig`, `Quality`, `VideoInfo`, platform preferences, and save-path providers.
+This is a conceptual view-model shape, not TypeScript implementation code. In Flutter, map it onto existing Svid entities such as `DownloadConfig`, `Quality`, `VideoInfo`, platform preferences, and save-path providers.
 
 ```text
 type DownloadDialogContext = {
@@ -423,7 +423,7 @@ type DownloadPreset = {
 - Batch dialog never spawns repeated single-item dialogs by default.
 - Preference precedence between current selection, platform remember, global default, and app default is implemented.
 - Download location change is one-time unless `Lưu làm mặc định` is checked.
-- Quality options map to SSvid engine behavior without exposing raw streams in the default state.
+- Quality options map to Svid engine behavior without exposing raw streams in the default state.
 - Quality conflicts use nearest fallback or show clear non-blocking warning.
 - Error, storage, and invalid-folder states have clear recovery actions.
 - Keyboard navigation, Flutter semantics, and tooltips are implemented.

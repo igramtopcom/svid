@@ -14,8 +14,8 @@
   Latest commit: 4052f89f
   Branch: claude/sharp-diffie-f83a32
   Files:
-    docs/SSvid_Home_Download_Manager_UI_Spec_v1.1.md (v1.5 content)
-    docs/SSvid_v2_Implementation_Roadmap.md
+    docs/Svid_Home_Download_Manager_UI_Spec_v1.1.md (v1.5 content)
+    docs/Svid_v2_Implementation_Roadmap.md
 
 [05/05/2026 01:30:26] Ngọc Kỳ:
   em view qua tài liệu V2 cho màn Home nhé
@@ -51,10 +51,10 @@
 
 | Artifact | Nguồn | Đích trong repo | Status |
 |---|---|---|---|
-| UI Spec v1.1 (v1.5 content) | `kynndev/ssvid_app@claude/sharp-diffie-f83a32` | `docs/SSvid_Home_Download_Manager_UI_Spec_v1.1.md` | mandatory primary spec |
-| Implementation Roadmap | same | `docs/SSvid_v2_Implementation_Roadmap.md` | mandatory plan |
-| Design Spec (tokens) | same | `docs/SSvid_v2_Design_Spec.md` | mandatory design system |
-| UI Spec v1.0 (legacy) | same | `docs/SSvid_Home_Download_Manager_UI_Spec.md` | history reference, superseded by v1.1 |
+| UI Spec v1.1 (v1.5 content) | `kynndev/svid_app@claude/sharp-diffie-f83a32` | `docs/Svid_Home_Download_Manager_UI_Spec_v1.1.md` | mandatory primary spec |
+| Implementation Roadmap | same | `docs/Svid_v2_Implementation_Roadmap.md` | mandatory plan |
+| Design Spec (tokens) | same | `docs/Svid_v2_Design_Spec.md` | mandatory design system |
+| UI Spec v1.0 (legacy) | same | `docs/Svid_Home_Download_Manager_UI_Spec.md` | history reference, superseded by v1.1 |
 | Inter Variable font | same | `assets/fonts/InterVariable.ttf` (+ LICENSE) | mandatory typography asset |
 | Mockup ảnh chụp | Zalo image attachment | `docs/v2/mockups/home-v2-mockup-001.jpg` | reference visual (có thể đã lệch khỏi spec text — Gemini review fix 4 P1) |
 | Master roadmap (memory) | `kynndev/...:memory/master_roadmap.md` | KHÔNG commit (memory/ gitignored theo CLAUDE.md) | reference only |
@@ -87,7 +87,7 @@
 
 ## 4. Open questions (chưa xác định, cần answer khi đào sâu spec)
 
-1. **Multi-brand**: spec V2 áp dụng cho cả SSvid + VidCombo, hay SSvid only? (Mockup chỉ có brand SSvid)
+1. **Multi-brand**: spec V2 áp dụng cho cả Svid + VidCombo, hay Svid only? (Mockup chỉ có brand Svid)
 2. **F1 default-vs-override**: nếu user pre-set MP4 1080p nhưng video không có 1080p → spec dropdown nói "Khi không có chất lượng → Gần nhất" — ai quyết định "gần nhất"? Server-side hay client?
 3. **F2 schema**: anh Kỳ commit có Drift schema fix (FK type mismatch — Downloads.id IntColumn). Đây là SCHEMA change → cần migration plan.
 4. **F3 scope**: chỉ video, hay cả audio playlist? Continuous play across formats?

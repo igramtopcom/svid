@@ -20,7 +20,7 @@
 
 ```
 ┌──────────────────────────────────────────────────┐
-│ [SSvid]  Downloads  YouTube  Subs    [+] [?] [⚙]│  ← TopNavigationBar (52px)
+│ [Svid]  Downloads  YouTube  Subs    [+] [?] [⚙]│  ← TopNavigationBar (52px)
 ├──────────────────────────────────────────────────┤
 │ [← ] [🔍 lofi hip hop                ] [Search] │  ← Search bar + back button
 ├──────────────────────────────────────────────────┤

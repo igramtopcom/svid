@@ -1,8 +1,8 @@
-# SSvid v2 Home Redesign — Implementation Roadmap
+# Svid v2 Home Redesign — Implementation Roadmap
 
 **Version:** v1.0
 **Date:** 2026-05-05
-**Companion to:** [SSvid_Home_Download_Manager_UI_Spec_v1.1.md](SSvid_Home_Download_Manager_UI_Spec_v1.1.md)
+**Companion to:** [Svid_Home_Download_Manager_UI_Spec_v1.1.md](Svid_Home_Download_Manager_UI_Spec_v1.1.md)
 **Total estimate:** 28.5-31.5 working days (~5-6 weeks single developer)
 
 ## Phase overview

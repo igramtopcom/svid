@@ -1,9 +1,9 @@
-# Production Live Checklist — SSvid + VidCombo
+# Production Live Checklist — Svid + VidCombo
 
 Snapshot: 2026-05-11 08:56 UTC+7  
-Source: Go backend admin API (`api.ssvid.app`) + legacy VidCombo feedback admin  
-Scope: production users currently connected to SSvid + VidCombo apps  
-Raw local snapshot: `/tmp/ssvid_prod_snapshot_2026-05-11_raw`
+Source: Go backend admin API (`api.svid.app`) + legacy VidCombo feedback admin  
+Scope: production users currently connected to Svid + VidCombo apps  
+Raw local snapshot: `/tmp/svid_prod_snapshot_2026-05-11_raw`
 
 Rule: this document is the current execution handoff. Do not use older memory, older audits, or historical docs as current production truth.
 
@@ -53,14 +53,14 @@ This document is valid for internal codebase execution. It is not a production r
 
 Active production records:
 
-- SSvid 1.3.8 Windows: active, mandatory false, published 2026-04-28.
-- SSvid 1.3.8 macOS: active, mandatory false, published 2026-04-28.
+- Svid 1.3.8 Windows: active, mandatory false, published 2026-04-28.
+- Svid 1.3.8 macOS: active, mandatory false, published 2026-04-28.
 - VidCombo 1.6.5 Windows: active, mandatory false, published 2026-04-28.
 - VidCombo 1.6.5 macOS: active, mandatory false, published 2026-04-28.
 
 Important:
 
-- No production release record for SSvid 1.3.9.
+- No production release record for Svid 1.3.9.
 - No production release record for VidCombo 1.6.6.
 - VidCombo 1.6.6 appears on 4 device records, but no matching release record exists. Treat as test/internal residue or release-registration gap until proven otherwise.
 - `mandatory=false` means users can remain on old builds.
@@ -96,13 +96,13 @@ All brands:
 - Windows: 2,697.
 - macOS: 555.
 
-SSvid:
+Svid:
 
 - Total devices: 576.
 - Active today: 5.
 - Active 7d: 183.
 - Rolling 24h active: 48.
-- SSvid 1.3.8: 150 total, 105 active 7d, 28 active 24h.
+- Svid 1.3.8: 150 total, 105 active 7d, 28 active 24h.
 
 VidCombo:
 
@@ -131,7 +131,7 @@ Evidence:
 - Dashboard download success rate: 86%.
 - Rolling 24h raw download errors: 145.
 - VidCombo rolling 24h download errors: 135.
-- SSvid rolling 24h download errors: 10.
+- Svid rolling 24h download errors: 10.
 - VidCombo 1.6.5 rolling 24h download errors: 121.
 - Rolling 168h download errors: 1,059.
 - Top rolling 24h codes: `loginRequired` 52, `unknown` 48, `networkTimeout` 11, `ffmpegError` 8, `diskFull` 6.
@@ -403,7 +403,7 @@ Revenue:
 - Month-to-date: $175.69.
 - Today at snapshot: $6.99.
 - Refunds: $0.
-- SSvid month-to-date: $7.99.
+- Svid month-to-date: $7.99.
 - VidCombo month-to-date: $167.70.
 - VidCombo continues to carry revenue growth.
 

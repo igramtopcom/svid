@@ -1,12 +1,12 @@
-# STITCH.md — SSvid Design Registry
+# STITCH.md — Svid Design Registry
 
 > Persistent index of all Google Stitch projects. Every Claude session reads this to know the full design landscape.
-> Direction: **Nocturne Cinematic** (SSvid: Obsidian Wine) | **Arctic Command** (VidCombo: Nordic Ice)
+> Direction: **Nocturne Cinematic** (Svid: Obsidian Wine) | **Arctic Command** (VidCombo: Nordic Ice)
 > Updated: 2026-04-15 (YouTube Spotter's Desk + Subscriptions Signal Array added)
 
 ## Active Projects
 
-### SSvid Subscriptions — The Signal Array
+### Svid Subscriptions — The Signal Array
 - **ID**: `10180581056454570888`
 - **Created**: 2026-04-15
 - **Status**: ACTIVE — Subscriptions tab redesign exploration
@@ -21,7 +21,7 @@
 | The Signal Array — Dead Air | `6b1ba9e9193a4ff79c00ef538123f433` | Dark | Draft — Pending review | Empty state with radar well + sweep line, "DEAD AIR" headline, noir narration |
 | The Signal Array — Morning Shift | `c85262b7f87f48899b6bd33ec60d61ab` | Light | Draft — Pending review | Warm paper #F8F2EE + blush dawn glow, same operator morning shift |
 
-### SSvid YouTube — The Spotter's Desk
+### Svid YouTube — The Spotter's Desk
 - **ID**: `2557576779655913525`
 - **Created**: 2026-04-15
 - **Status**: ACTIVE — YouTube tab redesign (Discovery + Autocomplete). Port existing Command Center (`a063b031939c49249f0b95f3b5cff657`) for Results.
@@ -36,7 +36,7 @@
 | The Spotter's Desk — Morning Shift | `f57f19b20dec477da21d20dd731310dd` | Light | Draft — Pending review | Warm paper #F8F2EE base + blush rose dawn glow, same Discovery layout |
 | Autocomplete Intelligence | `3a7f000b66e44afbaac1d46d88edfe33` | Dark | Draft — Pending review | Focused search field + dossier overlay: MATCHED IN ARCHIVE / TRENDING NOW / YOUR HISTORY sections, keyboard nav rail, 30% dimmed Discovery behind |
 
-### SSvid Desktop — Final UI Design (Dark + Light)
+### Svid Desktop — Final UI Design (Dark + Light)
 - **ID**: `10022260214920217805`
 - **Created**: 2026-03-24
 - **Status**: ACTIVE — omnibus project for core screens
@@ -47,19 +47,19 @@
 | Screen | ID | Mode | Status |
 |--------|----|------|--------|
 | First-Time Setup | `348c739741514417823e166bc9cb4a27` | Dark | **Implemented** |
-| SSvid Setup (Light) | `a4da878dbb6e4b76a2b5899a0ec5c398` | Light | **Implemented** |
-| SSvid Flagship Dashboard | `a9e49dc6235941b7b7cacc9009fc591b` | Dark | Final |
-| SSvid Home Dashboard (Light Refined) | `5882025024a048cb8c194f12e4c7b61f` | Light | Final |
-| SSvid Settings - Quality & Format | `996478f1821d42b49b5ffdf95d3416d8` | Dark | Final |
-| SSvid AI Assistant (Zen Noir) | `871de3ebf1844dbb971f893686e91d99` | Dark | Superseded — see Intelligence Hub |
+| Svid Setup (Light) | `a4da878dbb6e4b76a2b5899a0ec5c398` | Light | **Implemented** |
+| Svid Flagship Dashboard | `a9e49dc6235941b7b7cacc9009fc591b` | Dark | Final |
+| Svid Home Dashboard (Light Refined) | `5882025024a048cb8c194f12e4c7b61f` | Light | Final |
+| Svid Settings - Quality & Format | `996478f1821d42b49b5ffdf95d3416d8` | Dark | Final |
+| Svid AI Assistant (Zen Noir) | `871de3ebf1844dbb971f893686e91d99` | Dark | Superseded — see Intelligence Hub |
 | Premium Membership Management | `e27d2d04a5d348c5bbd504997b8d782a` | Dark | Final |
-| SSvid Premium Membership Upgrade | `13a120d3889c4a2b89479136989dbf0c` | Dark | Final |
+| Svid Premium Membership Upgrade | `13a120d3889c4a2b89479136989dbf0c` | Dark | Final |
 | Members Lounge v2 (Transaction+Devices) | `5c30c1e05fcd45fbb0fde5e941d1c15a` | Dark | **Implemented** |
 | Stripe Checkout Dialog | `346e2d7244b142f499a0a74a6037de81` | Dark | **Implemented** |
-| SSvid Notification Center (Dark) | `e629b606fa99411f9a7420977e1a1572` | Dark | Final |
-| SSvid Support Center (old) | `dcb06b7e079347e4b09aedd81e4a82a1` | Dark | Superseded |
+| Svid Notification Center (Dark) | `e629b606fa99411f9a7420977e1a1572` | Dark | Final |
+| Svid Support Center (old) | `dcb06b7e079347e4b09aedd81e4a82a1` | Dark | Superseded |
 | Support Center — Concierge Lounge | `47374b6627c04c2db63cc1e3e445a024` | Dark | **Final** ✅ |
-| SSvid Desktop App Home (V2-Edit) | `4abf727dabc04d05859bcf97493ab4df` | Dark | Reference |
+| Svid Desktop App Home (V2-Edit) | `4abf727dabc04d05859bcf97493ab4df` | Dark | Reference |
 | Download Detail — The Dossier | `666accda142f46818a38afca1c91fa0f` | Dark | **Implemented** |
 | Download Detail — The Dossier (Light) | `1a93bab3bdbc4d62b2f012b5037ec152` | Light | **Implemented** |
 | Quick Start — The Briefing | `773b5c1ae6b84c5aa6d1a18286a41db1` | Dark | Superseded |
@@ -87,7 +87,7 @@
 
 | Screen | ID | Mode | Status |
 |--------|----|------|--------|
-| YouTube Explore — Discovery | `1b679801cd0949d89f6541ac1a9cbbb6` | Dark | Superseded — trending/categories concept rejected for SSvid |
+| YouTube Explore — Discovery | `1b679801cd0949d89f6541ac1a9cbbb6` | Dark | Superseded — trending/categories concept rejected for Svid |
 | YouTube Search Results (70/30) | `341a9953abfd4f84ae45d5e29ba3e70d` | Dark | Superseded — replaced by Command Center |
 | YouTube Autocomplete State | `123a3a9c23154ef88586bc4384775059` | Dark | Superseded — autocomplete will be inline in Command Center search |
 | Explore YouTube (old) | `5f2623a18b084bae8bcd98e260ac08d1` | Dark | Superseded — no trending content |
@@ -123,7 +123,7 @@
 | AI Chat Light | `e71c2c68299348a8a083b4eeaabaf958` | Light | **Final** |
 | AI History Light | `5b11a19d5db34d628f9a5a7c2e955e8f` | Light | **Final** |
 
-**Note**: Supersedes old `SSvid AI Assistant (Zen Noir)` (`871de3ebf1844dbb971f893686e91d99`).
+**Note**: Supersedes old `Svid AI Assistant (Zen Noir)` (`871de3ebf1844dbb971f893686e91d99`).
 
 #### Settings — The Control Room (9) — Comprehensive Settings Redesign
 
@@ -139,9 +139,9 @@
 | The Engine Bay (Light) | `5fc56ec0909f4da7876f366ce4204334` | Light | **Final** | Engine — light variant |
 | The Dossier (About & Support) | `78fd8a558dd14cadb5a91871bbb99429` | Dark | **Final** | About — usage stats, backup/restore, device registration |
 
-**Note**: Existing `SSvid Settings - Quality & Format` (`996478f1821d42b49b5ffdf95d3416d8`) covers the Quality section. Together with these 9, all 9 settings sections now have design coverage.
+**Note**: Existing `Svid Settings - Quality & Format` (`996478f1821d42b49b5ffdf95d3416d8`) covers the Quality section. Together with these 9, all 9 settings sections now have design coverage.
 
-**Layout pattern**: Master-detail (220px sidebar + 680px scrollable content). Same sidebar across all sections with brand accent left-bar active indicator. Each section uses `settingsCard()` with brand-aware radius and conditional borders (SSvid: 3px + border, VidCombo: 12px + no border).
+**Layout pattern**: Master-detail (220px sidebar + 680px scrollable content). Same sidebar across all sections with brand accent left-bar active indicator. Each section uses `settingsCard()` with brand-aware radius and conditional borders (Svid: 3px + border, VidCombo: 12px + no border).
 
 #### The Network — Channel Subscriptions (2)
 
@@ -248,10 +248,10 @@ VARIANT EXPLORATIONS (rejected but preserved):
 | Deep Sea Station Home | `ed6c4aa2cad94462831df1a79775b56b` | Variant |
 | The Observatory Home | `c5daaac8278941d69a5a66bbd2144d8d` | Variant |
 | Brutalist Terminal Home | `379db23d33964258a842a95c038fa999` | Variant |
-| SSvid Control Tower Home | `19d756dc41ef4685ba7b556b0bbbd52f` | Variant |
-| SSvid Blueprint Home | `674ff189eb3f47579fab5414f9b89874` | Variant |
-| SSvid Home — The Editorial | `a63af07794bb40db9ee174bffcf71d40` | Variant |
-| SSvid Home - The Jazz Club | `8dd93eded36b41f89f2538446b3150e4` | Variant |
+| Svid Control Tower Home | `19d756dc41ef4685ba7b556b0bbbd52f` | Variant |
+| Svid Blueprint Home | `674ff189eb3f47579fab5414f9b89874` | Variant |
+| Svid Home — The Editorial | `a63af07794bb40db9ee174bffcf71d40` | Variant |
+| Svid Home - The Jazz Club | `8dd93eded36b41f89f2538446b3150e4` | Variant |
 | Notifications Continuity Log | `498e0d9371c6435ba5fbd51a6c234669` | Variant |
 
 #### Broken / To Delete (1)
@@ -262,7 +262,7 @@ VARIANT EXPLORATIONS (rejected but preserved):
 
 ## AI Agent Vision Project
 
-### SSvid AI Agent — Ambient Intelligence Vision
+### Svid AI Agent — Ambient Intelligence Vision
 - **ID**: `5406376482235302882`
 - **Created**: 2026-04-03
 - **Status**: ACTIVE — v2.0.0 AI Agent design exploration
@@ -319,11 +319,11 @@ VARIANT EXPLORATIONS (rejected but preserved):
 - **Created**: 2026-04-12
 - **Status**: ACTIVE — VidCombo brand visual identity exploration
 - **Design System**: Arctic Command (DM Sans, 12px rounded, elevated borderless cards)
-- **Note**: 12 screens generated for brand identity differentiation vs SSvid. All screens use DM Sans font, rounded shapes, floating card style, blue/cyan accents.
+- **Note**: 12 screens generated for brand identity differentiation vs Svid. All screens use DM Sans font, rounded shapes, floating card style, blue/cyan accents.
 
 ## Archive Projects
 
-### SSvid Desktop UI Redesign 2026
+### Svid Desktop UI Redesign 2026
 - **ID**: `9746799973876268727`
 - **Created**: 2026-03-23
 - **Status**: ARCHIVE — 33 screens, old exploration
@@ -335,7 +335,7 @@ VARIANT EXPLORATIONS (rejected but preserved):
 - **Status**: REFERENCE — 10 screens, style exploration
 - **Note**: Earliest project. Wide style exploration (Neo-Brutalist, Pop-Vibe, Audiophile, etc.) before settling on Nocturne Cinematic.
 
-### SSvid Landing Page — Product Shots
+### Svid Landing Page — Product Shots
 - **ID**: `4515629105610136291`
 - **Created**: 2026-03-24
 - **Status**: REFERENCE — 11 screens, landing page assets
@@ -347,7 +347,7 @@ VARIANT EXPLORATIONS (rejected but preserved):
 
 ## Design Direction: Two Brands, Maximum Opposition
 
-### SSvid — Nocturne Cinematic (Obsidian Wine)
+### Svid — Nocturne Cinematic (Obsidian Wine)
 - **Dark-first**: Deep blacks with tonal layering (no flat #000000)
 - **Accent**: Wine red → Crimson gradient
 - **Typography**: Inter (humanist, sharp terminals)
@@ -370,7 +370,7 @@ See `DESIGN.md` for exact tokens, `brand_config.dart` for runtime values.
 1. **New screens** → generate ONLY in Active project (`10022260214920217805`)
 2. **Archive projects** → read-only reference, never generate new screens
 3. **Always generate both** Dark + Light mode for every screen
-4. **Naming convention**: `SSvid [ScreenName] [Dark|Light] [vN]`
+4. **Naming convention**: `Svid [ScreenName] [Dark|Light] [vN]`
 5. **Model**: Use `GEMINI_3_1_PRO` for final quality, `GEMINI_3_FLASH` for quick drafts
 6. **Cleanup**: Stitch API has NO delete — use Playwright MCP on stitch.withgoogle.com
 7. **After generating**: Update this file with new screen IDs and status

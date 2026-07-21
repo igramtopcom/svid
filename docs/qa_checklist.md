@@ -1,4 +1,4 @@
-# SSvid QA Checklist
+# Svid QA Checklist
 
 Pre-release quality gate — run before every release tag.
 
@@ -48,10 +48,10 @@ Pre-release quality gate — run before every release tag.
 
 ### 2. macOS native features
 - [ ] Right-click completed download → "Share" → native share sheet opens (`NSSharingServicePicker`)
-- [ ] Select URL in Safari/Chrome → Services menu → "Download with SSvid" → app opens + download queued
-- [ ] `Cmd+Shift+D` while SSvid is backgrounded → app comes to front + new download dialog focused
-- [ ] `Cmd+Option+V` while SSvid is backgrounded → clipboard URL starts downloading silently
-- [ ] `Ctrl+Cmd+S` while SSvid is visible → window hides; repeat → window shows
+- [ ] Select URL in Safari/Chrome → Services menu → "Download with Svid" → app opens + download queued
+- [ ] `Cmd+Shift+D` while Svid is backgrounded → app comes to front + new download dialog focused
+- [ ] `Cmd+Option+V` while Svid is backgrounded → clipboard URL starts downloading silently
+- [ ] `Ctrl+Cmd+S` while Svid is visible → window hides; repeat → window shows
 
 ### 3. Scheduled / recurring downloads
 - [ ] Schedule a one-time download → fires at configured time
@@ -81,7 +81,7 @@ Pre-release quality gate — run before every release tag.
 
 ## Sentry Verification (Manual — once per release)
 
-- [ ] Release tagged + deployed → Sentry dashboard shows new release `ssvid@<version>`
+- [ ] Release tagged + deployed → Sentry dashboard shows new release `svid@<version>`
 - [ ] Crash-free sessions rate visible in Sentry Release Health tab
 - [ ] Download lifecycle breadcrumbs ("Download added", "Download completed", "Download failed") appear in Sentry event context
 
@@ -89,9 +89,9 @@ Pre-release quality gate — run before every release tag.
 
 ## Release Artifacts Checklist
 
-- [ ] `SSvid-<version>-macos.dmg` — signed (codesign) + notarized (xcrun notarytool)
-- [ ] `SSvid-<version>-windows-x64-setup.exe` — Authenticode-signed with RSA certificate + timestamped
-- [ ] `SSvid-<version>-windows.zip` — bundled `ssvid.exe` and shipped DLLs signed
-- [ ] `SSvid-<version>-linux.AppImage` — executable bit set
+- [ ] `Svid-<version>-macos.dmg` — signed (codesign) + notarized (xcrun notarytool)
+- [ ] `Svid-<version>-windows-x64-setup.exe` — Authenticode-signed with RSA certificate + timestamped
+- [ ] `Svid-<version>-windows.zip` — bundled `svid.exe` and shipped DLLs signed
+- [ ] `Svid-<version>-linux.AppImage` — executable bit set
 - [ ] `website/version.json` — updated with new version, download URLs, SHA-256 checksums
 - [ ] GitHub Release created with auto-generated release notes

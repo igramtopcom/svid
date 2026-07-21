@@ -1,4 +1,4 @@
-# Design Specs — SSvid Desktop App
+# Design Specs — Svid Desktop App
 
 > Implementation blueprints derived from Stitch MCP designs.
 > Each spec maps Stitch HTML → Flutter widgets with exact token values.
@@ -7,7 +7,7 @@
 
 ## Stitch Project
 
-- **Active**: `SSvid Desktop — Final UI Design` (ID: `10022260214920217805`)
+- **Active**: `Svid Desktop — Final UI Design` (ID: `10022260214920217805`)
 - **Design System**: Nocturne Cinematic (DESIGN.md)
 - **Pipeline**: Stitch MCP → Spec Doc → Flutter Implementation → Visual Verification
 - **Screen registry**: See `STITCH.md` for full screen IDs and status

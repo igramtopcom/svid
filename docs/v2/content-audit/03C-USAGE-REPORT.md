@@ -206,7 +206,7 @@ Grep regex: `(Text|tooltip|hintText|labelText|message|title|label|content|subtit
 - **Keep as-is (acronyms)**: 3 in `command_bar_preset_chip.dart` (WebM/MKV/FLAC are format names, technical acronyms standard).
 - **Migrate to i18n**: **49 hardcoded strings**.
 
-Plus value-side leak `'Downloads/SSvid'` in `preset_popover.dart` (separate from the 49 — fix via BrandConfig.appName resolution).
+Plus value-side leak `'Downloads/Svid'` in `preset_popover.dart` (separate from the 49 — fix via BrandConfig.appName resolution).
 
 ---
 
@@ -214,7 +214,7 @@ Plus value-side leak `'Downloads/SSvid'` in `preset_popover.dart` (separate from
 
 | File | Line | Issue | Fix |
 |---|---:|---|---|
-| `preset_popover.dart` | **130** | `value: 'Downloads/SSvid',` literal | Replace with `value: 'Downloads/${BrandConfig.current.appName}',` |
+| `preset_popover.dart` | **130** | `value: 'Downloads/Svid',` literal | Replace with `value: 'Downloads/${BrandConfig.current.appName}',` |
 
 Verified: 1 brand leak total. No `'Downloads/VidCombo'` or other variants found. Single fix point.
 
@@ -361,7 +361,7 @@ After A passes:
 2. **49 new keys for hardcoded migration** vi + en hand-write
 3. **Title Case → sentence case sweep** vi only — estimate ~229 keys (per Pass 02 §1)
 4. **emptySubtitle semantic fix** (1 key vi+en)
-5. **Verify gate**: analyze + parity + smoke build SSvid + VidCombo
+5. **Verify gate**: analyze + parity + smoke build Svid + VidCombo
 
 **Effort estimate**: **4-5h** Checkpoint B.
 

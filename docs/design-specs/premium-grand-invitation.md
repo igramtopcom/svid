@@ -38,7 +38,7 @@ The desktop app context modifies two web-only elements: the navigation bar and f
 │  ║  SECTION 1 — HERO HEADER                               ║        │
 │  ║                                                         ║        │
 │  ║     ELEVATE YOUR ARCHIVE          ← subtitle, crimson   ║        │
-│  ║     SSvid [Premium]               ← title, 6xl bold     ║        │
+│  ║     Svid [Premium]               ← title, 6xl bold     ║        │
 │  ║       └── "Premium" = auteur-gradient text              ║        │
 │  ║     [description paragraph]                             ║        │
 │  ║                                                         ║        │
@@ -197,7 +197,7 @@ Light mode is not represented in the Stitch design. The implementation should de
 | Element | Size | Weight | Tracking | Transform | Color Token |
 |---|---|---|---|---|---|
 | Hero subtitle "ELEVATE YOUR ARCHIVE" | 14px (sm) | 600 | 0.2em | uppercase | `secondary` |
-| Hero title "SSvid" | 60px / 96px | 700 | tight | — | `onSurface` |
+| Hero title "Svid" | 60px / 96px | 700 | tight | — | `onSurface` |
 | Hero title "Premium" word | 60px / 96px | 700 | tight | — | auteur-gradient text clip |
 | Hero description | 16px | 400 | normal | — | `onSurfaceVariant` |
 | Plan label (MONTHLY, etc.) | 14px | 700 | widest (0.1em+) | uppercase | `onSurface` / `onPrimary` |
@@ -277,7 +277,7 @@ Light mode is not represented in the Stitch design. The implementation should de
 
 **Nav bar**: The Stitch HTML includes a sticky top navigation with logo and links. This is a web pattern. The desktop app uses `TopNavigationBar` (existing, unchanged). Do not implement a second nav bar inside the premium screen.
 
-**Footer**: The Stitch HTML has a footer with SSvid logo and links. This is a web pattern. The desktop app has no footer. Omit entirely.
+**Footer**: The Stitch HTML has a footer with Svid logo and links. This is a web pattern. The desktop app has no footer. Omit entirely.
 
 **Billing cycle mapping**: The design shows 5 plans (Monthly, Quarterly, Semi-Annual, Annual, Lifetime). Current `BillingCycle` enum has: `monthly`, `yearly`, `lifetime1`, `lifetime2`, `lifetime3`. The redesign collapses the 3 lifetime variants into a single "Lifetime" display card. The card triggers `_showCryptoSelector` or Stripe with a default cycle (`lifetime1`). A separate "Lifetime Device Tiers" expansion UI (optional) can be deferred.
 
@@ -307,7 +307,7 @@ PremiumUpgradeScreen (ConsumerWidget)
                 │   │   ├── _HeroBlurOrb (Positioned, absolute)
                 │   │   └── Column (content)
                 │   │       ├── Text (subtitle — "ELEVATE YOUR ARCHIVE")
-                │   │       ├── _GradientTextTitle ("SSvid Premium")
+                │   │       ├── _GradientTextTitle ("Svid Premium")
                 │   │       └── Text (description)
                 │   └── [if isActive] _ActiveBadge
                 ├── _PricingGridSection
@@ -375,7 +375,7 @@ class _HeroSection extends StatelessWidget {
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 560),
                 child: Text(
-                  'Unlock the complete SSvid experience — unlimited downloads, '
+                  'Unlock the complete Svid experience — unlimited downloads, '
                   'AI-powered tools, cloud sync, and priority support.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -438,7 +438,7 @@ class _GradientTextTitle extends StatelessWidget {
       text: TextSpan(
         children: [
           TextSpan(
-            text: 'SSvid ',
+            text: 'Svid ',
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: titleSize,
@@ -793,7 +793,7 @@ Container(
                 child: TextField(
                   controller: _keyController,
                   decoration: InputDecoration(
-                    hintText: 'SSVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX',
+                    hintText: 'SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX',
                     filled: true,
                     fillColor: const Color(0xFF1C1B1B),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),

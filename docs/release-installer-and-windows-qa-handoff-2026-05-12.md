@@ -33,24 +33,24 @@ Current important commits:
 
 Current artifact findings from the Windows QA machine:
 
-- `SSvid 1.3.9` Windows installer EXE: FAIL. Real Windows dialog:
+- `Svid 1.3.9` Windows installer EXE: FAIL. Real Windows dialog:
   "The setup files are corrupted. Please obtain a new copy of the program."
-- `SSvid 1.3.9` portable ZIP: PASS. Runtime payload is Authenticode-valid,
+- `Svid 1.3.9` portable ZIP: PASS. Runtime payload is Authenticode-valid,
   RSA OID, x64, and launches.
 - `VidCombo 1.6.6` Windows installer EXE: PASS on Windows 10 QA. Clean
   install, installed payload scan, critical DLL scan, launch, and WER check
   were green.
-- `SSvid 1.3.8` RSA hotfix installer control sample: wizard opens. This
-  proves the Windows QA machine and harness can execute an SSvid Inno
+- `Svid 1.3.8` RSA hotfix installer control sample: wizard opens. This
+  proves the Windows QA machine and harness can execute an Svid Inno
   installer correctly.
 
 Current release verdict:
 
-- Do not publish the `SSvid 1.3.9` Windows installer artifact that failed
+- Do not publish the `Svid 1.3.9` Windows installer artifact that failed
   real execution.
 - `VidCombo 1.6.6` is a strong candidate from installer/runtime smoke, but
   still needs the intended release approval path.
-- The next safe validation step is a dry-run acceptance dispatch for `ssvid`
+- The next safe validation step is a dry-run acceptance dispatch for `svid`
   on commit `957c2f64` to prove the new CI smoke gate catches or clears this
   class of issue before release publishing.
 
@@ -159,7 +159,7 @@ Installer execution hardening:
 Do not repeat these mistakes:
 
 - Do not treat Authenticode verification as proof that an Inno installer opens.
-  `SSvid 1.3.9` was RSA Authenticode-valid but failed at installer startup with
+  `Svid 1.3.9` was RSA Authenticode-valid but failed at installer startup with
   an Inno corruption dialog.
 - Do not use `innoextract -t` as a release gate. It reported unsupported-loader
   style warnings for artifacts that opened and installed correctly on real
@@ -167,7 +167,7 @@ Do not repeat these mistakes:
 - Do not rely on a claimed `setup.exe /VERIFY` flag. It is not listed in the
   official Inno Setup command-line parameters.
 - Do not claim "sign-after-compile is root cause" without evidence. The
-  SSvid unsigned outer installer control also failed, so signing was not
+  Svid unsigned outer installer control also failed, so signing was not
   proven as the root cause.
 - Do not use public GitHub Release asset overwrite as a dry-run strategy.
   It is user-facing and destructive.
@@ -191,17 +191,17 @@ Results:
 
 | Artifact | Result | Evidence |
 | --- | --- | --- |
-| `SSvid-1.3.9-windows-x64-setup.exe` | FAIL | Real Windows dialog: setup files corrupted; silent install exit 1; no install log; no app install |
-| `SSvid-1.3.9-windows-x64.zip` | PASS | 28 PE files valid, RSA OID, x64; critical files pass; app launches 8 seconds |
+| `Svid-1.3.9-windows-x64-setup.exe` | FAIL | Real Windows dialog: setup files corrupted; silent install exit 1; no install log; no app install |
+| `Svid-1.3.9-windows-x64.zip` | PASS | 28 PE files valid, RSA OID, x64; critical files pass; app launches 8 seconds |
 | `VidCombo-1.6.6-windows-x64-setup.exe` | PASS | Clean install; Inno log success; 28 PE files valid, RSA OID, x64; app launches; no WER |
-| `SSvid-1.3.8 RSA hotfix installer` | PASS as control | Wizard opens on same Windows machine |
+| `Svid-1.3.8 RSA hotfix installer` | PASS as control | Wizard opens on same Windows machine |
 
 Local logs copied back during testing:
 
-- `/private/tmp/clean-ssvid-smoke.log`
+- `/private/tmp/clean-svid-smoke.log`
 - `/private/tmp/clean-vidcombo-smoke.log`
-- `/private/tmp/ssvid-zip-smoke.log`
-- `/private/tmp/ssvid-installer-visible.png`
+- `/private/tmp/svid-zip-smoke.log`
+- `/private/tmp/svid-installer-visible.png`
 
 ### macOS Signing and Notarization Context
 
@@ -223,15 +223,15 @@ They are independent gates.
 Recommended acceptance test command:
 
 ```bash
-gh workflow run release.yml --repo Luongxuongkho/ssvid-desktop \
+gh workflow run release.yml --repo Luongxuongkho/svid-desktop \
   --ref feature/floating-capture-v2.2-state-machine \
-  -f version=1.3.9 -f brand=ssvid \
+  -f version=1.3.9 -f brand=svid \
   -f dry_run=true -f skip_tests=true
 ```
 
 Interpretation:
 
-- Smoke FAIL with corruption evidence: gate works and the SSvid installer
+- Smoke FAIL with corruption evidence: gate works and the Svid installer
   issue is reproducible in current CI.
 - Smoke PASS: current pipeline and gate pass on the new commit. This does not
   prove the older corrupt artifact was transient bit-for-bit; it proves the
@@ -327,7 +327,7 @@ to the active desktop session, not the SSH service session.
 Copy from Mac to Windows:
 
 ```bash
-scp /path/to/SSvid-1.3.9-windows-x64-setup.exe \
+scp /path/to/Svid-1.3.9-windows-x64-setup.exe \
   qa@192.168.31.75:C:/QA/Snakeloader/artifacts/
 
 scp scripts/windows_qa_smoke.ps1 \
@@ -337,7 +337,7 @@ scp scripts/windows_qa_smoke.ps1 \
 Copy logs back:
 
 ```bash
-scp qa@192.168.31.75:C:/QA/Snakeloader/logs/clean-ssvid-smoke.log /private/tmp/
+scp qa@192.168.31.75:C:/QA/Snakeloader/logs/clean-svid-smoke.log /private/tmp/
 ```
 
 ### Mark-of-the-Web and SmartScreen
@@ -359,7 +359,7 @@ For SmartScreen realism, either:
 Example:
 
 ```powershell
-Set-Content -Path .\SSvid-setup.exe -Stream Zone.Identifier -Value "[ZoneTransfer]`nZoneId=3"
+Set-Content -Path .\Svid-setup.exe -Stream Zone.Identifier -Value "[ZoneTransfer]`nZoneId=3"
 ```
 
 Smart App Control final gate still requires Windows 11 with SAC ON.
@@ -427,7 +427,7 @@ Do not:
 
 ### Immediate Next Steps
 
-1. Run the `957c2f64` acceptance dry-run for `ssvid`.
+1. Run the `957c2f64` acceptance dry-run for `svid`.
 2. Inspect `windows-installer-smoke` result.
 3. If smoke fails, download smoke log artifact and compare with the real
    Windows QA failure.

@@ -121,7 +121,7 @@ dependencies:
   # v2.1 Floating Capture: multi-window support (macOS/Windows/Linux)
   # Pinned to exact 0.3.0 (per audit P2-8) — plugin releases ~12-18 months
   # apart so manual review of new versions is preferred over auto-update.
-  # Removal procedure if plugin abandoned: see docs/SSvid_v2_1_FloatingCapture_Spec.md §14.
+  # Removal procedure if plugin abandoned: see docs/Svid_v2_1_FloatingCapture_Spec.md §14.
   desktop_multi_window: 0.3.0
 
   # v2.1 Floating Capture: auto-launch on system login (per spec Q7 default ON)
@@ -183,8 +183,8 @@ flutter:
     - assets/fonts/Inter-LICENSE.txt
     - assets/fonts/DMSans-LICENSE.txt
 
-  # Fonts (per docs/SSvid_v2_Design_Spec.md §3.1)
-  # SSvid uses Inter (Nocturne Cinematic — humanist + sharp terminals),
+  # Fonts (per docs/Svid_v2_Design_Spec.md §3.1)
+  # Svid uses Inter (Nocturne Cinematic — humanist + sharp terminals),
   # VidCombo uses DM Sans (Arctic Command — geometric + rounded). Both are
   # variable fonts so a single file covers every weight 100–1000 plus the
   # opsz (optical-size) axis.

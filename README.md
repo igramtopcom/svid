@@ -1,7 +1,7 @@
-# SSvid App
+# Svid App
 
 <p align="center">
-  <img src="assets/images/logo.jpg" alt="SSvid Logo" width="128" height="128" style="border-radius: 20px;">
+  <img src="assets/images/logo.jpg" alt="Svid Logo" width="128" height="128" style="border-radius: 20px;">
 </p>
 
 <p align="center">
@@ -72,7 +72,7 @@
 
 ### Pre-built Releases
 
-Download the latest release for your platform from the [Releases](https://github.com/mydinh-studio/ssvid-desktop/releases) page.
+Download the latest release for your platform from the [Releases](https://github.com/mydinh-studio/svid-desktop/releases) page.
 
 ### Build from Source
 
@@ -89,8 +89,8 @@ Download the latest release for your platform from the [Releases](https://github
 
 ```bash
 # Clone the repository
-git clone https://github.com/mydinh-studio/ssvid-desktop.git
-cd ssvid-desktop
+git clone https://github.com/mydinh-studio/svid-desktop.git
+cd svid-desktop
 
 # One-time dev setup: installs deps + generates Freezed/Riverpod/Drift code
 chmod +x scripts/setup_dev.sh
@@ -119,7 +119,7 @@ flutter run -d macos  # or -d windows, -d linux
 ### Project Structure
 
 ```
-ssvid/
+svid/
 ├── lib/
 │   ├── main.dart              # App entry point
 │   ├── app.dart               # App configuration
@@ -278,5 +278,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://ssvid.app">SSvid</a>
+  Made with ❤️ by <a href="https://svid.app">Svid</a>
 </p>

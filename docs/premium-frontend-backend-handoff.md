@@ -2,7 +2,7 @@
 
 > Generated 2026-03-25 after Premium Flow Redesign (Phases 0-6) completed.
 > Frontend: Flutter 3.29 · Backend: Go + Gin + PostgreSQL + Redis
-> Base URL: `https://api.ssvid.app/api/v1`
+> Base URL: `https://api.svid.app/api/v1`
 
 ---
 
@@ -76,7 +76,7 @@ GET /premium/stripe/verify?sessionId=cs_live_...
   "success": true,
   "data": {
     "status": "completed",
-    "licenseKey": "SSVID-a1b2-c3d4-e5f6-7890-abcd-ef01-2345-6789",
+    "licenseKey": "SVID-a1b2-c3d4-e5f6-7890-abcd-ef01-2345-6789",
     "expiresAt": "2027-03-25T00:00:00Z",
     "billingCycle": "monthly",
     "paymentMethod": "stripe",
@@ -94,7 +94,7 @@ Frontend polls every 2-10s (exponential backoff), max 30 attempts.
 
 ```
 POST /premium/stripe/cancel
-Body: { "licenseKey": "SSVID-..." }
+Body: { "licenseKey": "SVID-..." }
 → 200: { "success": true, "data": {} }
 ```
 
@@ -138,7 +138,7 @@ GET /premium/crypto/status?invoiceId=btcpay_inv_...
   "success": true,
   "data": {
     "status": "completed",
-    "licenseKey": "SSVID-...",
+    "licenseKey": "SVID-...",
     "confirmations": 3,
     "billingCycle": "yearly",
     "expiresAt": "2027-03-25T00:00:00Z",
@@ -153,7 +153,7 @@ Frontend polls every 5-30s (exponential backoff), max 120 attempts (~2 hours for
 ## 7. License Verification
 
 ```
-GET /premium/licenses/verify?key=SSVID-a1b2-c3d4-...
+GET /premium/licenses/verify?key=SVID-a1b2-c3d4-...
 → 200 (valid):
 {
   "success": true,
@@ -192,7 +192,7 @@ Body: { "email": "user@example.com" }
 {
   "success": true,
   "data": {
-    "license_key": "SSVID-...",
+    "license_key": "SVID-...",
     "billing_cycle": "yearly",
     "expires_at": "2027-03-25T00:00:00Z",
     "message": "License restored successfully"
@@ -230,13 +230,13 @@ Auto-called on 401 `INVALID_API_KEY`. Prevents stale API key issues.
 
 ## License Key Format
 
-`SSVID-[0-9A-Fa-f]{4}(-[0-9A-Fa-f]{4}){7}`
+`SVID-[0-9A-Fa-f]{4}(-[0-9A-Fa-f]{4}){7}`
 
-Example: `SSVID-a1b2-c3d4-e5f6-7890-abcd-ef01-2345-6789` (128-bit hex, 8 groups of 4).
+Example: `SVID-a1b2-c3d4-e5f6-7890-abcd-ef01-2345-6789` (128-bit hex, 8 groups of 4).
 
 ## Deep Link Activation
 
-`ssvid://activate?key=SSVID-a1b2-c3d4-...`
+`svid://activate?key=SVID-a1b2-c3d4-...`
 
 Registered on all 3 platforms (macOS Info.plist, Windows HKCU registry, Linux .desktop).
 Frontend validates format → calls `/premium/licenses/verify` → activates locally.
@@ -261,7 +261,7 @@ Verify each endpoint matches the contract above:
 
 ### Phase 2: Verify Stripe Webhook
 Backend receives Stripe webhooks (`checkout.session.completed`, `invoice.paid`, `customer.subscription.deleted`) and:
-- Generates license key (128-bit hex, `SSVID-` prefix)
+- Generates license key (128-bit hex, `SVID-` prefix)
 - Stores license in PostgreSQL
 - Makes license available via `/premium/stripe/verify` polling endpoint
 - Handles refund/dispute → revokes license

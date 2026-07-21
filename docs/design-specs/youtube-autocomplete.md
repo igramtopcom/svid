@@ -19,7 +19,7 @@
 
 ```
 ┌──────────────────────────────────────────────────┐
-│ [SSvid]  Downloads  YouTube  Subs    [+] [?] [⚙]│  ← TopNavigationBar
+│ [Svid]  Downloads  YouTube  Subs    [+] [?] [⚙]│  ← TopNavigationBar
 ├──────────────────────────────────────────────────┤
 │  [🔍 lofi|                          ]  [Search]  │  ← Search bar (focused)
 │  ┌──────────────────────────────────┐             │

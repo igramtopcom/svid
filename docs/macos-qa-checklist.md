@@ -29,10 +29,10 @@ Before starting, confirm:
       parity expectations)
 - [ ] Gatekeeper **enabled** (System Settings → Privacy & Security →
       Security → "App Store and identified developers")
-- [ ] First-time install on this user account — no prior `com.ssvid.app`
+- [ ] First-time install on this user account — no prior `com.svid.app`
       or `com.tinasoft.vidcombo` app data
 - [ ] Network can reach `github.com` (binary CDN),
-      `ffmpeg.martin-riedl.de`, `api.ssvid.app`, `api.vidcombo.net`
+      `ffmpeg.martin-riedl.de`, `api.svid.app`, `api.vidcombo.net`
 - [ ] **No corporate SSL-scanning proxy** — that intercepts binary
       downloads and produces confusing CERTIFICATE_VERIFY_FAILED
       failures that look like app bugs but are infra issues
@@ -41,7 +41,7 @@ Before starting, confirm:
 
 From the GitHub release or a signed CI artefact:
 
-- `SSvid-<version>-macos-universal.dmg`
+- `Svid-<version>-macos-universal.dmg`
 - `VidCombo-<version>-macos-universal.dmg`
 
 Do NOT pre-open or `xattr -c` these — the quarantine bit and Gatekeeper
@@ -49,12 +49,12 @@ UX are part of what we validate.
 
 ---
 
-## Scenario 1 — Fresh install, SSvid
+## Scenario 1 — Fresh install, Svid
 
 1. Run the automated harness (skip-launch first to verify static gates):
 
    ```bash
-   bash scripts/macos_qa_smoke.sh --dmg <path-to-ssvid.dmg> --brand ssvid --skip-launch
+   bash scripts/macos_qa_smoke.sh --dmg <path-to-svid.dmg> --brand svid --skip-launch
    ```
 
    - [ ] M0–M6 all PASS (bundle identity, codesign, stapler ticket,
@@ -64,7 +64,7 @@ UX are part of what we validate.
 2. Now exercise launch:
 
    ```bash
-   bash scripts/macos_qa_smoke.sh --dmg <path-to-ssvid.dmg> --brand ssvid
+   bash scripts/macos_qa_smoke.sh --dmg <path-to-svid.dmg> --brand svid
    ```
 
    - [ ] M7 launch PASS (boot markers observed within 45s)
@@ -72,7 +72,7 @@ UX are part of what we validate.
 
 3. Double-click the DMG in Finder:
 
-   - [ ] Finder shows the SSvid icon (Nocturne Cinematic red) — NOT a
+   - [ ] Finder shows the Svid icon (Nocturne Cinematic red) — NOT a
          generic Flutter placeholder
    - [ ] Drag to Applications completes with no Gatekeeper warning
    - [ ] First open from Applications: single "This app is from the
@@ -86,11 +86,11 @@ UX are part of what we validate.
    - [ ] Binary provisioning UI progresses (yt-dlp / ffmpeg / gallery-dl
          downloads with visible progress)
    - [ ] NO persistent keychain entitlement warning in system logs:
-         `log show --predicate 'process == "ssvid"' --last 5m |
+         `log show --predicate 'process == "svid"' --last 5m |
           grep -i entitlement` should show zero `-34018` errors
          (Wave 1 keychain probe fallback engaged)
    - [ ] Tray icon appears in the menubar (Arctic Blue crown for
-         VidCombo, Wine Red for SSvid)
+         VidCombo, Wine Red for Svid)
 
 5. Paste a YouTube URL, extract, download one video:
 
@@ -105,9 +105,9 @@ Same as Scenario 1 but targeting `VidCombo-*.dmg`. Additional checks:
 
 - [ ] Tray icon is Arctic Blue (not Wine Red)
 - [ ] `~/Library/Application Support/com.tinasoft.vidcombo/bin/` gets
-      populated (NOT the SSvid bundle id)
+      populated (NOT the Svid bundle id)
 - [ ] Free-tier limit reflects PHP backend (10 downloads/day), not the
-      Go-backend 15/day ssvid default
+      Go-backend 15/day svid default
 
 ## Scenario 3 — WebView JS under tight entitlements (W1 critical)
 
@@ -171,7 +171,7 @@ Steps:
 
 Simulate a tampered yt-dlp download to verify the SHA256 gate:
 
-1. Delete `~/Library/Application Support/com.ssvid.app/bin/yt-dlp`.
+1. Delete `~/Library/Application Support/com.svid.app/bin/yt-dlp`.
 2. Open a dev build with `BinaryInfo._ytDlpChecksumsUrl` temporarily
    pointed at a static fixture that returns a WRONG hash.
 3. Trigger an extraction:
@@ -230,5 +230,5 @@ Attachments:
   - harness stdout
 ```
 
-Post to the release tracking issue on `mydinh-studio/ssvid-desktop` with
+Post to the release tracking issue on `mydinh-studio/svid-desktop` with
 label `macos-qa`.

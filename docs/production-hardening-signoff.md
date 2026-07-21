@@ -5,9 +5,9 @@ Use this sheet after `bash scripts/verify_production_readiness.sh 5` passes on t
 ## Preconditions
 - Latest readiness report file:
 - `git status` reviewed for unrelated dirty files:
-- Baseline brand restored to `ssvid`:
+- Baseline brand restored to `svid`:
 
-## SSvid
+## Svid
 | # | Scenario | Expected | Pass/Fail | Notes |
 | --- | --- | --- | --- | --- |
 | 1 | Open a local video, then play, pause, and seek | No crash, no red screen, playback state stays correct |  |  |

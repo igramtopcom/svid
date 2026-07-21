@@ -1,8 +1,8 @@
-# CLAUDE.md — SSvid Desktop App
+# CLAUDE.md — Svid Desktop App
 
 ## Role
 
-You are a Senior Engineer & Technical Advisor for SSvid — a cross-platform desktop video downloader.
+You are a Senior Engineer & Technical Advisor for Svid — a cross-platform desktop video downloader.
 - **Primary**: Builder / Workflow Owner for bounded tasks. Audit → Plan → Implement → Verify, but only inside the task packet and stop conditions.
 - **Secondary**: Proactively flag issues as `[TECH INSIGHT]` when they materially affect the current task.
 - Do not make release, billing, credential, remote, force-update, rollback, or product-direction decisions independently.
@@ -19,9 +19,9 @@ You are a Senior Engineer & Technical Advisor for SSvid — a cross-platform des
 
 ## Project
 
-- **App**: SSvid v1.0.0 — download videos from 1000+ platforms (YouTube, TikTok, Instagram, X, etc.)
+- **App**: Svid v1.0.0 — download videos from 1000+ platforms (YouTube, TikTok, Instagram, X, etc.)
 - **Status**: Production-released. CI/CD pipeline green on macOS, Windows, Linux.
-- **Landing page**: https://ssvid.app/
+- **Landing page**: https://svid.app/
 
 ## Tech Stack
 
@@ -37,11 +37,11 @@ You are a Senior Engineer & Technical Advisor for SSvid — a cross-platform des
 
 ## Multi-Brand Architecture
 
-Single repo, compile-time brand selection via `--dart-define=BRAND=ssvid|vidcombo`.
+Single repo, compile-time brand selection via `--dart-define=BRAND=svid|vidcombo`.
 
 | Brand | Bundle ID | Backend | Payment | Theme |
 |-------|-----------|---------|---------|-------|
-| SSvid | com.ssvid.app | Go (X-API-Key) | In-app Stripe + Crypto | Wine Red "Nocturne Cinematic" |
+| Svid | com.svid.app | Go (X-API-Key) | In-app Stripe + Crypto | Wine Red "Nocturne Cinematic" |
 | VidCombo | com.tinasoft.vidcombo | PHP (checkkey.php) | Website + Manual Key | Arctic Blue "Arctic Command" |
 
 **Key files:**
@@ -49,7 +49,7 @@ Single repo, compile-time brand selection via `--dart-define=BRAND=ssvid|vidcomb
 - `scripts/set_brand.sh` — Platform config switcher (run BEFORE `flutter build`)
 - `macos/Runner/Configs/brands/` — Per-brand xcconfig files
 - `windows/runner/brand_config.h` — Generated C header for Windows native
-- `assets/brands/{ssvid,vidcombo}/` — Per-brand logos, icons, tray icons
+- `assets/brands/{svid,vidcombo}/` — Per-brand logos, icons, tray icons
 
 **Build commands:**
 ```bash
@@ -63,7 +63,7 @@ fvm flutter build macos --dart-define=BRAND=vidcombo        # Build VidCombo mac
 
 ```
 Remotes:
-  kynndev → https://github.com/kynndev/ssvid_app.git  ← production target when authenticated and approved
+  kynndev → https://github.com/kynndev/svid_app.git  ← production target when authenticated and approved
   origin  → may be a non-production local default; verify with `git remote -v`
 
 Production branch: kynndev/main after explicit confirmation
@@ -73,7 +73,7 @@ Production branch: kynndev/main after explicit confirmation
 - Never assume `origin` is production.
 - Always state remote + branch before any push/pull/merge/release operation.
 - Never force-push to main
-- Backend production runs from the approved production remote/branch via deploy webhook. Verify deployed SHA via `curl https://api.ssvid.app/health` after pushing — if `git_sha` lags, the webhook may need a manual trigger.
+- Backend production runs from the approved production remote/branch via deploy webhook. Verify deployed SHA via `curl https://api.svid.app/health` after pushing — if `git_sha` lags, the webhook may need a manual trigger.
 
 > Historical note: local remotes have changed across sessions. Treat this section as a guardrail, not permission to push. Current remotes must be checked in-session.
 
@@ -108,7 +108,7 @@ snakeloader/                      ← ROOT
 │   ├── internal/                 ← 7 modules: identity, bugs, product, feedback, assistant, analytics
 │   ├── web/admin/                ← React admin dashboard
 │   └── docker-compose.yml
-├── website/                      ← Landing page (ssvid.app) + version.json
+├── website/                      ← Landing page (svid.app) + version.json
 ├── scripts/                      ← Build/package/install scripts
 ├── memory/                       ← Phase tracking (gitignored, local only)
 ├── docs/                         ← QA checklist, accessibility audit
@@ -122,26 +122,26 @@ snakeloader/                      ← ROOT
 
 ```bash
 # Development — preferred (handles brand + Rust + flutter run in one shot)
-scripts/dev.sh                     # ssvid debug
+scripts/dev.sh                     # svid debug
 scripts/dev.sh vidcombo            # vidcombo debug
-scripts/dev.sh ssvid release       # ssvid release build + native.framework verify
+scripts/dev.sh svid release       # svid release build + native.framework verify
 scripts/dev.sh vidcombo release    # vidcombo release build + verify
 
 # Manual (only if dev.sh fails)
 fvm flutter pub get
 dart run build_runner build --delete-conflicting-outputs
-scripts/set_brand.sh ssvid         # or vidcombo — switches xcconfig + icons
+scripts/set_brand.sh svid         # or vidcombo — switches xcconfig + icons
 CONFIGURATION=Debug bash macos/build_rust.sh
-fvm flutter run -d macos --dart-define=BRAND=ssvid
+fvm flutter run -d macos --dart-define=BRAND=svid
 
 # Production build (macOS) — manual
 cd native && cargo build --release --target aarch64-apple-darwin && cd ..
 CONFIGURATION=Release bash macos/build_rust.sh
-fvm flutter build macos --release --dart-define=BRAND=ssvid
-bash scripts/package_macos.sh ssvid    # → dist/SSvid-X.Y.Z-macos-universal.dmg
+fvm flutter build macos --release --dart-define=BRAND=svid
+bash scripts/package_macos.sh svid    # → dist/Svid-X.Y.Z-macos-universal.dmg
 
 # Verify build
-codesign --verify --deep --strict build/macos/Build/Products/Release/ssvid.app
+codesign --verify --deep --strict build/macos/Build/Products/Release/svid.app
 
 # Analysis & tests
 fvm flutter analyze --no-pub
@@ -199,7 +199,7 @@ Architecture-aware downloads:
 
 ### Backend ↔ Frontend Integration
 
-- API base: `https://api.ssvid.app/api/v1/`
+- API base: `https://api.svid.app/api/v1/`
 - Auth: `X-API-Key` header (format: `snk_` + base64url)
 - Response: `{ success, data, error: { code, message, details } }`
 - Error codes: `UPPER_SNAKE_CASE`

@@ -1,19 +1,19 @@
-# DESIGN.md — SSvid Design System
+# DESIGN.md — Svid Design System
 
 > Persistent design tokens for all AI-generated UI. Every Claude session reads this to maintain visual consistency.
-> Direction: **Nocturne Cinematic** — "Obsidian Wine Cellar" (SSvid) | "Arctic Obsidian Command" (VidCombo)
+> Direction: **Nocturne Cinematic** — "Obsidian Wine Cellar" (Svid) | "Arctic Obsidian Command" (VidCombo)
 > Updated: 2026-04-13 (Multi-Brand Visual Identity v2.0 — typography, shape, elevation, card borders)
 > Source of truth: `lib/core/config/brand_config.dart` + `COLOR_RESEARCH.md`
 
 ## Design Constitution — 5 Pillars
 
 1. **4-Tier Layering Law** — L0 in `#0A0A0A`–`#14171D` zone; L1 in `#141416`–`#16181A` (Spotify/Figma consensus band). Non-linear Δ L\* rhythm (tight early, looser late). No `#000000`, no muddy `#121212`.
-2. **Brand-Tinting Purity** — SSvid warm rose (chroma 3-6), VidCombo cool arctic (chroma 3-8). Zero cross-contamination.
-3. **Brand-Shaped Identity** — SSvid: 3px angular (sharp terminals match Inter). VidCombo: 12px rounded cards, 999px pill buttons (geometric-friendly match DM Sans). Radius tokens delegated via `BrandConfig`.
-4. **Elevation Strategy** — SSvid: flat + visible border (defined edges, tonal layering). VidCombo: elevated + borderless (shadow defines edges, floating cards). `hasCardBorder` + `cardElevation` in BrandConfig.
-5. **WCAG 7:1 on textPrimary** — `onSurface` = `#F5F2F3` (SSvid) / `#F2F4F7` (VidCombo). Never pure `#FFFFFF`.
+2. **Brand-Tinting Purity** — Svid warm rose (chroma 3-6), VidCombo cool arctic (chroma 3-8). Zero cross-contamination.
+3. **Brand-Shaped Identity** — Svid: 3px angular (sharp terminals match Inter). VidCombo: 12px rounded cards, 999px pill buttons (geometric-friendly match DM Sans). Radius tokens delegated via `BrandConfig`.
+4. **Elevation Strategy** — Svid: flat + visible border (defined edges, tonal layering). VidCombo: elevated + borderless (shadow defines edges, floating cards). `hasCardBorder` + `cardElevation` in BrandConfig.
+5. **WCAG 7:1 on textPrimary** — `onSurface` = `#F5F2F3` (Svid) / `#F2F4F7` (VidCombo). Never pure `#FFFFFF`.
 
-## SSvid — Obsidian Wine Cellar (Dark, Primary)
+## Svid — Obsidian Wine Cellar (Dark, Primary)
 
 Brand-tinted warm rose. 5-tier elevation ladder built on the M3 surface container roles.
 
@@ -40,7 +40,7 @@ Brand-tinted warm rose. 5-tier elevation ladder built on the M3 surface containe
 | `accentHighlight` | `#C41E3A` | — | Crimson CTA background (use AppColors.accentHighlight, NOT cs.primary) |
 | `accentMuted` | `#5C0114` | — | Subtle badge background |
 
-## SSvid — Architectural Gallery Morning (Light)
+## Svid — Architectural Gallery Morning (Light)
 
 Warm cream base. Brand accents stay constant across modes.
 
@@ -127,7 +127,7 @@ Single font per brand, all contexts. Selected for maximum opposition + personali
 
 | Brand | Font | Personality | Why |
 |-------|------|-------------|-----|
-| SSvid | **Inter** | Humanist, sharp terminals | Matches angular 3px shape. Professional, precise, Nocturne cinematic feel |
+| Svid | **Inter** | Humanist, sharp terminals | Matches angular 3px shape. Professional, precise, Nocturne cinematic feel |
 | VidCombo | **DM Sans** | Geometric, clear bold strokes | Matches rounded 12px shape. Friendly, approachable, Arctic command clarity |
 
 Loaded via `google_fonts` package. `AppTypography._font()` dispatches per brand. `AppTypography.fontFamily` returns brand font family.
@@ -158,7 +158,7 @@ Loaded via `google_fonts` package. `AppTypography._font()` dispatches per brand.
 
 Semantic tokens delegated from `BrandConfig`. All widget code uses `AppRadius.card`, `.button`, etc.
 
-| Token | SSvid | VidCombo | Usage |
+| Token | Svid | VidCombo | Usage |
 |-------|-------|----------|-------|
 | `AppRadius.card` | 3px | 12px | Cards, containers, list items |
 | `AppRadius.button` | 3px | 999px (pill) | Buttons, action chips |
@@ -170,7 +170,7 @@ Semantic tokens delegated from `BrandConfig`. All widget code uses `AppRadius.ca
 
 ## Card Surface Strategy
 
-| Axis | SSvid | VidCombo |
+| Axis | Svid | VidCombo |
 |------|-------|----------|
 | **Border** | ✅ Visible hairline (`outlineVariant`) | ❌ No border |
 | **Elevation** | 0 (flat) | 2 (floating) |
@@ -181,8 +181,8 @@ Controlled by `BrandConfig.current.hasCardBorder` and `BrandConfig.current.cardE
 
 ## Design Principles
 
-1. **Brand-dependent borders** — SSvid: visible hairline borders define card edges (flat + bordered). VidCombo: no card borders, shadow defines edges (elevated + borderless). Both: input/focus borders always present.
-2. **Brand-dependent elevation** — SSvid: zero shadow, tonal layering only. VidCombo: subtle elevation (2dp) for floating card feel.
+1. **Brand-dependent borders** — Svid: visible hairline borders define card edges (flat + bordered). VidCombo: no card borders, shadow defines edges (elevated + borderless). Both: input/focus borders always present.
+2. **Brand-dependent elevation** — Svid: zero shadow, tonal layering only. VidCombo: subtle elevation (2dp) for floating card feel.
 3. **Density over whitespace** — Desktop power-user app, not a landing page. Maximize information density.
 4. **Animation: subtle** — 150-200ms ease-out transitions. No bouncy, no spring physics.
 5. **Icons: outlined** — 1.5px stroke, 24px default. Match `text-secondary` color.
@@ -193,7 +193,7 @@ Controlled by `BrandConfig.current.hasCardBorder` and `BrandConfig.current.cardE
 ### Top Navigation Bar
 - Height: 52px, fixed top, full width
 - Background: `surface-raised` (dark) / white with backdrop-blur (light)
-- Layout: SSvid logo (crimson, left) → tab links (center-left) → action icons (right)
+- Layout: Svid logo (crimson, left) → tab links (center-left) → action icons (right)
 - Active tab: `accent-highlight` text + 2px bottom border `accent-highlight`
 - Inactive tab: `text-primary` at 60% opacity
 - NO sidebar, NO left rail, NO bottom navigation
@@ -222,9 +222,9 @@ Controlled by `BrandConfig.current.hasCardBorder` and `BrandConfig.current.cardE
 
 When generating new screens, include this prefix for consistency:
 
-### SSvid — Obsidian Wine Cellar (Dark)
+### Svid — Obsidian Wine Cellar (Dark)
 ```
-SSvid desktop video downloader. Design system: Obsidian Wine Cellar.
+Svid desktop video downloader. Design system: Obsidian Wine Cellar.
 Dark theme — warm rose undertone:
   L0 deep well #0A0809 → L1 body #151214 → L3 cards #2A2225 → L5 modals #40353A
   Text: #F5F2F3 headings (15:1 contrast), #B5B0B2 secondary.
@@ -233,11 +233,11 @@ Dark theme — warm rose undertone:
 Inter font. 3px sharp corners. No shadows — tonal elevation only.
 Dense power-user layout. Desktop app (not website). TopNavigationBar: 52px fixed.
 CRITICAL: NO sidebar. NO left rail. NO bottom navigation. Top bar only.
-Nav: SSvid logo (crimson) left → tab links center → action icons right.
+Nav: Svid logo (crimson) left → tab links center → action icons right.
 [SCREEN-SPECIFIC PROMPT HERE]
 ```
 
-### SSvid — Architectural Gallery Morning (Light)
+### Svid — Architectural Gallery Morning (Light)
 ```
 Light mode: warm cream base.
   L0 white #FFFFFF → L1 body #FCF9F7 → L3 cards #F0EDEB → L5 modals #E5E2E0

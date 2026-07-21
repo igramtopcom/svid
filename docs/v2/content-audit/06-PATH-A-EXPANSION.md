@@ -120,7 +120,7 @@ Em không claim các translation cho ar/hi/th = production-safe. Chỉ "net posi
 | Mission Briefing voice in i18n value (any locale) | 13 locales | ✅ 0 |
 | missionBriefing namespace | ✅ Already gone | ✅ 0 |
 | {plural} literal placeholder | ✅ 0 | ✅ 0 |
-| Brand leak literal "SSvid" | ✅ Already fixed | ✅ 0 |
+| Brand leak literal "Svid" | ✅ Already fixed | ✅ 0 |
 | Title Case improperly applied | ✅ VI swept | ✅ Same (other locales follow native rules) |
 | Engineer leak (yt-dlp/ffmpeg in user-flow) | Mostly gone | ✅ Gone in home flow |
 | "Tải về" / banned vocab | ✅ Already fixed | ✅ 0 |

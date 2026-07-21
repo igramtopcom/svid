@@ -49,7 +49,7 @@ The `Scope` type is from `sentry_flutter`; introducing it into the abstract inte
 
 **All three implementers must be updated, not just one. Two of them have non-trivial bodies, NOT empty no-ops:**
 
-  1. `SentryErrorReporter.captureExceptionWithScope` — forwards to `Sentry.captureException(exception, stackTrace: stackTrace, withScope: configureScope)`. **Must also call `_submitCrashToBackend` for parity with `captureException`** — otherwise `instrumentedAsync` reports to Sentry but silently stops forwarding to the SSvid backend, breaking the dual-reporting contract that `SentryErrorReporter.captureException` provides at line 97 of `sentry_error_reporter.dart`.
+  1. `SentryErrorReporter.captureExceptionWithScope` — forwards to `Sentry.captureException(exception, stackTrace: stackTrace, withScope: configureScope)`. **Must also call `_submitCrashToBackend` for parity with `captureException`** — otherwise `instrumentedAsync` reports to Sentry but silently stops forwarding to the Svid backend, breaking the dual-reporting contract that `SentryErrorReporter.captureException` provides at line 97 of `sentry_error_reporter.dart`.
 
   **Critical: do NOT extract backend metadata by replaying `configureScope`.** An earlier draft proposed running the callback against a "capturing fake scope" to harvest tags/extras for the backend payload, then passing the same callback to Sentry's `withScope`. That invokes the user's callback twice — fine for pure side-effect-free callbacks but unsafe in general (counters, timestamps, throws, or future scope methods we don't fake correctly all diverge).
 
@@ -65,7 +65,7 @@ The `Scope` type is from `sentry_flutter`; introducing it into the abstract inte
   });
   ```
 
-  `SentryErrorReporter.captureExceptionWithScope` passes `configureScope` to Sentry **once**, and forwards `backendMetadata` to the shared helper that submits to the SSvid backend. Callback runs at most once. Direct callers (i.e. anyone using `captureExceptionWithScope` outside `instrumentedAsync`) are responsible for keeping the two arguments consistent — document this as the contract.
+  `SentryErrorReporter.captureExceptionWithScope` passes `configureScope` to Sentry **once**, and forwards `backendMetadata` to the shared helper that submits to the Svid backend. Callback runs at most once. Direct callers (i.e. anyone using `captureExceptionWithScope` outside `instrumentedAsync`) are responsible for keeping the two arguments consistent — document this as the contract.
 
   Refactor existing `_submitCrashToBackend` into a private helper that takes `(exception, stackTrace, context, scopeMetadata)` and is called by both `captureException` (passing `scopeMetadata: const {}`) and `captureExceptionWithScope` (passing the caller-provided map).
 
@@ -181,7 +181,7 @@ await errorReporter.captureExceptionWithScope(
 );
 ```
 
-(See Prerequisite section above for full contract.) Internally `SentryErrorReporter` forwards to `Sentry.captureException(..., withScope: configureScope)` — per-capture scope, no leak — and forwards `backendMetadata` to the SSvid backend via the shared `_dispatchCrashToBackend` helper.
+(See Prerequisite section above for full contract.) Internally `SentryErrorReporter` forwards to `Sentry.captureException(..., withScope: configureScope)` — per-capture scope, no leak — and forwards `backendMetadata` to the Svid backend via the shared `_dispatchCrashToBackend` helper.
 
 **Consequence:** an exception thrown from 3 calls deep that escapes `instrumentedAsync` (because we rethrow) will hit the nearest enclosing catcher — `FlutterError.onError` or `PlatformDispatcher.onError` in `main.dart` — with NO `op` tag. That's the correct behavior; the deeper call could have its own `instrumentedAsync` if it wanted a tag. We do not pretend to provide tagging-by-magic across nested calls.
 
@@ -302,7 +302,7 @@ Migration is deliberately **not bulk-automated.** Sed-replacing 147 files would 
 
 ### Open questions for product/lead
 
-- Q1: Should `op` tag namespace include the brand (e.g. `ssvid.ytdlp.extract_info` vs `ytdlp.extract_info`)? **Recommendation:** brand goes in a separate `brand` tag (already covered by `BrandConfig.current`); `op` stays brand-agnostic so cross-brand bug aggregation works.
+- Q1: Should `op` tag namespace include the brand (e.g. `svid.ytdlp.extract_info` vs `ytdlp.extract_info`)? **Recommendation:** brand goes in a separate `brand` tag (already covered by `BrandConfig.current`); `op` stays brand-agnostic so cross-brand bug aggregation works.
 
 (Migration sequencing decided in Phase 2 above — per-domain PRs, not a mega-PR.)
 
@@ -344,8 +344,8 @@ New helper:
 
 ```dart
 /// Scrub a URL for HTTP breadcrumbs to a route template:
-///   https://api.ssvid.app/v1/tickets/abc-uuid?key=secret
-///   → https://api.ssvid.app/v1/tickets/{id}
+///   https://api.svid.app/v1/tickets/abc-uuid?key=secret
+///   → https://api.svid.app/v1/tickets/{id}
 ///
 /// Steps:
 ///   1. Strip query string entirely.
@@ -354,7 +354,7 @@ New helper:
 ///      - Bare 32-char hex (license keys) → `{license}`
 ///      - Email regex → `{email}`
 ///      - Stripe-style `sk_*`, `pk_*` → `{stripe_id}`
-///      - SSvid API key prefix `snk_*` → `{api_key}`
+///      - Svid API key prefix `snk_*` → `{api_key}`
 ///      - Long opaque tokens (>20 chars, base64-ish) → `{token}`
 ///   3. Keep static segments (e.g. `v1`, `tickets`, `crashes`) as-is.
 String scrubHttpUrl(Uri uri);
@@ -599,7 +599,7 @@ if (EnvConfig.isSentryConfigured) {
 
 #### D3. DSN passing: from Dart, not embedded
 
-Don't bake DSN into Rust binary. Keeps brand switching working (one binary serves SSvid + VidCombo, each with its own DSN if we ever split).
+Don't bake DSN into Rust binary. Keeps brand switching working (one binary serves Svid + VidCombo, each with its own DSN if we ever split).
 
 #### D6. Release tag source: from Dart, not `CARGO_PKG_VERSION`
 
@@ -609,9 +609,9 @@ Original draft used `env!("CARGO_PKG_VERSION")` for the Rust Sentry release tag.
 
 #### D7. Panic file path: brand-aware, passed from Dart
 
-Original draft hardcoded `<app_data>/ssvid/rust_panics/`. **Wrong on two counts:**
+Original draft hardcoded `<app_data>/svid/rust_panics/`. **Wrong on two counts:**
 
-  1. Multi-brand: VidCombo uses `<app_data>/vidcombo/`, not `<app_data>/ssvid/`. Hardcoding `ssvid` puts panic files in the wrong place for VidCombo users.
+  1. Multi-brand: VidCombo uses `<app_data>/vidcombo/`, not `<app_data>/svid/`. Hardcoding `svid` puts panic files in the wrong place for VidCombo users.
   2. Rust on its own has no reliable cross-platform "app data" resolver. Dart side does (`path_provider.getApplicationSupportDirectory`), so resolve there and pass in.
 
 Dart resolves `<applicationSupportDirectory>/<brand_dir>/rust_panics/` (creates if missing) and passes the absolute path to `init_telemetry`. Brand directory comes from `BrandConfig.current`.
@@ -755,7 +755,7 @@ Modify: `native/Cargo.toml`
 
 Modify: `lib/main.dart` (and/or `_initRustBridge` helper inside it)
 - After `RustLib.init` succeeds and before `downloadManagerInit`, init Rust telemetry with the same DSN, brand-prefixed release, and Dart-resolved panic dir (see D2 wiring snippet above for full call). This intentionally runs after FRB init — see D2's "chicken-and-egg" discussion. The plan does NOT cover panics during `RustLib.init` itself.
-- Helper `_resolveRustPanicDir()` returns the absolute path to a brand-specific subdirectory under the app support directory. Naive implementation `path.join(supportDir, BrandConfig.current.brand.name, 'rust_panics')` is unsafe on Windows: `path_provider_windows` returns `<RoamingAppData>\<CompanyName>\<ProductName>` per the platform plugin, where `<ProductName>` *may already match the brand name* (it's set by `windows/runner/main.cpp` from the app's product info). Joining brand again would produce `.../ssvid/ssvid/rust_panics` for SSvid users.
+- Helper `_resolveRustPanicDir()` returns the absolute path to a brand-specific subdirectory under the app support directory. Naive implementation `path.join(supportDir, BrandConfig.current.brand.name, 'rust_panics')` is unsafe on Windows: `path_provider_windows` returns `<RoamingAppData>\<CompanyName>\<ProductName>` per the platform plugin, where `<ProductName>` *may already match the brand name* (it's set by `windows/runner/main.cpp` from the app's product info). Joining brand again would produce `.../svid/svid/rust_panics` for Svid users.
 
   **Required logic** (not "smoke-test it"):
   ```dart
@@ -795,7 +795,7 @@ Modify: `scripts/dev.sh` and `.github/workflows/release.yml`
 - Concurrent panic test: spawn two Tokio tasks, panic in both. Verify each panic produces a Sentry event with `runtime: rust` and full backtrace. Whether `op` tag is correctly attributed is a *test of the design*, not an assertion — record actual behavior, drive next steps from there.
 - Smoke test: `kill -9` the app immediately after triggering a Rust panic, restart, verify next launch uploads the panic file from disk and the resulting Sentry event has a parsed Rust stack (or, in degraded mode, the full panic JSON in the message body).
 - Hot-restart idempotency: trigger hot restart 3 times, verify panic hook is installed exactly once (no duplicate panic files / events on next panic).
-- Brand test: build VidCombo brand, verify panic files land in `<app_data>/vidcombo/rust_panics/`, NOT `<app_data>/ssvid/`.
+- Brand test: build VidCombo brand, verify panic files land in `<app_data>/vidcombo/rust_panics/`, NOT `<app_data>/svid/`.
 - Sentry release tag matches `${brand}@${app_version}` from Dart side (NOT `0.1.0` from Cargo).
 - Build size delta measured and documented in the PR description (no specific number committed in plan).
 - Verify `Cargo.toml` feature names against the current `sentry` crate docs at impl time. The names `sentry-anyhow` and `sentry-panic` are *crate* names; whether they're enabled as features of `sentry = { features = [...] }` or as separate dep entries depends on the version pinned. Plan does not commit to syntax.

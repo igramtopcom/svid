@@ -49,14 +49,14 @@
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │              ◉  [glow halo]  🔒                          │   │
 │  │         ┌─────────────────────────────┐                  │   │
-│  │         │  SSVID PREMIUM FEATURE      │  ← badge         │   │
+│  │         │  SVID PREMIUM FEATURE      │  ← badge         │   │
 │  │         └─────────────────────────────┘                  │   │
 │  │                                                           │   │
 │  │           Unlock the Full Vault.                         │   │
 │  │                                                           │   │
 │  │    [description text — max-width 576px, 2 lines]         │   │
 │  │                                                           │   │
-│  │  [  Upgrade to SSvid Premium  ]  View Feature Comparison →│  │
+│  │  [  Upgrade to Svid Premium  ]  View Feature Comparison →│  │
 │  │                                                           │   │
 │  │    SECURE CHECKOUT • NO ADS • UNLIMITED SPEED            │   │
 │  └──────────────────────────────────────────────────────────┘   │
@@ -202,7 +202,7 @@ const premiumGradient = LinearGradient(
 | 7 | "Upgrade to unlock" (bodySmall, onSurface@60%) | Full **description** paragraph (bodyLarge 18px, on-surface-variant, max-w 576px) | Add feature description |
 | 8 | Single `FilledButton` (standard theme) | **Premium gradient** filled button (custom LinearGradient background) | Custom button style |
 | 9 | No secondary action | "View Feature Comparison" text button + `arrow_forward` icon | Add secondary button |
-| 10 | No badge | "SSVID PREMIUM FEATURE" badge (rounded pill, primary/10 bg, primary/30 border) | Add badge widget |
+| 10 | No badge | "SVID PREMIUM FEATURE" badge (rounded pill, primary/10 bg, primary/30 border) | Add badge widget |
 | 11 | No trust footer | "SECURE CHECKOUT • NO ADS • UNLIMITED SPEED" | Add footer text |
 | 12 | Full-area blur (entire child) | Split: **top visible** (above PremiumGate), bottom gated | Architecture unchanged — gate wraps only premium sections |
 
@@ -423,7 +423,7 @@ Widget _PremiumBadge() {
       ),
     ),
     child: Text(
-      'SSVID PREMIUM FEATURE',
+      'SVID PREMIUM FEATURE',
       style: Theme.of(context).textTheme.labelSmall?.copyWith(
         color: cs.primary,
         fontWeight: FontWeight.w700,
@@ -460,7 +460,7 @@ The description text is feature-specific. Define per-feature copy in `PremiumFea
 Widget _GateDescription({required PremiumFeature feature}) {
   final cs = Theme.of(context).colorScheme;
   final description = _featureDescriptions[feature] ??
-      'This feature is available exclusively for SSvid Premium members. '
+      'This feature is available exclusively for Svid Premium members. '
       'Upgrade to unlock advanced tools and unlimited access.';
 
   return ConstrainedBox(
@@ -483,7 +483,7 @@ const _featureDescriptions = <PremiumFeature, String>{
       'Deep-dive into your download history with beautiful charts, '
       'smart collections, and insights across every platform you use.',
   PremiumFeature.smartCollections:
-      'Organize your vault automatically — SSvid groups your downloads '
+      'Organize your vault automatically — Svid groups your downloads '
       'by platform, topic, and mood so you can find anything instantly.',
   // ... add remaining features
 };
@@ -505,7 +505,7 @@ Widget _GateButtons({
     children: [
       // Primary — premium gradient CTA
       _PremiumGradientButton(
-        label: 'Upgrade to SSvid Premium',
+        label: 'Upgrade to Svid Premium',
         onPressed: onUpgrade,
       ),
 
@@ -638,7 +638,7 @@ The "View Feature Comparison" button needs a destination. Options (to discuss wi
 |--------|---------------|-------|
 | A | `UpgradePromptDialog.show(...)` with comparison tab | Reuse existing dialog |
 | B | Navigate to `/premium` settings tab | Uses existing routes |
-| C | Open `ssvid.app/premium` in browser | External |
+| C | Open `svid.app/premium` in browser | External |
 
 **Default for implementation**: Use option A (reuse `UpgradePromptDialog`) until Chairman decides. Pass `feature` param for context.
 
@@ -647,7 +647,7 @@ The "View Feature Comparison" button needs a destination. Options (to discuss wi
 | Interaction | Response |
 |------------|---------|
 | Click anywhere on blurred content | Blocked — `IgnorePointer` |
-| Click "Upgrade to SSvid Premium" | `UpgradePromptDialog.show(context, feature: feature)` |
+| Click "Upgrade to Svid Premium" | `UpgradePromptDialog.show(context, feature: feature)` |
 | Click "View Feature Comparison" | TBD — see 6.2 |
 | Hover primary button | Scale 105%, `AnimatedScale` 150ms |
 | Hover secondary button | `onSurface` color (from `onSurfaceVariant`) |
@@ -659,7 +659,7 @@ The "View Feature Comparison" button needs a destination. Options (to discuss wi
 
 The glass wall uses `colorScheme.*` exclusively (M3 roles from theme). No new `AppColors` constants needed.
 
-If `FILL 1` (filled icon variant) is used via `Icon(fill: 1.0)`, confirm Flutter version supports `fill` parameter — it requires Flutter 3.12+ with M3 icons. SSvid uses Flutter 3.29.3 — confirmed supported.
+If `FILL 1` (filled icon variant) is used via `Icon(fill: 1.0)`, confirm Flutter version supports `fill` parameter — it requires Flutter 3.12+ with M3 icons. Svid uses Flutter 3.29.3 — confirmed supported.
 
 ### 7.2 No changes to `app_typography.dart`
 
@@ -680,11 +680,11 @@ static const String premiumGateAnalyticsDesc =
     'smart collections, and insights across every platform you use.';
 
 static const String premiumGateCollectionsDesc =
-    'Organize your vault automatically — SSvid groups your downloads '
+    'Organize your vault automatically — Svid groups your downloads '
     'by platform, topic, and mood so you can find anything instantly.';
 
 static const String premiumGateGenericDesc =
-    'This feature is available exclusively for SSvid Premium members. '
+    'This feature is available exclusively for Svid Premium members. '
     'Upgrade to unlock advanced tools and unlimited access.';
 
 // Trust footer
@@ -692,7 +692,7 @@ static const String premiumGateTrustFooter =
     'SECURE CHECKOUT \u2022 NO ADS \u2022 UNLIMITED SPEED';
 
 // Badge
-static const String premiumGateBadgeLabel = 'SSVID PREMIUM FEATURE';
+static const String premiumGateBadgeLabel = 'SVID PREMIUM FEATURE';
 
 // Title
 static const String premiumGateTitle = 'Unlock the Full Vault.';
@@ -728,7 +728,7 @@ static const String premiumGateCompareAction = 'View Feature Comparison';
 ### 8.5 Accessibility
 
 - `IgnorePointer` on blurred content: screen readers also skip the underlying content. This is intentional — the locked content should not be announced.
-- CTA button: `Semantics` label should read "Upgrade to SSvid Premium — opens upgrade dialog".
+- CTA button: `Semantics` label should read "Upgrade to Svid Premium — opens upgrade dialog".
 - Secondary button: "View Feature Comparison".
 - Lock icon: exclude from semantics (`excludeFromSemantics: true` on the `Icon`) — decorative.
 - Badge: exclude from semantics — the title conveys the same meaning.

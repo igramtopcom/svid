@@ -1,0 +1,85 @@
+name: Build Windows (svid test)
+
+# Manual, build-only Windows x64 build for local testing.
+#
+# Produces an UNSIGNED, portable app-local bundle (VC++ runtime included) and
+# uploads it as a downloadable artifact. It publishes NOTHING and touches no
+# external infra — safe to run on igramtopcom/svid.
+#
+# How to use:
+#   GitHub → Actions → "Build Windows (svid test)" → Run workflow → wait
+#   ~10-15 min → open the run → download the "svid-windows-x64" artifact →
+#   unzip → run svid.exe.
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: build-windows-svid-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Match the SDK pinned in .fvmrc so the build matches dev/CI.
+  FLUTTER_VERSION: '3.29.3'
+
+jobs:
+  build-windows:
+    name: Build Windows x64 (svid)
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: native
+
+      - name: Set brand config (svid)
+        shell: bash
+        run: bash scripts/set_brand.sh svid
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Generate code (build_runner)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build Rust native.dll (release)
+        run: |
+          cd native
+          cargo build --release --features telemetry --target x86_64-pc-windows-msvc
+
+      - name: Copy native.dll into the Windows build tree
+        run: copy native\target\x86_64-pc-windows-msvc\release\native.dll windows\native.dll
+
+      - name: Build Flutter Windows (release)
+        env:
+          # Skip the crashpad native backend — avoids a chromium.googlesource.com
+          # rate-limit (HTTP 429) during build. Dart-level error handling is
+          # unaffected. No SENTRY_DSN is passed, so Sentry stays disabled.
+          SENTRY_NATIVE_BACKEND: none
+        run: flutter build windows --release --dart-define=BRAND=svid
+
+      - name: Stage runtime bundle
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/windows-bundle | Out-Null
+          Copy-Item -Recurse build/windows/x64/runner/Release/* dist/windows-bundle/
+
+      - name: Bundle VC++ runtime (app-local, so it runs without Visual Studio)
+        shell: pwsh
+        run: pwsh -NoProfile -File scripts/windows_bundle_vcruntime.ps1 -BundleDir dist/windows-bundle
+
+      - name: Upload Windows build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: svid-windows-x64
+          path: dist/windows-bundle/**
+          retention-days: 7

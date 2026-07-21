@@ -946,6 +946,9 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
                   selectedIndex: selectedIndex,
                   onDestinationSelected:
                       (index) => _handleNavigationTap(index, ref),
+                  expanded:
+                      MediaQuery.sizeOf(context).width >=
+                      LeftNavRail.expandBreakpoint,
                 ),
                 Expanded(
                   child: Column(

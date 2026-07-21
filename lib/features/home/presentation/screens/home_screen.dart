@@ -881,14 +881,19 @@ class HomeScreenState extends ConsumerState<HomeScreen>
               // and list don't stretch edge-to-edge (keeps paste → download
               // within a comfortable horizontal span).
               const maxContentWidth = 1200.0;
-              final sideInset =
-                  constraints.maxWidth > maxContentWidth
-                      ? (constraints.maxWidth - maxContentWidth) / 2
-                      : 0.0;
+              final extra = constraints.maxWidth - maxContentWidth;
+              // Anchor the content toward the rail: centre it on moderate
+              // windows, but cap the left gap so on very wide windows it stays
+              // close to the rail (extra whitespace goes to the right).
+              final leftInset = extra > 0 ? (extra / 2).clamp(0.0, 40.0) : 0.0;
+              final rightInset = extra > 0 ? extra - leftInset : 0.0;
               final capped =
-                  sideInset > 0
+                  extra > 0
                       ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: sideInset),
+                        padding: EdgeInsets.only(
+                          left: leftInset,
+                          right: rightInset,
+                        ),
                         child: content,
                       )
                       : content;

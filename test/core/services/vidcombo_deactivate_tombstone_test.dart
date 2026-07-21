@@ -134,7 +134,7 @@ void main() {
 
   group('VidCombo deactivate tombstone — SSvid brand-guard', () {
     setUp(() {
-      BrandConfig.setForTest(Brand.ssvid);
+      BrandConfig.setForTest(Brand.svid);
     });
 
     tearDown(() {

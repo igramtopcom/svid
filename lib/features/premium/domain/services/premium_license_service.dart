@@ -257,7 +257,10 @@ class PremiumLicenseService {
   }
 
   /// Go-backend license key formats, independent of the current brand backend.
+  ///   - Svid new: `SVID-...` (44 chars); Svid legacy: `SSVID-...` (45 chars)
+  ///   - VidCombo: `VIDCOMBO-...` (48 chars)
   static bool isGoBackendLicenseKey(String key) {
+    if (key.startsWith('SVID-') && key.length == 44) return true;
     if (key.startsWith('SSVID-') && key.length == 45) return true;
     if (key.startsWith('VIDCOMBO-') && key.length == 48) return true;
     return false;

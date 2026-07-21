@@ -1834,10 +1834,11 @@ class StartupService {
 
   /// Whether a license key was created by the Go backend vs the PHP backend
   /// (32-char hex). Go backend generates brand-aware keys:
-  ///   - SSvid:    `SSVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`    (45 chars)
+  ///   - Svid:     `SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`     (44 chars)
   ///   - VidCombo: `VIDCOMBO-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`  (48 chars)
-  ///   - Legacy:   `SSVID-...` keys created before brand separation also match
+  ///   - Legacy:   `SSVID-...` keys created before the svid rebrand also match (45 chars)
   static bool _isGoBackendLicense(String key) {
+    if (key.startsWith('SVID-') && key.length == 44) return true;
     if (key.startsWith('SSVID-') && key.length == 45) return true;
     if (key.startsWith('VIDCOMBO-') && key.length == 48) return true;
     return false;

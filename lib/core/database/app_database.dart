@@ -1457,7 +1457,7 @@ LazyDatabase _openConnection() {
       await dbFolder.create(recursive: true);
     }
     final dbName =
-        AppConstants.databaseName; // 'ssvid' or 'vidcombo' (no extension)
+        AppConstants.databaseName; // 'svid' or 'vidcombo' (no extension)
     final file = File(p.join(dbFolder.path, '$dbName.db'));
 
     // === Recovery from c8bbba91 regression ===

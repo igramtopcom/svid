@@ -21,7 +21,7 @@ class BrandSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (BrandConfig.current.brand == Brand.ssvid) {
+    if (BrandConfig.current.brand == Brand.svid) {
       return _TacticalToggle(value: value, onChanged: onChanged);
     }
     return Switch(value: value, onChanged: onChanged);

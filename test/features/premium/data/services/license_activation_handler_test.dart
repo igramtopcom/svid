@@ -181,7 +181,7 @@ void main() {
         // Both brand formats accept lowercase hex; pick a brand-appropriate
         // fixture and verify it validates.
         final lowercaseKey =
-            BrandConfig.current.brand == Brand.ssvid
+            BrandConfig.current.brand == Brand.svid
                 ? 'SSVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789'
                 : 'abcdef0123456789abcdef0123456789';
         expect(PremiumLicenseService.isValidLicenseKey(lowercaseKey), true);
@@ -617,7 +617,7 @@ void main() {
       late SharedPreferences prefs;
 
       setUp(() async {
-        BrandConfig.setForTest(Brand.ssvid);
+        BrandConfig.setForTest(Brand.svid);
         SharedPreferences.setMockInitialValues({});
         prefs = await SharedPreferences.getInstance();
       });

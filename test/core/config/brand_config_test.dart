@@ -5,54 +5,54 @@ void main() {
   group('BrandConfig', () {
     test('init resolves a valid brand from BRAND env var', () {
       // Brand resolves at compile time via --dart-define=BRAND. Under the
-      // default test run BRAND is unset → ssvid; under multi-brand CI
+      // default test run BRAND is unset → svid; under multi-brand CI
       // BRAND=vidcombo flips it. The invariant is that current is always
       // a non-null brand whose appName matches.
       BrandConfig.init();
       expect(BrandConfig.current.brand, isNotNull);
       expect(BrandConfig.current.appName, isNotEmpty);
-      if (BrandConfig.current.brand == Brand.ssvid) {
-        expect(BrandConfig.current.appName, 'SSvid');
+      if (BrandConfig.current.brand == Brand.svid) {
+        expect(BrandConfig.current.appName, 'Svid');
       } else if (BrandConfig.current.brand == Brand.vidcombo) {
         expect(BrandConfig.current.appName, 'VidCombo');
       }
     });
 
     test('Brand.fromString parses valid brands', () {
-      expect(Brand.fromString('ssvid'), Brand.ssvid);
+      expect(Brand.fromString('svid'), Brand.svid);
       expect(Brand.fromString('vidcombo'), Brand.vidcombo);
-      expect(Brand.fromString('SSVID'), Brand.ssvid);
+      expect(Brand.fromString('SVID'), Brand.svid);
       expect(Brand.fromString('VIDCOMBO'), Brand.vidcombo);
     });
 
-    test('Brand.fromString defaults to ssvid for unknown', () {
-      expect(Brand.fromString('unknown'), Brand.ssvid);
-      expect(Brand.fromString(''), Brand.ssvid);
+    test('Brand.fromString defaults to svid for unknown', () {
+      expect(Brand.fromString('unknown'), Brand.svid);
+      expect(Brand.fromString(''), Brand.svid);
     });
   });
 
-  group('SSvidBrand', () {
+  group('SvidBrand', () {
     late BrandConfig config;
 
     setUp(() {
-      config = const SSvidBrand();
+      config = const SvidBrand();
     });
 
     test('identity properties', () {
-      expect(config.brand, Brand.ssvid);
-      expect(config.appName, 'SSvid');
-      expect(config.databaseName, 'ssvid');
-      expect(config.urlScheme, 'ssvid');
-      expect(config.bundleId, 'com.ssvid.app');
-      expect(config.methodChannelPrefix, 'com.ssvid.app');
+      expect(config.brand, Brand.svid);
+      expect(config.appName, 'Svid');
+      expect(config.databaseName, 'svid');
+      expect(config.urlScheme, 'svid');
+      expect(config.bundleId, 'com.svid.app');
+      expect(config.methodChannelPrefix, 'com.svid.app');
     });
 
     test('backend properties', () {
       expect(config.backendType, BackendType.go);
-      expect(config.backendBaseUrl, contains('api.ssvid.app'));
-      expect(config.backendAppName, 'appSSvid');
-      expect(config.extractionApiUrl, contains('api.ssvid.app'));
-      expect(config.websiteUrl, 'https://ssvid.app');
+      expect(config.backendBaseUrl, contains('api.svid.app'));
+      expect(config.backendAppName, 'appSvid');
+      expect(config.extractionApiUrl, contains('api.svid.app'));
+      expect(config.websiteUrl, 'https://svid.app');
       expect(config.versionCheckUrl, isNotNull);
     });
 
@@ -62,7 +62,30 @@ void main() {
       expect(config.canAutoDownloadUpdate, isTrue);
     });
 
-    test('license key validation', () {
+    test('license key validation — new SVID- format', () {
+      expect(
+        config.isValidLicenseKey(
+          'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        ),
+        isTrue,
+      );
+      expect(
+        config.isValidLicenseKey(
+          'SVID-ABCD-EF01-2345-6789-abcd-ef01-2345-6789',
+        ),
+        isTrue,
+      );
+      expect(config.isValidLicenseKey('invalid'), isFalse);
+      expect(
+        config.isValidLicenseKey('ABCDEF01234567890ABCDEF012345678'),
+        isFalse,
+      );
+      expect(config.isValidLicenseKey(''), isFalse);
+    });
+
+    test('license key validation — legacy SSVID- keys still accepted', () {
+      // Backward compat: licenses issued before the svid rebrand (SSVID-XXXX,
+      // 45 chars) must keep activating so paying users aren't locked out.
       expect(
         config.isValidLicenseKey(
           'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
@@ -75,12 +98,6 @@ void main() {
         ),
         isTrue,
       );
-      expect(config.isValidLicenseKey('invalid'), isFalse);
-      expect(
-        config.isValidLicenseKey('ABCDEF01234567890ABCDEF012345678'),
-        isFalse,
-      );
-      expect(config.isValidLicenseKey(''), isFalse);
     });
 
     test('colors are non-null', () {
@@ -195,12 +212,12 @@ void main() {
       );
     });
 
-    test('colors differ from SSvid', () {
-      final ssvid = const SSvidBrand();
-      expect(config.colors.brand, isNot(equals(ssvid.colors.brand)));
+    test('colors differ from Svid', () {
+      final svid = const SvidBrand();
+      expect(config.colors.brand, isNot(equals(svid.colors.brand)));
       expect(
         config.darkColorScheme.primary,
-        isNot(equals(ssvid.darkColorScheme.primary)),
+        isNot(equals(svid.darkColorScheme.primary)),
       );
     });
   });
@@ -208,60 +225,65 @@ void main() {
   group('Brand isolation', () {
     test('database names differ', () {
       expect(
-        const SSvidBrand().databaseName,
+        const SvidBrand().databaseName,
         isNot(equals(const VidComboBrand().databaseName)),
       );
     });
 
     test('regression: database names must NOT contain extension', () {
       // Bug c8bbba91 — databaseName included `.db` which then concatenated to
-      // `ssvid.db.db` in app_database.dart, splitting users' data into orphan
+      // `svid.db.db` in app_database.dart, splitting users' data into orphan
       // files. The base class _resolve() asserts this invariant; this test
       // catches future regressions early via direct getter inspection.
-      expect(const SSvidBrand().databaseName, isNot(contains('.')));
+      expect(const SvidBrand().databaseName, isNot(contains('.')));
       expect(const VidComboBrand().databaseName, isNot(contains('.')));
-      expect(const SSvidBrand().databaseName, equals('ssvid'));
+      expect(const SvidBrand().databaseName, equals('svid'));
       expect(const VidComboBrand().databaseName, equals('vidcombo'));
     });
 
     test('bundle IDs differ', () {
       expect(
-        const SSvidBrand().bundleId,
+        const SvidBrand().bundleId,
         isNot(equals(const VidComboBrand().bundleId)),
       );
     });
 
     test('URL schemes differ', () {
       expect(
-        const SSvidBrand().urlScheme,
+        const SvidBrand().urlScheme,
         isNot(equals(const VidComboBrand().urlScheme)),
       );
     });
 
     test('backend types differ', () {
       expect(
-        const SSvidBrand().backendType,
+        const SvidBrand().backendType,
         isNot(equals(const VidComboBrand().backendType)),
       );
     });
 
     test('license key patterns — brand separation', () {
-      const ssvid = SSvidBrand();
+      const svid = SvidBrand();
       const vidcombo = VidComboBrand();
 
-      // VIDCOMBO- key should not validate as SSvid
+      // VIDCOMBO- key should not validate as Svid
       const vidcomboGoKey = 'VIDCOMBO-1234-5678-9abc-def0-1234-5678-9abc-def0';
       expect(vidcombo.isValidLicenseKey(vidcomboGoKey), isTrue);
-      expect(ssvid.isValidLicenseKey(vidcomboGoKey), isFalse);
+      expect(svid.isValidLicenseKey(vidcomboGoKey), isFalse);
 
-      // VidCombo PHP key (32 hex) should not validate as SSvid
+      // VidCombo PHP key (32 hex) should not validate as Svid
       const vidcomboPhpKey = 'ABCDEF01234567890ABCDEF012345678';
       expect(vidcombo.isValidLicenseKey(vidcomboPhpKey), isTrue);
-      expect(ssvid.isValidLicenseKey(vidcomboPhpKey), isFalse);
+      expect(svid.isValidLicenseKey(vidcomboPhpKey), isFalse);
 
-      // SSVID- key validates for SSvid (primary) and VidCombo (legacy compat)
+      // SVID- is Svid's primary format; it must NOT validate as VidCombo.
+      const svidKey = 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0';
+      expect(svid.isValidLicenseKey(svidKey), isTrue);
+      expect(vidcombo.isValidLicenseKey(svidKey), isFalse);
+
+      // Legacy SSVID- key validates for Svid (backward compat) and VidCombo (Go legacy compat)
       const ssvidKey = 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0';
-      expect(ssvid.isValidLicenseKey(ssvidKey), isTrue);
+      expect(svid.isValidLicenseKey(ssvidKey), isTrue);
       expect(vidcombo.isValidLicenseKey(ssvidKey), isTrue); // legacy compat
     });
   });

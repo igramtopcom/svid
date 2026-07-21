@@ -11,7 +11,7 @@ class AppTypography {
   /// Primary font family — used as ThemeData root fontFamily
   static String get fontFamily {
     switch (BrandConfig.current.brand) {
-      case Brand.ssvid:
+      case Brand.svid:
         return 'Inter';
       case Brand.vidcombo:
         return 'DM Sans';

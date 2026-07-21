@@ -1576,7 +1576,7 @@ class _CommandPopoverToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cs = Theme.of(context).colorScheme;
-    final isSsvid = BrandConfig.current.brand == Brand.ssvid;
+    final isSsvid = BrandConfig.current.brand == Brand.svid;
     final accent = AppColors.accentHighlight;
     final trackRadius = isSsvid ? AppRadius.input : AppRadius.full;
     final thumbRadius = isSsvid ? 2.5 : AppRadius.full;

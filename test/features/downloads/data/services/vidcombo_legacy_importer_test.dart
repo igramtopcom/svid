@@ -63,7 +63,7 @@ void main() {
 
       final imported = await importer.runIfNeeded();
 
-      if (BrandConfig.current.brand == Brand.ssvid) {
+      if (BrandConfig.current.brand == Brand.svid) {
         expect(imported, 0, reason: 'brand guard must block on ssvid');
         expect(await countRows(), 0);
       } else {

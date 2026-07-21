@@ -173,7 +173,7 @@ void main() {
       // brand, the folder is "SSvid App Downloader". This test plus
       // its VidCombo sibling form the matched-pair guard against
       // a future regression to a hardcoded literal.
-      if (BrandConfig.current.brand != Brand.ssvid) return;
+      if (BrandConfig.current.brand != Brand.svid) return;
       expect(
         DownloadPathSuggestionService.brandFolder,
         'SSvid App Downloader',

@@ -120,7 +120,7 @@ class _PopupPalette {
 
   static _PopupPalette current() {
     return switch (BrandConfig.current.brand) {
-      Brand.ssvid => const _PopupPalette(
+      Brand.svid => const _PopupPalette(
         background: Color(0xFF121214),
         surface: Color(0xFF1A1B20),
         surfaceRaised: Color(0xFF24252C),

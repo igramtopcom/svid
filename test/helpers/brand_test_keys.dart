@@ -11,7 +11,7 @@ class TestLicenseKeys {
 
   /// A valid Go-backend key for the current brand.
   static String get valid {
-    if (BrandConfig.current.brand == Brand.ssvid) {
+    if (BrandConfig.current.brand == Brand.svid) {
       return 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0';
     }
     // VidCombo Go-backend key (new format)
@@ -20,7 +20,7 @@ class TestLicenseKeys {
 
   /// A second valid Go-backend key for the current brand.
   static String get validAlt {
-    if (BrandConfig.current.brand == Brand.ssvid) {
+    if (BrandConfig.current.brand == Brand.svid) {
       return 'SSVID-aaaa-bbbb-cccc-dddd-eeee-ffff-0000-1111';
     }
     return 'VIDCOMBO-aaaa-bbbb-cccc-dddd-eeee-ffff-0000-1111';
@@ -28,7 +28,7 @@ class TestLicenseKeys {
 
   /// A third valid Go-backend key for the current brand.
   static String get validThird {
-    if (BrandConfig.current.brand == Brand.ssvid) {
+    if (BrandConfig.current.brand == Brand.svid) {
       return 'SSVID-bbbb-cccc-dddd-eeee-ffff-0000-1111-2222';
     }
     return 'VIDCOMBO-bbbb-cccc-dddd-eeee-ffff-0000-1111-2222';

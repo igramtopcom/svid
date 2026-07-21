@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-/// Brand identifier, resolved at compile time via `--dart-define=BRAND=ssvid`.
+/// Brand identifier, resolved at compile time via `--dart-define=BRAND=svid`.
 enum Brand {
-  ssvid,
+  svid,
   vidcombo;
 
   static Brand fromString(String value) {
     return Brand.values.firstWhere(
       (b) => b.name == value.toLowerCase(),
-      orElse: () => Brand.ssvid,
+      orElse: () => Brand.svid,
     );
   }
 }
 
 /// Backend protocol type — determines which adapter stack to use.
 enum BackendType {
-  /// SSvid: Go backend with X-API-Key header, REST API
+  /// Svid: Go backend with X-API-Key header, REST API
   go,
 
   /// VidCombo: PHP backend with query-param device_id + license_key
@@ -43,7 +43,7 @@ class BrandColors {
   final Color gradientTail;
 
   // ── Light Theme Utility Colors ──
-  // Tinted to match brand warmth (SSvid=warm, VidCombo=cool).
+  // Tinted to match brand warmth (Svid=warm, VidCombo=cool).
 
   /// Muted foreground — disabled icons, inactive tabs (light mode)
   final Color lightMuted;
@@ -59,7 +59,7 @@ class BrandColors {
   final Color lightElevated;
 
   // ── Dark Theme Utility Colors ──
-  // Tinted to match brand warmth (SSvid=warm, VidCombo=cool).
+  // Tinted to match brand warmth (Svid=warm, VidCombo=cool).
 
   /// Muted foreground — disabled icons, inactive tabs, subtle borders
   final Color darkMuted;
@@ -170,7 +170,7 @@ class BrandColors {
 
 /// Abstract brand configuration. Each brand implements this with its own values.
 ///
-/// Resolved once at startup from `--dart-define=BRAND=xxx` (default: ssvid).
+/// Resolved once at startup from `--dart-define=BRAND=xxx` (default: svid).
 /// Access via [BrandConfig.current] — never changes at runtime.
 abstract class BrandConfig {
   // ==================== SINGLETON ====================
@@ -178,12 +178,12 @@ abstract class BrandConfig {
   static BrandConfig? _current;
 
   /// The active brand configuration. Set once in main() via [BrandConfig.init].
-  /// Auto-initializes with default brand (ssvid) on first access if [init] was
+  /// Auto-initializes with default brand (svid) on first access if [init] was
   /// not called — safe for tests that don't explicitly set up branding.
   static BrandConfig get current {
     _current ??= _resolve(
       Brand.fromString(
-        const String.fromEnvironment('BRAND', defaultValue: 'ssvid'),
+        const String.fromEnvironment('BRAND', defaultValue: 'svid'),
       ),
     );
     return _current!;
@@ -193,7 +193,7 @@ abstract class BrandConfig {
   /// Called in main() before runApp. Safe to call multiple times (first wins).
   static void init() {
     if (_current != null) return;
-    const brandName = String.fromEnvironment('BRAND', defaultValue: 'ssvid');
+    const brandName = String.fromEnvironment('BRAND', defaultValue: 'svid');
     final brand = Brand.fromString(brandName);
     _current = _resolve(brand);
   }
@@ -211,8 +211,8 @@ abstract class BrandConfig {
     // Lazy imports to avoid circular deps — these are lightweight data classes.
     final BrandConfig config;
     switch (brand) {
-      case Brand.ssvid:
-        config = const SSvidBrand();
+      case Brand.svid:
+        config = const SvidBrand();
         break;
       case Brand.vidcombo:
         config = const VidComboBrand();
@@ -251,7 +251,7 @@ abstract class BrandConfig {
     );
   }
 
-  /// URL scheme for deep links (e.g., "ssvid" → ssvid://activate?key=...)
+  /// URL scheme for deep links (e.g., "svid" → svid://activate?key=...)
   String get urlScheme;
 
   /// Platform bundle ID / app ID
@@ -269,7 +269,7 @@ abstract class BrandConfig {
 
   BackendType get backendType;
 
-  /// Base URL for the brand's primary backend (PHP for VidCombo legacy, Go for SSvid)
+  /// Base URL for the brand's primary backend (PHP for VidCombo legacy, Go for Svid)
   String get backendBaseUrl;
 
   /// Base URL for the shared Go backend (identity, analytics, payment, support).
@@ -277,7 +277,7 @@ abstract class BrandConfig {
   /// BackendClient (API key auth) always targets this URL.
   String get goBackendBaseUrl => const String.fromEnvironment(
     'GO_BACKEND_URL',
-    defaultValue: 'https://api.ssvid.app/api/v1',
+    defaultValue: 'https://api.svid.app/api/v1',
   );
 
   /// App name sent to backend for device registration (e.g., 'appVidcombo')
@@ -353,7 +353,7 @@ abstract class BrandConfig {
   // ==================== THEME ====================
 
   /// Default theme mode for this brand.
-  /// SSvid: dark (Nocturne Cinematic). VidCombo: light (Arctic Clarity).
+  /// Svid: dark (Nocturne Cinematic). VidCombo: light (Arctic Clarity).
   ThemeMode get defaultThemeMode;
 
   // ==================== SHAPE ====================
@@ -376,18 +376,18 @@ abstract class BrandConfig {
   /// Popup corner radius — popup menus, context menus, tooltips, dropdown menus
   double get popupRadius;
 
-  /// Card elevation — SSvid: flat (0), VidCombo: subtle lift
+  /// Card elevation — Svid: flat (0), VidCombo: subtle lift
   double get cardElevation;
 
   /// Whether cards/containers show visible borders.
-  /// SSvid: true (flat cards need borders to define edges)
+  /// Svid: true (flat cards need borders to define edges)
   /// VidCombo: false (elevated cards use shadow instead)
   bool get hasCardBorder;
 
   // ==================== FLOATING CAPTURE POPUP (v2.2 Phase 2B) ====================
 
   /// Primary action background color in floating capture popup.
-  /// SSvid: Wine Red #8D021F (the rare, single accent presence).
+  /// Svid: Wine Red #8D021F (the rare, single accent presence).
   /// VidCombo: Ocean Blue #0066CC (decisive action commitment).
   ///
   /// Spec §7 brand parity rule: NEVER hardcode wine red in popup files —
@@ -399,56 +399,56 @@ abstract class BrandConfig {
   Color get popupAccentForeground;
 
   /// 8pt brand-dot circle in the popup top bar.
-  /// SSvid: same Wine Red as primary action (mono-accent palette).
+  /// Svid: same Wine Red as primary action (mono-accent palette).
   /// VidCombo: Cyan #03BEFE — DISTINCT from primary button (Ocean Blue).
   /// The 2-color play creates visual layering: dot=spark, button=mass.
   Color get popupBrandDot;
 
   /// Hover/active state of [popupAccentColor].
-  /// SSvid: Crimson #C41E3A. VidCombo: Cyan #03BEFE.
+  /// Svid: Crimson #C41E3A. VidCombo: Cyan #03BEFE.
   Color get popupAccentHover;
 }
 
 // ==================== BRAND IMPLEMENTATIONS ====================
 // Defined here to keep everything in one file and avoid import issues.
 
-/// SSvid brand — Nocturne Cinematic (Wine Red + Crimson)
-class SSvidBrand extends BrandConfig {
-  const SSvidBrand();
+/// Svid brand — Nocturne Cinematic (Wine Red + Crimson)
+class SvidBrand extends BrandConfig {
+  const SvidBrand();
 
   @override
-  Brand get brand => Brand.ssvid;
+  Brand get brand => Brand.svid;
   @override
-  String get appName => 'SSvid';
+  String get appName => 'Svid';
   @override
   String get appDescription =>
       'High-performance video downloader powered by Rust + Flutter';
   @override
-  String get databaseName => 'ssvid';
+  String get databaseName => 'svid';
   @override
-  String get urlScheme => 'ssvid';
+  String get urlScheme => 'svid';
   @override
-  String get bundleId => 'com.ssvid.app';
+  String get bundleId => 'com.svid.app';
   @override
-  String get windowsAppUserModelId => 'com.ssvid.app';
+  String get windowsAppUserModelId => 'com.svid.app';
   @override
-  String get methodChannelPrefix => 'com.ssvid.app';
+  String get methodChannelPrefix => 'com.svid.app';
 
   @override
   BackendType get backendType => BackendType.go;
   @override
   String get backendBaseUrl => const String.fromEnvironment(
     'BACKEND_URL',
-    defaultValue: 'https://api.ssvid.app/api/v1',
+    defaultValue: 'https://api.svid.app/api/v1',
   );
   @override
-  String get backendAppName => 'appSSvid';
+  String get backendAppName => 'appSvid';
   @override
-  String get extractionApiUrl => 'https://api.ssvid.app/';
+  String get extractionApiUrl => 'https://api.svid.app/';
   @override
-  String get websiteUrl => 'https://ssvid.app';
+  String get websiteUrl => 'https://svid.app';
   @override
-  String? get versionCheckUrl => 'https://ssvid.app/version.json';
+  String? get versionCheckUrl => 'https://svid.app/version.json';
   @override
   bool get hasStripeCheckout => true;
   @override
@@ -458,12 +458,25 @@ class SSvidBrand extends BrandConfig {
 
   @override
   RegExp get licenseKeyPattern =>
-      RegExp(r'^SSVID-[0-9A-Fa-f]{4}(-[0-9A-Fa-f]{4}){7}$');
+      RegExp(r'^SVID-[0-9A-Fa-f]{4}(-[0-9A-Fa-f]{4}){7}$');
   @override
-  String get licenseKeyHint => 'SSVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX';
+  String get licenseKeyHint => 'SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX';
   @override
   String get licenseKeyFormatExample =>
-      'SSVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX';
+      'SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX';
+
+  /// Accept new `SVID-XXXX` keys and legacy `SSVID-XXXX` keys issued before the
+  /// svid rebrand. Keeping legacy acceptance mirrors VidCombo's cross-format
+  /// gate so paying users with pre-rebrand licenses are never locked out at the
+  /// local format check (a doomed key still fails server-side — harmless).
+  @override
+  bool isValidLicenseKey(String key) {
+    // New Svid format: SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX (44 chars)
+    if (licenseKeyPattern.hasMatch(key)) return true;
+    // Legacy SSvid format (Go keys generated before the rename): SSVID-XXXX-... (45 chars)
+    if (key.startsWith('SSVID-') && key.length == 45) return true;
+    return false;
+  }
 
   @override
   ThemeMode get defaultThemeMode => ThemeMode.dark;
@@ -627,7 +640,7 @@ class SSvidBrand extends BrandConfig {
   BoxShadow get glowCta =>
       const BoxShadow(color: Color(0x668D021F), blurRadius: 20);
 
-  // -- Floating capture popup tokens (v2.2 Phase 2B / Stitch SSvid Nocturne) --
+  // -- Floating capture popup tokens (v2.2 Phase 2B / Stitch Svid Nocturne) --
   @override
   Color get popupAccentColor => const Color(0xFF8D021F); // Wine Red
   @override
@@ -682,7 +695,7 @@ class VidComboBrand extends BrandConfig {
   @override
   bool get canAutoDownloadUpdate => true;
 
-  /// VidCombo unified to 15/week to match SSvid. Server-side PHP
+  /// VidCombo unified to 15/week to match Svid. Server-side PHP
   /// `count_free` is legacy daily data; client tracking ignores it.
   @override
   int get freeWeeklyDownloads => 15;
@@ -883,7 +896,7 @@ class VidComboBrand extends BrandConfig {
       const BoxShadow(color: Color(0x660066CC), blurRadius: 20);
 
   // -- Floating capture popup tokens (v2.2 Phase 2B / Stitch Arctic Command) --
-  // Two-color play DISTINCT from SSvid: brand dot is Cyan #03BEFE (the spark),
+  // Two-color play DISTINCT from Svid: brand dot is Cyan #03BEFE (the spark),
   // primary action is Ocean Blue #0066CC (the mass). Verified `brand_config.dart`
   // gradient line 795 (now embedded in colors list above).
   @override

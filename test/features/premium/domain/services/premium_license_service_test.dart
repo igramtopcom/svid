@@ -459,7 +459,7 @@ void main() {
         });
       },
       skip:
-          BrandConfig.current.brand != Brand.ssvid
+          BrandConfig.current.brand != Brand.svid
               ? 'SSvid-specific license format'
               : null,
     );

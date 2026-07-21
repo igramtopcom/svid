@@ -266,7 +266,7 @@ void main() {
   ) async {
     await pumpScreen(
       tester,
-      brand: Brand.ssvid,
+      brand: Brand.svid,
       pdfConvCheckoutEnabled: true,
       stripePlans: const [
         PricingPlan(

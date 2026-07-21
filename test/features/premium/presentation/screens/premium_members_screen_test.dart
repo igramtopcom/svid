@@ -64,7 +64,7 @@ void main() {
   );
 
   setUp(() async {
-    BrandConfig.setForTest(Brand.ssvid);
+    BrandConfig.setForTest(Brand.svid);
     SharedPreferences.setMockInitialValues({});
     prefs = await SharedPreferences.getInstance();
     datasource = _TestDatasource(prefs);

@@ -6,7 +6,9 @@ import '../../../premium/domain/entities/premium_feature.dart';
 import '../../../premium/domain/entities/premium_limits.dart';
 import '../../../premium/presentation/providers/premium_providers.dart';
 import '../../../premium/presentation/widgets/upgrade_prompt_dialog.dart';
+import '../../../settings/domain/entities/format_preset_extended.dart';
 import '../../../settings/domain/enums/container_format_preference.dart';
+import '../../../settings/presentation/providers/active_preset_provider.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../domain/entities/download_config.dart';
 import '../../domain/entities/video_info.dart';
@@ -79,16 +81,29 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
     _videoOptions = _buildVideoOptions(widget.videoInfo);
     _hasVideo = _videoOptions.isNotEmpty;
 
+    // Preselect from the active download default (the single source of truth
+    // the command-bar popover also edits) so the sheet opens on the user's
+    // current preference rather than a cold guess.
     final settings = ref.read(settingsProvider);
-    _videoFormat = settings.containerFormatPreference;
+    final cur = ref.read(activePresetProvider).currentConfig;
 
-    final prefersAudio =
-        settings.defaultDownloadFileType == DownloadFileType.audio;
-    _mode = (!_hasVideo || prefersAudio) ? _DlMode.audio : _DlMode.video;
+    _videoFormat =
+        ContainerFormatPreference.fromExtension(cur.containerFormat) ??
+        settings.containerFormatPreference;
+    if (cur.audioOnly) {
+      final normalized = _normalizeAudioFormat(cur.containerFormat);
+      if (_audioFormats.contains(normalized)) _audioFormat = normalized;
+    }
+    if (cur.audioBitrate != null && _audioBitrates.contains(cur.audioBitrate)) {
+      _bitrate = cur.audioBitrate!;
+    }
+
+    _mode = (!_hasVideo || cur.audioOnly) ? _DlMode.audio : _DlMode.video;
 
     if (_hasVideo) {
       final isPremium = ref.read(isPremiumProvider);
-      final settingCap = settings.maxResolution; // 0 = unlimited
+      final settingCap =
+          cur.maxResolution > 0 ? cur.maxResolution : settings.maxResolution;
       final cap =
           isPremium
               ? (settingCap > 0 ? settingCap : 1 << 30)
@@ -201,7 +216,6 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
             _videoFormat != settings.containerFormatPreference
                 ? _videoFormat
                 : null,
-        rememberForPlatform: _remember,
       );
     } else {
       final normalized = _normalizeAudioFormat(_audioFormat);
@@ -227,8 +241,34 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
           outputFormat: normalized,
           targetBitrateKbps: lossless ? null : _bitrate,
         ),
-        rememberForPlatform: _remember,
       );
+    }
+
+    // "Remember this choice" makes it the default: write the selection into the
+    // active download config and turn OFF ask-mode, so the next paste
+    // auto-downloads (Rule 1.5) instead of re-opening this sheet. This is the
+    // single lever that keeps "remember" and the command-bar popover in sync.
+    if (_remember) {
+      final presetCtrl = ref.read(activePresetProvider.notifier);
+      final cur = ref.read(activePresetProvider).currentConfig;
+      final FormatPresetExtended next;
+      if (_mode == _DlMode.video) {
+        next = cur.copyWith(
+          audioOnly: false,
+          containerFormat: _videoFormat.name,
+          maxResolution: _height ?? cur.maxResolution,
+        );
+      } else {
+        final normalized = _normalizeAudioFormat(_audioFormat);
+        final lossless = normalized == 'wav' || normalized == 'flac';
+        next = cur.copyWith(
+          audioOnly: true,
+          containerFormat: normalized,
+          audioBitrate: lossless ? null : _bitrate,
+        );
+      }
+      await presetCtrl.updateConfig(next);
+      await presetCtrl.setManualMode(false);
     }
 
     if (!mounted) return;

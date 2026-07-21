@@ -235,16 +235,22 @@ class _CommandBarPresetPopoverContent extends ConsumerWidget {
     final preset = state.currentConfig;
     final settings = ref.watch(settingsProvider);
     final defaults = PresetDisplayDefaults.fromSettings(settings);
-    // Resolve preset name through i18n for built-ins so a locale switch
-    // refreshes the chip label; user-created presets keep their stored name.
-    final activeName =
-        (state.activePreset.isBuiltIn &&
-                BuiltinPresetIds.all.contains(state.activePreset.id))
-            ? AppLocalizations.builtinPresetName(state.activePreset.id)
-            : state.activePreset.name;
     final globalPath = ref.watch(downloadPathProvider);
     final saveLocationDisplay =
         preset.saveLocation ?? (globalPath.isEmpty ? '' : globalPath);
+
+    // Quality shows "Ask first" while ask-mode is on; otherwise the concrete
+    // default (Best / 1080p / 320kbps). Ask-mode and the fixed quality now
+    // live in ONE control — no separate manual-mode toggle to reconcile.
+    final qualityValue =
+        state.useManualMode
+            ? AppLocalizations.homePresetManualModeShort
+            : PresetDisplay.popoverQuality(
+              preset,
+              defaults: defaults,
+              bestQualityLabel: AppLocalizations.homePresetBestQualityShort,
+              defaultQualityLabel: AppLocalizations.homePresetQualityDefault,
+            );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
@@ -252,7 +258,6 @@ class _CommandBarPresetPopoverContent extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header — uppercase muted label per mockup
           Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.lg,
@@ -270,50 +275,37 @@ class _CommandBarPresetPopoverContent extends ConsumerWidget {
           ),
           Divider(height: 1, color: dividerColor),
 
-          // Profile selector — opens a dialog listing every available
-          // preset (built-ins + migrated custom presets). The edited
-          // suffix mirrors ActivePresetState.isModified so the user can
-          // tell when popover tweaks diverge from the saved profile.
-          _PresetRow(
-            icon: Icons.bookmark_outline_rounded,
-            label: AppLocalizations.homePresetProfile,
-            value: PresetDisplay.profileName(
-              activeName,
-              isModified: state.isModified,
-              modifiedLabel: AppLocalizations.homePresetModifiedShort,
+          // Type → Format → Quality, in that order: you decide what kind of
+          // file you want before its format, and its format before its
+          // quality. Save location trails at the end.
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.smMd,
+              AppSpacing.lg,
+              AppSpacing.smMd,
             ),
-            onTap: () => _editActiveProfile(context, ref),
+            child: _TypeToggle(
+              audioOnly: preset.audioOnly,
+              onChanged: (audio) => _setType(ref, preset, audio),
+            ),
           ),
-
           Divider(height: 1, color: dividerColor),
 
           _PresetRow(
-            icon: Icons.video_library_outlined,
+            icon:
+                preset.audioOnly
+                    ? Icons.graphic_eq_rounded
+                    : Icons.video_library_outlined,
             label: AppLocalizations.homePresetFormat,
-            value: _popoverFormatValue(preset, defaults),
+            value: PresetDisplay.popoverFormat(preset, defaults: defaults),
             onTap: () => _editContainerFormat(context, ref, preset),
           ),
           _PresetRow(
             icon: Icons.high_quality_outlined,
             label: AppLocalizations.homePresetQuality,
-            value: PresetDisplay.popoverQuality(
-              preset,
-              defaults: defaults,
-              bestQualityLabel: AppLocalizations.homePresetBestQualityShort,
-              defaultQualityLabel: AppLocalizations.homePresetQualityDefault,
-            ),
+            value: qualityValue,
             onTap: () => _editQuality(context, ref, preset),
-          ),
-          _PresetRow(
-            icon: Icons.replay_circle_filled_outlined,
-            label: AppLocalizations.homePresetFallback,
-            value: PresetDisplay.popoverFallback(
-              preset,
-              nearestLabel: AppLocalizations.homePresetFallbackNearest,
-              higherLabel: AppLocalizations.homePresetFallbackHigher,
-              blockLabel: AppLocalizations.homePresetFallbackBlock,
-            ),
-            onTap: () => _editFallback(context, ref, preset),
           ),
           _PresetRow(
             icon: Icons.folder_outlined,
@@ -321,241 +313,129 @@ class _CommandBarPresetPopoverContent extends ConsumerWidget {
             value: saveLocationDisplay,
             onTap: () => _editSaveLocation(context, ref, preset),
           ),
-
-          Divider(height: 1, color: dividerColor),
-
-          // Manual mode toggle — replaces the previous "Cài đặt nâng
-          // cao → Settings" navigation row. That row was a dead-end
-          // (jumped to Settings tab without applying anything to the
-          // current download flow). The toggle is a peer-mode to
-          // preset auto-pick: when ON, every download surfaces the
-          // legacy DownloadConfigDialog with full advanced controls
-          // (codec, container, fps, subs, sponsor block, watermark,
-          // section, etc.). Picking any concrete preset auto-disables
-          // manual mode (mutually exclusive UX modes).
-          _PresetManualModeRow(
-            enabled: state.useManualMode,
-            onToggle: (next) async {
-              await ref.read(activePresetProvider.notifier).setManualMode(next);
-            },
-          ),
         ],
       ),
     );
   }
 
-  // ── Picker handlers ──
-
-  String _popoverFormatValue(
+  /// Switch Video ↔ Audio, keeping a container that matches the new family
+  /// (video → mp4, audio → mp3) unless the current one already fits.
+  Future<void> _setType(
+    WidgetRef ref,
     FormatPresetExtended preset,
-    PresetDisplayDefaults defaults,
-  ) {
-    final typeLabel =
-        preset.audioOnly
-            ? AppLocalizations.configDialogAudio
-            : AppLocalizations.configDialogVideo;
-    final format = PresetDisplay.popoverFormat(preset, defaults: defaults);
-    return '$typeLabel · $format';
+    bool audio,
+  ) async {
+    if (preset.audioOnly == audio) return;
+    const audioContainers = {'mp3', 'm4a', 'opus', 'wav', 'flac'};
+    final isAudioContainer =
+        audioContainers.contains(preset.containerFormat.toLowerCase());
+    var container = preset.containerFormat;
+    if (audio && !isAudioContainer) container = 'mp3';
+    if (!audio && isAudioContainer) container = 'mp4';
+    await ref
+        .read(activePresetProvider.notifier)
+        .updateConfig(preset.copyWith(audioOnly: audio, containerFormat: container));
   }
 
-  Future<void> _editActiveProfile(BuildContext context, WidgetRef ref) async {
-    // Reads the migrated v2 records from SharedPreferences (built-ins +
-    // user customs). Falls back to canonical built-ins if the migration
-    // hasn't run yet (test harness, fresh install pre-bootstrap).
-    final available = ref.read(availableExtendedPresetsProvider);
-    final activeId = ref.read(activePresetProvider).activeId;
-    final isPremium = ref.read(isPremiumProvider);
-    final premiumLabel = AppLocalizations.premiumPremiumLabel;
-    final picked = await _showOptionPicker<String>(
-      context: context,
-      title: AppLocalizations.homePresetProfilePickerTitle,
-      options: [
-        for (final p in available)
-          _Option(
-            value: p.id,
-            // Built-in presets render their localized display name; user-
-            // created presets keep their stored name. The stored `name`
-            // field on a built-in is treated as a shadow fallback only.
-            label:
-                (p.isBuiltIn && BuiltinPresetIds.all.contains(p.id))
-                    ? AppLocalizations.builtinPresetName(p.id)
-                    : p.name,
-            subtitle: _presetProfileSubtitle(
-              preset: p,
-              premiumLocked: _presetRequiresPremium(p, isPremium: isPremium),
-              premiumLabel: premiumLabel,
-            ),
-            leadingIcon:
-                _presetRequiresPremium(p, isPremium: isPremium)
-                    ? Icons.workspace_premium_rounded
-                    : null,
-            badgeLabel:
-                _presetRequiresPremium(p, isPremium: isPremium)
-                    ? premiumLabel
-                    : null,
-            isLocked: _presetRequiresPremium(p, isPremium: isPremium),
-          ),
-      ],
-      currentValue: activeId,
-      onLockedTap: (value) async {
-        if (!context.mounted) return;
-        await UpgradePromptDialog.showAndNavigate(
-          context,
-          ref,
-          feature: PremiumFeature.highQuality4K,
-        );
-      },
-    );
-    if (picked != null && picked != activeId) {
-      await ref.read(activePresetProvider.notifier).setActive(picked);
-    }
-  }
-
-  bool _presetRequiresPremium(
-    FormatPresetExtended preset, {
-    required bool isPremium,
-  }) {
-    if (isPremium || preset.audioOnly) return false;
-    return preset.maxResolution > PremiumLimits.freeMaxResolutionP;
-  }
-
-  String? _presetProfileSubtitle({
-    required FormatPresetExtended preset,
-    required bool premiumLocked,
-    required String premiumLabel,
-  }) {
-    final builtIn =
-        preset.isBuiltIn ? AppLocalizations.homePresetBuiltIn : null;
-    if (!premiumLocked) return builtIn;
-    if (builtIn == null || builtIn.isEmpty) return premiumLabel;
-    return '$builtIn · $premiumLabel';
-  }
+  // ── Picker handlers ──
 
   Future<void> _editContainerFormat(
     BuildContext context,
     WidgetRef ref,
     FormatPresetExtended preset,
   ) async {
+    // Formats are scoped to the current type — the Type toggle owns
+    // video↔audio, so picking a container here never changes the family.
+    final videoOptions = <_Option<String>>[
+      _Option(
+        value: 'mp4',
+        label: 'MP4',
+        subtitle: AppLocalizations.homePresetFormatMp4Desc,
+        leadingIcon: Icons.videocam_rounded,
+      ),
+      _Option(
+        value: 'webm',
+        label: 'WebM',
+        subtitle: AppLocalizations.homePresetFormatWebmDesc,
+        leadingIcon: Icons.videocam_rounded,
+      ),
+      _Option(
+        value: 'mkv',
+        label: 'MKV',
+        subtitle: AppLocalizations.homePresetFormatMkvDesc,
+        leadingIcon: Icons.videocam_rounded,
+      ),
+      _Option(
+        value: 'avi',
+        label: 'AVI',
+        subtitle: AppLocalizations.settingsContainerAVIDesc,
+        leadingIcon: Icons.sync_rounded,
+        tone: _OptionTone.warning,
+      ),
+      _Option(
+        value: 'mov',
+        label: 'MOV',
+        subtitle: AppLocalizations.settingsContainerMOVDesc,
+        leadingIcon: Icons.sync_rounded,
+        tone: _OptionTone.warning,
+      ),
+      _Option(
+        value: 'm4v',
+        label: 'M4V',
+        subtitle: AppLocalizations.settingsContainerM4VDesc,
+        leadingIcon: Icons.sync_rounded,
+        tone: _OptionTone.warning,
+      ),
+      _Option(
+        value: 'flv',
+        label: 'FLV',
+        subtitle: AppLocalizations.settingsContainerFLVDesc,
+        leadingIcon: Icons.sync_rounded,
+        tone: _OptionTone.warning,
+      ),
+    ];
+    final audioOptions = <_Option<String>>[
+      _Option(
+        value: 'mp3',
+        label: 'MP3',
+        subtitle: AppLocalizations.homePresetFormatMp3Desc,
+        leadingIcon: Icons.music_note_rounded,
+      ),
+      _Option(
+        value: 'm4a',
+        label: 'M4A',
+        subtitle: AppLocalizations.homePresetFormatM4aDesc,
+        leadingIcon: Icons.music_note_rounded,
+      ),
+      _Option(
+        value: 'opus',
+        label: 'OPUS',
+        subtitle: AppLocalizations.homePresetFormatOpusDesc,
+        leadingIcon: Icons.music_note_rounded,
+      ),
+      _Option(
+        value: 'wav',
+        label: 'WAV',
+        subtitle: AppLocalizations.homePresetFormatWavDesc,
+        leadingIcon: Icons.music_note_rounded,
+      ),
+      _Option(
+        value: 'flac',
+        label: 'FLAC',
+        subtitle: AppLocalizations.homePresetFormatFlacDesc,
+        leadingIcon: Icons.music_note_rounded,
+      ),
+    ];
     final picked = await _showOptionPicker<String>(
       context: context,
       title: AppLocalizations.homePresetFormat,
-      options: [
-        _Option(
-          value: 'auto',
-          label: AppLocalizations.homePresetFormatAuto,
-          subtitle: AppLocalizations.settingsContainerFormatHelp,
-          sectionLabel: AppLocalizations.configDialogVideo,
-          leadingIcon: Icons.videocam_rounded,
-          badgeLabel: AppLocalizations.configDialogVideo,
-        ),
-        _Option(
-          value: 'mp4',
-          label: 'MP4',
-          subtitle: AppLocalizations.homePresetFormatMp4Desc,
-          leadingIcon: Icons.videocam_rounded,
-          badgeLabel: AppLocalizations.configDialogVideo,
-        ),
-        _Option(
-          value: 'webm',
-          label: 'WebM',
-          subtitle: AppLocalizations.homePresetFormatWebmDesc,
-          leadingIcon: Icons.videocam_rounded,
-          badgeLabel: AppLocalizations.configDialogVideo,
-        ),
-        _Option(
-          value: 'mkv',
-          label: 'MKV',
-          subtitle: AppLocalizations.homePresetFormatMkvDesc,
-          leadingIcon: Icons.videocam_rounded,
-          badgeLabel: AppLocalizations.configDialogVideo,
-        ),
-        // Phase 1b: recoded containers — yt-dlp transcodes via --recode-video
-        // after merge into a native intermediate. Subtitles share the
-        // "Legacy / transcode" copy since none of these are native muxer
-        // targets; the trade-off is the same across all four.
-        _Option(
-          value: 'avi',
-          label: 'AVI',
-          subtitle: AppLocalizations.settingsContainerAVIDesc,
-          sectionLabel: AppLocalizations.settingsSectionMediaProcessing,
-          leadingIcon: Icons.sync_rounded,
-          tone: _OptionTone.warning,
-        ),
-        _Option(
-          value: 'mov',
-          label: 'MOV',
-          subtitle: AppLocalizations.settingsContainerMOVDesc,
-          leadingIcon: Icons.sync_rounded,
-          tone: _OptionTone.warning,
-        ),
-        _Option(
-          value: 'm4v',
-          label: 'M4V',
-          subtitle: AppLocalizations.settingsContainerM4VDesc,
-          leadingIcon: Icons.sync_rounded,
-          tone: _OptionTone.warning,
-        ),
-        _Option(
-          value: 'flv',
-          label: 'FLV',
-          subtitle: AppLocalizations.settingsContainerFLVDesc,
-          leadingIcon: Icons.sync_rounded,
-          tone: _OptionTone.warning,
-        ),
-        _Option(
-          value: 'mp3',
-          label: 'MP3',
-          subtitle: AppLocalizations.homePresetFormatMp3Desc,
-          sectionLabel: AppLocalizations.configDialogAudio,
-          leadingIcon: Icons.music_note_rounded,
-          badgeLabel: AppLocalizations.configDialogAudio,
-        ),
-        _Option(
-          value: 'm4a',
-          label: 'M4A',
-          subtitle: AppLocalizations.homePresetFormatM4aDesc,
-          leadingIcon: Icons.music_note_rounded,
-          badgeLabel: AppLocalizations.configDialogAudio,
-        ),
-        _Option(
-          value: 'opus',
-          label: 'OPUS',
-          subtitle: AppLocalizations.homePresetFormatOpusDesc,
-          leadingIcon: Icons.music_note_rounded,
-          badgeLabel: AppLocalizations.configDialogAudio,
-        ),
-        _Option(
-          value: 'wav',
-          label: 'WAV',
-          subtitle: AppLocalizations.homePresetFormatWavDesc,
-          leadingIcon: Icons.music_note_rounded,
-          badgeLabel: AppLocalizations.configDialogAudio,
-        ),
-        _Option(
-          value: 'flac',
-          label: 'FLAC',
-          subtitle: AppLocalizations.homePresetFormatFlacDesc,
-          leadingIcon: Icons.music_note_rounded,
-          badgeLabel: AppLocalizations.configDialogAudio,
-        ),
-      ],
+      options: preset.audioOnly ? audioOptions : videoOptions,
       currentValue: preset.containerFormat,
     );
     if (picked == null || picked == preset.containerFormat) return;
-    // Audio containers flip `audioOnly` on; video containers flip it off
-    // so the matcher's mediaType filter aligns with the user's intent.
-    // RC9-UI parity: preset now offers same 5 audio formats as dialog.
-    const audioFormats = {'mp3', 'm4a', 'opus', 'wav', 'flac'};
-    final isAudio = audioFormats.contains(picked);
-    final changedMediaFamily = preset.audioOnly != isAudio;
-    var next = preset.copyWith(containerFormat: picked, audioOnly: isAudio);
-    if (changedMediaFamily && !isAudio) {
-      next = next.copyWith(
-        audioBitrate: null,
-        maxResolution: PremiumLimits.freeMaxResolutionP,
-      );
-    }
-    await ref.read(activePresetProvider.notifier).updateConfig(next);
+    await ref
+        .read(activePresetProvider.notifier)
+        .updateConfig(preset.copyWith(containerFormat: picked));
   }
 
   Future<void> _editQuality(
@@ -563,37 +443,49 @@ class _CommandBarPresetPopoverContent extends ConsumerWidget {
     WidgetRef ref,
     FormatPresetExtended preset,
   ) async {
+    final notifier = ref.read(activePresetProvider.notifier);
+    final asking = ref.read(activePresetProvider).useManualMode;
+    // Sentinel -1 = "Ask every time": picking it turns ask-mode ON (paste
+    // opens the quick picker); any concrete value turns ask-mode OFF and
+    // stores the fixed default. Ask-mode and quality are one control now.
+    const askValue = -1;
+    final askOption = _Option<int>(
+      value: askValue,
+      label: AppLocalizations.homePresetManualMode,
+      leadingIcon: Icons.live_help_outlined,
+    );
+
     if (preset.audioOnly) {
-      final picked = await _showOptionPicker<int?>(
+      final picked = await _showOptionPicker<int>(
         context: context,
         title: AppLocalizations.homePresetQuality,
         options: [
-          _Option<int?>(
-            value: null,
+          askOption,
+          _Option<int>(
+            value: 0,
             label: AppLocalizations.homePresetQualityDefault,
           ),
-          const _Option<int?>(value: 128, label: '128 kbps'),
-          const _Option<int?>(value: 192, label: '192 kbps'),
-          const _Option<int?>(value: 256, label: '256 kbps'),
-          const _Option<int?>(value: 320, label: '320 kbps'),
+          const _Option<int>(value: 128, label: '128 kbps'),
+          const _Option<int>(value: 192, label: '192 kbps'),
+          const _Option<int>(value: 256, label: '256 kbps'),
+          const _Option<int>(value: 320, label: '320 kbps'),
         ],
-        currentValue: preset.audioBitrate,
+        currentValue: asking ? askValue : (preset.audioBitrate ?? 0),
       );
-      // identical-on-purpose null comparison — both branches treat null
-      // as a real value (= "platform default") not "user cancelled".
-      if (preset.audioBitrate == picked) return;
-      await ref
-          .read(activePresetProvider.notifier)
-          .updateConfig(preset.copyWith(audioBitrate: picked));
+      if (picked == null) return;
+      if (picked == askValue) {
+        await notifier.setManualMode(true);
+        return;
+      }
+      await notifier.setManualMode(false);
+      await notifier.updateConfig(
+        preset.copyWith(audioBitrate: picked == 0 ? null : picked),
+      );
       return;
     }
 
-    // Premium gate at picker layer: free users see >1080p options as
-    // locked. Tapping a locked option opens the upgrade prompt instead
-    // of silently storing the choice and surprising the user with the
-    // upgrade dialog at download time. Mirrors the canonical limit
-    // [PremiumLimits.freeMaxResolutionP] (1080) — change one place,
-    // both enforcement layers stay in sync.
+    // Premium gate at picker layer: free users see >1080p options as locked
+    // (tapping opens the upgrade prompt instead of silently storing).
     final isPremium = ref.read(isPremiumProvider);
     final premiumLabel = AppLocalizations.premiumPremiumLabel;
 
@@ -601,12 +493,10 @@ class _CommandBarPresetPopoverContent extends ConsumerWidget {
       context: context,
       title: AppLocalizations.homePresetQuality,
       options: [
+        askOption,
         _Option<int>(
           value: 0,
           label: AppLocalizations.homePresetQualityBestAvailable,
-          // "Best available" can resolve to >1080p sources for premium
-          // users. Free users get the same option but with a Premium
-          // hint so they know it's effectively capped.
           isLocked: !isPremium,
           badgeLabel: !isPremium ? premiumLabel : null,
           leadingIcon: !isPremium ? Icons.workspace_premium_rounded : null,
@@ -629,7 +519,7 @@ class _CommandBarPresetPopoverContent extends ConsumerWidget {
           leadingIcon: !isPremium ? Icons.workspace_premium_rounded : null,
         ),
       ],
-      currentValue: preset.maxResolution,
+      currentValue: asking ? askValue : preset.maxResolution,
       onLockedTap: (value) async {
         if (!context.mounted) return;
         await UpgradePromptDialog.showAndNavigate(
@@ -639,44 +529,15 @@ class _CommandBarPresetPopoverContent extends ConsumerWidget {
         );
       },
     );
-    if (picked == null || picked == preset.maxResolution) return;
-    await ref
-        .read(activePresetProvider.notifier)
-        .updateConfig(preset.copyWith(maxResolution: picked));
+    if (picked == null) return;
+    if (picked == askValue) {
+      await notifier.setManualMode(true);
+      return;
+    }
+    await notifier.setManualMode(false);
+    await notifier.updateConfig(preset.copyWith(maxResolution: picked));
   }
 
-  Future<void> _editFallback(
-    BuildContext context,
-    WidgetRef ref,
-    FormatPresetExtended preset,
-  ) async {
-    final picked = await _showOptionPicker<FormatPresetFallback>(
-      context: context,
-      title: AppLocalizations.homePresetFallback,
-      options: [
-        _Option(
-          value: FormatPresetFallback.nearest,
-          label: AppLocalizations.homePresetFallbackNearest,
-          subtitle: AppLocalizations.homePresetFallbackNearestDesc,
-        ),
-        _Option(
-          value: FormatPresetFallback.higher,
-          label: AppLocalizations.homePresetFallbackHigher,
-          subtitle: AppLocalizations.homePresetFallbackHigherDesc,
-        ),
-        _Option(
-          value: FormatPresetFallback.block,
-          label: AppLocalizations.homePresetFallbackBlock,
-          subtitle: AppLocalizations.homePresetFallbackBlockDesc,
-        ),
-      ],
-      currentValue: preset.fallbackBehavior,
-    );
-    if (picked == null || picked == preset.fallbackBehavior) return;
-    await ref
-        .read(activePresetProvider.notifier)
-        .updateConfig(preset.copyWith(fallbackBehavior: picked));
-  }
 
   Future<void> _editSaveLocation(
     BuildContext context,
@@ -1458,233 +1319,81 @@ class _PresetRowState extends State<_PresetRow> {
   }
 }
 
-/// Toggle row for "Always show advanced dialog" mode. Replaces the
-/// previous "Cài đặt nâng cao → Settings" navigation row that was a
-/// dead-end (jumped to Settings without applying anything to the
-/// download flow). When on, every download surfaces the legacy
-/// `DownloadConfigDialog` with full advanced controls — peer-mode to
-/// preset auto-pick, mutually exclusive (picking any concrete preset
-/// auto-clears the toggle).
-class _PresetManualModeRow extends StatefulWidget {
-  final bool enabled;
-  final ValueChanged<bool> onToggle;
-
-  const _PresetManualModeRow({required this.enabled, required this.onToggle});
-
-  @override
-  State<_PresetManualModeRow> createState() => _PresetManualModeRowState();
-}
-
-class _PresetManualModeRowState extends State<_PresetManualModeRow> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cs = Theme.of(context).colorScheme;
-    final accent = AppColors.accentHighlight;
-    final hoverBg =
-        isDark ? AppColors.homeDarkCardHover : cs.surfaceContainerLow;
-    final foreground =
-        widget.enabled
-            ? accent
-            : (isDark ? AppColors.darkLightText : cs.onSurface);
-    final iconColor =
-        widget.enabled
-            ? accent
-            : isDark
-            ? Color.lerp(AppColors.darkMetaText, AppColors.darkLightText, 0.38)!
-            : Color.lerp(cs.onSurfaceVariant, cs.onSurface, 0.52)!;
-
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: () => widget.onToggle(!widget.enabled),
-        behavior: HitTestBehavior.opaque,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          constraints: const BoxConstraints(minHeight: 72),
-          color: _hovered ? hoverBg : Colors.transparent,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.xs,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 24,
-                child: Center(
-                  child: Icon(Icons.tune_rounded, size: 21, color: iconColor),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.smMd),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppLocalizations.homePresetManualMode,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTypography.buttonSecondary.copyWith(
-                        color: foreground,
-                        fontSize: 14.5,
-                        fontWeight: FontWeight.w600,
-                        height: 1.15,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      widget.enabled
-                          ? AppLocalizations.homePresetManualModeOnDescription
-                          : AppLocalizations.homePresetManualModeOffDescription,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.metaText(context),
-                        height: 1.25,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              _CommandPopoverToggle(
-                value: widget.enabled,
-                onChanged: widget.onToggle,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CommandPopoverToggle extends StatelessWidget {
-  final bool value;
+/// Compact Video / Audio segmented control for the download-defaults popover.
+class _TypeToggle extends StatelessWidget {
+  final bool audioOnly;
   final ValueChanged<bool> onChanged;
 
-  const _CommandPopoverToggle({required this.value, required this.onChanged});
+  const _TypeToggle({required this.audioOnly, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cs = Theme.of(context).colorScheme;
-    final isSvid = BrandConfig.current.brand == Brand.svid;
-    final accent = AppColors.accentHighlight;
-    final trackRadius = isSvid ? AppRadius.input : AppRadius.full;
-    final thumbRadius = isSvid ? 2.5 : AppRadius.full;
-    final onTrack =
-        isSvid ? accent : accent.withValues(alpha: isDark ? 0.36 : 0.20);
-    final offTrack =
-        isSvid
-            ? accent.withValues(alpha: isDark ? 0.10 : 0.055)
-            : isDark
-            ? Colors.white.withValues(alpha: 0.08)
-            : Colors.black.withValues(alpha: 0.045);
-    final offBorder =
-        isSvid
-            ? accent.withValues(alpha: isDark ? 0.34 : 0.26)
-            : isDark
-            ? Colors.white.withValues(alpha: 0.18)
-            : Colors.black.withValues(alpha: 0.18);
 
-    return Semantics(
-      toggled: value,
-      button: true,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
+    Widget seg(bool audio, IconData icon, String label) {
+      final selected = audioOnly == audio;
+      return Expanded(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => onChanged(!value),
-          child: SizedBox(
-            width: 48,
-            height: 32,
-            child: Center(
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 160),
-                curve: Curves.easeOutCubic,
-                width: 46,
-                height: 26,
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                  color: value ? onTrack : offTrack,
-                  borderRadius: BorderRadius.circular(trackRadius),
-                  border: Border.all(
+          onTap: () => onChanged(audio),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: selected ? AppColors.accentHighlight : Colors.transparent,
+              borderRadius: BorderRadius.circular(AppRadius.button),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 16,
+                  color:
+                      selected
+                          ? AppColors.darkLightText
+                          : AppColors.metaText(context),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  label,
+                  style: AppTypography.buttonSecondary.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                     color:
-                        value
-                            ? accent.withValues(alpha: isSvid ? 1 : 0.78)
-                            : offBorder,
-                    width: 1,
-                  ),
-                  boxShadow:
-                      value && !isSvid
-                          ? [
-                            BoxShadow(
-                              color: accent.withValues(alpha: 0.24),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ]
-                          : null,
-                ),
-                child: AnimatedAlign(
-                  duration: const Duration(milliseconds: 160),
-                  curve: Curves.easeOutCubic,
-                  alignment:
-                      value ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    width: 18,
-                    height: 18,
-                    decoration: BoxDecoration(
-                      color:
-                          value
-                              ? (isSvid ? Colors.white : accent)
-                              : isDark
-                              ? cs.onSurfaceVariant
-                              : Colors.white,
-                      borderRadius: BorderRadius.circular(thumbRadius),
-                      border:
-                          value || !isSvid
-                              ? null
-                              : Border.all(
-                                color: accent.withValues(alpha: 0.24),
-                              ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(
-                            alpha: isDark ? 0.26 : 0.18,
-                          ),
-                          blurRadius: 3,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    child:
-                        value && isSvid
-                            ? Center(
-                              child: Container(
-                                width: 2,
-                                height: 10,
-                                decoration: BoxDecoration(
-                                  color: accent,
-                                  borderRadius: BorderRadius.circular(1),
-                                ),
-                              ),
-                            )
-                            : null,
+                        selected
+                            ? AppColors.darkLightText
+                            : AppColors.metaText(context),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.homeDarkAppBg : AppColors.surface2(context),
+        borderRadius: BorderRadius.circular(AppRadius.input),
+        border: Border.all(color: AppColors.border(context)),
+      ),
+      child: Row(
+        children: [
+          seg(
+            false,
+            Icons.videocam_rounded,
+            AppLocalizations.configDialogVideo,
+          ),
+          seg(
+            true,
+            Icons.music_note_rounded,
+            AppLocalizations.configDialogAudio,
+          ),
+        ],
       ),
     );
   }

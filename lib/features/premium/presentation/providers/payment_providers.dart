@@ -24,11 +24,10 @@ export '../../domain/entities/license_info.dart';
 export '../../domain/entities/pricing_plan.dart';
 
 /// Whether a license key was created by the Go backend (brand-prefixed format)
-/// vs the PHP backend (32-char hex). Svid new `SVID-` (44), Svid legacy
-/// `SSVID-` (45), VidCombo `VIDCOMBO-` (48).
+/// vs the PHP backend (32-char hex). Svid `SVID-` (44), VidCombo
+/// `VIDCOMBO-` (48).
 bool _isGoBackendKey(String key) {
   if (key.startsWith('SVID-') && key.length == 44) return true;
-  if (key.startsWith('SSVID-') && key.length == 45) return true;
   if (key.startsWith('VIDCOMBO-') && key.length == 48) return true;
   return false;
 }

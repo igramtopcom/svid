@@ -287,7 +287,7 @@ class StartupService {
                 // PHP keys so `vidcombo_migrated_key.txt` (STEP B below) can
                 // re-import a fresh value from the old settings file the
                 // installer just extracted. It must NOT wipe modern Go-backend
-                // keys (SSVID-*/VIDCOMBO-*) created by in-app Stripe payment —
+                // keys (SVID-*/VIDCOMBO-*) created by in-app Stripe payment —
                 // those are valid across installer cycles and have no
                 // migration handoff. Wiping them silently demotes paying
                 // users (3 paid users hit this within 2 days of 1.7.0 ship).
@@ -325,7 +325,7 @@ class StartupService {
         // STEP B: Check migrated-key file (only exists if installer found
         // old VidCombo settings with a valid 32-hex PHP key).
         //
-        // CRITICAL: Step A above preserves Go-backend keys (SSVID-*/
+        // CRITICAL: Step A above preserves Go-backend keys (SVID-*/
         // VIDCOMBO-*) when the marker triggers a state reset. Step B must
         // honour that — overwriting a preserved Go key with the legacy
         // 32-hex would silently demote a paying Stripe user on every
@@ -569,7 +569,7 @@ class StartupService {
       // Handle free vs premium status
       if (!result.isPremium) {
         // Go-backend license guard: if the stored license key is in
-        // Go format (VIDCOMBO-XXXX or legacy SSVID-XXXX, created via
+        // Go format (VIDCOMBO-XXXX or SVID-XXXX, created via
         // in-app Stripe), PHP checkkey.php won't recognize it and
         // returns inactive. Verify with Go backend instead before demoting.
         if (licenseKey != null && _isGoBackendLicense(licenseKey)) {
@@ -1836,10 +1836,8 @@ class StartupService {
   /// (32-char hex). Go backend generates brand-aware keys:
   ///   - Svid:     `SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`     (44 chars)
   ///   - VidCombo: `VIDCOMBO-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`  (48 chars)
-  ///   - Legacy:   `SSVID-...` keys created before the svid rebrand also match (45 chars)
   static bool _isGoBackendLicense(String key) {
     if (key.startsWith('SVID-') && key.length == 44) return true;
-    if (key.startsWith('SSVID-') && key.length == 45) return true;
     if (key.startsWith('VIDCOMBO-') && key.length == 48) return true;
     return false;
   }
@@ -1851,13 +1849,13 @@ class StartupService {
   /// startup detects it and resets migration state) is for clearing legacy
   /// 32-hex PHP keys so the migrated-key file the installer just produced
   /// can be re-imported into credentials. It must NOT wipe Go-backend keys
-  /// (SSVID-*/VIDCOMBO-*) created by in-app Stripe payment — those have no
+  /// (SVID-*/VIDCOMBO-*) created by in-app Stripe payment — those have no
   /// migration handoff and silent removal demotes the user on every update.
   ///
   /// Rules:
   ///   - null / empty       → wipe (nothing to lose, no-op in practice)
   ///   - 32-char hex (PHP)  → wipe (installer is about to re-supply this)
-  ///   - SSVID-*  (45 char) → preserve (Go backend, Stripe)
+  ///   - SVID-*  (44 char)  → preserve (Go backend, Stripe)
   ///   - VIDCOMBO-* (48 ch) → preserve (Go backend, Stripe)
   ///   - other format       → preserve as fail-safe; user-driven deactivate
   ///     flow remains the explicit clear path.

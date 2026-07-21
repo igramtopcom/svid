@@ -464,19 +464,9 @@ class SvidBrand extends BrandConfig {
   @override
   String get licenseKeyFormatExample =>
       'SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX';
-
-  /// Accept new `SVID-XXXX` keys and legacy `SSVID-XXXX` keys issued before the
-  /// svid rebrand. Keeping legacy acceptance mirrors VidCombo's cross-format
-  /// gate so paying users with pre-rebrand licenses are never locked out at the
-  /// local format check (a doomed key still fails server-side — harmless).
-  @override
-  bool isValidLicenseKey(String key) {
-    // New Svid format: SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX (44 chars)
-    if (licenseKeyPattern.hasMatch(key)) return true;
-    // Legacy SSvid format (Go keys generated before the rename): SSVID-XXXX-... (45 chars)
-    if (key.startsWith('SSVID-') && key.length == 45) return true;
-    return false;
-  }
+  // Svid validates only its own SVID- keys (base isValidLicenseKey =
+  // licenseKeyPattern.hasMatch). Svid is an independent product — it does NOT
+  // accept the separate ssvid product's SSVID- keys.
 
   @override
   ThemeMode get defaultThemeMode => ThemeMode.dark;

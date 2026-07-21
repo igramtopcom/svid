@@ -83,20 +83,20 @@ void main() {
       expect(config.isValidLicenseKey(''), isFalse);
     });
 
-    test('license key validation — legacy SSVID- keys still accepted', () {
-      // Backward compat: licenses issued before the svid rebrand (SSVID-XXXX,
-      // 45 chars) must keep activating so paying users aren't locked out.
+    test('license key validation — rejects foreign SSVID- keys', () {
+      // Svid is an independent product from the separate ssvid.app product.
+      // It must NOT accept ssvid's SSVID- keys — only its own SVID- format.
       expect(
         config.isValidLicenseKey(
           'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
         ),
-        isTrue,
+        isFalse,
       );
       expect(
         config.isValidLicenseKey(
           'SSVID-ABCD-EF01-2345-6789-abcd-ef01-2345-6789',
         ),
-        isTrue,
+        isFalse,
       );
     });
 
@@ -281,10 +281,12 @@ void main() {
       expect(svid.isValidLicenseKey(svidKey), isTrue);
       expect(vidcombo.isValidLicenseKey(svidKey), isFalse);
 
-      // Legacy SSVID- key validates for Svid (backward compat) and VidCombo (Go legacy compat)
+      // Foreign SSVID- key (separate ssvid product): Svid REJECTS it — Svid is
+      // independent and only knows SVID-. VidCombo still accepts it via its own
+      // pre-existing Go-legacy compat (unrelated to the svid rebrand).
       const ssvidKey = 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0';
-      expect(svid.isValidLicenseKey(ssvidKey), isTrue);
-      expect(vidcombo.isValidLicenseKey(ssvidKey), isTrue); // legacy compat
+      expect(svid.isValidLicenseKey(ssvidKey), isFalse);
+      expect(vidcombo.isValidLicenseKey(ssvidKey), isTrue);
     });
   });
 }

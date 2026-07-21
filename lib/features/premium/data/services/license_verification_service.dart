@@ -138,7 +138,7 @@ class LicenseVerificationService {
     }
 
     // Key format guard: if stored key doesn't match the expected brand format
-    // (SSVID-XXXX for SSvid, 32-char-alphanumeric/VIDCOMBO-XXXX for VidCombo), it's corrupted
+    // (SVID-XXXX for Svid, 32-char-alphanumeric/VIDCOMBO-XXXX for VidCombo), it's corrupted
     // — clear immediately instead of entering grace period.
     if (!PremiumLicenseService.isValidLicenseKey(license.licenseKey!)) {
       appLogger.warning(
@@ -178,7 +178,7 @@ class LicenseVerificationService {
     // PHP backends (VidCombo) with PHP-created licenses don't have
     // /premium/licenses/verify — verification happens via checkkey.php
     // at startup instead. But Go-created licenses (from in-app Stripe)
-    // use VIDCOMBO-XXXX or legacy SSVID-XXXX format and MUST be verified
+    // use VIDCOMBO-XXXX or SVID-XXXX format and MUST be verified
     // via Go backend.
     if (BrandConfig.current.backendType == BackendType.php) {
       final key = license.licenseKey;

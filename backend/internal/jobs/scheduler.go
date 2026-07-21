@@ -228,7 +228,7 @@ func (s *Scheduler) sendExpiryWarnings() {
 			autoRenew = "Enabled"
 		}
 
-		subject := fmt.Sprintf("Your SSvid Premium expires in %d days", daysRemaining)
+		subject := fmt.Sprintf("Your Svid Premium expires in %d days", daysRemaining)
 		err := s.email.Send(*license.ContactEmail, subject, "license_expiry_warning", map[string]string{
 			"DaysRemaining": fmt.Sprintf("%d", daysRemaining),
 			"LicenseKey":    maskedKey,
@@ -252,7 +252,7 @@ func (s *Scheduler) sendExpiryWarnings() {
 }
 
 // maskLicenseKey masks the middle segments of a license key.
-// SSVID-abcd-efgh-...-wxyz    → SSVID-abcd-****-...-****-wxyz
+// SVID-abcd-efgh-...-wxyz    → SVID-abcd-****-...-****-wxyz
 // VIDCOMBO-abcd-efgh-...-wxyz → VIDCOMBO-a-****-...-****-wxyz
 func maskLicenseKey(key string) string {
 	parts := strings.Split(key, "-")

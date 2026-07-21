@@ -74,7 +74,7 @@ func TestLicenseVerify_KeyFromHeader_Accepted(t *testing.T) {
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	c.Request, _ = http.NewRequest("GET", "/api/v1/premium/licenses/verify", nil)
-	c.Request.Header.Set("X-License-Key", "SSVID-test-key-1234")
+	c.Request.Header.Set("X-License-Key", "SVID-test-key-1234")
 	c.Set(middleware.DeviceIDKey, uuid.New())
 
 	// This will panic because service is nil — recover and check it didn't return 400
@@ -132,7 +132,7 @@ func TestLicenseVerify_HeaderTakesPrecedence(t *testing.T) {
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	c.Request, _ = http.NewRequest("GET", "/api/v1/premium/licenses/verify?key=query-key", nil)
-	c.Request.Header.Set("X-License-Key", "SSVID-header-key")
+	c.Request.Header.Set("X-License-Key", "SVID-header-key")
 	c.Set(middleware.DeviceIDKey, uuid.New())
 
 	func() {
@@ -148,7 +148,7 @@ func TestLicenseVerify_HeaderTakesPrecedence(t *testing.T) {
 func TestLicenseVerify_EmptyHeaderFallsToBody(t *testing.T) {
 	// Empty X-License-Key header should fall through to body.
 	h := NewPremiumHandler(nil, false)
-	body, _ := json.Marshal(map[string]string{"key": "SSVID-fallback-body"})
+	body, _ := json.Marshal(map[string]string{"key": "SVID-fallback-body"})
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 	c.Request, _ = http.NewRequest("POST", "/api/v1/premium/licenses/verify", bytes.NewReader(body))

@@ -2,7 +2,7 @@ import { Monitor, Zap, DollarSign, CreditCard, Bug, MessageSquare, AlertTriangle
 import type { BrandSummary } from '@/types'
 
 const BRAND_COLORS: Record<string, { bg: string; accent: string; text: string }> = {
-  ssvid: { bg: '#fdf2f4', accent: '#c8294f', text: '#8d1c3a' },
+  svid: { bg: '#fdf2f4', accent: '#c8294f', text: '#8d1c3a' },
   vidcombo: { bg: '#eff6ff', accent: '#2563eb', text: '#1e40af' },
 }
 

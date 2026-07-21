@@ -21,7 +21,7 @@ type Invoice struct {
 	LicenseID             *uuid.UUID `gorm:"type:uuid;index"`
 	StripePaymentIntentID *string    `gorm:"size:255;index"`
 	StripeSubscriptionID  *string    `gorm:"size:255;index"`
-	Brand                 string     `gorm:"not null;default:'ssvid';size:50;index:idx_invoices_brand"`
+	Brand                 string     `gorm:"not null;default:'svid';size:50;index:idx_invoices_brand"`
 	ContactEmail          string     `gorm:"not null;size:255;index"`
 	Status                string     `gorm:"not null;default:'open';size:20;index"` // open, paid, void, uncollectible
 	AmountDueCents        int        `gorm:"not null"`
@@ -42,7 +42,7 @@ func (i *Invoice) BeforeCreate(tx *gorm.DB) error {
 		i.ID = uuid.New()
 	}
 	if i.Brand == "" {
-		i.Brand = "ssvid"
+		i.Brand = "svid"
 	}
 	if i.Status == "" {
 		i.Status = "open"

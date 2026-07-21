@@ -80,7 +80,7 @@ export default function AdminUsers() {
               onChange={(e) => setForm({ ...form, brand_scope: e.target.value })}
               className="px-3 py-2 border border-gray-300 rounded-md text-sm">
               <option value="">Super Admin (all brands)</option>
-              <option value="ssvid">SSvid only</option>
+              <option value="svid">Svid only</option>
               <option value="vidcombo">VidCombo only</option>
             </select>
           </div>
@@ -120,12 +120,12 @@ export default function AdminUsers() {
                         onChange={(e) => setEditForm({ ...editForm, brand_scope: e.target.value })}
                         className="px-2 py-1 border border-gray-300 rounded text-sm">
                         <option value="">Super Admin</option>
-                        <option value="ssvid">SSvid</option>
+                        <option value="svid">Svid</option>
                         <option value="vidcombo">VidCombo</option>
                       </select>
                     ) : (
                       <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-                        admin.brand_scope === 'ssvid' ? 'bg-red-100 text-red-700' :
+                        admin.brand_scope === 'svid' ? 'bg-red-100 text-red-700' :
                         admin.brand_scope === 'vidcombo' ? 'bg-blue-100 text-blue-700' :
                         'bg-gray-100 text-gray-700'
                       }`}>

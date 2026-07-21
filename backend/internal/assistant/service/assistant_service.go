@@ -410,7 +410,7 @@ func (s *AssistantService) generateGeminiResponse(sessionID uuid.UUID, userMessa
 // buildSystemPrompt creates the system prompt with knowledge base context.
 func (s *AssistantService) buildSystemPrompt() string {
 	var sb strings.Builder
-	sb.WriteString("You are SSvid AI support assistant for the SSvid (SnakeLoader) desktop video downloader app. ")
+	sb.WriteString("You are Svid AI support assistant for the Svid (SnakeLoader) desktop video downloader app. ")
 	sb.WriteString("Help users with download issues, app setup, troubleshooting, and general questions. ")
 	sb.WriteString("Be concise, helpful, and friendly. Keep responses under 500 words. ")
 	sb.WriteString("If you cannot resolve the issue, suggest the user escalate to human support.\n\n")
@@ -460,7 +460,7 @@ func (s *AssistantService) generateKeywordResponse(userMessage string) string {
 		return "Here's information about our plans:\n\n- **Free**: Basic download features, limited concurrent downloads\n- **Pro**: Unlimited downloads, batch downloads, priority support\n\nYou can upgrade from the app settings. Would you like more details about any specific plan?"
 	}
 
-	return "Thank you for your message. I'm the SSvid AI assistant. I can help with:\n\n- Download issues\n- App installation and setup\n- Troubleshooting errors\n- Plan and subscription questions\n\nCould you provide more details about what you need help with? If my answers aren't helpful enough, you can escalate this conversation to our human support team."
+	return "Thank you for your message. I'm the Svid AI assistant. I can help with:\n\n- Download issues\n- App installation and setup\n- Troubleshooting errors\n- Plan and subscription questions\n\nCould you provide more details about what you need help with? If my answers aren't helpful enough, you can escalate this conversation to our human support team."
 }
 
 // extractKeywords returns a simplified search string from user message

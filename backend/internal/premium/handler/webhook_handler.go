@@ -228,7 +228,7 @@ func (h *WebhookHandler) handleInvoicePaid(raw json.RawMessage) error {
 		return fmt.Errorf("parse invoice: %w", err)
 	}
 
-	// Multi-tenant filter: same Stripe account serves SSvid + VidCombo + legacy
+	// Multi-tenant filter: same Stripe account serves Svid + VidCombo + legacy
 	// products. Skip events whose price ID is not one of ours so we never persist
 	// or attribute revenue from products owned by other backends.
 	if _, ok := h.cfg.BrandFromPriceID(invoice.firstPriceID()); !ok {
@@ -633,9 +633,9 @@ func (h *WebhookHandler) handleInvoicePaymentFailed(raw json.RawMessage) error {
 //
 // The brand is resolved from the invoice line's price_id — NOT from the device
 // or a hardcoded default. The same Stripe account serves multiple products
-// (SSvid desktop, VidCombo desktop, legacy ssvid.net, legacy VidCombo PHP),
-// and the previous "default to ssvid" behavior caused every unrelated invoice
-// in the account to inflate the SSvid revenue dashboard.
+// (Svid desktop, VidCombo desktop, legacy svid.net, legacy VidCombo PHP),
+// and the previous "default to svid" behavior caused every unrelated invoice
+// in the account to inflate the Svid revenue dashboard.
 func (h *WebhookHandler) handleInvoiceStatusChange(raw json.RawMessage) error {
 	var invoice stripeInvoice
 	if err := json.Unmarshal(raw, &invoice); err != nil {
@@ -664,16 +664,16 @@ func (h *WebhookHandler) handleInvoiceStatusChange(raw json.RawMessage) error {
 	return nil
 }
 
-// resolveBrandFromDevice looks up the brand for a device by ID. Returns "ssvid" as default.
+// resolveBrandFromDevice looks up the brand for a device by ID. Returns "svid" as default.
 func (h *WebhookHandler) resolveBrandFromDevice(deviceID uuid.UUID) string {
 	if deviceID == uuid.Nil || h.db == nil {
-		return "ssvid"
+		return "svid"
 	}
 	var device struct{ Brand string }
 	if err := h.db.Raw("SELECT brand FROM devices WHERE id = ?", deviceID).Scan(&device).Error; err == nil && device.Brand != "" {
 		return device.Brand
 	}
-	return "ssvid"
+	return "svid"
 }
 
 // persistInvoiceRecord creates or updates an Invoice DB record from a Stripe invoice webhook.
@@ -696,7 +696,7 @@ func (h *WebhookHandler) persistInvoiceRecord(inv stripeInvoice, licenseID *uuid
 	}
 
 	if brand == "" {
-		brand = "ssvid"
+		brand = "svid"
 	}
 
 	record := &model.Invoice{

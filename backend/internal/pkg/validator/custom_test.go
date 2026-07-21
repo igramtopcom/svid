@@ -21,15 +21,15 @@ func TestRegister_LicenseKey(t *testing.T) {
 		key  string
 		ok   bool
 	}{
-		{"ssvid 45-char", "SSVID-d96d-34d2-1c85-22d4-4f50-ca2e-446f-acda", true},
+		{"svid 44-char", "SVID-d96d-34d2-1c85-22d4-4f50-ca2e-446f-acda", true},
 		{"vidcombo 48-char", "VIDCOMBO-2341-3433-856b-c760-d6fc-0481-d2b1-394d", true},
 		{"empty", "", false},
 		{"unknown prefix", "FOO-d96d-34d2-1c85-22d4-4f50-ca2e-446f-acda", false},
-		{"missing dashes", "SSVIDd96d34d21c8522d44f50ca2e446facda", false},
-		{"uppercase hex rejected", "SSVID-D96D-34D2-1C85-22D4-4F50-CA2E-446F-ACDA", false},
-		{"too few groups", "SSVID-d96d-34d2-1c85", false},
-		{"too many groups", "SSVID-d96d-34d2-1c85-22d4-4f50-ca2e-446f-acda-aaaa", false},
-		{"non-hex group", "SSVID-d96d-34d2-1c85-22d4-4f50-ca2e-446f-zzzz", false},
+		{"missing dashes", "SVIDd96d34d21c8522d44f50ca2e446facda", false},
+		{"uppercase hex rejected", "SVID-D96D-34D2-1C85-22D4-4F50-CA2E-446F-ACDA", false},
+		{"too few groups", "SVID-d96d-34d2-1c85", false},
+		{"too many groups", "SVID-d96d-34d2-1c85-22d4-4f50-ca2e-446f-acda-aaaa", false},
+		{"non-hex group", "SVID-d96d-34d2-1c85-22d4-4f50-ca2e-446f-zzzz", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

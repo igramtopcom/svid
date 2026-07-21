@@ -60,7 +60,7 @@ func (m *AuthMiddleware) RequireAPIKey() gin.HandlerFunc {
 			c.Set(DeviceIDKey, apiKey.DeviceID)
 			brand := apiKey.Device.Brand
 			if brand == "" {
-				brand = "ssvid" // Fallback for cached entries without brand field
+				brand = "svid" // Fallback for cached entries without brand field
 			}
 			c.Set(DeviceBrandKey, brand)
 			c.Next()

@@ -144,7 +144,7 @@ export default function AlertSettings() {
                 type="text"
                 value={form.destination}
                 onChange={(e) => setForm({ ...form, destination: e.target.value })}
-                placeholder={form.channel === 'telegram' ? '-100123456789' : 'admin@ssvid.app'}
+                placeholder={form.channel === 'telegram' ? '-100123456789' : 'admin@svid.app'}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               />
             </div>

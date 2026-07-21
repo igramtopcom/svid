@@ -63,24 +63,24 @@ func TestEscapeHTML_SpecialCharacters(t *testing.T) {
 
 func TestMaskKey_ShortKey(t *testing.T) {
 	// Keys shorter than 15 chars should not be masked
-	short := "SSVID-1234"
+	short := "SVID-1234"
 	if maskKey(short) != short {
 		t.Errorf("expected short key to be returned as-is, got %q", maskKey(short))
 	}
 }
 
-func TestMaskKey_SSvidKey(t *testing.T) {
-	key := "SSVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789"
+func TestMaskKey_SvidKey(t *testing.T) {
+	key := "SVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789"
 	masked := maskKey(key)
 	// Should start with first 10 chars and end with last 4 chars
-	if !strings.HasPrefix(masked, "SSVID-abcd") {
-		t.Errorf("masked SSVID key should start with first 10 chars, got %q", masked)
+	if !strings.HasPrefix(masked, "SVID-abcd") {
+		t.Errorf("masked SVID key should start with first 10 chars, got %q", masked)
 	}
 	if !strings.HasSuffix(masked, "6789") {
-		t.Errorf("masked SSVID key should end with last 4 chars, got %q", masked)
+		t.Errorf("masked SVID key should end with last 4 chars, got %q", masked)
 	}
 	if !strings.Contains(masked, "****") {
-		t.Errorf("masked SSVID key should contain ****, got %q", masked)
+		t.Errorf("masked SVID key should contain ****, got %q", masked)
 	}
 }
 
@@ -288,7 +288,7 @@ func TestSendDailyDigest_UsesActiveLicensesAndPremiumSuffix(t *testing.T) {
 	if !strings.Contains(sent[0], "Active licenses: 6 | Premium total: 9") {
 		t.Fatalf("expected active/premium license summary, got %q", sent[0])
 	}
-	if !strings.Contains(sent[0], "SSvid Daily Digest — 2026-04-22") {
+	if !strings.Contains(sent[0], "Svid Daily Digest — 2026-04-22") {
 		t.Fatalf("expected deterministic UTC date in digest, got %q", sent[0])
 	}
 }

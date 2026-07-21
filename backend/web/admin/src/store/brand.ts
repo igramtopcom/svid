@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 interface BrandState {
-  brand: string // '' = all brands, 'ssvid', 'vidcombo'
+  brand: string // '' = all brands, 'svid', 'vidcombo'
   setBrand: (brand: string) => void
 }
 

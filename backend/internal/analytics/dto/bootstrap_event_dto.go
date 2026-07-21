@@ -8,7 +8,7 @@ import (
 
 type TrackBootstrapEventRequest struct {
 	InstallID    string `json:"install_id" binding:"required,min=8,max=64"`
-	Brand        string `json:"brand" binding:"omitempty,oneof=ssvid vidcombo"`
+	Brand        string `json:"brand" binding:"omitempty,oneof=svid vidcombo"`
 	OS           string `json:"os" binding:"required,oneof=macos windows linux unknown"`
 	OSVersion    string `json:"os_version" binding:"max=80"`
 	AppVersion   string `json:"app_version" binding:"required,max=20"`

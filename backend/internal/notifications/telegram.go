@@ -327,7 +327,7 @@ func (t *TelegramNotifier) SendDailyDigest(stats DailyDigestStats) {
 	}
 
 	msg := fmt.Sprintf(
-		"📊 <b>SSvid Daily Digest — %s</b>\n\n"+
+		"📊 <b>Svid Daily Digest — %s</b>\n\n"+
 			"<b>Devices</b>\n"+
 			"  Total: %d | New today: %d\n"+
 			"  Active (7d): %d | Active (30d): %d\n\n"+

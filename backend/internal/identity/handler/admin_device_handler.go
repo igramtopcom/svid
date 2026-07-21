@@ -432,7 +432,7 @@ func (h *AdminDeviceHandler) CreateAdmin(c *gin.Context) {
 		Email      string `json:"email" binding:"required,email"`
 		Password   string `json:"password" binding:"required,min=8"`
 		Name       string `json:"name" binding:"required"`
-		BrandScope string `json:"brand_scope" binding:"omitempty,oneof=ssvid vidcombo"`
+		BrandScope string `json:"brand_scope" binding:"omitempty,oneof=svid vidcombo"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, validator.FormatValidationErrors(err))
@@ -496,8 +496,8 @@ func (h *AdminDeviceHandler) UpdateAdmin(c *gin.Context) {
 	if req.BrandScope != nil {
 		// Validate brand scope value
 		scope := *req.BrandScope
-		if scope != "" && scope != "ssvid" && scope != "vidcombo" {
-			response.Error(c, http.StatusBadRequest, "INVALID_BRAND_SCOPE", "brand_scope must be empty, 'ssvid', or 'vidcombo'")
+		if scope != "" && scope != "svid" && scope != "vidcombo" {
+			response.Error(c, http.StatusBadRequest, "INVALID_BRAND_SCOPE", "brand_scope must be empty, 'svid', or 'vidcombo'")
 			return
 		}
 		updates["brand_scope"] = scope

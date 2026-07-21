@@ -1,7 +1,7 @@
 # CLAUDE.md - SnakeLoader Backend
 
 ## Project Overview
-Backend API + Admin Dashboard for SnakeLoader (SSvid) desktop video downloader app.
+Backend API + Admin Dashboard for SnakeLoader (Svid) desktop video downloader app.
 - **Language**: Go 1.21+
 - **Framework**: Gin (HTTP), GORM (ORM)
 - **Database**: PostgreSQL 16, Redis 7

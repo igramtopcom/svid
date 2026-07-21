@@ -15,7 +15,7 @@
       "hosted_invoice_url": "https://stripe.com/invoice/test_nested",
       "lines": {
         "data": [
-          { "price": { "id": "price_test_yearly_ssvid" } }
+          { "price": { "id": "price_test_yearly_svid" } }
         ]
       },
       "payments": {

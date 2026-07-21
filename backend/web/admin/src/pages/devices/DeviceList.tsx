@@ -94,7 +94,7 @@ export default function DeviceList() {
       {isLoading ? (
         <SkeletonTable rows={8} />
       ) : !data?.items?.length ? (
-        <EmptyState message="No devices found" description="Devices appear when users install and register the SSvid app" />
+        <EmptyState message="No devices found" description="Devices appear when users install and register the Svid app" />
       ) : (
         <>
           <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">

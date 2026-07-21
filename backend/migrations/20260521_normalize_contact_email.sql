@@ -4,7 +4,7 @@
 -- Why: Round 4 ultra-review found that Stripe webhook handlers were writing
 -- raw user-typed casing to contact_email columns, while RestoreLicense
 -- lookup expected lowercase. Pre-Round-4 rows may carry mixed case,
--- silently failing /premium/restore for ~165 SSvid customers.
+-- silently failing /premium/restore for ~165 Svid customers.
 --
 -- After this migration, all existing rows are normalized AND a functional
 -- index is created so the new case-insensitive WHERE clauses in

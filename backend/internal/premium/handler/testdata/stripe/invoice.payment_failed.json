@@ -14,7 +14,7 @@
       "payment_intent": "pi_test_failed",
       "lines": {
         "data": [
-          { "price": { "id": "price_test_yearly_ssvid" } }
+          { "price": { "id": "price_test_yearly_svid" } }
         ]
       }
     }

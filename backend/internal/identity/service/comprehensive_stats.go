@@ -17,7 +17,7 @@ type ComprehensiveStatsService struct {
 	db *gorm.DB
 }
 
-var dashboardBrandOrder = []string{"ssvid", "vidcombo"}
+var dashboardBrandOrder = []string{"svid", "vidcombo"}
 
 func NewComprehensiveStatsService(db *gorm.DB) *ComprehensiveStatsService {
 	return &ComprehensiveStatsService{db: db}

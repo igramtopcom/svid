@@ -39,17 +39,17 @@ func (h *PremiumHandler) SetMagicLinkService(ml *service.MagicLinkService) {
 // GetPricingPlans godoc
 // @Summary Get pricing plans
 // @Description Get all available premium billing plans with pricing info (public, no auth required).
-// @Description Pass ?brand=vidcombo to get VidCombo-specific plans; defaults to ssvid.
+// @Description Pass ?brand=vidcombo to get VidCombo-specific plans; defaults to svid.
 // @Tags Premium
 // @Produce json
-// @Param brand query string false "Brand name (ssvid or vidcombo)" default(ssvid)
+// @Param brand query string false "Brand name (svid or vidcombo)" default(svid)
 // @Success 200 {object} response.Response{data=[]dto.PricingPlanResponse} "Pricing plans"
 // @Router /api/v1/premium/plans [get]
 func (h *PremiumHandler) GetPricingPlans(c *gin.Context) {
-	brand := c.DefaultQuery("brand", "ssvid")
+	brand := c.DefaultQuery("brand", "svid")
 
 	// Also check device brand from middleware (authenticated requests)
-	if brand == "ssvid" {
+	if brand == "svid" {
 		if deviceBrand, exists := c.Get(middleware.DeviceBrandKey); exists {
 			if b, ok := deviceBrand.(string); ok && b != "" {
 				brand = b
@@ -231,7 +231,7 @@ func (h *PremiumHandler) StripeCheckout(c *gin.Context) {
 	}
 
 	// Resolve brand from authenticated device
-	brand := "ssvid"
+	brand := "svid"
 	if deviceBrand, ok := c.Get(middleware.DeviceBrandKey); ok {
 		if b, ok := deviceBrand.(string); ok && b != "" {
 			brand = b
@@ -376,7 +376,7 @@ func (h *PremiumHandler) StripePortal(c *gin.Context) {
 		return
 	}
 
-	brand := "ssvid"
+	brand := "svid"
 	if deviceBrand, exists := c.Get(middleware.DeviceBrandKey); exists {
 		if b, ok := deviceBrand.(string); ok && b != "" {
 			brand = b
@@ -426,7 +426,7 @@ func (h *PremiumHandler) CryptoInvoice(c *gin.Context) {
 		return
 	}
 
-	brand := "ssvid"
+	brand := "svid"
 	if deviceBrand, exists := c.Get(middleware.DeviceBrandKey); exists {
 		if b, ok := deviceBrand.(string); ok && b != "" {
 			brand = b
@@ -504,7 +504,7 @@ func (h *PremiumHandler) CryptoStatus(c *gin.Context) {
 // @Tags Premium
 // @Accept json
 // @Produce json
-// @Param key query string true "License key (SSVID-XXXX-... or VIDCOMBO-XXXX-...)"
+// @Param key query string true "License key (SVID-XXXX-... or VIDCOMBO-XXXX-...)"
 // @Security ApiKeyAuth
 // @Success 200 {object} response.Response{data=dto.LicenseVerifyResponse} "License status"
 // @Failure 400 {object} response.Response "Missing license key"

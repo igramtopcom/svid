@@ -44,7 +44,7 @@ func TestAdminCreateLicense_BillingCycleExpiry(t *testing.T) {
 			email := "admin-create-" + tc.name + "@example.com"
 			req := dto.AdminCreateLicenseRequest{
 				BillingCycle: tc.cycle,
-				Brand:        "ssvid",
+				Brand:        "svid",
 				ContactEmail: &email,
 				Notes:        "W1.1 regression test",
 			}

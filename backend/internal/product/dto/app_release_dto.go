@@ -10,7 +10,7 @@ type CreateAppReleaseRequest struct {
 	Version      string `json:"version" binding:"required,max=20"`
 	Platform     string `json:"platform" binding:"required,oneof=macos windows linux android"`
 	Channel      string `json:"channel" binding:"required,oneof=stable beta alpha"`
-	Brand        string `json:"brand" binding:"omitempty,oneof=ssvid vidcombo"`
+	Brand        string `json:"brand" binding:"omitempty,oneof=svid vidcombo"`
 	ReleaseNotes string `json:"release_notes"`
 	DownloadURL  string `json:"download_url"`
 	FileSize     int64  `json:"file_size"`
@@ -47,7 +47,7 @@ type CIReleasePlatformData struct {
 type CIReleaseRequest struct {
 	Version      string                           `json:"version" binding:"required,max=20"`
 	Channel      string                           `json:"channel" binding:"omitempty,oneof=stable beta alpha"`
-	Brand        string                           `json:"brand" binding:"omitempty,oneof=ssvid vidcombo"`
+	Brand        string                           `json:"brand" binding:"omitempty,oneof=svid vidcombo"`
 	ReleaseNotes string                           `json:"release_notes"`
 	IsMandatory  bool                             `json:"is_mandatory"`
 	Platforms    map[string]CIReleasePlatformData `json:"platforms" binding:"required"`

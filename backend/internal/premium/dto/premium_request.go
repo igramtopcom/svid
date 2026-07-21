@@ -15,7 +15,8 @@ type WebCheckoutRequest struct {
 
 // CancelRequest cancels a Stripe subscription.
 type CancelRequest struct {
-	LicenseKey string `json:"licenseKey" binding:"required,min=45,max=45"`
+	// Length spans both Go-backend key formats: SVID- (44) and VIDCOMBO- (48).
+	LicenseKey string `json:"licenseKey" binding:"required,min=44,max=48"`
 }
 
 // CryptoInvoiceRequest creates a BTCPay crypto invoice.
@@ -41,11 +42,11 @@ type RefundRequest struct {
 // RestoreRequest allows a user to restore their license by email.
 // device_id is optional: if provided, verifies the device was on the license.
 // brand is optional but recommended: scopes lookup so a VidCombo build never
-// receives an SSvid-format license (or vice versa) for cross-brand customers.
+// receives an Svid-format license (or vice versa) for cross-brand customers.
 type RestoreRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	DeviceID string `json:"device_id" binding:"omitempty,uuid"`
-	Brand    string `json:"brand" binding:"omitempty,oneof=ssvid vidcombo"`
+	Brand    string `json:"brand" binding:"omitempty,oneof=svid vidcombo"`
 }
 
 // WebPortalRequest is used by the landing page to open Stripe Billing Portal.

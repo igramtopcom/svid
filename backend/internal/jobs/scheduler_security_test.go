@@ -7,15 +7,15 @@ import (
 
 // ==================== License Key Masking ====================
 
-func TestMaskLicenseKey_SSvidKey(t *testing.T) {
-	// SSVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX (9 parts)
-	key := "SSVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789"
+func TestMaskLicenseKey_SvidKey(t *testing.T) {
+	// SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX (9 parts)
+	key := "SVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789"
 	masked := maskLicenseKey(key)
 
 	// Should show prefix + first group and last group, mask middle
-	expected := "SSVID-abcd-****-****-****-****-****-****-6789"
+	expected := "SVID-abcd-****-****-****-****-****-****-6789"
 	if masked != expected {
-		t.Errorf("SSVID key masking:\n  want %q\n  got  %q", expected, masked)
+		t.Errorf("SVID key masking:\n  want %q\n  got  %q", expected, masked)
 	}
 }
 
@@ -32,12 +32,12 @@ func TestMaskLicenseKey_VidComboKey(t *testing.T) {
 
 func TestMaskLicenseKey_FewParts(t *testing.T) {
 	// Keys with fewer than 4 dash-separated parts are returned as-is
-	short := "SSVID-short"
+	short := "SVID-short"
 	if maskLicenseKey(short) != short {
 		t.Errorf("expected 2-part key to be returned unchanged, got %q", maskLicenseKey(short))
 	}
 
-	threeParts := "SSVID-abcd-ef01"
+	threeParts := "SVID-abcd-ef01"
 	if maskLicenseKey(threeParts) != threeParts {
 		t.Errorf("expected 3-part key to be returned unchanged, got %q", maskLicenseKey(threeParts))
 	}
@@ -45,9 +45,9 @@ func TestMaskLicenseKey_FewParts(t *testing.T) {
 
 func TestMaskLicenseKey_FourParts(t *testing.T) {
 	// Minimum maskable key: PREFIX-A-B-C → PREFIX-A-****-C
-	key := "SSVID-aaaa-bbbb-cccc"
+	key := "SVID-aaaa-bbbb-cccc"
 	masked := maskLicenseKey(key)
-	expected := "SSVID-aaaa-****-cccc"
+	expected := "SVID-aaaa-****-cccc"
 	if masked != expected {
 		t.Errorf("4-part key masking:\n  want %q\n  got  %q", expected, masked)
 	}

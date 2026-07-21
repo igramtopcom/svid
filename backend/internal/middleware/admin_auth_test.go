@@ -95,7 +95,7 @@ func TestAdminAuthMiddleware_AllowsBearerTokenAndInjectsBrandScope(t *testing.T)
 		c.Status(http.StatusOK)
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/admin/v1/devices?brand=ssvid", nil)
+	req := httptest.NewRequest(http.MethodGet, "/admin/v1/devices?brand=svid", nil)
 	req.Header.Set("Authorization", "Bearer "+token)
 	rec := httptest.NewRecorder()
 	router.ServeHTTP(rec, req)
@@ -125,13 +125,13 @@ func TestAdminAuthMiddleware_AllowsQueryTokenForSSE(t *testing.T) {
 	router := gin.New()
 	router.Use(mw.RequireJWT())
 	router.GET("/admin/v1/notifications/stream", func(c *gin.Context) {
-		if got := c.Query("brand"); got != "ssvid" {
-			t.Fatalf("expected super-admin query brand to remain ssvid, got %q", got)
+		if got := c.Query("brand"); got != "svid" {
+			t.Fatalf("expected super-admin query brand to remain svid, got %q", got)
 		}
 		c.Status(http.StatusOK)
 	})
 
-	req := httptest.NewRequest(http.MethodGet, "/admin/v1/notifications/stream?token="+token+"&brand=ssvid", nil)
+	req := httptest.NewRequest(http.MethodGet, "/admin/v1/notifications/stream?token="+token+"&brand=svid", nil)
 	rec := httptest.NewRecorder()
 	router.ServeHTTP(rec, req)
 
@@ -208,7 +208,7 @@ func TestAdminAuthMiddleware_RejectsInvalidTokenAndMissingAdmin(t *testing.T) {
 }
 
 func TestSetBrandQuery_ReplacesExistingValue(t *testing.T) {
-	raw := setBrandQuery("brand=ssvid&limit=20", "vidcombo")
+	raw := setBrandQuery("brand=svid&limit=20", "vidcombo")
 	if raw != "brand=vidcombo&limit=20" && raw != "limit=20&brand=vidcombo" {
 		t.Fatalf("unexpected query string: %q", raw)
 	}

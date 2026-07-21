@@ -14,7 +14,7 @@ import (
 // Redis paths use the integration test infra instead.
 func newTestMagicLinkService() *MagicLinkService {
 	return &MagicLinkService{
-		cfg:       config.MagicLinkConfig{TTLMinutes: 10, BaseURLSSvid: "https://ssvid.app/restore"},
+		cfg:       config.MagicLinkConfig{TTLMinutes: 10, BaseURLSvid: "https://svid.app/restore"},
 		jwtSecret: []byte("test-secret-do-not-use-in-prod"),
 	}
 }

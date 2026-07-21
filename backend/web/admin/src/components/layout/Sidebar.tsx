@@ -157,9 +157,9 @@ export default function Sidebar({ onClose }: SidebarProps) {
     <aside className="w-64 bg-gray-900 text-gray-300 flex flex-col min-h-screen fixed left-0 top-0 bottom-0 overflow-y-auto">
       <div className="p-4 border-b border-gray-700">
         <div className="flex items-center gap-3">
-          <img src={import.meta.env.BASE_URL + 'logo.png'} alt="SSvid" width="40" height="40" className="rounded-lg" />
+          <img src={import.meta.env.BASE_URL + 'logo.png'} alt="Svid" width="40" height="40" className="rounded-lg" />
           <div>
-            <h1 className="text-xl font-bold text-white">SSvid</h1>
+            <h1 className="text-xl font-bold text-white">Svid</h1>
             <p className="text-xs text-gray-500">Admin Dashboard</p>
           </div>
         </div>

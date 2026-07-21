@@ -26,8 +26,8 @@ const (
 	ScopeRestore MagicLinkScope = "restore"
 	ScopePortal  MagicLinkScope = "portal"
 
-	magicLinkIssuer   = "ssvid-backend"
-	magicLinkAudience = "ssvid-magic-link"
+	magicLinkIssuer   = "svid-backend"
+	magicLinkAudience = "svid-magic-link"
 	magicLinkTokenTyp = "magic_link"
 
 	// rateLimitWindow + rateLimitPerEmail bound how many issuance attempts
@@ -177,7 +177,7 @@ func (s *MagicLinkService) signAndSend(scope MagicLinkScope, licenseID uuid.UUID
 		return fmt.Errorf("sign magic link: %w", err)
 	}
 
-	base := s.cfg.BaseURLSSvid
+	base := s.cfg.BaseURLSvid
 	if brand == "vidcombo" {
 		base = s.cfg.BaseURLVidCombo
 	}
@@ -196,7 +196,7 @@ func (s *MagicLinkService) signAndSend(scope MagicLinkScope, licenseID uuid.UUID
 			Msg("Magic link not sent — EmailSender not wired (dev/test?)")
 		return nil
 	}
-	subject := "Your SSvid login link"
+	subject := "Your Svid login link"
 	if brand == "vidcombo" {
 		subject = "Your VidCombo login link"
 	}

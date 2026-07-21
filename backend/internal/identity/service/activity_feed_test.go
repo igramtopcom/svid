@@ -67,7 +67,7 @@ func TestBuildActivityFeedQuery_NoBrand(t *testing.T) {
 // TestBuildActivityFeedQuery_WithBrand verifies brand filter injects the correct
 // number of ? placeholders (7 brand args, one per sub-query) + LIMIT.
 func TestBuildActivityFeedQuery_WithBrand(t *testing.T) {
-	sql, args := buildActivityFeedQuery(30, "ssvid")
+	sql, args := buildActivityFeedQuery(30, "svid")
 
 	// #1 regression guard.
 	placeholders := strings.Count(sql, "?")
@@ -85,8 +85,8 @@ func TestBuildActivityFeedQuery_WithBrand(t *testing.T) {
 
 	// First 7 args must all be the brand string.
 	for i := 0; i < 7; i++ {
-		if args[i] != "ssvid" {
-			t.Errorf("args[%d] expected 'ssvid', got %v", i, args[i])
+		if args[i] != "svid" {
+			t.Errorf("args[%d] expected 'svid', got %v", i, args[i])
 		}
 	}
 

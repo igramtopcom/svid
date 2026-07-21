@@ -91,8 +91,8 @@ func (a *AutonomousAgent) AutoRespondToTicket(ticketID uuid.UUID, subject, messa
 
 func (a *AutonomousAgent) buildTicketResponsePrompt() string {
 	var sb strings.Builder
-	sb.WriteString("You are SSvid's autonomous AI support agent. Your job is to respond to support tickets 24/7.\n")
-	sb.WriteString("SSvid is a desktop video downloader app that downloads from YouTube, TikTok, Instagram, and 1000+ sites.\n\n")
+	sb.WriteString("You are Svid's autonomous AI support agent. Your job is to respond to support tickets 24/7.\n")
+	sb.WriteString("Svid is a desktop video downloader app that downloads from YouTube, TikTok, Instagram, and 1000+ sites.\n\n")
 	sb.WriteString("Rules:\n")
 	sb.WriteString("- Be concise, helpful, and professional. Max 300 words.\n")
 	sb.WriteString("- If you can fully resolve the issue with clear steps, set CONFIDENCE: high\n")
@@ -173,8 +173,8 @@ func (a *AutonomousAgent) AutoTriageBug(bugID uuid.UUID, title, description, ste
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	systemPrompt := `You are SSvid's bug triage AI. Analyze bug reports and classify them.
-SSvid is a desktop video downloader app (macOS, Windows, Linux).
+	systemPrompt := `You are Svid's bug triage AI. Analyze bug reports and classify them.
+Svid is a desktop video downloader app (macOS, Windows, Linux).
 
 Respond with EXACTLY this format:
 PRIORITY: [critical/high/medium/low]

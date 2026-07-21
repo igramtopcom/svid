@@ -56,9 +56,9 @@ func TestRegisterCooldown_BlocksWithinWindow(t *testing.T) {
 	svc := &DeviceService{rdb: rdb}
 
 	// Simulate setting the cooldown key (as RegisterDevice would on first call)
-	// Key format: register_cooldown:{brand}:{hardware_id} — brand defaults to "ssvid"
+	// Key format: register_cooldown:{brand}:{hardware_id} — brand defaults to "svid"
 	ctx := context.Background()
-	cooldownKey := "register_cooldown:ssvid:test-hardware-id"
+	cooldownKey := "register_cooldown:svid:test-hardware-id"
 	rdb.Set(ctx, cooldownKey, "1", 60*time.Second)
 
 	// Attempt register — should hit cooldown
@@ -79,7 +79,7 @@ func TestRegisterCooldown_AllowsAfterExpiry(t *testing.T) {
 
 	// Verify at the Redis level: after TTL expires, key is gone → cooldown skipped.
 	ctx := context.Background()
-	cooldownKey := "register_cooldown:ssvid:test-hardware-id"
+	cooldownKey := "register_cooldown:svid:test-hardware-id"
 	rdb.Set(ctx, cooldownKey, "1", 1*time.Second)
 
 	// Before expiry: key should exist
@@ -105,17 +105,17 @@ func TestRegisterCooldown_PerHardwareID(t *testing.T) {
 	// Test at the Redis level: cooldown keys are per (brand, hardware_id), not global.
 	ctx := context.Background()
 
-	// Set cooldown for device-A only (brand defaults to "ssvid")
-	rdb.Set(ctx, "register_cooldown:ssvid:device-A-hw-id", "1", 60*time.Second)
+	// Set cooldown for device-A only (brand defaults to "svid")
+	rdb.Set(ctx, "register_cooldown:svid:device-A-hw-id", "1", 60*time.Second)
 
 	// device-A should have cooldown key
-	existsA, _ := rdb.Exists(ctx, "register_cooldown:ssvid:device-A-hw-id").Result()
+	existsA, _ := rdb.Exists(ctx, "register_cooldown:svid:device-A-hw-id").Result()
 	if existsA != 1 {
 		t.Error("expected cooldown key to exist for device-A")
 	}
 
 	// device-B should NOT have cooldown key (different hardware_id)
-	existsB, _ := rdb.Exists(ctx, "register_cooldown:ssvid:device-B-hw-id").Result()
+	existsB, _ := rdb.Exists(ctx, "register_cooldown:svid:device-B-hw-id").Result()
 	if existsB != 0 {
 		t.Error("expected NO cooldown key for device-B — cooldown is per hardware_id")
 	}
@@ -323,9 +323,9 @@ func TestFingerprintMigration_EmptyLegacyIsValid(t *testing.T) {
 
 func TestCooldownKeyFormat(t *testing.T) {
 	// Verify the cooldown key format matches what the service uses: register_cooldown:{brand}:{hardware_id}
-	brand := "ssvid"
+	brand := "svid"
 	hwID := "abc123-def456"
-	expected := "register_cooldown:ssvid:abc123-def456"
+	expected := "register_cooldown:svid:abc123-def456"
 	got := fmt.Sprintf("register_cooldown:%s:%s", brand, hwID)
 	if got != expected {
 		t.Errorf("cooldown key format: want %q, got %q", expected, got)

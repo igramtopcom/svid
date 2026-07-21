@@ -145,7 +145,7 @@ func TestMain(m *testing.M) {
 	testRedisClient = redis.NewClient(&redis.Options{Addr: mini.Addr()})
 	testEmailSender = &recordingEmailSender{}
 	cfg.MagicLink = config.MagicLinkConfig{
-		BaseURLSSvid:    "https://ssvid.app/restore",
+		BaseURLSvid:    "https://svid.app/restore",
 		BaseURLVidCombo: "https://vidcombo.com/restore",
 		TTLMinutes:      10,
 	}
@@ -185,9 +185,9 @@ func loadTestConfig() *config.Config {
 		// handler's BrandFromPriceID whitelist treats fixture invoices as
 		// "ours" rather than filtering them out as foreign products.
 		Stripe: config.StripeConfig{
-			PriceMonthly:  "price_test_monthly_ssvid",
-			PriceYearly:   "price_test_yearly_ssvid",
-			PriceLifetime: "price_test_lifetime_ssvid",
+			PriceMonthly:  "price_test_monthly_svid",
+			PriceYearly:   "price_test_yearly_svid",
+			PriceLifetime: "price_test_lifetime_svid",
 			VidComboPriceMonthly:    "price_test_monthly_vidcombo",
 			VidComboPriceSemiannual: "price_test_semiannual_vidcombo",
 			VidComboPriceYearly:     "price_test_yearly_vidcombo",

@@ -234,7 +234,7 @@ func (s *AnalyticsService) TrackEvents(deviceID uuid.UUID, os, appVersion string
 func (s *AnalyticsService) TrackBootstrapEvent(req dto.TrackBootstrapEventRequest, clientIP, userAgent string) error {
 	brand := strings.TrimSpace(strings.ToLower(req.Brand))
 	if brand == "" {
-		brand = "ssvid"
+		brand = "svid"
 	}
 	event := &model.BootstrapEvent{
 		InstallID:    strings.TrimSpace(req.InstallID),

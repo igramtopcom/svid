@@ -1,6 +1,6 @@
 # SnakeLoader Backend
 
-Backend API and Admin Dashboard for SnakeLoader (SSvid) - a desktop video downloader application.
+Backend API and Admin Dashboard for SnakeLoader (Svid) - a desktop video downloader application.
 
 ## Tech Stack
 

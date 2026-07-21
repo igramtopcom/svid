@@ -29,7 +29,7 @@ type Config struct {
 // magic-link flow. Issued tokens carry a single-use JWT; the website landing
 // page reads the token from the URL fragment and POSTs it to /premium/redeem.
 type MagicLinkConfig struct {
-	BaseURLSSvid    string
+	BaseURLSvid    string
 	BaseURLVidCombo string
 	TTLMinutes      int
 }
@@ -69,7 +69,7 @@ type StripeConfig struct {
 
 // BrandFromPriceID maps a Stripe price ID back to its brand. Returns ("", false)
 // for any price not owned by this backend (e.g. legacy VidCombo PHP-only prices,
-// ssvid.net, or any other product on the shared Stripe account). Webhook handlers
+// svid.net, or any other product on the shared Stripe account). Webhook handlers
 // MUST use this to filter events — the same Stripe account serves multiple
 // products and we only persist invoices for prices we configured here.
 //
@@ -79,7 +79,7 @@ func (s *StripeConfig) BrandFromPriceID(priceID string) (string, bool) {
 	}
 	switch priceID {
 	case s.PriceMonthly, s.PriceYearly, s.PriceLifetime:
-		return "ssvid", true
+		return "svid", true
 	case s.VidComboPriceMonthly, s.VidComboPriceSemiannual, s.VidComboPriceYearly:
 		return "vidcombo", true
 	}
@@ -200,7 +200,7 @@ func Load() *Config {
 	}
 
 	// Warn if admin credentials use defaults
-	adminEmail := getEnv("ADMIN_EMAIL", "admin@ssvid.app")
+	adminEmail := getEnv("ADMIN_EMAIL", "admin@svid.app")
 	adminPassword := getEnv("ADMIN_PASSWORD", "")
 	if adminPassword == "" && isProduction {
 		logger.Log.Fatal().Msg("ADMIN_PASSWORD must be set in production mode")
@@ -231,7 +231,7 @@ func Load() *Config {
 	// Warn if VidCombo brand Stripe price IDs are missing. VidCombo has its
 	// own pricing (monthly/semiannual/yearly) that maps to different Stripe
 	// products in the same account. Missing vars → pricing endpoint falls
-	// back to SSvid prices for VidCombo devices, which is wrong.
+	// back to Svid prices for VidCombo devices, which is wrong.
 	if stripeKey != "" {
 		vcMissing := []string{}
 		if getEnv("STRIPE_VIDCOMBO_PRICE_MONTHLY", "") == "" {
@@ -246,7 +246,7 @@ func Load() *Config {
 		if len(vcMissing) > 0 {
 			logger.Log.Warn().
 				Strs("missing", vcMissing).
-				Msg("VidCombo Stripe price IDs not set — VidCombo brand pricing will fall back to SSvid prices")
+				Msg("VidCombo Stripe price IDs not set — VidCombo brand pricing will fall back to Svid prices")
 		}
 	}
 
@@ -296,8 +296,8 @@ func Load() *Config {
 			VidComboPriceMonthly:    getEnv("STRIPE_VIDCOMBO_PRICE_MONTHLY", ""),
 			VidComboPriceSemiannual: getEnv("STRIPE_VIDCOMBO_PRICE_SEMIANNUAL", ""),
 			VidComboPriceYearly:     getEnv("STRIPE_VIDCOMBO_PRICE_YEARLY", ""),
-			SuccessURL:         getEnv("STRIPE_SUCCESS_URL", "https://ssvid.app/payment/success"),
-			CancelURL:          getEnv("STRIPE_CANCEL_URL", "https://ssvid.app/payment/cancel"),
+			SuccessURL:         getEnv("STRIPE_SUCCESS_URL", "https://svid.app/payment/success"),
+			CancelURL:          getEnv("STRIPE_CANCEL_URL", "https://svid.app/payment/cancel"),
 			VidComboSuccessURL: getEnv("STRIPE_VIDCOMBO_SUCCESS_URL", ""),
 			VidComboCancelURL:  getEnv("STRIPE_VIDCOMBO_CANCEL_URL", ""),
 		},
@@ -315,13 +315,13 @@ func Load() *Config {
 			SMTPPort: getEnvInt("SMTP_PORT", 587),
 			Username: getEnv("SMTP_USERNAME", ""),
 			Password: getEnv("SMTP_PASSWORD", ""),
-			From:     getEnv("SMTP_FROM", "noreply@ssvid.app"),
+			From:     getEnv("SMTP_FROM", "noreply@svid.app"),
 		},
 		CI: CIConfig{
 			ReleaseSecret: getEnv("CI_RELEASE_SECRET", ""),
 		},
 		MagicLink: MagicLinkConfig{
-			BaseURLSSvid:    getEnv("MAGIC_LINK_BASE_SSVID", "https://ssvid.app/restore"),
+			BaseURLSvid:    getEnv("MAGIC_LINK_BASE_SVID", "https://svid.app/restore"),
 			BaseURLVidCombo: getEnv("MAGIC_LINK_BASE_VIDCOMBO", "https://vidcombo.com/restore"),
 			TTLMinutes:      getEnvInt("MAGIC_LINK_TTL_MIN", 10),
 		},

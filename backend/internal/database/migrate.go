@@ -73,21 +73,21 @@ func RunMigrations(db *gorm.DB) error {
 	db.Exec("DROP INDEX IF EXISTS uni_devices_hardware_id")
 
 	// Backfill existing devices with default brand
-	db.Exec("UPDATE devices SET brand = 'ssvid' WHERE brand IS NULL OR brand = ''")
+	db.Exec("UPDATE devices SET brand = 'svid' WHERE brand IS NULL OR brand = ''")
 
 	// Backfill existing invoices with default brand
-	db.Exec("UPDATE invoices SET brand = 'ssvid' WHERE brand IS NULL OR brand = ''")
+	db.Exec("UPDATE invoices SET brand = 'svid' WHERE brand IS NULL OR brand = ''")
 
-	// Backfill existing licenses: set brand from device, default to 'ssvid'
+	// Backfill existing licenses: set brand from device, default to 'svid'
 	db.Exec(`UPDATE premium_licenses SET brand = COALESCE(
 		(SELECT d.brand FROM devices d WHERE d.id = premium_licenses.device_id AND d.brand != ''),
-		'ssvid'
+		'svid'
 	) WHERE brand IS NULL OR brand = ''`)
 
-	// Backfill existing transactions: set brand from device, default to 'ssvid'
+	// Backfill existing transactions: set brand from device, default to 'svid'
 	db.Exec(`UPDATE payment_transactions SET brand = COALESCE(
 		(SELECT d.brand FROM devices d WHERE d.id = payment_transactions.device_id AND d.brand != ''),
-		'ssvid'
+		'svid'
 	) WHERE brand IS NULL OR brand = ''`)
 
 	// Add performance indexes (idempotent — safe to run repeatedly)

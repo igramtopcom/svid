@@ -108,7 +108,7 @@ export default function Ratings() {
       </div>
 
       {/* Rating List */}
-      {isLoading ? <SkeletonTable rows={6} /> : !data?.items?.length ? <EmptyState message="No ratings yet" description="Ratings appear when users rate the app from within SSvid" /> : (
+      {isLoading ? <SkeletonTable rows={6} /> : !data?.items?.length ? <EmptyState message="No ratings yet" description="Ratings appear when users rate the app from within Svid" /> : (
         <>
           <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <table className="w-full text-sm">

@@ -78,7 +78,7 @@ func (h *ProductHandler) GetConfig(c *gin.Context) {
 // @Param platform query string true "Device platform (e.g., windows, macos, linux)"
 // @Param version query string true "Current app version (semantic versioning)"
 // @Param channel query string false "Release channel (stable, beta, alpha)" default(stable)
-// @Param brand query string false "Brand (ssvid, vidcombo). Falls back to authenticated device's brand or 'ssvid'."
+// @Param brand query string false "Brand (svid, vidcombo). Falls back to authenticated device's brand or 'svid'."
 // @Success 200 {object} response.Response "Update check result with available version info"
 // @Failure 400 {object} response.Response "Missing required parameters"
 // @Failure 500 {object} response.Response "Internal server error"
@@ -88,7 +88,7 @@ func (h *ProductHandler) CheckUpdate(c *gin.Context) {
 	version := c.Query("version")
 	channel := c.DefaultQuery("channel", "stable")
 
-	// Determine brand: explicit param > device's registered brand > default "ssvid".
+	// Determine brand: explicit param > device's registered brand > default "svid".
 	// v1.6.0 VidCombo clients don't send brand param, so we fall back to the
 	// brand the device registered with during heartbeat/registration.
 	brand := c.Query("brand")
@@ -96,7 +96,7 @@ func (h *ProductHandler) CheckUpdate(c *gin.Context) {
 		if device := getDevice(c); device != nil && device.Brand != "" {
 			brand = device.Brand
 		} else {
-			brand = "ssvid"
+			brand = "svid"
 		}
 	}
 

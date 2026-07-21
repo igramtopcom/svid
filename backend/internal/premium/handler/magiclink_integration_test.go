@@ -26,7 +26,7 @@ import (
 	"github.com/snakeloader/backend/internal/premium/service"
 )
 
-// licenseKeyForTest constructs a 45-char standard SSVID key by hashing the
+// licenseKeyForTest constructs a 44-char standard SVID key by hashing the
 // supplied seed into eight 4-hex groups. Tests get unique-but-deterministic
 // keys without bumping into the varchar(50) column ceiling.
 func licenseKeyForTest(seed string) string {
@@ -36,7 +36,7 @@ func licenseKeyForTest(seed string) string {
 		hexStr[0:4], hexStr[4:8], hexStr[8:12], hexStr[12:16],
 		hexStr[16:20], hexStr[20:24], hexStr[24:28], hexStr[28:32],
 	}
-	return "SSVID-" + strings.Join(groups, "-")
+	return "SVID-" + strings.Join(groups, "-")
 }
 
 func seedLicenseWithEmail(t *testing.T, email string) model.PremiumLicense {
@@ -44,7 +44,7 @@ func seedLicenseWithEmail(t *testing.T, email string) model.PremiumLicense {
 	deviceID := uuid.New()
 	if err := testDB.Exec(
 		`INSERT INTO devices (id, hardware_id, brand, os, is_active, created_at, last_seen_at)
-		 VALUES (?, ?, 'ssvid', 'macos', true, NOW(), NOW())`,
+		 VALUES (?, ?, 'svid', 'macos', true, NOW(), NOW())`,
 		deviceID, "test-hw-ml-"+deviceID.String(),
 	).Error; err != nil {
 		t.Fatalf("seed device: %v", err)
@@ -53,8 +53,8 @@ func seedLicenseWithEmail(t *testing.T, email string) model.PremiumLicense {
 	license := model.PremiumLicense{
 		ID:            uuid.New(),
 		DeviceID:      deviceID,
-		Brand:         "ssvid",
-		// 45-char standard SSVID key: "SSVID" + 8 × "-XXXX". The suffix is
+		Brand:         "svid",
+		// 44-char standard SVID key: "SVID" + 8 × "-XXXX". The suffix is
 		// deterministic per UUID so seeds collide intentionally never.
 		LicenseKey: licenseKeyForTest(uuid.NewString()),
 		Tier:          "premium",

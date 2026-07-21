@@ -18,7 +18,7 @@
       "period_end": 1750312902,
       "lines": {
         "data": [
-          { "price": { "id": "price_test_yearly_ssvid" } }
+          { "price": { "id": "price_test_yearly_svid" } }
         ]
       }
     }

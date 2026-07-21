@@ -6,24 +6,24 @@ import (
 	"time"
 )
 
-func TestGenerateLicenseKey_SSvid(t *testing.T) {
-	key := GenerateLicenseKey("test-secret", "ssvid")
+func TestGenerateLicenseKey_Svid(t *testing.T) {
+	key := GenerateLicenseKey("test-secret", "svid")
 
-	if !strings.HasPrefix(key, "SSVID-") {
-		t.Errorf("expected prefix SSVID-, got %s", key)
+	if !strings.HasPrefix(key, "SVID-") {
+		t.Errorf("expected prefix SVID-, got %s", key)
 	}
 
-	// SSVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX (45 chars)
-	if len(key) != 45 {
-		t.Errorf("expected length 45, got %d (%s)", len(key), key)
+	// SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX (44 chars)
+	if len(key) != 44 {
+		t.Errorf("expected length 44, got %d (%s)", len(key), key)
 	}
 
 	parts := strings.Split(key, "-")
 	if len(parts) != 9 {
 		t.Errorf("expected 9 parts, got %d", len(parts))
 	}
-	if parts[0] != "SSVID" {
-		t.Errorf("expected first part SSVID, got %s", parts[0])
+	if parts[0] != "SVID" {
+		t.Errorf("expected first part SVID, got %s", parts[0])
 	}
 	for i := 1; i < 9; i++ {
 		if len(parts[i]) != 4 {
@@ -59,15 +59,15 @@ func TestGenerateLicenseKey_VidCombo(t *testing.T) {
 }
 
 func TestGenerateLicenseKey_DefaultBrand(t *testing.T) {
-	// Unknown brand defaults to SSVID
+	// Unknown brand defaults to SVID
 	key := GenerateLicenseKey("test-secret", "")
-	if !strings.HasPrefix(key, "SSVID-") {
-		t.Errorf("empty brand should default to SSVID-, got %s", key)
+	if !strings.HasPrefix(key, "SVID-") {
+		t.Errorf("empty brand should default to SVID-, got %s", key)
 	}
 
 	key2 := GenerateLicenseKey("test-secret", "unknown")
-	if !strings.HasPrefix(key2, "SSVID-") {
-		t.Errorf("unknown brand should default to SSVID-, got %s", key2)
+	if !strings.HasPrefix(key2, "SVID-") {
+		t.Errorf("unknown brand should default to SVID-, got %s", key2)
 	}
 }
 
@@ -86,7 +86,7 @@ func TestGenerateLicenseKey_CaseInsensitive(t *testing.T) {
 func TestGenerateLicenseKey_Unique(t *testing.T) {
 	keys := make(map[string]bool, 100)
 	for i := 0; i < 100; i++ {
-		key := GenerateLicenseKey("test-secret", "ssvid")
+		key := GenerateLicenseKey("test-secret", "svid")
 		if keys[key] {
 			t.Fatalf("duplicate key generated: %s", key)
 		}
@@ -95,7 +95,7 @@ func TestGenerateLicenseKey_Unique(t *testing.T) {
 }
 
 func TestGenerateLicenseKey_HexChars(t *testing.T) {
-	for _, brand := range []string{"ssvid", "vidcombo"} {
+	for _, brand := range []string{"svid", "vidcombo"} {
 		key := GenerateLicenseKey("hex-test", brand)
 		prefix := brandKeyPrefix(brand)
 		// Remove prefix- and dashes

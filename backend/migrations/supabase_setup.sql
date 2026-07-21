@@ -1,5 +1,5 @@
 -- =============================================================================
--- SSvid App — Supabase Schema Setup
+-- Svid App — Supabase Schema Setup
 -- Run this in: Supabase Dashboard → SQL Editor → New Query → Run
 -- =============================================================================
 

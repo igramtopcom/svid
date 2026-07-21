@@ -11,7 +11,7 @@ type PaymentTransaction struct {
 	ID              uuid.UUID  `gorm:"type:uuid;primaryKey"`
 	LicenseID       *uuid.UUID `gorm:"type:uuid;index"`
 	DeviceID        uuid.UUID  `gorm:"type:uuid;index;not null"`
-	Brand           string     `gorm:"not null;default:'ssvid';size:20;index"`
+	Brand           string     `gorm:"not null;default:'svid';size:20;index"`
 	IdempotencyKey  string     `gorm:"uniqueIndex;not null;size:255"`
 	PaymentMethod   string     `gorm:"not null;size:20"`
 	BillingCycle    string     `gorm:"not null;size:20"`

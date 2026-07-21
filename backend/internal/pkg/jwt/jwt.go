@@ -15,7 +15,7 @@ type Manager struct {
 
 type Claims struct {
 	AdminID    string `json:"admin_id"`
-	BrandScope string `json:"brand_scope,omitempty"` // "" = super admin, "ssvid", "vidcombo"
+	BrandScope string `json:"brand_scope,omitempty"` // "" = super admin, "svid", "vidcombo"
 	jwt.RegisteredClaims
 }
 

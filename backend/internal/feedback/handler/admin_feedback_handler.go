@@ -40,7 +40,7 @@ func NewAdminFeedbackHandler(svc *service.FeedbackService, hub *sse.Hub) *AdminF
 // @Param status query string false "Filter by status"
 // @Param category query string false "Filter by category"
 // @Param priority query string false "Filter by priority"
-// @Param brand query string false "Filter by brand (e.g. ssvid, vidcombo)"
+// @Param brand query string false "Filter by brand (e.g. svid, vidcombo)"
 // @Param device_id query string false "Filter by device UUID"
 // @Security BearerAuth
 // @Success 200 {object} response.Response "Paginated list of tickets"
@@ -199,7 +199,7 @@ func (h *AdminFeedbackHandler) AdminReply(c *gin.Context) {
 // @Param per_page query int false "Items per page" default(20)
 // @Param status query string false "Filter by status"
 // @Param sort query string false "Sort by field (created_at, upvotes)" default(created_at)
-// @Param brand query string false "Filter by brand (e.g. ssvid, vidcombo)"
+// @Param brand query string false "Filter by brand (e.g. svid, vidcombo)"
 // @Security BearerAuth
 // @Success 200 {object} response.Response "Paginated list of feature requests"
 // @Failure 401 {object} response.Response "Unauthorized"
@@ -312,7 +312,7 @@ func (h *AdminFeedbackHandler) UpdateFeatureRequest(c *gin.Context) {
 // @Param page query int false "Page number" default(1)
 // @Param per_page query int false "Items per page" default(20)
 // @Param rating query int false "Filter by specific rating value (1-5)"
-// @Param brand query string false "Filter by brand (e.g. ssvid, vidcombo)"
+// @Param brand query string false "Filter by brand (e.g. svid, vidcombo)"
 // @Security BearerAuth
 // @Success 200 {object} response.Response "Paginated list of ratings"
 // @Failure 401 {object} response.Response "Unauthorized"

@@ -34,7 +34,7 @@ func NewAdminAssistantHandler(svc *service.AssistantService) *AdminAssistantHand
 // @Param page query int false "Page number" default(1)
 // @Param per_page query int false "Items per page" default(20)
 // @Param status query string false "Filter by session status (active, closed, escalated)"
-// @Param brand query string false "Filter by brand (ssvid, vidcombo)"
+// @Param brand query string false "Filter by brand (svid, vidcombo)"
 // @Security BearerAuth
 // @Success 200 {object} response.PaginatedData{data=[]dto.SessionListResponse} "Paginated list of sessions"
 // @Failure 401 {object} response.Response "Unauthorized - Invalid or missing JWT token"
@@ -266,7 +266,7 @@ func (h *AdminAssistantHandler) DeleteKnowledge(c *gin.Context) {
 // @Tags Admin - AI Sessions
 // @Accept json
 // @Produce json
-// @Param brand query string false "Filter by brand (ssvid, vidcombo)"
+// @Param brand query string false "Filter by brand (svid, vidcombo)"
 // @Security BearerAuth
 // @Success 200 {object} response.Response{data=object} "Assistant statistics"
 // @Failure 401 {object} response.Response "Unauthorized - Invalid or missing JWT token"

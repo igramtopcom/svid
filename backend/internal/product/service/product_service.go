@@ -247,7 +247,7 @@ func (s *ProductService) GetDeviceConfig() ([]dto.DeviceRemoteConfigResponse, er
 func (s *ProductService) CreateAppRelease(req dto.CreateAppReleaseRequest) (*dto.AppReleaseResponse, error) {
 	brand := req.Brand
 	if brand == "" {
-		brand = "ssvid"
+		brand = "svid"
 	}
 	release := &model.AppRelease{
 		Version:      req.Version,
@@ -343,7 +343,7 @@ func (s *ProductService) CheckForUpdate(platform, currentVersion, channel, brand
 		channel = "stable"
 	}
 	if brand == "" {
-		brand = "ssvid"
+		brand = "svid"
 	}
 
 	releases, err := s.releaseRepo.FindPublished(platform, channel, brand)
@@ -393,7 +393,7 @@ func (s *ProductService) CheckForUpdate(platform, currentVersion, channel, brand
 // Deduplicates by (version, platform, channel) — safe for CI retries.
 func (s *ProductService) RegisterCIRelease(version, channel, releaseNotes, brand string, isMandatory bool, platforms map[string]dto.CIReleasePlatformData) ([]dto.AppReleaseResponse, error) {
 	if brand == "" {
-		brand = "ssvid"
+		brand = "svid"
 	}
 	var results []dto.AppReleaseResponse
 

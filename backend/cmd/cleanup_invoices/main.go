@@ -1,12 +1,12 @@
 // cleanup_invoices is a one-shot maintenance tool that audits the invoices
 // table against the live Stripe account and removes rows that belong to other
 // products on the shared Stripe account (legacy VidCombo PHP, legacy
-// ssvid.net, anh Quan's other products, etc.).
+// svid.net, anh Quan's other products, etc.).
 //
 // Background: prior to the price_id whitelist filter in webhook_handler.go,
 // invoice.finalized / invoice.paid events from any product on the shared
-// Stripe account were persisted with a hardcoded brand="ssvid" fallback,
-// inflating the SSvid revenue dashboard. After the webhook fix no NEW foreign
+// Stripe account were persisted with a hardcoded brand="svid" fallback,
+// inflating the Svid revenue dashboard. After the webhook fix no NEW foreign
 // invoices are created, but historical pollution remains. This script cleans
 // up that history.
 //

@@ -54,7 +54,7 @@ func TestRevenueReport_NormalizesDaysAndPassesBrand(t *testing.T) {
 		expectedBrand string
 	}{
 		{name: "defaults invalid to thirty", query: "/admin/v1/finance/revenue?days=0&brand=vidcombo", expectedDays: 30, expectedBrand: "vidcombo"},
-		{name: "clamps oversized to max", query: "/admin/v1/finance/revenue?days=999&brand=ssvid", expectedDays: 365, expectedBrand: "ssvid"},
+		{name: "clamps oversized to max", query: "/admin/v1/finance/revenue?days=999&brand=svid", expectedDays: 365, expectedBrand: "svid"},
 	}
 
 	for _, tt := range tests {
@@ -93,7 +93,7 @@ func TestMRRTrend_NormalizesMonthsAndPassesBrand(t *testing.T) {
 		expectedBrand  string
 	}{
 		{name: "defaults invalid to twelve", query: "/admin/v1/subscriptions/mrr-trend?months=0&brand=vidcombo", expectedMonths: 12, expectedBrand: "vidcombo"},
-		{name: "clamps oversized to max", query: "/admin/v1/subscriptions/mrr-trend?months=99&brand=ssvid", expectedMonths: 36, expectedBrand: "ssvid"},
+		{name: "clamps oversized to max", query: "/admin/v1/subscriptions/mrr-trend?months=99&brand=svid", expectedMonths: 36, expectedBrand: "svid"},
 	}
 
 	for _, tt := range tests {

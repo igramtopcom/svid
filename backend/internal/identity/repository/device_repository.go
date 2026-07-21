@@ -24,7 +24,7 @@ func (r *DeviceRepository) FindByHardwareID(hardwareID string) (*model.Device, e
 }
 
 // FindByBrandAndHardwareID looks up a device scoped to a specific brand.
-// This prevents cross-brand collisions when the same physical device runs both SSvid and VidCombo.
+// This prevents cross-brand collisions when the same physical device runs both Svid and VidCombo.
 func (r *DeviceRepository) FindByBrandAndHardwareID(brand, hardwareID string) (*model.Device, error) {
 	var device model.Device
 	err := r.db.Where("brand = ? AND hardware_id = ?", brand, hardwareID).First(&device).Error

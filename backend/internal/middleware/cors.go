@@ -12,9 +12,9 @@ import (
 
 func CORS() gin.HandlerFunc {
 	origins := []string{
-		"https://ssvid.app",
-		"https://www.ssvid.app",
-		"https://api.ssvid.app",
+		"https://svid.app",
+		"https://www.svid.app",
+		"https://api.svid.app",
 		"https://vidcombo.com",
 		"https://www.vidcombo.com",
 		"https://vidcombo.net",

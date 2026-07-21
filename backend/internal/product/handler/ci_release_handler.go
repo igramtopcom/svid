@@ -56,7 +56,7 @@ func (h *CIReleaseHandler) RegisterRelease(c *gin.Context) {
 
 	brand := req.Brand
 	if brand == "" {
-		brand = "ssvid"
+		brand = "svid"
 	}
 
 	results, err := h.service.RegisterCIRelease(req.Version, channel, req.ReleaseNotes, brand, req.IsMandatory, req.Platforms)

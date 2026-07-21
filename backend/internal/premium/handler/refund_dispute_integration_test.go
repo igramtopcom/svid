@@ -54,7 +54,7 @@ func seedInvoiceRow(t *testing.T, inv model.Invoice) {
 		inv.ID = uuid.New()
 	}
 	if inv.Brand == "" {
-		inv.Brand = "ssvid"
+		inv.Brand = "svid"
 	}
 	if inv.Status == "" {
 		inv.Status = "paid"
@@ -81,8 +81,8 @@ func TestWebhook_ChargeRefunded_InvoiceFallback_DirectLicense(t *testing.T) {
 		Brand          string
 		SubscriptionID string
 	}{
-		LicenseKey:     "SSVID-w14a-w14a-w14a-w14a-w14a-w14a-w14a-w14a",
-		Brand:          "ssvid",
+		LicenseKey:     "SVID-w14a-w14a-w14a-w14a-w14a-w14a-w14a-w14a",
+		Brand:          "svid",
 		SubscriptionID: "sub_test_w14_refund_direct",
 	})
 
@@ -90,7 +90,7 @@ func TestWebhook_ChargeRefunded_InvoiceFallback_DirectLicense(t *testing.T) {
 	seedInvoiceRow(t, model.Invoice{
 		StripeInvoiceID:       "in_test_w14_refund_direct",
 		LicenseID:             &license.ID,
-		Brand:                 "ssvid",
+		Brand:                 "svid",
 		ContactEmail:          "w14a@example.com",
 		AmountDueCents:        4188,
 		AmountPaidCents:       4188,
@@ -127,8 +127,8 @@ func TestWebhook_ChargeRefunded_InvoiceFallback_OrphanInvoice(t *testing.T) {
 		Brand          string
 		SubscriptionID string
 	}{
-		LicenseKey:     "SSVID-w14b-w14b-w14b-w14b-w14b-w14b-w14b-w14b",
-		Brand:          "ssvid",
+		LicenseKey:     "SVID-w14b-w14b-w14b-w14b-w14b-w14b-w14b-w14b",
+		Brand:          "svid",
 		SubscriptionID: "sub_test_w14_refund_orphan",
 	})
 
@@ -139,7 +139,7 @@ func TestWebhook_ChargeRefunded_InvoiceFallback_OrphanInvoice(t *testing.T) {
 		LicenseID:             nil, // orphan
 		StripeSubscriptionID:  &sub,
 		StripePaymentIntentID: &pi,
-		Brand:                 "ssvid",
+		Brand:                 "svid",
 		ContactEmail:          "w14b@example.com",
 		AmountDueCents:        4188,
 		AmountPaidCents:       4188,
@@ -172,8 +172,8 @@ func TestWebhook_ChargeDispute_InvoiceFallback_OrphanInvoice(t *testing.T) {
 		Brand          string
 		SubscriptionID string
 	}{
-		LicenseKey:     "SSVID-w14o-w14o-w14o-w14o-w14o-w14o-w14o-w14o",
-		Brand:          "ssvid",
+		LicenseKey:     "SVID-w14o-w14o-w14o-w14o-w14o-w14o-w14o-w14o",
+		Brand:          "svid",
 		SubscriptionID: "sub_test_w14_dispute_orphan",
 	})
 	pi := "pi_test_disputed"
@@ -183,7 +183,7 @@ func TestWebhook_ChargeDispute_InvoiceFallback_OrphanInvoice(t *testing.T) {
 		LicenseID:             nil,
 		StripeSubscriptionID:  &sub,
 		StripePaymentIntentID: &pi,
-		Brand:                 "ssvid",
+		Brand:                 "svid",
 		ContactEmail:          "w14o@example.com",
 		AmountDueCents:        4188,
 		AmountPaidCents:       4188,
@@ -213,8 +213,8 @@ func TestWebhook_ChargeDispute_InvoiceFallback(t *testing.T) {
 		Brand          string
 		SubscriptionID string
 	}{
-		LicenseKey:     "SSVID-w14c-w14c-w14c-w14c-w14c-w14c-w14c-w14c",
-		Brand:          "ssvid",
+		LicenseKey:     "SVID-w14c-w14c-w14c-w14c-w14c-w14c-w14c-w14c",
+		Brand:          "svid",
 		SubscriptionID: "sub_test_w14_dispute",
 	})
 
@@ -223,7 +223,7 @@ func TestWebhook_ChargeDispute_InvoiceFallback(t *testing.T) {
 		StripeInvoiceID:       "in_test_w14_dispute",
 		LicenseID:             &license.ID,
 		StripePaymentIntentID: &pi,
-		Brand:                 "ssvid",
+		Brand:                 "svid",
 		ContactEmail:          "w14c@example.com",
 		AmountDueCents:        4188,
 		AmountPaidCents:       4188,
@@ -269,8 +269,8 @@ func TestWebhook_ChargeDispute_EmptyPaymentIntent_ResolvedViaChargeRetrieve(t *t
 		Brand          string
 		SubscriptionID string
 	}{
-		LicenseKey:     "SSVID-w14e-w14e-w14e-w14e-w14e-w14e-w14e-w14e",
-		Brand:          "ssvid",
+		LicenseKey:     "SVID-w14e-w14e-w14e-w14e-w14e-w14e-w14e-w14e",
+		Brand:          "svid",
 		SubscriptionID: "sub_test_w14_empty_pi",
 	})
 	pi := "pi_test_charge_only"
@@ -278,7 +278,7 @@ func TestWebhook_ChargeDispute_EmptyPaymentIntent_ResolvedViaChargeRetrieve(t *t
 		StripeInvoiceID:       "in_test_w14_empty_pi",
 		LicenseID:             &license.ID,
 		StripePaymentIntentID: &pi,
-		Brand:                 "ssvid",
+		Brand:                 "svid",
 		ContactEmail:          "w14e@example.com",
 		AmountDueCents:        4188,
 		AmountPaidCents:       4188,
@@ -325,7 +325,7 @@ func TestWebhook_DisputeClosed_WonRestoresViaInvoiceFallback(t *testing.T) {
 	deviceID := uuid.New()
 	if err := testDB.Exec(
 		`INSERT INTO devices (id, hardware_id, brand, os, is_active, created_at, last_seen_at)
-		 VALUES (?, ?, 'ssvid', 'macos', true, NOW(), NOW())`,
+		 VALUES (?, ?, 'svid', 'macos', true, NOW(), NOW())`,
 		deviceID, "test-hw-w14d",
 	).Error; err != nil {
 		t.Fatalf("seed device: %v", err)
@@ -334,8 +334,8 @@ func TestWebhook_DisputeClosed_WonRestoresViaInvoiceFallback(t *testing.T) {
 	license := model.PremiumLicense{
 		ID:                   uuid.New(),
 		DeviceID:             deviceID,
-		Brand:                "ssvid",
-		LicenseKey:           "SSVID-w14d-w14d-w14d-w14d-w14d-w14d-w14d-w14d",
+		Brand:                "svid",
+		LicenseKey:           "SVID-w14d-w14d-w14d-w14d-w14d-w14d-w14d-w14d",
 		Tier:                 "free", // revoked from prior dispute
 		BillingCycle:         "yearly",
 		PaymentMethod:        "stripe",
@@ -353,7 +353,7 @@ func TestWebhook_DisputeClosed_WonRestoresViaInvoiceFallback(t *testing.T) {
 		StripeInvoiceID:       "in_test_w14_won",
 		LicenseID:             &license.ID,
 		StripePaymentIntentID: &pi,
-		Brand:                 "ssvid",
+		Brand:                 "svid",
 		ContactEmail:          "w14d@example.com",
 		AmountDueCents:        4188,
 		AmountPaidCents:       4188,
@@ -393,7 +393,7 @@ func TestWebhook_InvoicePaid_NestedPaymentsShape(t *testing.T) {
 	deviceID := uuid.New()
 	if err := testDB.Exec(
 		`INSERT INTO devices (id, hardware_id, brand, os, is_active, created_at, last_seen_at)
-		 VALUES (?, ?, 'ssvid', 'macos', true, NOW(), NOW())`,
+		 VALUES (?, ?, 'svid', 'macos', true, NOW(), NOW())`,
 		deviceID, "test-hw-nested",
 	).Error; err != nil {
 		t.Fatalf("seed device: %v", err)
@@ -402,8 +402,8 @@ func TestWebhook_InvoicePaid_NestedPaymentsShape(t *testing.T) {
 	license := model.PremiumLicense{
 		ID:                   uuid.New(),
 		DeviceID:             deviceID,
-		Brand:                "ssvid",
-		LicenseKey:           "SSVID-nstd-nstd-nstd-nstd-nstd-nstd-nstd-nstd",
+		Brand:                "svid",
+		LicenseKey:           "SVID-nstd-nstd-nstd-nstd-nstd-nstd-nstd-nstd",
 		Tier:                 "premium",
 		BillingCycle:         "yearly",
 		PaymentMethod:        "stripe",

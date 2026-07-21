@@ -10,7 +10,7 @@ import (
 type Device struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
 	HardwareID string    `gorm:"not null;size:255"`
-	Brand      string    `gorm:"not null;default:'ssvid';size:50;index:idx_devices_brand"`
+	Brand      string    `gorm:"not null;default:'svid';size:50;index:idx_devices_brand"`
 	OS         string    `gorm:"not null;size:50"`
 	OSVersion  string    `gorm:"size:50"`
 	AppVersion string    `gorm:"size:20"`
@@ -30,7 +30,7 @@ func (d *Device) BeforeCreate(tx *gorm.DB) error {
 		d.Tier = "free"
 	}
 	if d.Brand == "" {
-		d.Brand = "ssvid"
+		d.Brand = "svid"
 	}
 	d.IsActive = true
 	d.LastSeenAt = time.Now()

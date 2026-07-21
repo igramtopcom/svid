@@ -12,7 +12,7 @@ type Admin struct {
 	Email        string     `gorm:"uniqueIndex;not null;size:255"`
 	PasswordHash string     `gorm:"not null;size:255"`
 	Name         string     `gorm:"size:255"`
-	BrandScope   string     `gorm:"size:50;default:''"` // "" = super admin (all brands), "ssvid", "vidcombo"
+	BrandScope   string     `gorm:"size:50;default:''"` // "" = super admin (all brands), "svid", "vidcombo"
 	CreatedAt    time.Time
 	LastLoginAt  *time.Time
 }

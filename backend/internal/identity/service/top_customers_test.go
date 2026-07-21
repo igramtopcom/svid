@@ -114,7 +114,7 @@ func TestBuildTopCustomersQuery_LimitClamping(t *testing.T) {
 // TestBuildTopCustomersQuery_ArgOrder verifies that args are in the same order
 // as the ? placeholders appear in the SQL string (gorm binds positionally).
 func TestBuildTopCustomersQuery_ArgOrder(t *testing.T) {
-	sql, args := buildTopCustomersQuery(50, "ssvid")
+	sql, args := buildTopCustomersQuery(50, "svid")
 
 	// Find position of brand filter ? and LIMIT ?.
 	brandPos := strings.Index(sql, "AND pl.brand = ?")

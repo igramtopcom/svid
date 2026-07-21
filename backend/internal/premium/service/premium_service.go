@@ -207,7 +207,7 @@ func (s *PremiumService) CreateLicense(deviceID uuid.UUID, billingCycle, payment
 	expiresAt := AddBillingCycleToTime(time.Now(), billingCycle)
 
 	// Resolve brand from device
-	brand := "ssvid"
+	brand := "svid"
 	if deviceID != uuid.Nil {
 		var deviceBrand struct{ Brand string }
 		if err := s.txnRepo.GetDB().Raw("SELECT brand FROM devices WHERE id = ?", deviceID).Scan(&deviceBrand).Error; err == nil && deviceBrand.Brand != "" {
@@ -301,7 +301,7 @@ func (s *PremiumService) FindOrCreateLicenseForSession(stripeSessionID string, o
 		expiresAt := AddBillingCycleToTime(time.Now(), txn.BillingCycle)
 
 		// Resolve brand from device
-		licenseBrand := "ssvid"
+		licenseBrand := "svid"
 		if txn.DeviceID != uuid.Nil {
 			var deviceBrand struct{ Brand string }
 			if err := dbTx.Raw("SELECT brand FROM devices WHERE id = ?", txn.DeviceID).Scan(&deviceBrand).Error; err == nil && deviceBrand.Brand != "" {
@@ -439,7 +439,7 @@ func (s *PremiumService) FindOrCreateLicenseForCryptoInvoice(cryptoInvoiceID str
 		expiresAt := AddBillingCycleToTime(time.Now(), txn.BillingCycle)
 
 		// Resolve brand from device
-		cryptoBrand := "ssvid"
+		cryptoBrand := "svid"
 		if txn.DeviceID != uuid.Nil {
 			var deviceBrand struct{ Brand string }
 			if err := dbTx.Raw("SELECT brand FROM devices WHERE id = ?", txn.DeviceID).Scan(&deviceBrand).Error; err == nil && deviceBrand.Brand != "" {
@@ -1211,8 +1211,8 @@ func (s *PremiumService) AdminCreateLicense(req dto.AdminCreateLicenseRequest, a
 	now := time.Now()
 	expiresAt := AddBillingCycleToTime(now, req.BillingCycle)
 
-	// Default brand to "ssvid" for admin-created licenses
-	brand := "ssvid"
+	// Default brand to "svid" for admin-created licenses
+	brand := "svid"
 	if req.Brand != "" {
 		brand = req.Brand
 	}
@@ -1250,7 +1250,7 @@ func (s *PremiumService) AdminCreateLicense(req dto.AdminCreateLicenseRequest, a
 
 // AdminImportLegacyLicense imports a pre-existing PHP-issued license into the
 // Go backend. One-shot γ-ETL migration from quantri.vidcombo.com →
-// api.ssvid.app to close the "Restore by Email" gap for ~4,240 legacy
+// api.svid.app to close the "Restore by Email" gap for ~4,240 legacy
 // VidCombo subscribers whose data only lived in MySQL.
 //
 // Contract:
@@ -1270,8 +1270,8 @@ func (s *PremiumService) AdminCreateLicense(req dto.AdminCreateLicenseRequest, a
 //     (CancelledAt != nil OR Tier != "premium"): an admin's manual revoke
 //     must NOT be silently undone by a re-run.
 //   - Refuses to overwrite a row of a different brand: blocks the case
-//     where a PHP 32-hex key collides with a brand=ssvid row (data drift /
-//     manual seed) and the update would silently corrupt an SSvid license.
+//     where a PHP 32-hex key collides with a brand=svid row (data drift /
+//     manual seed) and the update would silently corrupt an Svid license.
 //   - Rejects zero-value ExpiresAt and ExpiresAt > 1 year in the past
 //     (Gin's `required` binding tag treats time.Time{} as present).
 //   - Rejects unknown plan values explicitly — no silent default that would
@@ -1473,7 +1473,7 @@ func AmountCentsForBillingCycle(cycle, brand string) int {
 			return 0
 		}
 	}
-	// SSvid (default)
+	// Svid (default)
 	switch cycle {
 	case "monthly":
 		return 799 // $7.99

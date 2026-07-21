@@ -58,8 +58,8 @@ func TestAddBillingCycleToTime_RenewalExtend(t *testing.T) {
 }
 
 func TestAmountCentsForBillingCycle(t *testing.T) {
-	// SSvid pricing
-	ssvidTests := []struct {
+	// Svid pricing
+	svidTests := []struct {
 		cycle    string
 		expected int
 	}{
@@ -72,10 +72,10 @@ func TestAmountCentsForBillingCycle(t *testing.T) {
 		{"unknown", 0},
 		{"", 0},
 	}
-	for _, tt := range ssvidTests {
-		got := AmountCentsForBillingCycle(tt.cycle, "ssvid")
+	for _, tt := range svidTests {
+		got := AmountCentsForBillingCycle(tt.cycle, "svid")
 		if got != tt.expected {
-			t.Errorf("AmountCentsForBillingCycle(%q, \"ssvid\") = %d, want %d", tt.cycle, got, tt.expected)
+			t.Errorf("AmountCentsForBillingCycle(%q, \"svid\") = %d, want %d", tt.cycle, got, tt.expected)
 		}
 	}
 
@@ -165,29 +165,29 @@ func TestRequiredConfirmations(t *testing.T) {
 }
 
 func TestCryptoStubAmount(t *testing.T) {
-	btcAmount := cryptoStubAmount("BTC", "monthly", "ssvid")
+	btcAmount := cryptoStubAmount("BTC", "monthly", "svid")
 	if btcAmount == "" || btcAmount == "0" {
 		t.Error("BTC amount should not be empty or zero")
 	}
 
-	ltcAmount := cryptoStubAmount("LTC", "monthly", "ssvid")
+	ltcAmount := cryptoStubAmount("LTC", "monthly", "svid")
 	if ltcAmount == "" || ltcAmount == "0" {
 		t.Error("LTC amount should not be empty or zero")
 	}
 
-	xmrAmount := cryptoStubAmount("XMR", "monthly", "ssvid")
+	xmrAmount := cryptoStubAmount("XMR", "monthly", "svid")
 	if xmrAmount == "" || xmrAmount == "0" {
 		t.Error("XMR amount should not be empty or zero")
 	}
 
-	unknownAmount := cryptoStubAmount("ETH", "monthly", "ssvid")
+	unknownAmount := cryptoStubAmount("ETH", "monthly", "svid")
 	if unknownAmount != "0" {
 		t.Errorf("unknown currency should return 0, got %s", unknownAmount)
 	}
 
 	vidcomboAmount := cryptoStubAmount("BTC", "monthly", "vidcombo")
 	if vidcomboAmount == btcAmount {
-		t.Errorf("brand-aware crypto amount should differ when pricing differs: ssvid=%s vidcombo=%s", btcAmount, vidcomboAmount)
+		t.Errorf("brand-aware crypto amount should differ when pricing differs: svid=%s vidcombo=%s", btcAmount, vidcomboAmount)
 	}
 }
 

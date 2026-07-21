@@ -136,7 +136,7 @@ func TestDashboardTrends_NormalizesDaysBounds(t *testing.T) {
 		query    string
 		expected int
 	}{
-		{"default on zero", "/admin/v1/dashboard/trends?days=0&brand=ssvid", 7},
+		{"default on zero", "/admin/v1/dashboard/trends?days=0&brand=svid", 7},
 		{"clamp to max", "/admin/v1/dashboard/trends?days=999&brand=vidcombo", 365},
 	}
 
@@ -179,7 +179,7 @@ func TestDashboardActivity_NormalizesLimitAndPassesBrand(t *testing.T) {
 	router := gin.New()
 	router.GET("/admin/v1/dashboard/activity", handler.DashboardActivity)
 
-	req := httptest.NewRequest(http.MethodGet, "/admin/v1/dashboard/activity?limit=999&brand=ssvid", nil)
+	req := httptest.NewRequest(http.MethodGet, "/admin/v1/dashboard/activity?limit=999&brand=svid", nil)
 	rec := httptest.NewRecorder()
 	router.ServeHTTP(rec, req)
 
@@ -189,8 +189,8 @@ func TestDashboardActivity_NormalizesLimitAndPassesBrand(t *testing.T) {
 	if provider.limit != 200 {
 		t.Fatalf("expected limit clamped to 200, got %d", provider.limit)
 	}
-	if provider.brand != "ssvid" {
-		t.Fatalf("expected brand ssvid, got %q", provider.brand)
+	if provider.brand != "svid" {
+		t.Fatalf("expected brand svid, got %q", provider.brand)
 	}
 }
 

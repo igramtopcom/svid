@@ -90,15 +90,15 @@ func TestEnsureAndOrderBrandSummaries_SeedsKnownBrandsAndSortsExtras(t *testing.
 	brands := make(map[string]*dto.BrandSummary)
 	ensureBrandSummary(brands, "VIDCOMBO").RevenueMonth = 2796
 	ensureBrandSummary(brands, "beta").TotalDevices = 3
-	ensureBrandSummary(brands, "ssvid").TotalDevices = 10
+	ensureBrandSummary(brands, "svid").TotalDevices = 10
 
 	ordered := orderedBrandSummaries(brands)
 	if len(ordered) != 3 {
 		t.Fatalf("expected 3 brands, got %d", len(ordered))
 	}
 
-	if ordered[0].Brand != "ssvid" {
-		t.Fatalf("expected ssvid first, got %+v", ordered)
+	if ordered[0].Brand != "svid" {
+		t.Fatalf("expected svid first, got %+v", ordered)
 	}
 	if ordered[1].Brand != "vidcombo" {
 		t.Fatalf("expected vidcombo second, got %+v", ordered)

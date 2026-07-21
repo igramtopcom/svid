@@ -44,7 +44,7 @@ func NewAdminAnalyticsHandler(svc *service.AnalyticsService) *AdminAnalyticsHand
 // @Param event_type query string false "Filter by event type"
 // @Param os query string false "Filter by operating system"
 // @Param app_version query string false "Filter by app version"
-// @Param brand query string false "Filter by brand (e.g. ssvid, vidcombo)"
+// @Param brand query string false "Filter by brand (e.g. svid, vidcombo)"
 // @Security BearerAuth
 // @Success 200 {object} response.Response "Paginated list of events"
 // @Failure 401 {object} response.Response "Unauthorized - invalid or missing JWT token"
@@ -235,7 +235,7 @@ func (h *AdminAnalyticsHandler) DailyStats(c *gin.Context) {
 // @Param app_version query string false "Filter by app version"
 // @Param date_from query string false "Filter from date (YYYY-MM-DD)"
 // @Param date_to query string false "Filter to date (YYYY-MM-DD)"
-// @Param brand query string false "Filter by brand (e.g. ssvid, vidcombo)"
+// @Param brand query string false "Filter by brand (e.g. svid, vidcombo)"
 // @Security BearerAuth
 // @Success 200 {object} response.Response "Paginated download errors"
 // @Router /admin/v1/analytics/download-errors [get]

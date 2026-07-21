@@ -99,7 +99,7 @@ func TestTopEvents_NormalizesLimitAndPassesBrand(t *testing.T) {
 		expectedBrand string
 	}{
 		{name: "defaults invalid to ten", query: "/admin/v1/analytics/top-events?limit=0&brand=vidcombo", expectedLimit: 10, expectedBrand: "vidcombo"},
-		{name: "clamps to max", query: "/admin/v1/analytics/top-events?limit=999&brand=ssvid", expectedLimit: 100, expectedBrand: "ssvid"},
+		{name: "clamps to max", query: "/admin/v1/analytics/top-events?limit=999&brand=svid", expectedLimit: 100, expectedBrand: "svid"},
 	}
 
 	for _, tt := range tests {
@@ -180,11 +180,11 @@ func TestDownloadStats_NormalizesDaysBounds(t *testing.T) {
 		},
 		{
 			name:          "download stats clamp to max",
-			path:          "/admin/v1/analytics/downloads?days=999&brand=ssvid",
+			path:          "/admin/v1/analytics/downloads?days=999&brand=svid",
 			expectedDays:  365,
-			expectedBrand: "ssvid",
+			expectedBrand: "svid",
 			check: func(t *testing.T, svc *fakeAdminAnalyticsService) {
-				if svc.downloadDays != 365 || svc.downloadBrand != "ssvid" {
+				if svc.downloadDays != 365 || svc.downloadBrand != "svid" {
 					t.Fatalf("unexpected download stats args: days=%d brand=%q", svc.downloadDays, svc.downloadBrand)
 				}
 			},

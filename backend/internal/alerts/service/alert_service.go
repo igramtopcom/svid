@@ -195,7 +195,7 @@ func (s *AlertService) CheckAlerts() {
 
 		// Threshold breached — send alert
 		message := fmt.Sprintf(
-			"[SSvid Alert] %s\n%s: %d (threshold: %d) in last %d min",
+			"[Svid Alert] %s\n%s: %d (threshold: %d) in last %d min",
 			config.Name, config.MetricType, metricValue, config.Threshold, config.WindowMins,
 		)
 
@@ -261,7 +261,7 @@ func (s *AlertService) sendEmail(to, subject, body string) error {
 	if s.emailService == nil || !s.emailService.IsConfigured() {
 		return fmt.Errorf("email service not configured")
 	}
-	return s.emailService.Send(to, "[SSvid Alert] "+subject, "alert", map[string]string{
+	return s.emailService.Send(to, "[Svid Alert] "+subject, "alert", map[string]string{
 		"AlertName": subject,
 		"Body":      body,
 	})
@@ -277,7 +277,7 @@ func (s *AlertService) TestAlert(id uuid.UUID) error {
 		return err
 	}
 
-	message := fmt.Sprintf("[SSvid Test Alert] %s — this is a test notification.", config.Name)
+	message := fmt.Sprintf("[Svid Test Alert] %s — this is a test notification.", config.Name)
 
 	switch config.Channel {
 	case "telegram":

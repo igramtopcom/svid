@@ -12,7 +12,7 @@ type AppRelease struct {
 	Version      string    `gorm:"not null;size:20"`
 	Platform     string    `gorm:"not null;size:50"`                  // macos, windows, linux
 	Channel      string    `gorm:"not null;size:20;default:'stable'"` // stable, beta, alpha
-	Brand        string    `gorm:"not null;size:20;default:'ssvid'"`  // ssvid, vidcombo
+	Brand        string    `gorm:"not null;size:20;default:'svid'"`  // svid, vidcombo
 	ReleaseNotes string    `gorm:"type:text"`
 	DownloadURL  string    `gorm:"type:text"`
 	FileSize     int64     `gorm:"default:0"`

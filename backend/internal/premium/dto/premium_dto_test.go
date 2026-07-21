@@ -17,7 +17,7 @@ func TestLicenseToResponse(t *testing.T) {
 	license := &model.PremiumLicense{
 		ID:            id,
 		DeviceID:      deviceID,
-		LicenseKey:    "SSVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789",
+		LicenseKey:    "SVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789",
 		Tier:          "premium",
 		BillingCycle:  "monthly",
 		PaymentMethod: "stripe",
@@ -32,8 +32,8 @@ func TestLicenseToResponse(t *testing.T) {
 	if resp.ID != id.String() {
 		t.Errorf("expected ID %s, got %s", id.String(), resp.ID)
 	}
-	if resp.LicenseKey != "SSVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789" {
-		t.Errorf("expected license key SSVID-abcd-ef01-..., got %s", resp.LicenseKey)
+	if resp.LicenseKey != "SVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789" {
+		t.Errorf("expected license key SVID-abcd-ef01-..., got %s", resp.LicenseKey)
 	}
 	if resp.Tier != "premium" {
 		t.Errorf("expected tier premium, got %s", resp.Tier)
@@ -51,7 +51,7 @@ func TestLicenseToResponse(t *testing.T) {
 
 func TestLicensesToResponse(t *testing.T) {
 	licenses := []model.PremiumLicense{
-		{ID: uuid.New(), LicenseKey: "SSVID-1111-2222-3333-4444-5555-6666-7777-8888", Tier: "premium", ExpiresAt: time.Now()},
+		{ID: uuid.New(), LicenseKey: "SVID-1111-2222-3333-4444-5555-6666-7777-8888", Tier: "premium", ExpiresAt: time.Now()},
 		{ID: uuid.New(), LicenseKey: "VIDCOMBO-aaaa-bbbb-cccc-dddd-eeee-ffff-0000-1111", Tier: "free", ExpiresAt: time.Now()},
 	}
 
@@ -59,7 +59,7 @@ func TestLicensesToResponse(t *testing.T) {
 	if len(responses) != 2 {
 		t.Fatalf("expected 2 responses, got %d", len(responses))
 	}
-	if responses[0].LicenseKey != "SSVID-1111-2222-3333-4444-5555-6666-7777-8888" {
+	if responses[0].LicenseKey != "SVID-1111-2222-3333-4444-5555-6666-7777-8888" {
 		t.Error("first response has wrong license key")
 	}
 	if responses[1].Tier != "free" {

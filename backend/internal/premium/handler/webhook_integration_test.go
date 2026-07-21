@@ -41,7 +41,7 @@ func TestWebhook_DuplicateEventID_HandlerRunsOnce(t *testing.T) {
 	deviceID := uuid.New()
 	if err := testDB.Exec(
 		`INSERT INTO devices (id, hardware_id, brand, os, is_active, created_at, last_seen_at)
-		 VALUES (?, ?, 'ssvid', 'macos', true, NOW(), NOW())`,
+		 VALUES (?, ?, 'svid', 'macos', true, NOW(), NOW())`,
 		deviceID, "test-hw-dup-"+deviceID.String(),
 	).Error; err != nil {
 		t.Fatalf("seed device: %v", err)
@@ -52,8 +52,8 @@ func TestWebhook_DuplicateEventID_HandlerRunsOnce(t *testing.T) {
 	license := model.PremiumLicense{
 		ID:                   uuid.New(),
 		DeviceID:             deviceID,
-		Brand:                "ssvid",
-		LicenseKey:           "SSVID-dddd-eeee-ffff-1111-2222-3333-4444-5555",
+		Brand:                "svid",
+		LicenseKey:           "SVID-dddd-eeee-ffff-1111-2222-3333-4444-5555",
 		Tier:                 "premium",
 		BillingCycle:         "yearly",
 		PaymentMethod:        "stripe",
@@ -155,7 +155,7 @@ func TestWebhook_SubscriptionCreate_DoesNotExtendExpiry(t *testing.T) {
 	deviceID := uuid.New()
 	if err := testDB.Exec(
 		`INSERT INTO devices (id, hardware_id, brand, os, is_active, created_at, last_seen_at)
-		 VALUES (?, ?, 'ssvid', 'macos', true, NOW(), NOW())`,
+		 VALUES (?, ?, 'svid', 'macos', true, NOW(), NOW())`,
 		deviceID, "test-hw-"+deviceID.String(),
 	).Error; err != nil {
 		t.Fatalf("seed device: %v", err)
@@ -166,8 +166,8 @@ func TestWebhook_SubscriptionCreate_DoesNotExtendExpiry(t *testing.T) {
 	license := model.PremiumLicense{
 		ID:                   uuid.New(),
 		DeviceID:             deviceID,
-		Brand:                "ssvid",
-		LicenseKey:           "SSVID-1111-2222-3333-4444-5555-6666-7777-8888",
+		Brand:                "svid",
+		LicenseKey:           "SVID-1111-2222-3333-4444-5555-6666-7777-8888",
 		Tier:                 "premium",
 		BillingCycle:         "yearly",
 		PaymentMethod:        "stripe",
@@ -204,7 +204,7 @@ func TestWebhook_SubscriptionCycle_ExtendsExpiry(t *testing.T) {
 	deviceID := uuid.New()
 	if err := testDB.Exec(
 		`INSERT INTO devices (id, hardware_id, brand, os, is_active, created_at, last_seen_at)
-		 VALUES (?, ?, 'ssvid', 'macos', true, NOW(), NOW())`,
+		 VALUES (?, ?, 'svid', 'macos', true, NOW(), NOW())`,
 		deviceID, "test-hw-cycle-"+deviceID.String(),
 	).Error; err != nil {
 		t.Fatalf("seed device: %v", err)
@@ -215,8 +215,8 @@ func TestWebhook_SubscriptionCycle_ExtendsExpiry(t *testing.T) {
 	license := model.PremiumLicense{
 		ID:                   uuid.New(),
 		DeviceID:             deviceID,
-		Brand:                "ssvid",
-		LicenseKey:           "SSVID-aaaa-bbbb-cccc-dddd-eeee-ffff-1111-2222",
+		Brand:                "svid",
+		LicenseKey:           "SVID-aaaa-bbbb-cccc-dddd-eeee-ffff-1111-2222",
 		Tier:                 "premium",
 		BillingCycle:         "yearly",
 		PaymentMethod:        "stripe",

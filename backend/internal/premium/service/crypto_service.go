@@ -98,7 +98,7 @@ func (s *CryptoService) CreateInvoice(deviceID uuid.UUID, brand string, req dto.
 		return nil, ErrCryptoNotConfigured
 	}
 	if brand == "" {
-		brand = "ssvid"
+		brand = "svid"
 	}
 
 	// Check for duplicate idempotency key

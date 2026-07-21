@@ -34,8 +34,8 @@ export default function Login() {
       <div className="w-full max-w-sm">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <div className="text-center mb-6">
-            <img src={import.meta.env.BASE_URL + 'logo.png'} alt="SSvid" width="64" height="64" className="rounded-xl mx-auto mb-3" />
-            <h1 className="text-2xl font-bold text-gray-900">SSvid</h1>
+            <img src={import.meta.env.BASE_URL + 'logo.png'} alt="Svid" width="64" height="64" className="rounded-xl mx-auto mb-3" />
+            <h1 className="text-2xl font-bold text-gray-900">Svid</h1>
             <p className="text-sm text-gray-500 mt-1">Admin Dashboard</p>
           </div>
 
@@ -54,7 +54,7 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                placeholder="admin@ssvid.com"
+                placeholder="admin@svid.com"
               />
             </div>
 

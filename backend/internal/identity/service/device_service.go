@@ -85,10 +85,10 @@ func (s *DeviceService) invalidateCacheForDevice(deviceID uuid.UUID) {
 // If new: create device + generate key.
 // clientIP and userAgent are logged for audit purposes.
 func (s *DeviceService) RegisterDevice(req dto.RegisterDeviceRequest, clientIP, userAgent string) (*dto.RegisterResponse, error) {
-	// Default brand to "ssvid" if not provided (backward compatible)
+	// Default brand to "svid" if not provided (backward compatible)
 	brand := req.Brand
 	if brand == "" {
-		brand = "ssvid"
+		brand = "svid"
 	}
 
 	// Re-register cooldown: 60s per (brand + hardware_id) to prevent DOS via key rotation

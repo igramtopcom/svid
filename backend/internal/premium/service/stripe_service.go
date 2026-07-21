@@ -74,7 +74,7 @@ func (s *StripeService) Config() *config.StripeConfig {
 }
 
 // CreateCheckoutSession creates a Stripe Checkout session.
-// brand selects the correct Stripe price IDs and pricing ("ssvid" or "vidcombo").
+// brand selects the correct Stripe price IDs and pricing ("svid" or "vidcombo").
 func (s *StripeService) CreateCheckoutSession(deviceID uuid.UUID, req dto.CheckoutRequest, brand string) (*dto.CheckoutResponse, error) {
 	if !s.IsConfigured() {
 		return nil, ErrPaymentNotConfigured
@@ -176,7 +176,7 @@ func (s *StripeService) resolvePriceID(billingCycle, brand string) string {
 			return ""
 		}
 	}
-	// SSvid (default)
+	// Svid (default)
 	switch billingCycle {
 	case "monthly":
 		return s.cfg.PriceMonthly
@@ -192,14 +192,14 @@ func (s *StripeService) resolvePriceID(billingCycle, brand string) string {
 // CreateWebCheckoutSession creates a Stripe Checkout session from the public website.
 // No device auth required — device_id is set to a nil UUID (web purchase).
 // The user receives a license key after payment and activates it in the app.
-// brand defaults to "ssvid" for web checkout (landing page is ssvid.app).
+// brand defaults to "svid" for web checkout (landing page is svid.app).
 func (s *StripeService) CreateWebCheckoutSession(req dto.WebCheckoutRequest) (*dto.CheckoutResponse, error) {
 	if !s.IsConfigured() {
 		return nil, ErrPaymentNotConfigured
 	}
 
-	// Web checkout defaults to SSvid (ssvid.app landing page)
-	brand := "ssvid"
+	// Web checkout defaults to Svid (svid.app landing page)
+	brand := "svid"
 
 	priceID := s.resolvePriceID(req.BillingCycle, brand)
 	if priceID == "" {
@@ -497,7 +497,7 @@ func (s *StripeService) CreatePortalSession(deviceID uuid.UUID, brand string) (*
 		if brand == "vidcombo" {
 			returnURL = "https://vidcombo.com"
 		} else {
-			returnURL = "https://ssvid.app"
+			returnURL = "https://svid.app"
 		}
 	}
 
@@ -542,7 +542,7 @@ func (s *StripeService) CreatePortalSessionForLicense(licenseID uuid.UUID) (*dto
 		return nil, ErrNoStripeCustomer
 	}
 
-	returnURL := "https://ssvid.app/account"
+	returnURL := "https://svid.app/account"
 	if license.Brand == "vidcombo" {
 		returnURL = "https://vidcombo.com"
 	}
@@ -586,7 +586,7 @@ func (s *StripeService) CreatePortalSessionByEmail(email string) (*dto.PortalSes
 		return nil, ErrNoStripeCustomer
 	}
 
-	returnURL := "https://ssvid.app/account"
+	returnURL := "https://svid.app/account"
 	if license.Brand == "vidcombo" {
 		returnURL = "https://vidcombo.com"
 	}

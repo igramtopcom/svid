@@ -15,7 +15,7 @@ import (
 type PremiumLicense struct {
 	ID                   uuid.UUID `gorm:"type:uuid;primaryKey"`
 	DeviceID             uuid.UUID `gorm:"type:uuid;index;not null"`
-	Brand                string    `gorm:"not null;default:'ssvid';size:20;index"`
+	Brand                string    `gorm:"not null;default:'svid';size:20;index"`
 	LicenseKey           string    `gorm:"uniqueIndex;not null;size:50"`
 	Tier                 string    `gorm:"not null;default:'free';size:20"`
 	BillingCycle         string    `gorm:"not null;size:20"`
@@ -47,7 +47,7 @@ func (l *PremiumLicense) BeforeCreate(tx *gorm.DB) error {
 // GenerateLicenseKey creates a brand-aware license key using HMAC-SHA256 with 128-bit entropy.
 //
 // Format per brand:
-//   - ssvid:    SSVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX    (45 chars)
+//   - svid:    SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX    (44 chars)
 //   - vidcombo: VIDCOMBO-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX  (48 chars)
 //
 // Brand is case-insensitive; prefix is always uppercase.
@@ -70,7 +70,7 @@ func brandKeyPrefix(brand string) string {
 	case "vidcombo":
 		return "VIDCOMBO"
 	default:
-		return "SSVID"
+		return "SVID"
 	}
 }
 

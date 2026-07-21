@@ -269,7 +269,7 @@ export default function Header({ onMenuClick, showMenu }: HeaderProps) {
               className="text-sm bg-gray-100 border border-gray-200 rounded-lg px-3 py-1.5 text-gray-700 outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             >
               <option value="">All Brands</option>
-              <option value="ssvid">SSvid</option>
+              <option value="svid">Svid</option>
               <option value="vidcombo">VidCombo</option>
             </select>
           </div>

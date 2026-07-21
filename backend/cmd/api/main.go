@@ -1,13 +1,13 @@
-// @title SSvid Backend API
+// @title Svid Backend API
 // @version 1.0
-// @description Backend API for SSvid (SnakeLoader) desktop video downloader application
+// @description Backend API for Svid (SnakeLoader) desktop video downloader application
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
-// @contact.email support@ssvid.com
+// @contact.email support@svid.com
 
 // @license.name Private
-// @license.url http://ssvid.com/license
+// @license.url http://svid.com/license
 
 // @host localhost:8080
 // @BasePath /
@@ -285,7 +285,7 @@ func main() {
 		)
 		premiumHandler.SetMagicLinkService(magicLinkSvc)
 		logger.Log.Info().
-			Str("base_ssvid", cfg.MagicLink.BaseURLSSvid).
+			Str("base_svid", cfg.MagicLink.BaseURLSvid).
 			Str("base_vidcombo", cfg.MagicLink.BaseURLVidCombo).
 			Int("ttl_min", cfg.MagicLink.TTLMinutes).
 			Msg("Magic link service wired")

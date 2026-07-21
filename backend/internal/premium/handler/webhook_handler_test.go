@@ -201,8 +201,8 @@ func TestStripeChargeParsing(t *testing.T) {
 
 // --- Multi-tenant brand attribution tests -------------------------------
 //
-// The same Stripe account serves SSvid desktop, VidCombo desktop, legacy
-// VidCombo (PHP), and legacy ssvid.net. Webhook handlers MUST filter by
+// The same Stripe account serves Svid desktop, VidCombo desktop, legacy
+// VidCombo (PHP), and legacy svid.net. Webhook handlers MUST filter by
 // price_id so unrelated invoices don't inflate this backend's revenue
 // dashboard. These tests pin down the attribution surface.
 
@@ -211,16 +211,16 @@ func TestStripeChargeParsing(t *testing.T) {
 // collisions are obvious.
 func testStripeConfig() *config.StripeConfig {
 	return &config.StripeConfig{
-		PriceMonthly:            "price_test_ssvid_monthly",
-		PriceYearly:             "price_test_ssvid_yearly",
-		PriceLifetime:           "price_test_ssvid_lifetime",
+		PriceMonthly:            "price_test_svid_monthly",
+		PriceYearly:             "price_test_svid_yearly",
+		PriceLifetime:           "price_test_svid_lifetime",
 		VidComboPriceMonthly:    "price_test_vidcombo_monthly",
 		VidComboPriceSemiannual: "price_test_vidcombo_semiannual",
 		VidComboPriceYearly:     "price_test_vidcombo_yearly",
 	}
 }
 
-func TestBrandFromPriceID_SSvidPrices(t *testing.T) {
+func TestBrandFromPriceID_SvidPrices(t *testing.T) {
 	cfg := testStripeConfig()
 
 	cases := []string{
@@ -232,10 +232,10 @@ func TestBrandFromPriceID_SSvidPrices(t *testing.T) {
 		t.Run(priceID, func(t *testing.T) {
 			brand, ok := cfg.BrandFromPriceID(priceID)
 			if !ok {
-				t.Fatalf("expected SSvid price %q to be recognized", priceID)
+				t.Fatalf("expected Svid price %q to be recognized", priceID)
 			}
-			if brand != "ssvid" {
-				t.Errorf("brand: want ssvid, got %s", brand)
+			if brand != "svid" {
+				t.Errorf("brand: want svid, got %s", brand)
 			}
 		})
 	}
@@ -264,7 +264,7 @@ func TestBrandFromPriceID_VidComboPrices(t *testing.T) {
 
 // TestBrandFromPriceID_ForeignPrices_AreFiltered guards the actual revenue leak.
 // Any price ID not configured here belongs to another product on the shared
-// Stripe account (legacy VidCombo PHP, legacy ssvid.net, anh Quan's other
+// Stripe account (legacy VidCombo PHP, legacy svid.net, anh Quan's other
 // products, etc.) and MUST be rejected.
 func TestBrandFromPriceID_ForeignPrices_AreFiltered(t *testing.T) {
 	cfg := testStripeConfig()
@@ -274,7 +274,7 @@ func TestBrandFromPriceID_ForeignPrices_AreFiltered(t *testing.T) {
 		priceID string
 	}{
 		{"legacy_vidcombo_php", "price_legacy_vidcombo_old_monthly"},
-		{"legacy_ssvid_net", "price_legacy_ssvid_net_yearly"},
+		{"legacy_svid_net", "price_legacy_svid_net_yearly"},
 		{"unrelated_product", "price_someone_else_product"},
 		{"empty_string", ""},
 	}
@@ -297,7 +297,7 @@ func TestBrandFromPriceID_ForeignPrices_AreFiltered(t *testing.T) {
 // mis-attribute revenue. The early `priceID == ""` check guards this.
 func TestBrandFromPriceID_EmptyConfigDoesNotMatchEmptyPrice(t *testing.T) {
 	cfg := &config.StripeConfig{
-		PriceMonthly: "price_real_ssvid_monthly",
+		PriceMonthly: "price_real_svid_monthly",
 		// All other fields are "" — the typical dev config state.
 	}
 
@@ -316,7 +316,7 @@ func TestStripeInvoice_FirstPriceID_FromLines(t *testing.T) {
 		"currency": "usd",
 		"lines": {
 			"data": [
-				{"price": {"id": "price_test_ssvid_monthly"}}
+				{"price": {"id": "price_test_svid_monthly"}}
 			]
 		}
 	}`
@@ -325,8 +325,8 @@ func TestStripeInvoice_FirstPriceID_FromLines(t *testing.T) {
 	if err := json.Unmarshal([]byte(raw), &inv); err != nil {
 		t.Fatalf("unmarshal: %v", err)
 	}
-	if got := inv.firstPriceID(); got != "price_test_ssvid_monthly" {
-		t.Errorf("firstPriceID: want price_test_ssvid_monthly, got %s", got)
+	if got := inv.firstPriceID(); got != "price_test_svid_monthly" {
+		t.Errorf("firstPriceID: want price_test_svid_monthly, got %s", got)
 	}
 }
 
@@ -362,7 +362,7 @@ func TestStripeInvoice_FirstPriceID_MissingLines(t *testing.T) {
 // TestStripeInvoice_AttributionRouting walks the full attribution chain on
 // realistic webhook payloads. This is the regression test that would have
 // caught the original revenue leak: a foreign invoice ($3173.19 from legacy
-// products) reaching persistInvoiceRecord with the hardcoded brand="ssvid"
+// products) reaching persistInvoiceRecord with the hardcoded brand="svid"
 // fallback.
 func TestStripeInvoice_AttributionRouting(t *testing.T) {
 	cfg := testStripeConfig()
@@ -375,11 +375,11 @@ func TestStripeInvoice_AttributionRouting(t *testing.T) {
 		description string
 	}{
 		{
-			name:        "ssvid_monthly_routes_to_ssvid",
-			priceID:     "price_test_ssvid_monthly",
+			name:        "svid_monthly_routes_to_svid",
+			priceID:     "price_test_svid_monthly",
 			wantOK:      true,
-			wantBrand:   "ssvid",
-			description: "real SSvid invoice should persist with brand=ssvid",
+			wantBrand:   "svid",
+			description: "real Svid invoice should persist with brand=svid",
 		},
 		{
 			name:        "vidcombo_yearly_routes_to_vidcombo",
@@ -395,10 +395,10 @@ func TestStripeInvoice_AttributionRouting(t *testing.T) {
 			description: "legacy VidCombo (managed by checkkey.php) must NOT inflate dashboard",
 		},
 		{
-			name:        "legacy_ssvid_net_is_filtered",
-			priceID:     "price_legacy_ssvid_net_yearly",
+			name:        "legacy_svid_net_is_filtered",
+			priceID:     "price_legacy_svid_net_yearly",
 			wantOK:      false,
-			description: "legacy ssvid.net (PHP/Yii) must NOT inflate dashboard",
+			description: "legacy svid.net (PHP/Yii) must NOT inflate dashboard",
 		},
 		{
 			name:        "unknown_product_is_filtered",

@@ -10,7 +10,7 @@ type AdminInfo struct {
 	ID         string `json:"id"`
 	Email      string `json:"email"`
 	Name       string `json:"name"`
-	BrandScope string `json:"brand_scope"` // "" = super admin, "ssvid", "vidcombo"
+	BrandScope string `json:"brand_scope"` // "" = super admin, "svid", "vidcombo"
 }
 
 // BrandSummary holds key KPIs for a single brand in the comparison view.

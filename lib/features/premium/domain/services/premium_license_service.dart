@@ -213,6 +213,11 @@ class PremiumLicenseService {
     PremiumLicense license, {
     DateTime? now,
   }) {
+    // Free-unlimited brands (e.g. svid) unlock every premium feature for all
+    // users. This is the single lever that opens isPremiumProvider and every
+    // quota/resolution/concurrency/batch/browser-shield gate downstream.
+    if (BrandConfig.current.allFeaturesFree) return true;
+
     if (license.isFree) return false;
     if (!license.isPremium) return false;
 

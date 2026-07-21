@@ -307,6 +307,15 @@ abstract class BrandConfig {
   /// Free-tier weekly download quota for this brand.
   int get freeWeeklyDownloads;
 
+  /// Whether ALL premium features are unlocked for every user (no monetization).
+  ///
+  /// When true, [PremiumLicenseService.isFeatureAvailable] short-circuits to
+  /// `true`, which drives `isPremiumProvider` — so unlimited downloads, 8K,
+  /// concurrency, batch, browser-shield/media-sniff and ad-block all open for
+  /// free. svid ships free+unlimited; VidCombo keeps its paid tier (default
+  /// false).
+  bool get allFeaturesFree => false;
+
   // ==================== LICENSE ====================
 
   /// Regex pattern for validating license keys
@@ -455,6 +464,8 @@ class SvidBrand extends BrandConfig {
   bool get canAutoDownloadUpdate => true;
   @override
   int get freeWeeklyDownloads => 15;
+  @override
+  bool get allFeaturesFree => true; // svid is free + unlimited for everyone
 
   @override
   RegExp get licenseKeyPattern =>

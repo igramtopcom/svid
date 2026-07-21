@@ -62,6 +62,10 @@ void main() {
       expect(config.canAutoDownloadUpdate, isTrue);
     });
 
+    test('all features are free (free-unlimited app)', () {
+      expect(config.allFeaturesFree, isTrue);
+    });
+
     test('license key validation — new SVID- format', () {
       expect(
         config.isValidLicenseKey(
@@ -137,6 +141,10 @@ void main() {
       expect(config.hasStripeCheckout, isTrue);
       expect(config.hasPdfConvPayPalCheckout, isTrue);
       expect(config.canAutoDownloadUpdate, isTrue);
+    });
+
+    test('keeps its paid tier (allFeaturesFree is false)', () {
+      expect(config.allFeaturesFree, isFalse);
     });
 
     test('license key validation — 32-char hex (PHP legacy)', () {

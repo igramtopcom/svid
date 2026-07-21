@@ -35,7 +35,11 @@
   #define MyAppURL "https://svid.app"
 #endif
 #ifndef MyAppId
-  #define MyAppId "{{A3D7F1E2-8B4C-4E5A-9F6D-2C1B3A4E5F6D}"
+  ; New GUID for the Svid rebrand — deliberately DIFFERENT from the old SSvid
+  ; AppId {A3D7F1E2-8B4C-4E5A-9F6D-2C1B3A4E5F6D} so Svid installs as a separate
+  ; app rather than upgrading over an existing SSvid install (per rebrand plan:
+  ; "existing SSvid installs will not auto-update to Svid").
+  #define MyAppId "{{D19957B3-E0BD-4782-8F21-0BA780FA09B4}"
 #endif
 ; Custom URL scheme for deep-link license activation (e.g. "svid://key=...")
 ; Must match lib/core/config/brand_config.dart `urlScheme` for the brand.

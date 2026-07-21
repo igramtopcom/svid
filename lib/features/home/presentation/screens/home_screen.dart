@@ -877,23 +877,17 @@ class HomeScreenState extends ConsumerState<HomeScreen>
                 ],
               );
 
-              // Cap + centre the content on wide windows so the command bar
-              // and list don't stretch edge-to-edge (keeps paste → download
-              // within a comfortable horizontal span).
-              const maxContentWidth = 1200.0;
+              // Left-anchor the content so it sits flush against the rail
+              // (its own card padding is the only gap) — this keeps the two
+              // columns visually connected. The command bar caps its input
+              // width internally, so filling the width no longer stretches the
+              // URL field; any surplus on very wide windows falls to the right.
+              const maxContentWidth = 1440.0;
               final extra = constraints.maxWidth - maxContentWidth;
-              // Anchor the content toward the rail: centre it on moderate
-              // windows, but cap the left gap so on very wide windows it stays
-              // close to the rail (extra whitespace goes to the right).
-              final leftInset = extra > 0 ? (extra / 2).clamp(0.0, 40.0) : 0.0;
-              final rightInset = extra > 0 ? extra - leftInset : 0.0;
               final capped =
                   extra > 0
                       ? Padding(
-                        padding: EdgeInsets.only(
-                          left: leftInset,
-                          right: rightInset,
-                        ),
+                        padding: EdgeInsets.only(right: extra),
                         child: content,
                       )
                       : content;

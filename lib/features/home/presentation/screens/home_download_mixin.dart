@@ -21,6 +21,7 @@ import '../../../downloads/domain/entities/download_config.dart';
 import '../../../downloads/presentation/providers/download_path_suggestion_provider.dart';
 import '../../../downloads/presentation/utils/download_start_result.dart';
 import '../../../downloads/presentation/widgets/download_config_dialog.dart';
+import '../../../downloads/presentation/widgets/quick_download_sheet.dart';
 import '../../../floating_capture/domain/entities/popup_action_result.dart';
 import '../../../floating_capture/presentation/providers/floating_capture_providers.dart';
 import '../../../settings/domain/entities/format_preset_extended.dart';
@@ -1050,12 +1051,11 @@ mixin HomeDownloadMixin {
       return r.started;
     }
 
-    // Rule 3: Show config dialog
-    final config = await DownloadConfigDialog.show(
-      context,
-      videoInfo,
-      platform,
-    );
+    // Rule 3: Ask the user. The compact QuickDownloadSheet is the everyday
+    // surface (Video/Audio + quality + format + remember); it opens the full
+    // DownloadConfigDialog on demand via its "Advanced options" row and returns
+    // the same DownloadConfig contract either way.
+    final config = await QuickDownloadSheet.show(context, videoInfo, platform);
 
     if (config != null && config.selectedQualities.isNotEmpty) {
       return await startDownloadWithConfig(videoInfo, config);

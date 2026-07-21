@@ -176,14 +176,12 @@ class _DownloadConfigDialogState extends ConsumerState<DownloadConfigDialog> {
     _selectedChapterIndices.addAll(
       List.generate(widget.videoInfo.chapters.length, (i) => i),
     );
-    // B3 regression fix: the section/clip time-range control lives inside the
-    // Advanced accordion (ConfigPreferencesPanel), which shipped
-    // collapsed-by-default in 2248f8de — burying a feature that was
-    // always-visible before 1.7.0 ("download a section ... now impossible").
-    // Auto-expand when the video has a known duration (the only case where
-    // time-range/clip is usable); carousels/images without a duration stay
-    // collapsed to avoid clutter.
-    _advancedExpanded = widget.videoInfo.duration != null;
+    // Simplicity-first default: the dialog opens showing only the essentials
+    // (file type / quality / save location). Everything technical — codecs,
+    // container, fps, max resolution, section-clip, chapters, extras,
+    // SponsorBlock — lives behind this "Advanced options" accordion, collapsed
+    // by default so a normal user is never confronted with the full surface.
+    _advancedExpanded = false;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _refreshFreeSpace();
       _surfaceInitWarning();
@@ -775,42 +773,10 @@ class _DownloadConfigDialogState extends ConsumerState<DownloadConfigDialog> {
   }
 
   Widget? _buildPrimaryFormatPicker(BuildContext context) {
-    if (_selectedFileType == _DialogFileType.video) {
-      // RC9-UI parity: per-file-type title instead of generic
-      // "Container Format" (which most users don't recognize and
-      // is also inconsistent with the "Audio Format" label below).
-      return _buildInlineFormatGroup(
-        context,
-        title: AppLocalizations.configDialogVideoFormat,
-        icon: Icons.video_file_outlined,
-        footer:
-            _containerFormat.requiresRecode
-                ? _buildContainerRecodeNotice(context, _containerFormat)
-                : null,
-        children: [
-          for (final format in ContainerFormatPreference.values)
-            _buildFormatChip(
-              context,
-              label: format.displayName,
-              subtitle: format.description,
-              selected: _containerFormat == format,
-              warning: format.requiresRecode,
-              onTap: () {
-                setState(() => _containerFormat = format);
-                // Push the chip selection into the advanced-accordion
-                // panel so its dropdown does NOT show a stale value. If
-                // we skip this, the panel's later _notifyChanged callback
-                // (triggered by any unrelated panel tweak) overwrites the
-                // chip selection with its stale internal state — silent
-                // data corruption (user picks AVI, download starts MP4).
-                _prefsKey.currentState?.setContainerFormat(format);
-                _refreshFreeSpace();
-              },
-            ),
-        ],
-      );
-    }
-
+    // Video container (MP4 by default) is a power-user choice — it lives in
+    // Advanced → Format → Container so the essentials view stays clean. Audio
+    // output format, by contrast, has no Advanced equivalent and is a genuine
+    // primary decision for an audio download, so it stays inline below.
     if (_selectedFileType == _DialogFileType.audio) {
       final formats = _availableAudioOutputFormats();
       if (formats.isEmpty) return null;
@@ -956,50 +922,6 @@ class _DownloadConfigDialogState extends ConsumerState<DownloadConfigDialog> {
     );
   }
 
-  Widget _buildContainerRecodeNotice(
-    BuildContext context,
-    ContainerFormatPreference format,
-  ) {
-    // RC10 UX polish (Codex round-4) — neutral info notice instead
-    // of warning amber. Recoding an AVI/MOV/M4V/FLV pick is expected
-    // behavior (RC10.2 ContainerPlanner contract: user picked
-    // recoded-tier → planner converts), not a warning. Keep the
-    // sync icon to telegraph "this will convert", but render with
-    // the secondary/meta palette so the user reads it as
-    // "informational, slower" rather than "danger, error".
-    final iconColor = AppColors.metaText(context);
-    final borderColor = AppColors.border(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.base(context),
-        border: Border.all(color: borderColor),
-        borderRadius: BorderRadius.circular(2),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.sync_rounded, size: 15, color: iconColor),
-          const SizedBox(width: AppSpacing.xs),
-          Expanded(
-            child: Text(
-              '${format.displayName}: ${format.description}',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: AppTypography.metadata.copyWith(
-                color: iconColor,
-                fontWeight: FontWeight.w600,
-                height: 1.25,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildQualityColumn(BuildContext context) {
     final intents = _qualityIntentsFor(_selectedFileType);

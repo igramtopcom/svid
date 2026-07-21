@@ -160,8 +160,11 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
       _endController.text = _formatTimestamp(videoDuration);
     }
 
-    // Smart expansion: Format always open, others open if non-default
-    _formatExpanded = true;
+    // Simplicity-first: every panel section starts collapsed so opening
+    // "Advanced options" reveals a tidy list of section headers, not a wall of
+    // dropdowns. A section still auto-opens when it holds a non-default value
+    // (below) so the user can see what they've already customised.
+    _formatExpanded = false;
     _extrasExpanded = s.subtitlesEnabled ||
         !s.embedThumbnail ||
         !s.embedMetadata ||
@@ -333,7 +336,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             expanded: _timeRangeExpanded,
             onToggle: () =>
                 setState(() => _timeRangeExpanded = !_timeRangeExpanded),
-            pinnedOpen: true,
+            pinnedOpen: false,
             sectionBarBg: sectionBarBg,
             sectionBarHover: sectionBarHover,
             headerColor: headerColor,
@@ -371,7 +374,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
           iconColor: AppColors.accentSecondary,
           expanded: _formatExpanded,
           onToggle: () => setState(() => _formatExpanded = !_formatExpanded),
-          pinnedOpen: true,
+          pinnedOpen: false,
           sectionBarBg: sectionBarBg,
           sectionBarHover: sectionBarHover,
           headerColor: headerColor,

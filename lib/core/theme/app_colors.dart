@@ -15,6 +15,32 @@ class AppColors {
   static Color get accentHighlight => BrandConfig.current.colors.accentHighlight;
   static Color get accentMuted => BrandConfig.current.colors.accentMuted;
 
+  /// Soft, layered card shadow (a tight contact shadow + a wide ambient one)
+  /// for elevated surfaces — the refined "premium card" depth used across the
+  /// home surfaces. Theme-aware; kept subtle so light mode stays clean.
+  static List<BoxShadow> softCardShadow(bool isDark) {
+    if (isDark) {
+      return const [
+        BoxShadow(color: Color(0x38000000), blurRadius: 2, offset: Offset(0, 1)),
+        BoxShadow(
+          color: Color(0x4D000000),
+          blurRadius: 26,
+          offset: Offset(0, 12),
+          spreadRadius: -14,
+        ),
+      ];
+    }
+    return const [
+      BoxShadow(color: Color(0x0A000000), blurRadius: 2, offset: Offset(0, 1)),
+      BoxShadow(
+        color: Color(0x0F000000),
+        blurRadius: 24,
+        offset: Offset(0, 12),
+        spreadRadius: -14,
+      ),
+    ];
+  }
+
   // ==================== LIGHT THEME UTILITY (brand-tinted) ====================
   // Svid: warm tones. VidCombo: cool tones.
 

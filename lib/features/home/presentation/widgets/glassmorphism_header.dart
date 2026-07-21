@@ -771,7 +771,9 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
             disabledForegroundColor: primaryCta,
             minimumSize: Size(0, height),
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            elevation: 0,
+            // Subtle brand-tinted lift so the primary action reads as elevated.
+            elevation: 4,
+            shadowColor: primaryCta.withValues(alpha: 0.45),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.button),
             ),
@@ -998,7 +1000,7 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
         offset: Offset(0, anchorHeight + 6),
         child: Material(
           color: Colors.transparent,
-          elevation: isDark ? 18 : 10,
+          elevation: 0,
           borderRadius: BorderRadius.circular(AppRadius.card),
           child: Container(
             constraints: const BoxConstraints(maxHeight: 360),
@@ -1012,14 +1014,9 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
                         : cs.outlineVariant.withValues(alpha: 0.55),
                 width: 1,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.34 : 0.12),
-                  blurRadius: isDark ? 24 : 18,
-                  offset: const Offset(0, 12),
-                  spreadRadius: -10,
-                ),
-              ],
+              // Refined 2-layer soft shadow (contact + ambient), consistent
+              // with the download panel — the "premium card" feel from web.
+              boxShadow: AppColors.softCardShadow(isDark),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.card),

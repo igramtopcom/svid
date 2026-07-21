@@ -1306,17 +1306,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
           color: panelColor,
           borderRadius: BorderRadius.circular(AppRadius.card),
           border: Border.all(color: panelBorder, width: 1),
-          boxShadow:
-              isDark
-                  ? null
-                  : [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.035),
-                      blurRadius: 22,
-                      offset: const Offset(0, 10),
-                      spreadRadius: -16,
-                    ),
-                  ],
+          boxShadow: AppColors.softCardShadow(isDark),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.card),

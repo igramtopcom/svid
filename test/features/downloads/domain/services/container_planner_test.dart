@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/downloads/domain/services/container_planner.dart';
-import 'package:ssvid/features/settings/domain/enums/container_format_preference.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/downloads/domain/services/container_planner.dart';
+import 'package:svid/features/settings/domain/enums/container_format_preference.dart';
 
 /// Pin the planner output for every (pickedContainer × source codec
 /// profile) cell. This is the regression net for the `pick X → get X`

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/downloads/presentation/utils/download_format_warning.dart';
-import 'package:ssvid/features/settings/domain/enums/audio_codec_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/container_format_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/download_engine.dart';
-import 'package:ssvid/features/settings/domain/enums/fps_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/quality_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/video_codec_preference.dart';
-import 'package:ssvid/features/settings/presentation/providers/settings_provider.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/downloads/presentation/utils/download_format_warning.dart';
+import 'package:svid/features/settings/domain/enums/audio_codec_preference.dart';
+import 'package:svid/features/settings/domain/enums/container_format_preference.dart';
+import 'package:svid/features/settings/domain/enums/download_engine.dart';
+import 'package:svid/features/settings/domain/enums/fps_preference.dart';
+import 'package:svid/features/settings/domain/enums/quality_preference.dart';
+import 'package:svid/features/settings/domain/enums/video_codec_preference.dart';
+import 'package:svid/features/settings/presentation/providers/settings_provider.dart';
 
 void main() {
   group('downloadFormatWarning', () {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/premium/domain/entities/checkout_session.dart';
+import 'package:svid/features/premium/domain/entities/checkout_session.dart';
 
 void main() {
   group('CheckoutSession', () {

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/services/notification_center_service.dart';
+import 'package:svid/core/services/notification_center_service.dart';
 
 void main() {
   late NotificationCenterService service;

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
 
 /// RC4b of Ultra Plan v3 — final-path scan-extension resolver.
 ///

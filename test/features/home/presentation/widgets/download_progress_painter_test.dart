@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/theme/app_colors.dart';
-import 'package:ssvid/features/home/presentation/widgets/download_progress_painter.dart';
+import 'package:svid/core/theme/app_colors.dart';
+import 'package:svid/features/home/presentation/widgets/download_progress_painter.dart';
 
 void main() {
   group('DownloadProgressBar', () {

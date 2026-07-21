@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_preview.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/downloads/domain/entities/video_preview.dart';
 
 void main() {
   // Sample preview reused across tests.

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/disk_space_service.dart';
+import 'package:svid/core/services/disk_space_service.dart';
 
 /// Unit tests for [DiskSpaceService].
 ///

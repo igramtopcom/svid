@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/errors/result.dart';
-import 'package:ssvid/features/player/domain/services/watch_progress_service.dart';
+import 'package:svid/core/errors/result.dart';
+import 'package:svid/features/player/domain/services/watch_progress_service.dart';
 import '../../../../shared/mocks/mocks.dart';
 
 void main() {

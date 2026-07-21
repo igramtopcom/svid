@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/downloads/domain/services/gallery_default_quality_selector.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/downloads/domain/services/gallery_default_quality_selector.dart';
 
 void main() {
   Quality quality({

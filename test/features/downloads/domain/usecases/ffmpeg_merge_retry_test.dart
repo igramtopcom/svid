@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:ssvid/features/downloads/domain/usecases/start_download_usecase.dart';
+import 'package:svid/features/downloads/domain/usecases/start_download_usecase.dart';
 
 void main() {
   group('findDashOriginals', () {

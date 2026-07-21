@@ -15,7 +15,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 
-import 'package:ssvid/core/utils/formatters.dart';
+import 'package:svid/core/utils/formatters.dart';
 
 void main() {
   group('Formatters — locale-aware date formatting (E3)', () {

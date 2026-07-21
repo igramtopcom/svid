@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/data/datasources/native_clipboard_source.dart';
+import 'package:svid/features/floating_capture/data/datasources/native_clipboard_source.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

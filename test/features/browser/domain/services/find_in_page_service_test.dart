@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/browser/domain/services/find_in_page_service.dart';
+import 'package:svid/features/browser/domain/services/find_in_page_service.dart';
 
 void main() {
   late FindInPageService service;

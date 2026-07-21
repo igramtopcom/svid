@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/downloads/domain/services/filter_persistence_service.dart';
-import 'package:ssvid/features/downloads/presentation/providers/filter_provider.dart';
+import 'package:svid/features/downloads/domain/services/filter_persistence_service.dart';
+import 'package:svid/features/downloads/presentation/providers/filter_provider.dart';
 
 void main() {
   late FilterPersistenceService service;

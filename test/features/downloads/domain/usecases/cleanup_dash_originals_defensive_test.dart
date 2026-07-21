@@ -33,10 +33,10 @@ library;
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/data/datasources/gallerydl_datasource.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
-import 'package:ssvid/features/downloads/domain/repositories/download_repository.dart';
-import 'package:ssvid/features/downloads/domain/usecases/start_download_usecase.dart';
+import 'package:svid/features/downloads/data/datasources/gallerydl_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/domain/repositories/download_repository.dart';
+import 'package:svid/features/downloads/domain/usecases/start_download_usecase.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockDownloadRepository extends Mock implements DownloadRepository {}

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/recurrence_rule.dart';
+import 'package:svid/features/downloads/domain/entities/recurrence_rule.dart';
 
 void main() {
   group('RecurrenceRule', () {

@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/auth/domain/entities/platform_cookie.dart';
-import 'package:ssvid/core/auth/domain/repositories/cookie_repository.dart';
-import 'package:ssvid/core/config/brand_config.dart';
-import 'package:ssvid/core/errors/result.dart';
-import 'package:ssvid/features/browser/domain/services/cookie_transfer_service.dart';
+import 'package:svid/core/auth/domain/entities/platform_cookie.dart';
+import 'package:svid/core/auth/domain/repositories/cookie_repository.dart';
+import 'package:svid/core/config/brand_config.dart';
+import 'package:svid/core/errors/result.dart';
+import 'package:svid/features/browser/domain/services/cookie_transfer_service.dart';
 
 class _FakeCookieRepository implements CookieRepository {
   final savedCookies = <String, String>{};

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/presentation/widgets/priority_badge.dart';
+import 'package:svid/features/downloads/presentation/widgets/priority_badge.dart';
 
 void main() {
   group('PriorityBadge', () {

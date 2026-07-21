@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
-import 'package:ssvid/core/database/app_database.dart';
-import 'package:ssvid/core/errors/result.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
-import 'package:ssvid/features/downloads/data/repositories/download_repository_impl.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/core/database/app_database.dart';
+import 'package:svid/core/errors/result.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/data/repositories/download_repository_impl.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
 
 import '../../../../shared/mocks/mocks.dart';
 

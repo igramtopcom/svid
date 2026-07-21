@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/lru_cache.dart';
+import 'package:svid/core/utils/lru_cache.dart';
 
 void main() {
   group('LruCache', () {

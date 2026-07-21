@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/widgets/app_confirm_dialog.dart';
+import 'package:svid/core/widgets/app_confirm_dialog.dart';
 
 void main() {
   Future<_DialogHandle> openDialog(

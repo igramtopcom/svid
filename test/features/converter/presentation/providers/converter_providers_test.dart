@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/converter/domain/entities/output_format.dart';
-import 'package:ssvid/features/converter/presentation/providers/converter_providers.dart';
+import 'package:svid/features/converter/domain/entities/output_format.dart';
+import 'package:svid/features/converter/presentation/providers/converter_providers.dart';
 
 void main() {
   group('ConversionConfigNotifier', () {

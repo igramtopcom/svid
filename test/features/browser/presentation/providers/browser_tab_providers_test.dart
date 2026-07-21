@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:ssvid/features/browser/presentation/providers/browser_tab_providers.dart';
+import 'package:svid/features/browser/presentation/providers/browser_tab_providers.dart';
 
 void main() {
   late BrowserTabNotifier notifier;

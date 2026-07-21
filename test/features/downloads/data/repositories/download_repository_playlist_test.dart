@@ -9,8 +9,8 @@ library;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:ssvid/core/errors/result.dart';
-import 'package:ssvid/features/downloads/data/repositories/download_repository_impl.dart';
+import 'package:svid/core/errors/result.dart';
+import 'package:svid/features/downloads/data/repositories/download_repository_impl.dart';
 
 import '../../../../shared/mocks/mocks.dart';
 

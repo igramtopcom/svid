@@ -5,7 +5,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
-import 'package:ssvid/bridge/api.dart' as native;
+import 'package:svid/bridge/api.dart' as native;
 
 import '../../../../core/binaries/binaries.dart';
 import '../../../../core/config/brand_config.dart';

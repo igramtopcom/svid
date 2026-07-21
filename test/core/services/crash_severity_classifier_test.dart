@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/crash_severity_classifier.dart';
+import 'package:svid/core/services/crash_severity_classifier.dart';
 
 void main() {
   group('classifyCrashSeverity', () {

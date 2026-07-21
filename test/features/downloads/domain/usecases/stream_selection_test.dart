@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:ssvid/core/errors/result.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/downloads/domain/services/download_path_suggestion_service.dart';
-import 'package:ssvid/features/downloads/domain/usecases/extract_video_info_usecase.dart';
-import 'package:ssvid/features/settings/domain/enums/download_engine.dart';
+import 'package:svid/core/errors/result.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/downloads/domain/services/download_path_suggestion_service.dart';
+import 'package:svid/features/downloads/domain/usecases/extract_video_info_usecase.dart';
+import 'package:svid/features/settings/domain/enums/download_engine.dart';
 
 import '../../../../shared/mocks/mocks.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/auth/presentation/widgets/platform_login_dialog.dart';
+import 'package:svid/core/auth/presentation/widgets/platform_login_dialog.dart';
 
 /// Lock the marker-guard contract per Chairman + Codex Decision Package
 /// 2026-05-21. Auto-save extension from YouTube-only → all supported

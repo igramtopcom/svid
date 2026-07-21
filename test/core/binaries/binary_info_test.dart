@@ -1,8 +1,8 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/binaries/binary_info.dart';
-import 'package:ssvid/core/binaries/binary_type.dart';
+import 'package:svid/core/binaries/binary_info.dart';
+import 'package:svid/core/binaries/binary_type.dart';
 
 void main() {
   group('BinaryInfo fallback URL chain', () {

@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/settings/data/datasources/builtin_presets_seeder.dart';
-import 'package:ssvid/features/settings/domain/entities/format_preset_extended.dart';
-import 'package:ssvid/features/settings/domain/services/preset_quality_matcher.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/settings/data/datasources/builtin_presets_seeder.dart';
+import 'package:svid/features/settings/domain/entities/format_preset_extended.dart';
+import 'package:svid/features/settings/domain/services/preset_quality_matcher.dart';
 
 /// Pure-logic tests for [PresetQualityMatcher]. Pins the precedence
 /// rule wiring (active command preset → quality auto-pick) so any

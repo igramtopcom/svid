@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sentry_flutter/sentry_flutter.dart' show Scope;
-import 'package:ssvid/core/services/error_reporter_service.dart';
-import 'package:ssvid/core/services/instrumentation.dart';
+import 'package:svid/core/services/error_reporter_service.dart';
+import 'package:svid/core/services/instrumentation.dart';
 
 import 'fake_error_reporter.dart';
 

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:ssvid/core/services/player_manager.dart';
+import 'package:svid/core/services/player_manager.dart';
 
 // ---------------------------------------------------------------------------
 // Fake Player — stub for media_kit's Player to avoid native library init

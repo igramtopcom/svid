@@ -4,15 +4,15 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
-import 'package:ssvid/core/binaries/binary_manager.dart';
-import 'package:ssvid/core/binaries/binary_type.dart';
-import 'package:ssvid/core/database/app_database.dart' hide ConversionJob;
-import 'package:ssvid/features/converter/domain/entities/conversion_config.dart';
-import 'package:ssvid/features/converter/domain/entities/conversion_job.dart';
-import 'package:ssvid/features/converter/domain/entities/conversion_status.dart';
-import 'package:ssvid/features/converter/domain/entities/output_format.dart';
-import 'package:ssvid/features/converter/domain/repositories/conversion_repository.dart';
-import 'package:ssvid/features/converter/presentation/providers/conversion_queue_provider.dart';
+import 'package:svid/core/binaries/binary_manager.dart';
+import 'package:svid/core/binaries/binary_type.dart';
+import 'package:svid/core/database/app_database.dart' hide ConversionJob;
+import 'package:svid/features/converter/domain/entities/conversion_config.dart';
+import 'package:svid/features/converter/domain/entities/conversion_job.dart';
+import 'package:svid/features/converter/domain/entities/conversion_status.dart';
+import 'package:svid/features/converter/domain/entities/output_format.dart';
+import 'package:svid/features/converter/domain/repositories/conversion_repository.dart';
+import 'package:svid/features/converter/presentation/providers/conversion_queue_provider.dart';
 
 class _MockConversionRepository extends Mock implements ConversionRepository {}
 

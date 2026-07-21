@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/downloads/data/datasources/download_native_datasource.dart';
-import 'package:ssvid/features/settings/data/datasources/settings_local_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/download_native_datasource.dart';
+import 'package:svid/features/settings/data/datasources/settings_local_datasource.dart';
 
 void main() {
   group('Task 68.2: Multi-Segment Parallel Download', () {

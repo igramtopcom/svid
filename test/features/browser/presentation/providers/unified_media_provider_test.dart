@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/browser/domain/entities/unified_media_item.dart';
-import 'package:ssvid/features/browser/presentation/providers/media_detector_provider.dart';
-import 'package:ssvid/features/browser/presentation/providers/unified_media_provider.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/browser/domain/entities/unified_media_item.dart';
+import 'package:svid/features/browser/presentation/providers/media_detector_provider.dart';
+import 'package:svid/features/browser/presentation/providers/unified_media_provider.dart';
 
 void main() {
   group('unifiedMediaProvider', () {

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/bridge/api.dart' as native;
-import 'package:ssvid/features/youtube_channel/data/repositories/youtube_channel_repository.dart';
+import 'package:svid/bridge/api.dart' as native;
+import 'package:svid/features/youtube_channel/data/repositories/youtube_channel_repository.dart';
 
 void main() {
   group('YouTubeChannelRepository native DTO mapping', () {

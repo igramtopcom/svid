@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/settings/data/datasources/builtin_presets_seeder.dart';
-import 'package:ssvid/features/settings/domain/entities/format_preset_extended.dart';
-import 'package:ssvid/features/settings/presentation/providers/active_preset_provider.dart';
+import 'package:svid/features/settings/data/datasources/builtin_presets_seeder.dart';
+import 'package:svid/features/settings/domain/entities/format_preset_extended.dart';
+import 'package:svid/features/settings/presentation/providers/active_preset_provider.dart';
 
 /// Pure-controller tests — no Riverpod harness, no widgets. Asserts the
 /// state-transition contract documented in active_preset_provider.dart.

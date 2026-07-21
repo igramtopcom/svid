@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/startup_service.dart';
+import 'package:svid/core/services/startup_service.dart';
 
 /// Unit tests for [StartupService.bracedDeviceIdFor] — the BLUEBYTE legacy
 /// device-id format derivation that BOTH the VidCombo SYNC path and the

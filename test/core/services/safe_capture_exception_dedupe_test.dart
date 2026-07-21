@@ -27,8 +27,8 @@ library;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/error_reporter_service.dart';
-import 'package:ssvid/core/services/instrumentation.dart';
+import 'package:svid/core/services/error_reporter_service.dart';
+import 'package:svid/core/services/instrumentation.dart';
 
 /// Test-only reporter that counts capture* calls.
 class _CountingReporter extends ErrorReporterService {

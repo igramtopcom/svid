@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/noop_error_reporter.dart';
+import 'package:svid/core/services/noop_error_reporter.dart';
 
 import 'fake_error_reporter.dart';
 

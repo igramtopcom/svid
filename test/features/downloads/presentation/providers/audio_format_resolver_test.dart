@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/presentation/providers/downloads_notifier.dart';
-import 'package:ssvid/features/settings/domain/enums/audio_codec_preference.dart';
+import 'package:svid/features/downloads/presentation/providers/downloads_notifier.dart';
+import 'package:svid/features/settings/domain/enums/audio_codec_preference.dart';
 
 /// RC5 of Ultra Plan v3 — pin `DownloadsNotifier.resolveRetryAudioFormat`.
 ///

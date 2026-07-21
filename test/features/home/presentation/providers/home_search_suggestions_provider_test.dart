@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/errors/result.dart';
-import 'package:ssvid/features/home/domain/services/url_classifier_service.dart';
-import 'package:ssvid/features/home/presentation/providers/home_search_suggestions_provider.dart';
+import 'package:svid/core/errors/result.dart';
+import 'package:svid/features/home/domain/services/url_classifier_service.dart';
+import 'package:svid/features/home/presentation/providers/home_search_suggestions_provider.dart';
 
 void main() {
   group('HomeSearchSuggestionsNotifier privacy guard', () {

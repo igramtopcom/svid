@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:ssvid/bridge/api.dart' as native;
+import 'package:svid/bridge/api.dart' as native;
 
 import '../../../../core/errors/result.dart';
 import '../../../../core/logging/app_logger.dart';

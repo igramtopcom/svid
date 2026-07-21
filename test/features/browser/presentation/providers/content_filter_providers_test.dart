@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/browser/presentation/providers/content_filter_providers.dart';
+import 'package:svid/features/browser/presentation/providers/content_filter_providers.dart';
 
 void main() {
   group('content_filter_providers', () {

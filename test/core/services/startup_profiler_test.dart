@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/startup_profiler.dart';
+import 'package:svid/core/services/startup_profiler.dart';
 
 void main() {
   group('StartupProfiler', () {

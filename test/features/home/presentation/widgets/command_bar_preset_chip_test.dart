@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/home/presentation/widgets/command_bar_preset_chip.dart';
-import 'package:ssvid/features/settings/data/datasources/builtin_presets_seeder.dart';
-import 'package:ssvid/features/settings/domain/entities/format_preset_extended.dart';
+import 'package:svid/features/home/presentation/widgets/command_bar_preset_chip.dart';
+import 'package:svid/features/settings/data/datasources/builtin_presets_seeder.dart';
+import 'package:svid/features/settings/domain/entities/format_preset_extended.dart';
 
 /// Pure-formatter tests for [PresetDisplay] — no widget tree, no
 /// Riverpod harness. Pins the chip + popover label derivation so any

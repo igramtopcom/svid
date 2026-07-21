@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart' show Options;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/constants/app_constants.dart';
-import 'package:ssvid/core/network/backend_client.dart';
-import 'package:ssvid/core/network/backend_dtos.dart';
-import 'package:ssvid/core/services/device_auth_service.dart';
-import 'package:ssvid/core/services/secure_credential_store.dart';
+import 'package:svid/core/constants/app_constants.dart';
+import 'package:svid/core/network/backend_client.dart';
+import 'package:svid/core/network/backend_dtos.dart';
+import 'package:svid/core/services/device_auth_service.dart';
+import 'package:svid/core/services/secure_credential_store.dart';
 
 class _FakeCredentialStore extends SecureCredentialStore {
   _FakeCredentialStore(this._prefs) : super(_prefs);

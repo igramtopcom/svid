@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/user_agent_service.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
+import 'package:svid/core/services/user_agent_service.dart';
+import 'package:svid/core/utils/platform_detector.dart';
 
 void main() {
   group('UserAgentService', () {

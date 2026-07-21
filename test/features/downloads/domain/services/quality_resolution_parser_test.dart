@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/downloads/domain/services/quality_resolution_parser.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/downloads/domain/services/quality_resolution_parser.dart';
 
 void main() {
   Quality video(String text) {

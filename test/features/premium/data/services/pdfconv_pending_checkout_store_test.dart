@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/services/secure_credential_store.dart';
-import 'package:ssvid/features/premium/data/services/pdfconv_pending_checkout_store.dart';
-import 'package:ssvid/features/premium/domain/entities/pdfconv_paypal_plan.dart';
+import 'package:svid/core/services/secure_credential_store.dart';
+import 'package:svid/features/premium/data/services/pdfconv_pending_checkout_store.dart';
+import 'package:svid/features/premium/domain/entities/pdfconv_paypal_plan.dart';
 
 const _idempotencyKey = '970b0341-fc86-47bc-9a57-e2ddd218d356';
 const _intentId = '0cc27c14-f861-44df-a656-00a519d6f22b';

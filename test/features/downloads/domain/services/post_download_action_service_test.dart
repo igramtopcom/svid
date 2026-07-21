@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/errors/result.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
-import 'package:ssvid/features/downloads/domain/entities/post_download_action.dart';
-import 'package:ssvid/features/downloads/domain/services/post_download_action_service.dart';
+import 'package:svid/core/errors/result.dart';
+import 'package:svid/features/downloads/domain/entities/download_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/features/downloads/domain/entities/post_download_action.dart';
+import 'package:svid/features/downloads/domain/services/post_download_action_service.dart';
 
 // ---------------------------------------------------------------------------
 // Test helpers

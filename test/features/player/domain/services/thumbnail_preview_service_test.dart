@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:ssvid/features/player/data/datasources/ffmpeg_datasource.dart';
-import 'package:ssvid/features/player/domain/services/thumbnail_preview_service.dart';
+import 'package:svid/features/player/data/datasources/ffmpeg_datasource.dart';
+import 'package:svid/features/player/domain/services/thumbnail_preview_service.dart';
 
 class _MockFFmpegDatasource extends Mock implements FFmpegDatasource {}
 

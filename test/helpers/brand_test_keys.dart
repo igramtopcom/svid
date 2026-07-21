@@ -1,4 +1,4 @@
-import 'package:ssvid/core/config/brand_config.dart';
+import 'package:svid/core/config/brand_config.dart';
 
 /// Brand-aware license key fixtures for tests.
 ///

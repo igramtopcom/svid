@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/errors/result.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
-import 'package:ssvid/features/downloads/domain/repositories/download_repository.dart';
-import 'package:ssvid/features/downloads/domain/services/orphaned_file_cleanup_service.dart';
+import 'package:svid/core/errors/result.dart';
+import 'package:svid/features/downloads/domain/entities/download_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/features/downloads/domain/repositories/download_repository.dart';
+import 'package:svid/features/downloads/domain/services/orphaned_file_cleanup_service.dart';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Minimal fake repository — only getDownloadsByStatus needs to work

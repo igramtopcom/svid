@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ssvid/features/settings/domain/enums/audio_codec_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/container_format_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/download_engine.dart';
-import 'package:ssvid/features/settings/domain/enums/fps_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/quality_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/video_codec_preference.dart';
+import 'package:svid/features/settings/domain/enums/audio_codec_preference.dart';
+import 'package:svid/features/settings/domain/enums/container_format_preference.dart';
+import 'package:svid/features/settings/domain/enums/download_engine.dart';
+import 'package:svid/features/settings/domain/enums/fps_preference.dart';
+import 'package:svid/features/settings/domain/enums/quality_preference.dart';
+import 'package:svid/features/settings/domain/enums/video_codec_preference.dart';
 import '../../domain/repositories/settings_repository.dart';
 import '../../presentation/providers/settings_provider.dart';
 import '../datasources/settings_local_datasource.dart';

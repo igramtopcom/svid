@@ -17,7 +17,7 @@
 library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/services/playlist_context_holder.dart';
+import 'package:svid/features/downloads/domain/services/playlist_context_holder.dart';
 
 void main() {
   group('PlaylistContextHolder — basic stamp/consume', () {

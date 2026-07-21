@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/collection_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/features/downloads/domain/entities/collection_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
 
 DownloadEntity _entity({
   int id = 1,

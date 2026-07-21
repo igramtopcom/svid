@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/youtube_playlist/domain/entities/playlist_info.dart';
-import 'package:ssvid/features/youtube_playlist/domain/entities/playlist_video.dart';
+import 'package:svid/features/youtube_playlist/domain/entities/playlist_info.dart';
+import 'package:svid/features/youtube_playlist/domain/entities/playlist_video.dart';
 
 void main() {
   group('PlaylistInfo', () {

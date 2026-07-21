@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/premium/domain/entities/premium_feature.dart';
-import 'package:ssvid/features/premium/presentation/widgets/upgrade_prompt_dialog.dart';
+import 'package:svid/features/premium/domain/entities/premium_feature.dart';
+import 'package:svid/features/premium/presentation/widgets/upgrade_prompt_dialog.dart';
 
 void main() {
   Widget buildTestApp({required Widget child}) {

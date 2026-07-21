@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:ssvid/core/services/error_reporter_service.dart';
+import 'package:svid/core/services/error_reporter_service.dart';
 
 /// Test double for [ErrorReporterService] that records all calls.
 class FakeErrorReporter implements ErrorReporterService {

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/platform_style_helper.dart';
+import 'package:svid/core/utils/platform_style_helper.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

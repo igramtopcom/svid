@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/settings/data/datasources/builtin_presets_seeder.dart';
-import 'package:ssvid/features/settings/domain/entities/format_preset_extended.dart';
+import 'package:svid/features/settings/data/datasources/builtin_presets_seeder.dart';
+import 'package:svid/features/settings/domain/entities/format_preset_extended.dart';
 
 void main() {
   setUp(() {

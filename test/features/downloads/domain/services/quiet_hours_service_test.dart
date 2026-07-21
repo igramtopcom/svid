@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/services/quiet_hours_service.dart';
-import 'package:ssvid/features/downloads/domain/services/network_throughput_monitor.dart';
+import 'package:svid/features/downloads/domain/services/quiet_hours_service.dart';
+import 'package:svid/features/downloads/domain/services/network_throughput_monitor.dart';
 
 void main() {
   const svc = QuietHoursService();

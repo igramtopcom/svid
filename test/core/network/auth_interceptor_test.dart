@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/network/backend_client.dart';
-import 'package:ssvid/core/services/secure_credential_store.dart';
+import 'package:svid/core/network/backend_client.dart';
+import 'package:svid/core/services/secure_credential_store.dart';
 
 /// Tests for the auth interceptor's Completer-based coalescing logic.
 ///

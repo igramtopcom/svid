@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/proxy_rotation_service.dart';
+import 'package:svid/core/services/proxy_rotation_service.dart';
 
 void main() {
   group('ProxyRotationService', () {

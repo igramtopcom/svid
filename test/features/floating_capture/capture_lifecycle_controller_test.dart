@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/data/services/capture_lifecycle_controller.dart';
-import 'package:ssvid/features/floating_capture/data/services/capture_side_effect_router.dart';
-import 'package:ssvid/features/floating_capture/domain/entities/snooze_duration.dart';
-import 'package:ssvid/features/floating_capture/domain/entities/snooze_state.dart';
-import 'package:ssvid/features/floating_capture/domain/services/capture_service.dart';
+import 'package:svid/features/floating_capture/data/services/capture_lifecycle_controller.dart';
+import 'package:svid/features/floating_capture/data/services/capture_side_effect_router.dart';
+import 'package:svid/features/floating_capture/domain/entities/snooze_duration.dart';
+import 'package:svid/features/floating_capture/domain/entities/snooze_state.dart';
+import 'package:svid/features/floating_capture/domain/services/capture_service.dart';
 
 /// Minimal fake [CaptureService] — gives tests direct control over the
 /// sideEffects stream and counters for start/stop/dispose.

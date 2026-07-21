@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/browser/domain/services/video_url_detector.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/browser/domain/services/video_url_detector.dart';
 
 void main() {
   group('VideoUrlDetector', () {

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/file_utils.dart';
+import 'package:svid/core/utils/file_utils.dart';
 
 void main() {
   group('FileUtils.sanitizeFilename', () {

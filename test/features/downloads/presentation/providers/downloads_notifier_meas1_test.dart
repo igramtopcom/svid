@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/presentation/providers/downloads_notifier.dart';
+import 'package:svid/features/downloads/presentation/providers/downloads_notifier.dart';
 
 /// MEAS-1: locks the `download_complete` telemetry contract — the 7-key shape,
 /// the null semantics (start/post-process not observed), the attempt-index

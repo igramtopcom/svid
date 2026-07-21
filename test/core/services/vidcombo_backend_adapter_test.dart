@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:ssvid/core/services/vidcombo/vidcombo_backend_adapter.dart';
+import 'package:svid/core/services/vidcombo/vidcombo_backend_adapter.dart';
 
 const _testBaseUrl = 'https://test.vidcombo.net';
 

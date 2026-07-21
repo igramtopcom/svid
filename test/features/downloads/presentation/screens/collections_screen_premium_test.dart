@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/downloads/data/repositories/collection_repository.dart';
-import 'package:ssvid/features/downloads/domain/entities/collection_entity.dart';
-import 'package:ssvid/features/downloads/presentation/providers/collection_providers.dart';
-import 'package:ssvid/features/downloads/presentation/screens/collections_screen.dart';
-import 'package:ssvid/core/services/secure_credential_store.dart';
-import 'package:ssvid/features/premium/data/datasources/premium_local_datasource.dart';
-import 'package:ssvid/features/premium/domain/services/premium_license_service.dart';
-import 'package:ssvid/features/premium/presentation/providers/premium_providers.dart';
-import 'package:ssvid/features/settings/presentation/providers/settings_provider.dart';
+import 'package:svid/features/downloads/data/repositories/collection_repository.dart';
+import 'package:svid/features/downloads/domain/entities/collection_entity.dart';
+import 'package:svid/features/downloads/presentation/providers/collection_providers.dart';
+import 'package:svid/features/downloads/presentation/screens/collections_screen.dart';
+import 'package:svid/core/services/secure_credential_store.dart';
+import 'package:svid/features/premium/data/datasources/premium_local_datasource.dart';
+import 'package:svid/features/premium/domain/services/premium_license_service.dart';
+import 'package:svid/features/premium/presentation/providers/premium_providers.dart';
+import 'package:svid/features/settings/presentation/providers/settings_provider.dart';
 
 import '../../../../helpers/brand_test_keys.dart';
 

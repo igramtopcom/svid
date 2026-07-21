@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/data/datasources/in_memory_capture_preferences_store.dart';
-import 'package:ssvid/features/floating_capture/domain/entities/capture_preferences.dart';
-import 'package:ssvid/features/floating_capture/domain/services/capture_preferences_store.dart';
-import 'package:ssvid/features/floating_capture/presentation/providers/capture_preferences_provider.dart';
+import 'package:svid/features/floating_capture/data/datasources/in_memory_capture_preferences_store.dart';
+import 'package:svid/features/floating_capture/domain/entities/capture_preferences.dart';
+import 'package:svid/features/floating_capture/domain/services/capture_preferences_store.dart';
+import 'package:svid/features/floating_capture/presentation/providers/capture_preferences_provider.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

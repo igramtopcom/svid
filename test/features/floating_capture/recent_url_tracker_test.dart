@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/domain/services/recent_url_tracker.dart';
+import 'package:svid/features/floating_capture/domain/services/recent_url_tracker.dart';
 
 void main() {
   group('RecentUrlTracker', () {

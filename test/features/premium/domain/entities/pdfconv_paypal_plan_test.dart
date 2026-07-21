@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/premium/domain/entities/pdfconv_paypal_plan.dart';
+import 'package:svid/features/premium/domain/entities/pdfconv_paypal_plan.dart';
 
 void main() {
   test('catalog matches PDFConv PayPal V1 contract', () {

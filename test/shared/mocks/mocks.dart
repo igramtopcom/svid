@@ -1,11 +1,11 @@
 import 'package:mocktail/mocktail.dart';
-import 'package:ssvid/core/network/backend_client.dart';
-import 'package:ssvid/features/downloads/data/datasources/download_local_datasource.dart';
-import 'package:ssvid/features/downloads/data/datasources/download_native_datasource.dart';
-import 'package:ssvid/features/downloads/data/datasources/gallerydl_datasource.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
-import 'package:ssvid/features/downloads/data/remote/api/ssvid_api_service.dart';
-import 'package:ssvid/features/downloads/domain/repositories/download_repository.dart';
+import 'package:svid/core/network/backend_client.dart';
+import 'package:svid/features/downloads/data/datasources/download_local_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/download_native_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/gallerydl_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/data/remote/api/ssvid_api_service.dart';
+import 'package:svid/features/downloads/domain/repositories/download_repository.dart';
 
 class MockBackendClient extends Mock implements BackendClient {}
 

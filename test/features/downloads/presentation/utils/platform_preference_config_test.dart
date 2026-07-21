@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_selection_intent.dart';
-import 'package:ssvid/features/downloads/domain/services/format_selector_service.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/downloads/presentation/utils/platform_preference_config.dart';
-import 'package:ssvid/features/settings/domain/enums/audio_codec_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/container_format_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/fps_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/video_codec_preference.dart';
-import 'package:ssvid/features/settings/domain/entities/platform_quality_preference.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/downloads/domain/entities/download_selection_intent.dart';
+import 'package:svid/features/downloads/domain/services/format_selector_service.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/downloads/presentation/utils/platform_preference_config.dart';
+import 'package:svid/features/settings/domain/enums/audio_codec_preference.dart';
+import 'package:svid/features/settings/domain/enums/container_format_preference.dart';
+import 'package:svid/features/settings/domain/enums/fps_preference.dart';
+import 'package:svid/features/settings/domain/enums/video_codec_preference.dart';
+import 'package:svid/features/settings/domain/entities/platform_quality_preference.dart';
 
 void main() {
   group('downloadConfigFromPlatformPreference', () {

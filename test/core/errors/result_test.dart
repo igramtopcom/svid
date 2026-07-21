@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/errors/result.dart';
+import 'package:svid/core/errors/result.dart';
 
 void main() {
   group('Result', () {

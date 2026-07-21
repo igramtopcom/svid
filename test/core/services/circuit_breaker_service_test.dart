@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/circuit_breaker_service.dart';
+import 'package:svid/core/services/circuit_breaker_service.dart';
 
 void main() {
   late CircuitBreakerService service;

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/binaries/binary_downloader.dart';
+import 'package:svid/core/binaries/binary_downloader.dart';
 
 void main() {
   group('BinaryDownloader.parseChecksums', () {

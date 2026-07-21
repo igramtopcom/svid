@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/settings/domain/enums/container_format_preference.dart';
+import 'package:svid/features/settings/domain/enums/container_format_preference.dart';
 
 /// RC3 of Ultra Plan v3 — pin `ContainerFormatPreference.fromExtension`
 /// behavior. The retry path in `downloads_notifier` calls this to

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/url_normalizer.dart';
+import 'package:svid/core/utils/url_normalizer.dart';
 
 /// RC10 Blocker 1 of Ultra Plan v3 — pin `UrlNormalizer` contract.
 /// Used by auth retry filter + duplicate detection + floating-capture

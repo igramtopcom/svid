@@ -12,19 +12,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:ssvid/core/network/backend_client.dart';
-import 'package:ssvid/core/services/analytics_service.dart';
-import 'package:ssvid/core/services/backend_service.dart';
-import 'package:ssvid/core/services/secure_credential_store.dart';
-import 'package:ssvid/features/premium/data/services/crypto_payment_service.dart';
-import 'package:ssvid/features/premium/data/services/stripe_payment_service.dart';
-import 'package:ssvid/features/premium/domain/entities/checkout_session.dart';
-import 'package:ssvid/features/premium/domain/entities/payment_result.dart';
-import 'package:ssvid/features/premium/domain/entities/payment_status.dart';
-import 'package:ssvid/features/premium/presentation/providers/payment_providers.dart';
-import 'package:ssvid/features/premium/presentation/providers/premium_providers.dart';
-import 'package:ssvid/features/premium/presentation/screens/premium_upgrade_screen.dart';
-import 'package:ssvid/features/settings/presentation/providers/settings_provider.dart';
+import 'package:svid/core/network/backend_client.dart';
+import 'package:svid/core/services/analytics_service.dart';
+import 'package:svid/core/services/backend_service.dart';
+import 'package:svid/core/services/secure_credential_store.dart';
+import 'package:svid/features/premium/data/services/crypto_payment_service.dart';
+import 'package:svid/features/premium/data/services/stripe_payment_service.dart';
+import 'package:svid/features/premium/domain/entities/checkout_session.dart';
+import 'package:svid/features/premium/domain/entities/payment_result.dart';
+import 'package:svid/features/premium/domain/entities/payment_status.dart';
+import 'package:svid/features/premium/presentation/providers/payment_providers.dart';
+import 'package:svid/features/premium/presentation/providers/premium_providers.dart';
+import 'package:svid/features/premium/presentation/screens/premium_upgrade_screen.dart';
+import 'package:svid/features/settings/presentation/providers/settings_provider.dart';
 
 import '../../../../helpers/brand_test_keys.dart';
 

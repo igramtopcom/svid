@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/network/backend_dtos.dart';
+import 'package:svid/core/network/backend_dtos.dart';
 
 void main() {
   group('Backend DTOs fromJson', () {

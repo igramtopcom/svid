@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/keyboard_service.dart';
+import 'package:svid/core/services/keyboard_service.dart';
 
 void main() {
   setUp(() {

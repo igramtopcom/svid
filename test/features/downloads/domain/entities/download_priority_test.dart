@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_priority.dart';
+import 'package:svid/features/downloads/domain/entities/download_priority.dart';
 
 void main() {
   group('DownloadPriority.fromInt', () {

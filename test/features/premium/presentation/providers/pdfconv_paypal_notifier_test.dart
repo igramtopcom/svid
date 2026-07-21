@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/network/backend_client.dart';
-import 'package:ssvid/core/services/secure_credential_store.dart';
-import 'package:ssvid/features/premium/data/services/pdfconv_paypal_service.dart';
-import 'package:ssvid/features/premium/data/services/pdfconv_pending_checkout_store.dart';
-import 'package:ssvid/features/premium/domain/entities/pdfconv_paypal_plan.dart';
-import 'package:ssvid/features/premium/domain/entities/pdfconv_purchase_intent.dart';
-import 'package:ssvid/features/premium/presentation/providers/pdfconv_paypal_providers.dart';
+import 'package:svid/core/network/backend_client.dart';
+import 'package:svid/core/services/secure_credential_store.dart';
+import 'package:svid/features/premium/data/services/pdfconv_paypal_service.dart';
+import 'package:svid/features/premium/data/services/pdfconv_pending_checkout_store.dart';
+import 'package:svid/features/premium/domain/entities/pdfconv_paypal_plan.dart';
+import 'package:svid/features/premium/domain/entities/pdfconv_purchase_intent.dart';
+import 'package:svid/features/premium/presentation/providers/pdfconv_paypal_providers.dart';
 
 const _idempotencyKey = '970b0341-fc86-47bc-9a57-e2ddd218d356';
 const _newIdempotencyKey = 'c7071247-0aa3-4552-94d6-c2db6779032a';

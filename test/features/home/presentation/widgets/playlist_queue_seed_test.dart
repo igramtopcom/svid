@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
-import 'package:ssvid/features/downloads/presentation/providers/playlist_library_provider.dart';
-import 'package:ssvid/features/home/presentation/widgets/playlist_queue_seed.dart';
+import 'package:svid/features/downloads/domain/entities/download_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/features/downloads/presentation/providers/playlist_library_provider.dart';
+import 'package:svid/features/home/presentation/widgets/playlist_queue_seed.dart';
 
 DownloadEntity _entity({
   required int id,

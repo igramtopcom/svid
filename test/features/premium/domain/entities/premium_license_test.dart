@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/premium/domain/entities/premium_license.dart';
-import 'package:ssvid/features/premium/domain/entities/premium_tier.dart';
+import 'package:svid/features/premium/domain/entities/premium_license.dart';
+import 'package:svid/features/premium/domain/entities/premium_tier.dart';
 
 void main() {
   group('BillingCycle', () {

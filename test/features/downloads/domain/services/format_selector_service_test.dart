@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_selection_intent.dart';
-import 'package:ssvid/features/downloads/domain/services/format_selector_service.dart';
-import 'package:ssvid/features/settings/domain/enums/audio_codec_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/container_format_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/fps_preference.dart';
-import 'package:ssvid/features/settings/domain/enums/video_codec_preference.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/domain/entities/download_selection_intent.dart';
+import 'package:svid/features/downloads/domain/services/format_selector_service.dart';
+import 'package:svid/features/settings/domain/enums/audio_codec_preference.dart';
+import 'package:svid/features/settings/domain/enums/container_format_preference.dart';
+import 'package:svid/features/settings/domain/enums/fps_preference.dart';
+import 'package:svid/features/settings/domain/enums/video_codec_preference.dart';
 
 void main() {
   late FormatSelectorService svc;

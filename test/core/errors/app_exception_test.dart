@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/errors/app_exception.dart';
+import 'package:svid/core/errors/app_exception.dart';
 
 void main() {
   group('AppException', () {

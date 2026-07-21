@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/widgets/app_cached_image.dart';
+import 'package:svid/core/widgets/app_cached_image.dart';
 
 void main() {
   group('AppCachedImage local path handling', () {

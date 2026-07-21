@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
 
 /// Lock the intermediate-DASH-file detector against upstream yt-dlp
 /// naming drift. The motivating bug (`log.md` 2026-05-21 Incident C,

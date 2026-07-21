@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/config/brand_config.dart';
-import 'package:ssvid/core/errors/app_exception.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/downloads/domain/services/download_path_suggestion_service.dart';
+import 'package:svid/core/config/brand_config.dart';
+import 'package:svid/core/errors/app_exception.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/downloads/domain/services/download_path_suggestion_service.dart';
 
 void main() {
   late DownloadPathSuggestionService service;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/youtube_channel/domain/entities/channel_info.dart';
-import 'package:ssvid/features/youtube_channel/presentation/providers/youtube_channel_provider.dart';
-import 'package:ssvid/features/youtube_channel/presentation/screens/channel_video_list_screen.dart';
-import 'package:ssvid/features/youtube_playlist/domain/entities/playlist_video.dart';
+import 'package:svid/features/youtube_channel/domain/entities/channel_info.dart';
+import 'package:svid/features/youtube_channel/presentation/providers/youtube_channel_provider.dart';
+import 'package:svid/features/youtube_channel/presentation/screens/channel_video_list_screen.dart';
+import 'package:svid/features/youtube_playlist/domain/entities/playlist_video.dart';
 
 class _FakeYouTubeChannelNotifier extends YouTubeChannelNotifier {
   _FakeYouTubeChannelNotifier(super.ref, YouTubeChannelState initial) {

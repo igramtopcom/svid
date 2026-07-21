@@ -7,9 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:path/path.dart' as p;
-import 'package:ssvid/core/binaries/binary_downloader.dart';
-import 'package:ssvid/core/binaries/binary_info.dart';
-import 'package:ssvid/core/binaries/binary_type.dart';
+import 'package:svid/core/binaries/binary_downloader.dart';
+import 'package:svid/core/binaries/binary_info.dart';
+import 'package:svid/core/binaries/binary_type.dart';
 
 /// Inline SHA-256 pinning is the supply-chain defense for binaries
 /// whose upstream publishes no co-located `SHA2-256SUMS` manifest

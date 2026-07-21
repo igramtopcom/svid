@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/windows_backdrop_service.dart';
+import 'package:svid/core/services/windows_backdrop_service.dart';
 
 void main() {
   test('resolves light theme to light backdrop', () {

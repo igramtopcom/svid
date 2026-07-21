@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_config.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/downloads/domain/services/download_intent_key.dart';
-import 'package:ssvid/features/settings/domain/enums/container_format_preference.dart';
+import 'package:svid/features/downloads/domain/entities/download_config.dart';
+import 'package:svid/features/downloads/domain/entities/download_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/downloads/domain/services/download_intent_key.dart';
+import 'package:svid/features/settings/domain/enums/container_format_preference.dart';
 
 /// RC10 Blocker 3 of Ultra Plan v3 — pin DownloadIntentKey contract.
 /// Shared duplicate-detection key used by Home + Floating Capture +

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/bridge/api.dart' as native;
-import 'package:ssvid/features/youtube_search/data/repositories/youtube_search_repository.dart';
+import 'package:svid/bridge/api.dart' as native;
+import 'package:svid/features/youtube_search/data/repositories/youtube_search_repository.dart';
 
 void main() {
   group('YouTubeSearchRepository native DTO mapping', () {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/floating_window_main.dart';
+import 'package:svid/floating_window_main.dart';
 
 void main() {
   group('shouldSkipTaskbarForFloatingCapture', () {

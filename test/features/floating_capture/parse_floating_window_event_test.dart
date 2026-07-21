@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/data/datasources/desktop_multi_window_floating_window.dart';
-import 'package:ssvid/features/floating_capture/domain/entities/floating_window_event.dart';
-import 'package:ssvid/features/floating_capture/domain/entities/snooze_duration.dart';
+import 'package:svid/features/floating_capture/data/datasources/desktop_multi_window_floating_window.dart';
+import 'package:svid/features/floating_capture/domain/entities/floating_window_event.dart';
+import 'package:svid/features/floating_capture/domain/entities/snooze_duration.dart';
 
 void main() {
   group('onDownloadClicked', () {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/youtube_search/domain/entities/search_filters.dart';
+import 'package:svid/features/youtube_search/domain/entities/search_filters.dart';
 
 void main() {
   group('YouTubeSearchFilters', () {

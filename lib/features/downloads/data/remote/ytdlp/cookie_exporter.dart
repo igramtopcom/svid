@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-import 'package:ssvid/core/auth/domain/entities/platform_cookie.dart';
-import 'package:ssvid/core/config/brand_config.dart';
-import 'package:ssvid/core/logging/app_logger.dart';
+import 'package:svid/core/auth/domain/entities/platform_cookie.dart';
+import 'package:svid/core/config/brand_config.dart';
+import 'package:svid/core/logging/app_logger.dart';
 
 /// Exports app cookies to Netscape format for yt-dlp consumption
 class CookieExporter {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/settings/presentation/widgets/settings_search_delegate.dart';
+import 'package:svid/features/settings/presentation/widgets/settings_search_delegate.dart';
 
 void main() {
   late SettingsSearchDelegate delegate;

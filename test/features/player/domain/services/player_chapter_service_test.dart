@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/player/domain/services/player_chapter_service.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/player/domain/services/player_chapter_service.dart';
 
 void main() {
   // Helper: build a simple chapter list

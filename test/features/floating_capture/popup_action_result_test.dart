@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/domain/entities/popup_action_result.dart';
+import 'package:svid/features/floating_capture/domain/entities/popup_action_result.dart';
 
 void main() {
   group('PopupActionResult — JSON round-trip', () {

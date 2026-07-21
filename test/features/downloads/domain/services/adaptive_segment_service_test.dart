@@ -1,6 +1,6 @@
 // Task 84.5 — unit tests for AdaptiveSegmentService
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/services/adaptive_segment_service.dart';
+import 'package:svid/features/downloads/domain/services/adaptive_segment_service.dart';
 
 void main() {
   // ---------------------------------------------------------------------------

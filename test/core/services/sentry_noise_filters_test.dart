@@ -2,7 +2,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:ssvid/core/services/sentry_noise_filters.dart';
+import 'package:svid/core/services/sentry_noise_filters.dart';
 
 /// Locks the noise-filter surface against accidental widening. Each test
 /// pins one of the two filters AND verifies a near-miss case is preserved

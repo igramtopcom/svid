@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/youtube_channel/domain/entities/channel_info.dart';
+import 'package:svid/features/youtube_channel/domain/entities/channel_info.dart';
 
 void main() {
   ChannelInfo make({

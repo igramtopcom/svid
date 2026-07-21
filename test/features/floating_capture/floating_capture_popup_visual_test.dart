@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/domain/entities/popup_action_result.dart';
-import 'package:ssvid/floating_window_main.dart';
+import 'package:svid/features/floating_capture/domain/entities/popup_action_result.dart';
+import 'package:svid/floating_window_main.dart';
 
 Map<String, dynamic> _preview({
   String url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',

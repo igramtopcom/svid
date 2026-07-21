@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
-import 'package:ssvid/features/downloads/presentation/providers/downloads_notifier.dart';
-import 'package:ssvid/features/downloads/presentation/providers/playlist_library_provider.dart';
-import 'package:ssvid/features/home/presentation/widgets/download_list_helpers.dart';
-import 'package:ssvid/features/player/presentation/providers/playback_queue_providers.dart';
+import 'package:svid/features/downloads/domain/entities/download_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/features/downloads/presentation/providers/downloads_notifier.dart';
+import 'package:svid/features/downloads/presentation/providers/playlist_library_provider.dart';
+import 'package:svid/features/home/presentation/widgets/download_list_helpers.dart';
+import 'package:svid/features/player/presentation/providers/playback_queue_providers.dart';
 
 DownloadEntity _entity({
   required int id,

@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/clipboard_service.dart';
+import 'package:svid/core/services/clipboard_service.dart';
 
 /// Unit tests for [ClipboardService] — verifies it swallows Windows
 /// PlatformException and never propagates errors to callers, mirroring the

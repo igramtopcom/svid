@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:ssvid/features/browser/presentation/widgets/browser_context_menu.dart';
+import 'package:svid/features/browser/presentation/widgets/browser_context_menu.dart';
 
 void main() {
   group('BrowserContextAction', () {

@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_selection_intent.dart';
-import 'package:ssvid/features/settings/data/datasources/settings_local_datasource.dart';
-import 'package:ssvid/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:svid/features/downloads/domain/entities/download_selection_intent.dart';
+import 'package:svid/features/settings/data/datasources/settings_local_datasource.dart';
+import 'package:svid/features/settings/data/repositories/settings_repository_impl.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

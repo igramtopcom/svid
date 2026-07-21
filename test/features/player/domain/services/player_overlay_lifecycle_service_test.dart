@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/player/domain/services/player_overlay_lifecycle_service.dart';
+import 'package:svid/features/player/domain/services/player_overlay_lifecycle_service.dart';
 
 void main() {
   group('PlayerOverlayLifecycleService', () {

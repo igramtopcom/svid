@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_error_code.dart';
+import 'package:svid/features/downloads/domain/entities/download_error_code.dart';
 
 void main() {
   group('DownloadErrorCode', () {

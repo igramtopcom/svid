@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/windows_power_event_service.dart';
+import 'package:svid/core/services/windows_power_event_service.dart';
 
 void main() {
   tearDown(() {

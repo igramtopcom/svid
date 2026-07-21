@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/binaries/binary_type.dart';
-import 'package:ssvid/features/downloads/domain/services/file_integrity_service.dart';
+import 'package:svid/core/binaries/binary_type.dart';
+import 'package:svid/features/downloads/domain/services/file_integrity_service.dart';
 
 void main() {
   late Directory tempDir;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/presentation/widgets/schedule_picker_dialog.dart';
+import 'package:svid/features/downloads/presentation/widgets/schedule_picker_dialog.dart';
 
 Widget _wrap(Widget child) {
   return MaterialApp(home: Scaffold(body: child));

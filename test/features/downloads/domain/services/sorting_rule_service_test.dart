@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
-import 'package:ssvid/features/downloads/domain/entities/sorting_rule.dart';
-import 'package:ssvid/features/downloads/domain/services/sorting_rule_service.dart';
+import 'package:svid/features/downloads/domain/entities/download_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/features/downloads/domain/entities/sorting_rule.dart';
+import 'package:svid/features/downloads/domain/services/sorting_rule_service.dart';
 
 DownloadEntity _entity({
   String platform = 'youtube',

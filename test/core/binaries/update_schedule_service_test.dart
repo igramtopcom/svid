@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/binaries/update_schedule_service.dart';
+import 'package:svid/core/binaries/update_schedule_service.dart';
 
 void main() {
   group('UpdateScheduleService', () {

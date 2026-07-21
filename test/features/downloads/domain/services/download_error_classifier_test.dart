@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_error_code.dart';
-import 'package:ssvid/features/downloads/domain/services/download_error_classifier.dart';
+import 'package:svid/features/downloads/domain/entities/download_error_code.dart';
+import 'package:svid/features/downloads/domain/services/download_error_classifier.dart';
 
 void main() {
   group('DownloadErrorClassifier', () {

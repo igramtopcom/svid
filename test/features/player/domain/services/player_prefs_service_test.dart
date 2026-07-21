@@ -2,7 +2,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/player/domain/services/player_prefs_service.dart';
+import 'package:svid/features/player/domain/services/player_prefs_service.dart';
 
 void main() {
   late PlayerPrefsService service;

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/services/startup_service.dart';
-import 'package:ssvid/core/services/vidcombo/vidcombo_backend_adapter.dart';
+import 'package:svid/core/services/startup_service.dart';
+import 'package:svid/core/services/vidcombo/vidcombo_backend_adapter.dart';
 
 /// Unit tests for the VidCombo checkkey.php bootstrap cache. This cache
 /// is on the hot path of every VidCombo cold boot — if it silently

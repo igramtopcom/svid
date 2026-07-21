@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/services/telemetry_metadata_keys.dart';
+import 'package:svid/features/downloads/domain/services/telemetry_metadata_keys.dart';
 
 void main() {
   group('extractHttpStatusCode', () {

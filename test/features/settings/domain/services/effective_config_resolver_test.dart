@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/settings/data/datasources/builtin_presets_seeder.dart';
-import 'package:ssvid/features/settings/domain/entities/format_preset_extended.dart';
-import 'package:ssvid/features/settings/domain/services/effective_config_resolver.dart';
+import 'package:svid/features/settings/data/datasources/builtin_presets_seeder.dart';
+import 'package:svid/features/settings/domain/entities/format_preset_extended.dart';
+import 'package:svid/features/settings/domain/services/effective_config_resolver.dart';
 
 void main() {
   const resolver = EffectiveConfigResolver();

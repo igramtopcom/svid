@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/config/brand_config.dart';
-import 'package:ssvid/core/services/startup_service.dart';
-import 'package:ssvid/core/services/vidcombo/vidcombo_backend_adapter.dart';
-import 'package:ssvid/features/premium/presentation/providers/payment_providers.dart';
+import 'package:svid/core/config/brand_config.dart';
+import 'package:svid/core/services/startup_service.dart';
+import 'package:svid/core/services/vidcombo/vidcombo_backend_adapter.dart';
+import 'package:svid/features/premium/presentation/providers/payment_providers.dart';
 
 /// Tests for the VidCombo user-deactivate tombstone + cache-clear helpers.
 ///

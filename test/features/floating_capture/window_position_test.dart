@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/data/datasources/in_memory_window_position_store.dart';
-import 'package:ssvid/features/floating_capture/domain/entities/window_position.dart';
+import 'package:svid/features/floating_capture/data/datasources/in_memory_window_position_store.dart';
+import 'package:svid/features/floating_capture/domain/entities/window_position.dart';
 
 void main() {
   group('WindowPosition entity', () {

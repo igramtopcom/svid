@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
+import 'package:svid/core/utils/platform_detector.dart';
 
 /// RC10.1 of Ultra Plan v3 — Facebook URL pattern → media-type
 /// classification. Confirmed-video URLs MUST skip gallery-dl

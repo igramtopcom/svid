@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/premium/domain/entities/pdfconv_paypal_plan.dart';
-import 'package:ssvid/features/premium/domain/entities/pdfconv_purchase_intent.dart';
+import 'package:svid/features/premium/domain/entities/pdfconv_paypal_plan.dart';
+import 'package:svid/features/premium/domain/entities/pdfconv_purchase_intent.dart';
 
 const _intentId = '0cc27c14-f861-44df-a656-00a519d6f22b';
 

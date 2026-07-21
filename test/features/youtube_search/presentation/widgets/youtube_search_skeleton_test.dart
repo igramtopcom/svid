@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/youtube_search/presentation/widgets/youtube_search_skeleton.dart';
+import 'package:svid/features/youtube_search/presentation/widgets/youtube_search_skeleton.dart';
 
 void main() {
   testWidgets('renders shrink-wrapped pagination skeleton inside a ListView', (

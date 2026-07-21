@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/data/datasources/gallerydl_datasource.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/gallerydl_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
 
 void main() {
   group('YtDlpException', () {

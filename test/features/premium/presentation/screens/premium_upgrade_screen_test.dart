@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/errors/app_exception.dart';
-import 'package:ssvid/core/navigation/navigation_constants.dart';
-import 'package:ssvid/features/premium/domain/entities/premium_feature.dart';
-import 'package:ssvid/features/premium/domain/entities/premium_license.dart';
-import 'package:ssvid/features/premium/domain/entities/premium_tier.dart';
-import 'package:ssvid/features/premium/presentation/screens/premium_upgrade_screen.dart';
-import 'package:ssvid/features/premium/presentation/widgets/upgrade_prompt_dialog.dart';
+import 'package:svid/core/errors/app_exception.dart';
+import 'package:svid/core/navigation/navigation_constants.dart';
+import 'package:svid/features/premium/domain/entities/premium_feature.dart';
+import 'package:svid/features/premium/domain/entities/premium_license.dart';
+import 'package:svid/features/premium/domain/entities/premium_tier.dart';
+import 'package:svid/features/premium/presentation/screens/premium_upgrade_screen.dart';
+import 'package:svid/features/premium/presentation/widgets/upgrade_prompt_dialog.dart';
 
 void main() {
   group('NavigationConstants premiumIndex', () {

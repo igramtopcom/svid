@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/file_utils.dart';
+import 'package:svid/core/utils/file_utils.dart';
 
 /// WIN-1b: `--trim-filenames` for the one Windows path the app cannot
 /// literal-bound — a custom user `filenameTemplate` that yt-dlp expands after

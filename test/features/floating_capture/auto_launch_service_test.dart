@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/data/datasources/mock_auto_launcher.dart';
+import 'package:svid/features/floating_capture/data/datasources/mock_auto_launcher.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

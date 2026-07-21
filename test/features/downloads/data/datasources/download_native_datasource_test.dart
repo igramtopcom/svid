@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/data/datasources/download_native_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/download_native_datasource.dart';
 
 void main() {
   group('DownloadNativeDataSource', () {

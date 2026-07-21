@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/premium/domain/entities/premium_limits.dart';
-import 'package:ssvid/features/premium/domain/services/download_quota_tracker.dart';
-import 'package:ssvid/features/premium/presentation/providers/premium_providers.dart';
+import 'package:svid/features/premium/domain/entities/premium_limits.dart';
+import 'package:svid/features/premium/domain/services/download_quota_tracker.dart';
+import 'package:svid/features/premium/presentation/providers/premium_providers.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_error_code.dart';
-import 'package:ssvid/features/downloads/domain/services/download_error_classifier.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/domain/entities/download_error_code.dart';
+import 'package:svid/features/downloads/domain/services/download_error_classifier.dart';
 
 /// CUX-1: a non-zero-exit recode-contract failure must surface its REAL
 /// upstream cause (403 / login / rate-limit / network) instead of the

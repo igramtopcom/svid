@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/settings/domain/entities/format_preset_extended.dart';
+import 'package:svid/features/settings/domain/entities/format_preset_extended.dart';
 
 void main() {
   group('FormatPresetExtended — JSON round-trip', () {

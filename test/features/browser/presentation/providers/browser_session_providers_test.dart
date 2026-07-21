@@ -1,16 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:ssvid/core/auth/domain/entities/platform_cookie.dart';
-import 'package:ssvid/core/auth/domain/repositories/cookie_repository.dart';
-import 'package:ssvid/core/auth/domain/usecases/get_platform_cookies_usecase.dart';
-import 'package:ssvid/core/auth/presentation/providers/auth_providers.dart';
-import 'package:ssvid/core/errors/result.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/browser/domain/services/cookie_inspector_service.dart';
-import 'package:ssvid/features/browser/domain/services/video_url_detector.dart';
-import 'package:ssvid/features/browser/presentation/providers/browser_providers.dart';
-import 'package:ssvid/features/browser/presentation/providers/browser_session_providers.dart';
+import 'package:svid/core/auth/domain/entities/platform_cookie.dart';
+import 'package:svid/core/auth/domain/repositories/cookie_repository.dart';
+import 'package:svid/core/auth/domain/usecases/get_platform_cookies_usecase.dart';
+import 'package:svid/core/auth/presentation/providers/auth_providers.dart';
+import 'package:svid/core/errors/result.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/browser/domain/services/cookie_inspector_service.dart';
+import 'package:svid/features/browser/domain/services/video_url_detector.dart';
+import 'package:svid/features/browser/presentation/providers/browser_providers.dart';
+import 'package:svid/features/browser/presentation/providers/browser_session_providers.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers

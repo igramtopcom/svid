@@ -16,9 +16,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:ssvid/core/binaries/binary_manager.dart';
-import 'package:ssvid/core/binaries/binary_type.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/core/binaries/binary_manager.dart';
+import 'package:svid/core/binaries/binary_type.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
 
 class _MockBinaryManager extends Mock implements BinaryManager {}
 

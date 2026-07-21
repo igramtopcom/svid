@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:ssvid/features/browser/presentation/providers/browser_download_providers.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
-import 'package:ssvid/features/downloads/presentation/providers/downloads_notifier.dart';
+import 'package:svid/features/browser/presentation/providers/browser_download_providers.dart';
+import 'package:svid/features/downloads/domain/entities/download_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/features/downloads/presentation/providers/downloads_notifier.dart';
 
 DownloadEntity _makeDownload({
   required int id,

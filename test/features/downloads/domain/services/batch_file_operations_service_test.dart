@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/database/app_database.dart';
-import 'package:ssvid/features/downloads/domain/services/batch_file_operations_service.dart';
+import 'package:svid/core/database/app_database.dart';
+import 'package:svid/features/downloads/domain/services/batch_file_operations_service.dart';
 
 void main() {
   late AppDatabase db;

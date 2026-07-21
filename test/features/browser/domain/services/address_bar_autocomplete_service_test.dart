@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/browser/domain/entities/browser_bookmark.dart';
-import 'package:ssvid/features/browser/domain/entities/browser_history_entry.dart';
-import 'package:ssvid/features/browser/domain/services/address_bar_autocomplete_service.dart';
+import 'package:svid/features/browser/domain/entities/browser_bookmark.dart';
+import 'package:svid/features/browser/domain/entities/browser_history_entry.dart';
+import 'package:svid/features/browser/domain/services/address_bar_autocomplete_service.dart';
 
 BrowserHistoryEntry _h(String url, {String title = ''}) => BrowserHistoryEntry(
       id: url,

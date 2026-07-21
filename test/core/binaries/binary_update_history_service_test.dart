@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/binaries/binary_type.dart';
-import 'package:ssvid/core/binaries/binary_update_error_code.dart';
-import 'package:ssvid/core/binaries/binary_update_history_service.dart';
+import 'package:svid/core/binaries/binary_type.dart';
+import 'package:svid/core/binaries/binary_update_error_code.dart';
+import 'package:svid/core/binaries/binary_update_history_service.dart';
 
 void main() {
   group('BinaryUpdateHistoryService', () {

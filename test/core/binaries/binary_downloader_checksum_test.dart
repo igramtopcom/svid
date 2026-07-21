@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/binaries/binary_downloader.dart';
+import 'package:svid/core/binaries/binary_downloader.dart';
 
 /// Unit tests for the upstream SHA-256 manifest parser. This is the
 /// supply-chain gate — a malformed or tampered manifest must never cause

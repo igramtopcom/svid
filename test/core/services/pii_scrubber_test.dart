@@ -2,7 +2,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:ssvid/core/services/pii_scrubber.dart';
+import 'package:svid/core/services/pii_scrubber.dart';
 
 void main() {
   group('scrubString — pattern coverage', () {

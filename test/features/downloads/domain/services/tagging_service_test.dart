@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/database/app_database.dart';
-import 'package:ssvid/features/downloads/domain/services/tagging_service.dart';
+import 'package:svid/core/database/app_database.dart';
+import 'package:svid/features/downloads/domain/services/tagging_service.dart';
 
 void main() {
   late AppDatabase db;

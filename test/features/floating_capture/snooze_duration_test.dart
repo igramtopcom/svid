@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/domain/entities/snooze_duration.dart';
+import 'package:svid/features/floating_capture/domain/entities/snooze_duration.dart';
 
 void main() {
   group('wireKey round-trip', () {

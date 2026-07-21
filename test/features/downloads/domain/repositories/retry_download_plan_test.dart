@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/repositories/download_repository.dart';
+import 'package:svid/features/downloads/domain/repositories/download_repository.dart';
 
 /// RC1 of Ultra Plan v3 — Codex Blockers #1–3.
 ///

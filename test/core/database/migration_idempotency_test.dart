@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as raw_sqlite;
-import 'package:ssvid/core/database/app_database.dart';
+import 'package:svid/core/database/app_database.dart';
 
 // ---------------------------------------------------------------------------
 // Regression test for the 2026-04-07 production incident.

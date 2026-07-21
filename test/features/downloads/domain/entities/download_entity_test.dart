@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_error_code.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/features/downloads/domain/entities/download_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_error_code.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
 
 DownloadEntity _makeEntity({
   int id = 1,

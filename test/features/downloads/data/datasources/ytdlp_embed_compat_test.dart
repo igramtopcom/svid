@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
 
 /// Pin the postprocess compatibility matrix against yt-dlp upstream
 /// drift. The hard-fail surface here is `--embed-thumbnail` on an

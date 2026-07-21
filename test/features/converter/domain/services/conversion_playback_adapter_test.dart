@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/converter/domain/entities/conversion_config.dart';
-import 'package:ssvid/features/converter/domain/entities/conversion_job.dart';
-import 'package:ssvid/features/converter/domain/entities/conversion_status.dart';
-import 'package:ssvid/features/converter/domain/entities/output_format.dart';
-import 'package:ssvid/features/converter/domain/services/conversion_playback_adapter.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/features/converter/domain/entities/conversion_config.dart';
+import 'package:svid/features/converter/domain/entities/conversion_job.dart';
+import 'package:svid/features/converter/domain/entities/conversion_status.dart';
+import 'package:svid/features/converter/domain/entities/output_format.dart';
+import 'package:svid/features/converter/domain/services/conversion_playback_adapter.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
 
 void main() {
   group('ConversionPlaybackAdapter', () {

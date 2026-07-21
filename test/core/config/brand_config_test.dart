@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/config/brand_config.dart';
+import 'package:svid/core/config/brand_config.dart';
 
 void main() {
   group('BrandConfig', () {

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:ssvid/core/config/brand_download_path_resolver.dart';
+import 'package:svid/core/config/brand_download_path_resolver.dart';
 
 /// Unit tests for [BrandDownloadPathResolver.detectVidComboLegacyFolder].
 ///

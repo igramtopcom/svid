@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/converter/domain/entities/conversion_preset.dart';
-import 'package:ssvid/features/converter/domain/entities/output_format.dart';
-import 'package:ssvid/features/converter/domain/services/preset_service.dart';
+import 'package:svid/features/converter/domain/entities/conversion_preset.dart';
+import 'package:svid/features/converter/domain/entities/output_format.dart';
+import 'package:svid/features/converter/domain/services/preset_service.dart';
 
 void main() {
   late PresetService service;

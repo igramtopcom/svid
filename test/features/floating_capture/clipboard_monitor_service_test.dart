@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/floating_capture/data/datasources/mock_clipboard_source.dart';
-import 'package:ssvid/features/floating_capture/domain/services/clipboard_monitor_service.dart';
+import 'package:svid/features/floating_capture/data/datasources/mock_clipboard_source.dart';
+import 'package:svid/features/floating_capture/domain/services/clipboard_monitor_service.dart';
 
 void main() {
   // Init binding so appLogger calls don't emit warnings about

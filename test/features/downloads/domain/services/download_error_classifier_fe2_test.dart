@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_error_code.dart';
-import 'package:ssvid/features/downloads/domain/services/download_error_classifier.dart';
+import 'package:svid/features/downloads/domain/entities/download_error_code.dart';
+import 'package:svid/features/downloads/domain/services/download_error_classifier.dart';
 
 /// FE-2 (2026-06-25 live probe): the Windows yt-dlp.exe (PyInstaller onefile)
 /// bootloader can fail to self-extract its bundled .pyd/.dll to %TEMP%\_MEIxxxx

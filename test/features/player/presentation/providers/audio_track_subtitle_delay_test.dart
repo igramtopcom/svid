@@ -3,8 +3,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:ssvid/features/player/presentation/providers/player_providers.dart';
-import 'package:ssvid/features/player/presentation/widgets/subtitle_controls.dart';
+import 'package:svid/features/player/presentation/providers/player_providers.dart';
+import 'package:svid/features/player/presentation/widgets/subtitle_controls.dart';
 
 void main() {
   group('subtitleDelayProvider', () {

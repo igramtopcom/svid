@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/player/domain/services/mini_player_position_service.dart';
+import 'package:svid/features/player/domain/services/mini_player_position_service.dart';
 
 void main() {
   late MiniPlayerPositionService service;

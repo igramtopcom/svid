@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/bridge/api.dart';
+import 'package:svid/bridge/api.dart';
 
 /// Tests verifying the download_start FFI bridge signature includes
 /// maxSpeedBytes parameter (Task 67.4).

@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:ssvid/core/errors/result.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/downloads/data/datasources/gallerydl_datasource.dart';
-import 'package:ssvid/features/downloads/data/datasources/ytdlp_datasource.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_error_code.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/downloads/domain/repositories/download_repository.dart';
-import 'package:ssvid/features/downloads/domain/usecases/start_download_usecase.dart';
-import 'package:ssvid/features/premium/domain/services/download_quota_reserver.dart';
+import 'package:svid/core/errors/result.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/downloads/data/datasources/gallerydl_datasource.dart';
+import 'package:svid/features/downloads/data/datasources/ytdlp_datasource.dart';
+import 'package:svid/features/downloads/domain/entities/download_error_code.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/downloads/domain/repositories/download_repository.dart';
+import 'package:svid/features/downloads/domain/usecases/start_download_usecase.dart';
+import 'package:svid/features/premium/domain/services/download_quota_reserver.dart';
 
 class _MockDownloadRepository extends Mock implements DownloadRepository {}
 

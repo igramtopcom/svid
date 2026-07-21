@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/binaries/binary_manager.dart';
-import 'package:ssvid/core/binaries/binary_type.dart';
+import 'package:svid/core/binaries/binary_manager.dart';
+import 'package:svid/core/binaries/binary_type.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

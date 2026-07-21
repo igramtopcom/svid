@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/browser/domain/services/search_engine_service.dart';
+import 'package:svid/features/browser/domain/services/search_engine_service.dart';
 
 void main() {
   late SharedPreferences prefs;

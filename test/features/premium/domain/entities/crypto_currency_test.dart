@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/premium/domain/entities/crypto_currency.dart';
+import 'package:svid/features/premium/domain/entities/crypto_currency.dart';
 
 void main() {
   group('CryptoCurrency', () {

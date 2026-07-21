@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/presentation/widgets/note_editor_dialog.dart';
+import 'package:svid/features/downloads/presentation/widgets/note_editor_dialog.dart';
 
 void main() {
   Widget buildTestApp({required Widget child}) {

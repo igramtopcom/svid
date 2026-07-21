@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/player/presentation/widgets/media_info_helpers.dart';
+import 'package:svid/features/player/presentation/widgets/media_info_helpers.dart';
 
 void main() {
   group('formatCodecName', () {

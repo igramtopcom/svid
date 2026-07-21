@@ -1,15 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/config/brand_config.dart';
-import 'package:ssvid/core/errors/app_exception.dart';
-import 'package:ssvid/core/network/backend_client.dart';
-import 'package:ssvid/core/services/secure_credential_store.dart';
-import 'package:ssvid/features/premium/data/datasources/premium_local_datasource.dart';
-import 'package:ssvid/features/premium/data/services/license_verification_service.dart';
-import 'package:ssvid/features/premium/domain/entities/premium_license.dart';
-import 'package:ssvid/features/premium/domain/entities/premium_tier.dart';
-import 'package:ssvid/features/premium/domain/services/premium_license_service.dart';
+import 'package:svid/core/config/brand_config.dart';
+import 'package:svid/core/errors/app_exception.dart';
+import 'package:svid/core/network/backend_client.dart';
+import 'package:svid/core/services/secure_credential_store.dart';
+import 'package:svid/features/premium/data/datasources/premium_local_datasource.dart';
+import 'package:svid/features/premium/data/services/license_verification_service.dart';
+import 'package:svid/features/premium/domain/entities/premium_license.dart';
+import 'package:svid/features/premium/domain/entities/premium_tier.dart';
+import 'package:svid/features/premium/domain/services/premium_license_service.dart';
 
 import '../../../../helpers/brand_test_keys.dart';
 

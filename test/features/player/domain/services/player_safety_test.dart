@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/player/domain/services/player_safety.dart';
+import 'package:svid/features/player/domain/services/player_safety.dart';
 
 void main() {
   group('PlayerSafety', () {

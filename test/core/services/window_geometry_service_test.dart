@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/services/window_geometry_service.dart';
+import 'package:svid/core/services/window_geometry_service.dart';
 
 void main() {
   group('WindowGeometryService.visibleRect', () {

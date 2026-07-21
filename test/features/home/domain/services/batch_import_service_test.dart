@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/home/domain/services/batch_import_service.dart';
+import 'package:svid/features/home/domain/services/batch_import_service.dart';
 
 void main() {
   const service = BatchImportService();

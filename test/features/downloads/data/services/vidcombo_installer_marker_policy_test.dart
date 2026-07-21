@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/data/services/vidcombo_installer_marker_policy.dart';
+import 'package:svid/features/downloads/data/services/vidcombo_installer_marker_policy.dart';
 
 /// Unit tests for the pure decision logic that governs the VidCombo
 /// installer-marker handshake. These tests cover the corner cases that

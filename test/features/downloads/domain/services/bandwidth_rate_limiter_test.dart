@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/services/bandwidth_rate_limiter.dart';
+import 'package:svid/features/downloads/domain/services/bandwidth_rate_limiter.dart';
 
 void main() {
   group('BandwidthRateLimiter.computePerDownloadLimit', () {

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:ssvid/core/services/startup_service.dart';
+import 'package:svid/core/services/startup_service.dart';
 
 void main() {
   late Directory tempRoot;

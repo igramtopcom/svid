@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_preview.dart';
-import 'package:ssvid/features/floating_capture/data/services/capture_side_effect_router.dart';
-import 'package:ssvid/features/floating_capture/domain/entities/capture_download_request.dart';
-import 'package:ssvid/features/floating_capture/domain/services/capture_service.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/downloads/domain/entities/video_preview.dart';
+import 'package:svid/features/floating_capture/data/services/capture_side_effect_router.dart';
+import 'package:svid/features/floating_capture/domain/entities/capture_download_request.dart';
+import 'package:svid/features/floating_capture/domain/services/capture_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

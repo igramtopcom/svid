@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_config.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/home/presentation/screens/home_download_mixin.dart';
-import 'package:ssvid/features/settings/domain/entities/format_preset_extended.dart';
+import 'package:svid/features/downloads/domain/entities/download_config.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/home/presentation/screens/home_download_mixin.dart';
+import 'package:svid/features/settings/domain/entities/format_preset_extended.dart';
 
 void main() {
   group('HomeDownloadMixin audio preset config', () {

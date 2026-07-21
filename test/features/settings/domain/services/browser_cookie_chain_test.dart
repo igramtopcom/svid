@@ -11,7 +11,7 @@ library;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/features/settings/domain/services/browser_cookie_import_service.dart';
+import 'package:svid/features/settings/domain/services/browser_cookie_import_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

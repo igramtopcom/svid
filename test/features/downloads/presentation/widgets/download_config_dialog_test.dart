@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/binaries/binary_providers.dart';
-import 'package:ssvid/core/binaries/binary_type.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_config.dart';
-import 'package:ssvid/features/downloads/domain/entities/video_info.dart';
-import 'package:ssvid/features/downloads/presentation/widgets/download_config_dialog.dart';
-import 'package:ssvid/features/premium/presentation/providers/premium_providers.dart';
-import 'package:ssvid/features/settings/presentation/providers/settings_provider.dart';
+import 'package:svid/core/binaries/binary_providers.dart';
+import 'package:svid/core/binaries/binary_type.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/downloads/domain/entities/download_config.dart';
+import 'package:svid/features/downloads/domain/entities/video_info.dart';
+import 'package:svid/features/downloads/presentation/widgets/download_config_dialog.dart';
+import 'package:svid/features/premium/presentation/providers/premium_providers.dart';
+import 'package:svid/features/settings/presentation/providers/settings_provider.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/platform_detector.dart';
-import 'package:ssvid/features/browser/domain/services/page_video_scanner_service.dart';
+import 'package:svid/core/utils/platform_detector.dart';
+import 'package:svid/features/browser/domain/services/page_video_scanner_service.dart';
 
 void main() {
   late PageVideoScannerService service;

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:ssvid/features/browser/domain/entities/browser_history_entry.dart';
+import 'package:svid/features/browser/domain/entities/browser_history_entry.dart';
 
 /// Test the NewTabPage top-visited-sites algorithm.
 ///

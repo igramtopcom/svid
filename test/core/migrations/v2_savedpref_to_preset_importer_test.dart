@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ssvid/core/migrations/v2_savedpref_to_preset_importer.dart';
-import 'package:ssvid/features/settings/data/datasources/builtin_presets_seeder.dart';
-import 'package:ssvid/features/settings/domain/entities/format_preset_extended.dart';
+import 'package:svid/core/migrations/v2_savedpref_to_preset_importer.dart';
+import 'package:svid/features/settings/data/datasources/builtin_presets_seeder.dart';
+import 'package:svid/features/settings/domain/entities/format_preset_extended.dart';
 
 /// Pure-prefs tests — no Riverpod, no widgets. Pin the contract for
 /// the one-shot legacy savedPref → preset import that runs after

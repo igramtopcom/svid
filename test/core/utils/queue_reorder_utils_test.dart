@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ssvid/core/utils/queue_reorder_utils.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_entity.dart';
-import 'package:ssvid/features/downloads/domain/entities/download_status.dart';
+import 'package:svid/core/utils/queue_reorder_utils.dart';
+import 'package:svid/features/downloads/domain/entities/download_entity.dart';
+import 'package:svid/features/downloads/domain/entities/download_status.dart';
 
 DownloadEntity _pending(int id, {int totalBytes = 1000, int priority = 0}) {
   return DownloadEntity(

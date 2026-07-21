@@ -2975,26 +2975,17 @@ class _DownloadManagerTabButton extends StatelessWidget {
                   ),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color:
-                        isSelected
-                            ? AppColors.accentHighlight.withValues(
-                              alpha:
-                                  isDark
-                                      ? AppOpacity.pressed
-                                      : AppOpacity.hover,
-                            )
-                            : AppColors.metaText(
-                              context,
-                            ).withValues(alpha: AppOpacity.hover),
+                    // Neutral count pill — the active tab already reads via its
+                    // accent underline; keep wine red off secondary chrome.
+                    color: AppColors.metaText(
+                      context,
+                    ).withValues(alpha: AppOpacity.hover),
                     borderRadius: BorderRadius.circular(AppRadius.card),
                   ),
                   child: Text(
                     '$count',
                     style: AppTypography.mini.copyWith(
-                      color:
-                          isSelected
-                              ? AppColors.accentHighlight
-                              : AppColors.metaText(context),
+                      color: AppColors.metaText(context),
                       fontWeight: FontWeight.w700,
                     ),
                   ),

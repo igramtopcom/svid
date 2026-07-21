@@ -91,14 +91,12 @@ class _IconColumnButtonState extends State<_IconColumnButton> {
         isDark
             ? AppColors.homeDarkBorderStrong
             : cs.outlineVariant.withValues(alpha: 0.72);
-    final iconFrameBg =
-        isDark ? AppColors.homeDarkAppBg : cs.surfaceContainerLowest;
     final iconFrameHoverBg = widget.hoverBg;
     final glyph = Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        Icon(widget.icon, size: 22, color: widget.iconColor),
+        Icon(widget.icon, size: 20, color: widget.iconColor),
         if (widget.badgeCount > 0)
           Positioned(
             top: -4,
@@ -149,13 +147,15 @@ class _IconColumnButtonState extends State<_IconColumnButton> {
               height: widget.height,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: _hovered ? iconFrameHoverBg : iconFrameBg,
+                // Ghost/secondary: transparent by default so the primary
+                // Download CTA stays the visual anchor; frame appears on hover.
+                color: _hovered ? iconFrameHoverBg : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppRadius.input),
                 border: Border.all(
                   color:
                       _hovered
-                          ? neutralBorder.withValues(alpha: 1)
-                          : neutralBorder.withValues(alpha: isDark ? 0.82 : 1),
+                          ? neutralBorder.withValues(alpha: isDark ? 0.82 : 1)
+                          : Colors.transparent,
                   width: 1,
                 ),
               ),
@@ -175,8 +175,8 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
   static const double _commandBarHeight = 52;
   static const double _commandBarHeightCompact = 48;
   static const double _presetChipWidth = 176;
-  static const double _ctaWidth = 164;
-  static const double _ctaWidthCompact = 152;
+  static const double _ctaWidth = 184;
+  static const double _ctaWidthCompact = 168;
 
   bool _isHoveringPaste = false;
   // History + Batch hover state was used by the legacy IconButton
@@ -742,7 +742,7 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
                       ),
                     ),
                   )
-                  : const Icon(Icons.download_rounded, size: 18),
+                  : const Icon(Icons.download_rounded, size: 20),
           label: AnimatedSwitcher(
             duration: const Duration(milliseconds: 220),
             child: Text(

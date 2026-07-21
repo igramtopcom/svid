@@ -308,7 +308,9 @@ class _CardSectionLabel extends StatelessWidget {
           width: 6,
           height: 6,
           decoration: BoxDecoration(
-            color: AppColors.accentHighlight,
+            // Neutral marker — accent (wine red) is reserved for the primary
+            // Download CTA and the active tab, not decorative section dots.
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             shape: BoxShape.circle,
           ),
         ),

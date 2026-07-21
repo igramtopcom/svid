@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../../features/activity_center/presentation/providers/activity_unread_provider.dart';
-import '../../features/premium/domain/entities/premium_feature.dart';
 import '../../features/premium/presentation/providers/premium_providers.dart';
-import '../../features/premium/presentation/widgets/upgrade_prompt_dialog.dart';
 import '../../features/settings/presentation/providers/settings_provider.dart';
 import '../core.dart';
 import 'navigation_constants.dart';
@@ -98,7 +95,6 @@ class TopNavigationBar extends ConsumerWidget {
                 ),
                 const SizedBox(width: AppSpacing.xs),
               ],
-              _buildActivityCenter(context, ref),
               _buildIconAction(
                 context,
                 isDark: isDark,
@@ -113,13 +109,14 @@ class TopNavigationBar extends ConsumerWidget {
                       NavigationConstants.settingsIndex,
                     ),
               ),
-              if (density.showThemeToggle)
+              if (density.showThemeToggle) ...[
+                const SizedBox(width: AppSpacing.xs),
                 _buildThemeToggle(context, ref, isDark),
-              // Mockup drops the overflow menu, but app reality needs
-              // discoverable access to Trợ lý AI (premium feature) and
-              // Hỗ trợ (customer support). Keep the ⋮ menu lightweight
-              // — single icon, native PopupMenu — until those flows
-              // get a dedicated home in Settings or a slide-out drawer.
+              ],
+              const SizedBox(width: AppSpacing.xs),
+              // Overflow ⋮ houses secondary destinations: Activity/analytics,
+              // Assistant, and Support — keeps the top bar to a few clear
+              // utilities (settings, theme, overflow) instead of a dense row.
               _buildOverflowMenu(context, isDark: isDark),
               if (!Platform.isMacOS) ...[
                 const SizedBox(width: AppSpacing.xs),
@@ -567,12 +564,36 @@ class TopNavigationBar extends ConsumerWidget {
   Widget _buildOverflowMenu(BuildContext context, {required bool isDark}) {
     return PopupMenuButton<int>(
       tooltip: AppLocalizations.commonMore,
-      icon: Icon(Icons.more_vert, size: 18, color: AppColors.metaText(context)),
-      iconSize: 18,
       padding: EdgeInsets.zero,
       onSelected: onDestinationSelected,
+      // Framed 40x40 button to match the settings/theme utilities.
+      child: SizedBox(
+        width: 40,
+        height: 40,
+        child: Icon(
+          Icons.more_vert,
+          size: 20,
+          color: AppColors.metaText(context),
+        ),
+      ),
       itemBuilder:
           (ctx) => [
+            PopupMenuItem<int>(
+              value: NavigationConstants.activityCenterIndex,
+              child: Row(
+                children: [
+                  Icon(
+                    selectedIndex == NavigationConstants.activityCenterIndex
+                        ? Icons.timeline
+                        : Icons.timeline_outlined,
+                    size: 18,
+                    color: AppColors.metaText(context),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(AppLocalizations.activityCenterTitle),
+                ],
+              ),
+            ),
             PopupMenuItem<int>(
               value: NavigationConstants.assistantIndex,
               child: Row(
@@ -624,8 +645,8 @@ class TopNavigationBar extends ConsumerWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.card),
         child: Container(
-          width: 36,
-          height: 36,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppRadius.card),
             color:
@@ -637,92 +658,11 @@ class TopNavigationBar extends ConsumerWidget {
           ),
           child: Icon(
             icon,
-            size: 18,
+            size: 20,
             color:
                 isActive
                     ? AppColors.accentHighlight
                     : AppColors.metaText(context),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActivityCenter(BuildContext context, WidgetRef ref) {
-    final unreadCount = ref.watch(unreadActivityCountProvider);
-    final isActive = selectedIndex == NavigationConstants.activityCenterIndex;
-
-    return Tooltip(
-      message: AppLocalizations.activityCenterTitle,
-      waitDuration: AppDurations.tooltipWaitDuration,
-      child: InkWell(
-        onTap: () {
-          if (!ref.read(isPremiumProvider)) {
-            UpgradePromptDialog.showAndNavigate(
-              context,
-              ref,
-              feature: PremiumFeature.advancedAnalytics,
-            );
-            return;
-          }
-          onDestinationSelected(NavigationConstants.activityCenterIndex);
-        },
-        borderRadius: BorderRadius.circular(AppRadius.card),
-        child: SizedBox(
-          width: 36,
-          height: 36,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppRadius.card),
-                  color:
-                      isActive
-                          ? AppColors.accentHighlight.withValues(
-                            alpha: AppOpacity.pressed,
-                          )
-                          : Colors.transparent,
-                ),
-                child: Icon(
-                  isActive ? Icons.timeline : Icons.timeline_outlined,
-                  size: 18,
-                  color:
-                      isActive
-                          ? AppColors.accentHighlight
-                          : AppColors.metaText(context),
-                ),
-              ),
-              if (unreadCount > 0)
-                Positioned(
-                  top: 2,
-                  right: 1,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 1,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.accentHighlight,
-                      borderRadius: BorderRadius.circular(AppRadius.card),
-                    ),
-                    constraints: const BoxConstraints(
-                      minWidth: 14,
-                      minHeight: 14,
-                    ),
-                    child: Text(
-                      unreadCount > 9 ? '9+' : '$unreadCount',
-                      style: AppTypography.mini.copyWith(
-                        color: AppColors.darkLightText,
-                        height: 1.1,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-            ],
           ),
         ),
       ),
@@ -744,8 +684,8 @@ class TopNavigationBar extends ConsumerWidget {
         },
         borderRadius: BorderRadius.circular(AppRadius.card),
         child: SizedBox(
-          width: 36,
-          height: 36,
+          width: 40,
+          height: 40,
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 250),
             transitionBuilder:
@@ -756,7 +696,7 @@ class TopNavigationBar extends ConsumerWidget {
             child: Icon(
               isDark ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
               key: ValueKey(isDark),
-              size: 18,
+              size: 20,
               color: AppColors.metaText(context),
             ),
           ),
@@ -924,7 +864,7 @@ class _WindowControlButtonState extends State<_WindowControlButton> {
         child: AnimatedContainer(
           duration: AppTransitions.fast,
           curve: AppTransitions.curveSymmetric,
-          width: 36,
+          width: 40,
           height: 32,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppRadius.card),
@@ -934,7 +874,7 @@ class _WindowControlButtonState extends State<_WindowControlButton> {
               width: 1,
             ),
           ),
-          child: Icon(widget.icon, size: 16, color: iconColor),
+          child: Icon(widget.icon, size: 18, color: iconColor),
         ),
       ),
     );

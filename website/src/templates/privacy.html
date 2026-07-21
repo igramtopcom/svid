@@ -1,0 +1,68 @@
+<!--@page
+title: Privacy Policy — SSvid
+description: SSvid Privacy Policy. Learn how we handle your data with a local-first product, minimal collection, and no analytics tracking on ssvid.app.
+keywords: privacy policy, ssvid privacy, video downloader privacy, local-first downloader
+canonical: /privacy
+-->
+<!DOCTYPE html>
+<html lang="{{lang.code}}" dir="{{lang.dir}}" data-theme="dark">
+<head>
+{{> head_sub}}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Privacy Policy — SSvid",
+    "url": "https://ssvid.app/privacy",
+    "description": "SSvid Privacy Policy. Learn how we handle your data with a local-first product, minimal collection, and no analytics tracking on ssvid.app.",
+    "isPartOf": { "@type": "WebSite", "name": "SSvid", "url": "https://ssvid.app/" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ssvid.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Privacy Policy" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+{{> nav_sub}}
+
+  <main id="main-content">
+    <div class="container breadcrumb">
+      <a href="/">Home</a><span class="sep">/</span><span>Privacy Policy</span>
+    </div>
+
+    <section class="legal-page">
+      <div class="container legal-container">
+        <h1>Privacy Policy</h1>
+        <p class="legal-updated">Last updated: April 23, 2026</p>
+
+        <div class="legal-summary-card">
+          <p class="legal-summary-title">Short version</p>
+          <ul class="legal-summary-list">
+            <li>Your downloads, media files, and browsing activity stay on your own device.</li>
+            <li><code>ssvid.app</code> does not run analytics trackers, ad pixels, or session-replay tools.</li>
+            <li>Stripe handles payments, Sentry handles optional crash reports, and Cloudflare handles edge security.</li>
+          </ul>
+        </div>
+
+{{> privacy_content}}
+
+        <div class="legal-contact-card">
+          <h2>Need help?</h2>
+          <p>If you need a data deletion request, license help, or a clarification on any privacy point, contact <a href="mailto:support@ssvid.app">support@ssvid.app</a>. You can also use <a href="/restore.html">Restore license</a> or <a href="/account.html">Manage subscription</a> if your request is billing-related.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+{{> footer_sub}}
+</body>
+</html>

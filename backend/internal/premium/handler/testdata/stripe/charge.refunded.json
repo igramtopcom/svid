@@ -1,0 +1,13 @@
+{
+  "id": "evt_test_charge_refunded",
+  "type": "charge.refunded",
+  "data": {
+    "object": {
+      "id": "ch_test_refunded",
+      "payment_intent": "pi_test_refunded",
+      "refunded": true,
+      "amount": 4188,
+      "amount_refunded": 4188
+    }
+  }
+}

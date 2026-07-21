@@ -1,0 +1,8 @@
+# Project-local Codex defaults for Snakeloader.
+# Keep this file conservative: operating discipline lives in AGENTS.md and docs/ops.
+
+model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "live"

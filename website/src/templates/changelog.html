@@ -1,0 +1,87 @@
+<!--@page
+title: Changelog — SSvid
+description: SSvid release history. See what changed in every version, including new features, fixes, and platform improvements.
+keywords: ssvid changelog, ssvid updates, release history, video downloader updates
+canonical: /changelog
+-->
+<!DOCTYPE html>
+<html lang="{{lang.code}}" dir="{{lang.dir}}" data-theme="dark">
+<head>
+{{> head_sub}}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "SSvid Changelog",
+    "description": "SSvid release history. See what changed in every version, including new features, fixes, and platform improvements.",
+    "url": "https://ssvid.app/changelog",
+    "isPartOf": { "@type": "WebSite", "name": "SSvid", "url": "https://ssvid.app/" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ssvid.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Changelog" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+{{> nav_sub}}
+
+  <main id="main-content" class="changelog-page">
+    <div class="container changelog-shell">
+      <div class="breadcrumb">
+        <a href="/">Home</a><span class="sep">/</span><span>Changelog</span>
+      </div>
+
+      <section class="changelog-hero">
+        <p class="changelog-kicker">Release history</p>
+        <h1>Changelog</h1>
+        <p class="subtitle">Every meaningful update across SSvid releases, from platform fixes to full product overhauls.</p>
+
+        <div class="changelog-highlight reveal">
+          <div class="release-header">
+            <span class="version-badge">Latest: v{{build.version}}</span>
+            <span class="release-date">April 25, 2026</span>
+            <span class="release-tag tag-fix">Stability</span>
+          </div>
+          <h2>Stability &amp; Hardening Update</h2>
+          <ul class="release-changes">
+            <li>Cinematic Aurora UI refresh across nav, browser, home, premium, support, and YouTube surfaces.</li>
+            <li>Auto-update streaming SHA-256 verify with HTTP Range resume for interrupted downloads.</li>
+            <li>yt-dlp installs verify against upstream supply-chain manifest before accepting the binary.</li>
+            <li>Windows installer signing pipeline validated end-to-end; macOS entitlements tightened.</li>
+          </ul>
+          <div class="cta-links">
+            <a href="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-macos-universal.dmg" class="btn btn-primary btn-lg" data-mac="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-macos-universal.dmg" data-win="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-windows-x64-setup.exe" data-linux="https://ssvid.app/downloads/SSvid-linux-x64.AppImage">Download SSvid</a>
+            <a href="/pricing.html" class="btn-text-link">See pricing <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="changelog-timeline">
+        <div class="timeline-list">
+{{> changelog_releases}}
+        </div>
+      </section>
+
+      <section class="changelog-cta reveal">
+        <h2>Need the latest build?</h2>
+        <p>Download the current release for your platform, or review plans if you need Premium features and device allowances.</p>
+        <div class="cta-links">
+          <a href="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-macos-universal.dmg" class="btn btn-primary btn-lg" data-mac="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-macos-universal.dmg" data-win="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-windows-x64-setup.exe" data-linux="https://ssvid.app/downloads/SSvid-linux-x64.AppImage">Download free</a>
+          <a href="/pricing.html" class="btn btn-outline btn-lg">View pricing</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+{{> footer_sub}}
+</body>
+</html>

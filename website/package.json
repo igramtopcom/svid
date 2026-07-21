@@ -1,0 +1,13 @@
+{
+  "name": "ssvid-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SSvid Landing Page — Static Site Builder",
+  "scripts": {
+    "build": "node build.js",
+    "build:prod": "node build.js --minify",
+    "watch": "node build.js --watch",
+    "extract": "node extract-translations.js",
+    "audit": "bash scripts/audit-landing.sh"
+  }
+}

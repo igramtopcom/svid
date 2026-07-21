@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful — SSvid</title>
+  <meta name="description" content="Your SSvid payment was successful. Return to the app to activate your license.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png">
+  <meta name="theme-color" content="#8D021F">
+  <link rel="manifest" href="/manifest.json">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://api.ssvid.app https://api.github.com;">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <script>
+    (function() {
+      var stored = localStorage.getItem('ssvid-theme');
+      if (stored) document.documentElement.setAttribute('data-theme', stored);
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
+  <link rel="stylesheet" href="../styles.css?v=2026.04.14a">
+  <link rel="preload" href="../fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/manrope-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../fonts/fonts.css">
+  <link rel="dns-prefetch" href="https://api.ssvid.app">
+  <style>
+    .payment-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+    .payment-page .status-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .payment-page .status-icon.success {
+      background: rgba(22, 163, 74, 0.12);
+      color: #16A34A;
+    }
+    .payment-page h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .payment-page .subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      max-width: 440px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .payment-page .session-ref {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-family: monospace;
+      word-break: break-all;
+    }
+    .payment-page .actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .payment-page .hint {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 24px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="payment-page">
+    <div>
+      <div class="status-icon success" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h1>Payment Successful</h1>
+      <p class="subtitle" id="status-msg">Thank you! Retrieving your license key...</p>
+      <div id="license-box" style="display:none;margin:16px auto 24px;max-width:400px;padding:16px;background:var(--bg-surface);border:2px solid var(--color-primary);border-radius:var(--radius-md);text-align:center;">
+        <div style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:8px;">Your License Key</div>
+        <div id="license-key" style="font-family:monospace;font-size:1.25rem;font-weight:700;letter-spacing:0.02em;color:var(--text);word-break:break-all;user-select:all;"></div>
+        <button id="copy-key-btn" style="margin-top:12px;padding:8px 20px;background:var(--color-primary);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:0.875rem;font-weight:600;">Copy Key</button>
+        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;">Save this key! Enter it in SSvid to activate Premium.</div>
+      </div>
+      <p class="session-ref" id="session-ref"></p>
+      <div class="actions">
+        <a href="ssvid://activate" class="btn btn-primary btn-lg" id="open-app-btn" style="display:none">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Open SSvid &amp; Activate
+        </a>
+        <a href="/" class="btn-text-link">Back to homepage</a>
+        <a href="/account" class="btn-text-link">Manage subscription</a>
+        <a href="/restore" class="btn-text-link">Lost your license key?</a>
+      </div>
+      <p class="hint" id="hint-msg">Retrieving your license...</p>
+    </div>
+  </div>
+  <script src="success.js?v=2026.04.14a" defer></script>
+</body>
+</html>

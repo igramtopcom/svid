@@ -1,0 +1,26 @@
+{
+  "id": "evt_test_invoice_paid_cycle",
+  "type": "invoice.paid",
+  "data": {
+    "object": {
+      "id": "in_test_cycle",
+      "subscription": "sub_test_cycle",
+      "customer_email": "renewer@example.com",
+      "status": "paid",
+      "amount_due": 4188,
+      "amount_paid": 4188,
+      "currency": "usd",
+      "billing_reason": "subscription_cycle",
+      "payment_intent": "pi_test_cycle",
+      "invoice_pdf": "https://stripe.com/invoice/test_cycle.pdf",
+      "hosted_invoice_url": "https://stripe.com/invoice/test_cycle",
+      "period_start": 1747720902,
+      "period_end": 1779256902,
+      "lines": {
+        "data": [
+          { "price": { "id": "price_test_yearly_ssvid" } }
+        ]
+      }
+    }
+  }
+}

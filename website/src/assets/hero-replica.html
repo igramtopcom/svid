@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=2560, initial-scale=1.0">
+<title>SSvid App Replica — Hero Screenshot</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-void: #0A0A0B;
+    --bg-base: #131314;
+    --bg-surface: #1c1b1c;
+    --bg-surface-high: #2a2a2b;
+    --bg-surface-highest: #353436;
+    --text-primary: #e5e2e3;
+    --text-secondary: #a8a5a6;
+    --text-muted: #6b6869;
+    --accent-wine: #8D021F;
+    --accent-crimson: #C41E3A;
+    --accent-green: #27C93F;
+    --accent-yellow: #FFBD2E;
+    --accent-red-dot: #FF5F56;
+    --border-subtle: rgba(255,255,255,0.06);
+    --border-light: rgba(255,255,255,0.1);
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-void);
+    color: var(--text-primary);
+    width: 1440px;
+    height: 900px;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === macOS Window Chrome === */
+  .window {
+    width: 1440px;
+    height: 900px;
+    background: var(--bg-base);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-light);
+  }
+
+  /* === Title Bar === */
+  .titlebar {
+    height: 52px;
+    background: var(--bg-surface);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+
+  .traffic-lights {
+    display: flex;
+    gap: 8px;
+    margin-right: 20px;
+  }
+
+  .traffic-light {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .tl-close { background: var(--accent-red-dot); }
+  .tl-minimize { background: var(--accent-yellow); }
+  .tl-maximize { background: var(--accent-green); }
+
+  /* === Top Navigation === */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 4px;
+    height: 100%;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    margin-right: 8px;
+  }
+
+  .nav-logo-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--accent-wine);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-logo-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: white;
+  }
+
+  .nav-logo-text {
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    color: white;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: default;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+
+  .nav-item.active {
+    background: var(--bg-surface-high);
+    color: white;
+    font-weight: 600;
+  }
+
+  .nav-item .material-symbols-outlined {
+    font-size: 18px;
+    font-variation-settings: 'FILL' 0, 'wght' 400;
+  }
+
+  .nav-item.active .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1, 'wght' 500;
+  }
+
+  .nav-spacer { flex: 1; }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .nav-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+  }
+
+  .notification-badge {
+    position: relative;
+  }
+
+  .notification-badge::after {
+    content: '9+';
+    position: absolute;
+    top: 2px;
+    right: 0px;
+    background: var(--accent-crimson);
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 6px;
+    line-height: 1.2;
+  }
+
+  /* === Main Content Area === */
+  .main-area {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* === Content Panel === */
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* === URL Input Bar === */
+  .url-bar {
+    display: flex;
+    align-items: center;
+    margin: 16px 20px 12px;
+    height: 44px;
+    background: var(--bg-surface);
+    border-radius: 10px;
+    border: 1px solid var(--border-subtle);
+    padding: 0 4px 0 16px;
+    gap: 8px;
+  }
+
+  .url-bar-icon {
+    color: var(--text-muted);
+    font-size: 18px;
+  }
+
+  .url-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13.5px;
+    font-family: inherit;
+    outline: none;
+  }
+
+  .url-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .url-icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 18px;
+  }
+
+  .start-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 16px;
+    height: 36px;
+    background: var(--accent-crimson);
+    color: white;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    border: none;
+    cursor: default;
+  }
+
+  .start-btn .material-symbols-outlined {
+    font-size: 18px;
+    font-variation-settings: 'FILL' 1;
+  }
+
+  /* === Quota Bar === */
+  .quota-bar {
+    display: flex;
+    align-items: center;
+    margin: 0 20px 12px;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .quota-dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .quota-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-wine);
+  }
+
+  .quota-dot.empty {
+    background: var(--bg-surface-high);
+  }
+
+  .quota-text {
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .quota-spacer { flex: 1; }
+
+  .quota-badge {
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  /* === Sub Navigation (Search/Browse/Channels) === */
+  .sub-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 20px;
+    margin-bottom: 10px;
+  }
+
+  .sub-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .sub-nav-item.active {
+    color: var(--accent-crimson);
+  }
+
+  .sub-nav-item .material-symbols-outlined {
+    font-size: 16px;
+  }
+
+  /* === Platform Chips === */
+  .platform-chips {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 20px;
+    margin-bottom: 12px;
+    flex-wrap: nowrap;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    white-space: nowrap;
+  }
+
+  .chip.active {
+    background: rgba(141, 2, 31, 0.15);
+    border-color: var(--accent-wine);
+    color: var(--accent-crimson);
+  }
+
+  .chip.active-alt {
+    background: rgba(196, 30, 58, 0.12);
+    border-color: rgba(196, 30, 58, 0.3);
+    color: #ff6b7a;
+  }
+
+  .chip-icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 900;
+    color: white;
+  }
+
+  .chip-yt { background: #FF0000; }
+  .chip-fb { background: #1877F2; }
+  .chip-ig { background: linear-gradient(135deg, #f9ce34, #ee2a7b, #6228d7); }
+  .chip-tt { background: #000; border: 1px solid rgba(255,255,255,0.2); }
+  .chip-x { background: #000; border: 1px solid rgba(255,255,255,0.2); }
+  .chip-rd { background: #FF4500; }
+  .chip-pin { background: #E60023; }
+  .chip-browser { background: var(--bg-surface-high); }
+
+  /* === Filter Bar === */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 16px;
+    gap: 8px;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .filter-tab {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: transparent;
+  }
+
+  .filter-tab.active {
+    background: rgba(39, 201, 63, 0.12);
+    color: var(--accent-green);
+  }
+
+  .filter-spacer { flex: 1; }
+
+  .filter-search {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: var(--bg-surface);
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: 12px;
+    min-width: 200px;
+  }
+
+  .filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .filter-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 18px;
+  }
+
+  .filter-icon.active {
+    color: var(--text-primary);
+    background: var(--bg-surface);
+  }
+
+  /* === Video Grid === */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 0 20px 20px;
+    overflow: hidden;
+  }
+
+  .video-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: default;
+  }
+
+  .video-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-surface);
+  }
+
+  .video-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .thumb-duration {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background: rgba(0,0,0,0.8);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+  }
+
+  .thumb-platform {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 900;
+    color: white;
+  }
+
+  .thumb-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .thumb-progress-bar {
+    height: 100%;
+    background: var(--accent-crimson);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .video-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .video-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .video-status {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent-green);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .video-status .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-green);
+  }
+
+  .video-status.downloading {
+    color: var(--accent-crimson);
+  }
+
+  .video-status.downloading .dot {
+    background: var(--accent-crimson);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .video-size {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* === Right Sidebar === */
+  .sidebar {
+    width: 280px;
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border-subtle);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .sidebar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .sidebar-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sidebar-title .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-green);
+  }
+
+  .quick-start-text {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .quick-start-text .material-symbols-outlined {
+    font-size: 16px;
+    color: var(--accent-crimson);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .shortcut-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+  }
+
+  .shortcut-row .material-symbols-outlined {
+    font-size: 16px;
+    color: var(--text-muted);
+  }
+
+  .shortcut-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    flex: 1;
+  }
+
+  .shortcut-keys {
+    display: flex;
+    gap: 3px;
+  }
+
+  .key {
+    padding: 2px 6px;
+    background: var(--bg-surface-high);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+    min-width: 22px;
+    text-align: center;
+  }
+
+  /* Sidebar Preview */
+  .sidebar-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    gap: 12px;
+  }
+
+  .preview-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--text-muted);
+    opacity: 0.3;
+  }
+
+  .preview-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* Session Pulse */
+  .pulse-stats {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .pulse-highlight {
+    color: var(--accent-green);
+    font-weight: 700;
+  }
+
+  /* Storage */
+  .storage-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .storage-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  /* Commands */
+  .commands-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--bg-surface-high);
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .commands-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .commands-key {
+    display: flex;
+    gap: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="window">
+  <!-- Title Bar -->
+  <div class="titlebar">
+    <div class="traffic-lights">
+      <div class="traffic-light tl-close"></div>
+      <div class="traffic-light tl-minimize"></div>
+      <div class="traffic-light tl-maximize"></div>
+    </div>
+    <div class="top-nav">
+      <div class="nav-logo">
+        <div class="nav-logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <span class="nav-logo-text">SSvid</span>
+      </div>
+      <div class="nav-item active">
+        <span class="material-symbols-outlined">download</span>
+        Home
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined">smart_display</span>
+        YouTube
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined">subscriptions</span>
+        Subscriptions
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined">swap_horiz</span>
+        Converter
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined">language</span>
+        Browser
+      </div>
+      <div class="nav-spacer"></div>
+      <div class="nav-right">
+        <div class="nav-item">
+          <span class="material-symbols-outlined">support_agent</span>
+          Support
+        </div>
+        <div class="nav-item">
+          <span class="material-symbols-outlined">auto_awesome</span>
+          AI Assistant
+        </div>
+        <div class="nav-item" style="color: var(--accent-crimson);">
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+          Premium
+        </div>
+        <div class="nav-icon-btn notification-badge">
+          <span class="material-symbols-outlined" style="font-size:20px;">notifications</span>
+        </div>
+        <div class="nav-icon-btn">
+          <span class="material-symbols-outlined" style="font-size:20px;">settings</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-area">
+    <div class="content">
+      <!-- URL Input Bar -->
+      <div class="url-bar">
+        <span class="material-symbols-outlined url-bar-icon">link</span>
+        <input type="text" placeholder="Paste the video URL and choose the format to convert" readonly>
+        <div class="url-bar-actions">
+          <div class="url-icon-btn"><span class="material-symbols-outlined">schedule</span></div>
+          <div class="url-icon-btn"><span class="material-symbols-outlined">tune</span></div>
+          <button class="start-btn">
+            <span class="material-symbols-outlined">download</span>
+            Start
+          </button>
+        </div>
+      </div>
+
+      <!-- Quota Bar -->
+      <div class="quota-bar">
+        <span class="material-symbols-outlined" style="font-size:14px;">download</span>
+        <div class="quota-dots">
+          <div class="quota-dot"></div><div class="quota-dot"></div><div class="quota-dot"></div>
+          <div class="quota-dot"></div><div class="quota-dot"></div><div class="quota-dot"></div>
+          <div class="quota-dot"></div><div class="quota-dot"></div><div class="quota-dot"></div>
+          <div class="quota-dot"></div><div class="quota-dot"></div><div class="quota-dot"></div>
+          <div class="quota-dot"></div><div class="quota-dot"></div><div class="quota-dot"></div>
+        </div>
+        <span class="quota-text">15/15 remaining today</span>
+        <span class="quota-spacer"></span>
+        <span class="quota-badge">Free</span>
+      </div>
+
+      <!-- Sub Navigation -->
+      <div class="sub-nav">
+        <div class="sub-nav-item active">
+          <span class="material-symbols-outlined">search</span>
+          Search Videos
+        </div>
+        <div class="sub-nav-item">
+          <span class="material-symbols-outlined">playlist_play</span>
+          Browse Playlists
+        </div>
+        <div class="sub-nav-item">
+          <span class="material-symbols-outlined">people</span>
+          Channels
+        </div>
+      </div>
+
+      <!-- Platform Chips -->
+      <div class="platform-chips">
+        <div class="chip active">
+          <div class="chip-icon chip-yt">▶</div>
+          YouTube
+        </div>
+        <div class="chip">
+          <div class="chip-icon chip-fb">f</div>
+          Facebook
+        </div>
+        <div class="chip active-alt">
+          <div class="chip-icon chip-ig">◉</div>
+          Instagram
+        </div>
+        <div class="chip">
+          <div class="chip-icon chip-tt">♪</div>
+          TikTok
+        </div>
+        <div class="chip">
+          <div class="chip-icon chip-x">𝕏</div>
+          X
+        </div>
+        <div class="chip">
+          <div class="chip-icon chip-rd">⬆</div>
+          Reddit
+        </div>
+        <div class="chip">
+          <div class="chip-icon chip-pin">📌</div>
+          Pinterest
+        </div>
+        <div class="chip">
+          <div class="chip-icon chip-browser">🌐</div>
+          Browser
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-tabs">
+          <div class="filter-tab active">All</div>
+          <div class="filter-tab">Video</div>
+          <div class="filter-tab">Audio</div>
+          <div class="filter-tab">Images</div>
+        </div>
+        <span class="filter-spacer"></span>
+        <div class="filter-search">
+          <span class="material-symbols-outlined" style="font-size:14px;">search</span>
+          Search downloads by name...
+        </div>
+        <div class="filter-actions">
+          <div class="filter-icon"><span class="material-symbols-outlined">filter_list</span></div>
+          <div class="filter-icon"><span class="material-symbols-outlined">swap_vert</span></div>
+          <div class="filter-icon"><span class="material-symbols-outlined">view_list</span></div>
+          <div class="filter-icon active"><span class="material-symbols-outlined">grid_view</span></div>
+          <div class="filter-icon"><span class="material-symbols-outlined">more_horiz</span></div>
+        </div>
+      </div>
+
+      <!-- Video Grid -->
+      <div class="video-grid">
+        <!-- Row 1 -->
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/3052361/pexels-photo-3052361.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform chip-yt">▶</div>
+            <div class="thumb-duration">11:01</div>
+          </div>
+          <div class="video-title">Tokyo Night Walk — Shibuya to Shinjuku</div>
+          <div class="video-meta">
+            <div class="video-status"><span class="dot"></span> Completed</div>
+            <span class="video-size">245.8 MB · MP4</span>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform chip-yt">▶</div>
+            <div class="thumb-duration">17:20</div>
+          </div>
+          <div class="video-title">How AI Is Changing Creative Work</div>
+          <div class="video-meta">
+            <div class="video-status"><span class="dot"></span> Completed</div>
+            <span class="video-size">89.94 MB · MKV</span>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform" style="background:linear-gradient(135deg,#f9ce34,#ee2a7b,#6228d7);">◉</div>
+            <div class="thumb-duration">5:16</div>
+          </div>
+          <div class="video-title">Sunset Festival — Live Performance 4K</div>
+          <div class="video-meta">
+            <div class="video-status"><span class="dot"></span> Completed</div>
+            <span class="video-size">7.87 MB · MP3</span>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform chip-yt">▶</div>
+            <div class="thumb-duration">22:45</div>
+            <div class="thumb-progress"><div class="thumb-progress-bar" style="width:73%"></div></div>
+          </div>
+          <div class="video-title">Gordon's Ultimate Cooking Masterclass</div>
+          <div class="video-meta">
+            <div class="video-status downloading"><span class="dot"></span> Downloading 73%</div>
+            <span class="video-size">53.79 MB · MP4</span>
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/1629236/pexels-photo-1629236.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform chip-yt">▶</div>
+            <div class="thumb-duration">8:33</div>
+          </div>
+          <div class="video-title">Iceland — Land of Fire and Ice 4K</div>
+          <div class="video-meta">
+            <div class="video-status"><span class="dot"></span> Completed</div>
+            <span class="video-size">1.24 GB · MP4</span>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform" style="background:#000;border:1px solid rgba(255,255,255,0.2);">♪</div>
+            <div class="thumb-duration">3:42</div>
+          </div>
+          <div class="video-title">Clean Code in 100 Seconds</div>
+          <div class="video-meta">
+            <div class="video-status"><span class="dot"></span> Completed</div>
+            <span class="video-size">12.55 MB · MP4</span>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/2558605/pexels-photo-2558605.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform" style="background:#000;border:1px solid rgba(255,255,255,0.2);">𝕏</div>
+            <div class="thumb-duration">15:37</div>
+          </div>
+          <div class="video-title">How Wolves Changed Yellowstone</div>
+          <div class="video-meta">
+            <div class="video-status"><span class="dot"></span> Completed</div>
+            <span class="video-size">340.04 MB · MP4</span>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform chip-yt">▶</div>
+            <div class="thumb-duration">45:12</div>
+          </div>
+          <div class="video-title">Milky Way Timelapse — 8K HDR</div>
+          <div class="video-meta">
+            <div class="video-status"><span class="dot"></span> Completed</div>
+            <span class="video-size">2.71 GB · MKV</span>
+          </div>
+        </div>
+
+        <!-- Row 3 (partial, peeking) -->
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/2325447/pexels-photo-2325447.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform" style="background:#FF4500;">⬆</div>
+            <div class="thumb-duration">6:18</div>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform chip-yt">▶</div>
+            <div class="thumb-duration">28:44</div>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform" style="background:linear-gradient(135deg,#f9ce34,#ee2a7b,#6228d7);">◉</div>
+            <div class="thumb-duration">1:30</div>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <div class="video-thumb">
+            <img src="https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=600" alt="">
+            <div class="thumb-platform" style="background:#000;border:1px solid rgba(255,255,255,0.2);">♪</div>
+            <div class="thumb-duration">4:15</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title"><span class="dot"></span> Quick Start</div>
+        <div class="quick-start-text">
+          <span class="material-symbols-outlined">play_circle</span>
+          <span>Paste the video URL and choose the format to convert</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Keyboard Shortcuts</div>
+        <div class="shortcut-row">
+          <span class="material-symbols-outlined">add</span>
+          <span class="shortcut-label">New</span>
+          <div class="shortcut-keys">
+            <span class="key">⌘</span>
+            <span class="key">+</span>
+            <span class="key">N</span>
+          </div>
+        </div>
+        <div class="shortcut-row">
+          <span class="material-symbols-outlined">search</span>
+          <span class="shortcut-label">Search</span>
+          <div class="shortcut-keys">
+            <span class="key">⌘</span>
+            <span class="key">+</span>
+            <span class="key">F</span>
+          </div>
+        </div>
+        <div class="shortcut-row">
+          <span class="material-symbols-outlined">settings</span>
+          <span class="shortcut-label">Settings</span>
+          <div class="shortcut-keys">
+            <span class="key">⌘</span>
+            <span class="key">+</span>
+            <span class="key">,</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-preview">
+          <svg class="preview-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <div class="preview-text">Select a download to view details</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Session Pulse</div>
+        <div class="pulse-stats">
+          1 active · <span class="pulse-highlight">847 completed</span> · 12.4 GB today
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="storage-row">
+          <div class="sidebar-title">Storage</div>
+          <div class="storage-value">156.7 GB</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="commands-row">
+          <span class="commands-label">Commands</span>
+          <div class="commands-key">
+            <span class="key">⌘</span>
+            <span class="key">K</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

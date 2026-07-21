@@ -1,0 +1,122 @@
+      <div class="pricing-grid pricing-grid-4col">
+        <div class="price-card reveal stagger-1">
+          <div class="price-header">
+            <h3>{{t.pricing.freeTitle}}</h3>
+            <p class="price-desc">{{t.pricing.freeDesc}}</p>
+          </div>
+          <div class="price-amount">
+            <span class="price-value">$0</span>
+            <span class="price-period">{{t.pricing.freePeriod}}</span>
+          </div>
+          <p class="price-devices">No signup required</p>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.freeFeature1}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.freeFeature2}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.freeFeature3}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.freeFeature4}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.freeFeature5}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.freeFeature6}}</li>
+          </ul>
+          <a href="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-macos-universal.dmg" class="btn btn-outline btn-block" id="free-download-btn" data-mac="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-macos-universal.dmg" data-win="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-windows-x64-setup.exe" data-linux="https://ssvid.app/downloads/SSvid-linux-x64.AppImage">
+            <span id="free-download-label">{{t.pricing.freeBtn}}</span>
+          </a>
+        </div>
+
+        <div class="price-card reveal stagger-2">
+          <div class="price-header">
+            <h3>{{t.pricing.premiumTitle}}</h3>
+            <p class="price-desc">{{t.pricing.premiumDesc}}</p>
+          </div>
+          <div class="price-amount">
+            <span class="price-value">$7.99</span>
+            <span class="price-period">/month</span>
+          </div>
+          <p class="price-devices">{{t.pricing.premiumDevices}}</p>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature1}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature2}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature3}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature4}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature5}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature6}}</li>
+          </ul>
+          <button class="btn btn-primary btn-block checkout-btn" data-plan="monthly" data-loading-label="{{t.pricing.redirecting}}" onclick="startCheckout(this)">Get Monthly</button>
+        </div>
+
+        <div class="price-card recommended reveal stagger-3">
+          <div class="price-ribbon">Best value</div>
+          <div class="price-header">
+            <h3>Yearly</h3>
+            <p class="price-desc">{{t.pricing.premiumDesc}}</p>
+          </div>
+          <div class="price-amount">
+            <span class="price-value">$29.99</span>
+            <span class="price-period">/year</span>
+          </div>
+          <p class="price-devices">{{t.pricing.premiumDevices}}</p>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature1}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature2}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature3}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature4}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature5}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature6}}</li>
+          </ul>
+          <button class="btn btn-primary btn-block checkout-btn" data-plan="yearly" data-loading-label="{{t.pricing.redirecting}}" onclick="startCheckout(this)">Get Yearly</button>
+        </div>
+
+        <div class="price-card reveal stagger-4">
+          <div class="price-header">
+            <h3>Lifetime</h3>
+            <p class="price-desc">Pay once, forever</p>
+          </div>
+          <div class="price-amount">
+            <span class="price-value">$89.99</span>
+            <span class="price-period">one time</span>
+          </div>
+          <p class="price-devices">{{t.pricing.premiumDevices}}</p>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature1}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature2}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature3}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature4}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature5}}</li>
+            <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>{{t.pricing.premiumFeature6}}</li>
+          </ul>
+          <button class="btn btn-primary btn-block checkout-btn" data-plan="lifetime" data-loading-label="{{t.pricing.redirecting}}" onclick="startCheckout(this)">Buy Lifetime</button>
+        </div>
+      </div>
+
+      <div class="checkout-reassurance reveal">
+        <span class="checkout-reassurance-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          {{t.pricing.checkoutPoint1}}
+        </span>
+        <span class="checkout-reassurance-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 8h16"/><path d="M8 4v4"/></svg>
+          {{t.pricing.checkoutPoint2}}
+        </span>
+        <span class="checkout-reassurance-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <a href="/account.html">{{t.pricing.checkoutAccount}}</a>
+          <span aria-hidden="true">&middot;</span>
+          <a href="/restore.html">{{t.pricing.checkoutRestore}}</a>
+        </span>
+      </div>
+
+      <div class="pricing-trust reveal">
+        <div class="pricing-trust-items">
+          <span class="pricing-trust-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+            {{t.pricing.trustGuarantee}}
+          </span>
+          <span class="pricing-trust-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            {{t.pricing.trustStripe}}
+          </span>
+          <span class="pricing-trust-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            {{t.pricing.trustEncrypted}}
+          </span>
+        </div>
+      </div>

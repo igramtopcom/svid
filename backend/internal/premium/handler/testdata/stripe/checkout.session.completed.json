@@ -1,0 +1,18 @@
+{
+  "id": "evt_test_checkout_completed",
+  "type": "checkout.session.completed",
+  "data": {
+    "object": {
+      "id": "cs_test_completed",
+      "payment_status": "paid",
+      "customer": "cus_test_completed",
+      "subscription": "sub_test_completed",
+      "payment_intent": "pi_test_checkout",
+      "amount_total": 4188,
+      "currency": "usd",
+      "customer_details": {
+        "email": "buyer@example.com"
+      }
+    }
+  }
+}

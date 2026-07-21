@@ -1,0 +1,15 @@
+{
+  "id": "evt_test_dispute_created_empty_pi",
+  "type": "charge.dispute.created",
+  "data": {
+    "object": {
+      "id": "dp_test_empty_pi",
+      "charge": "ch_test_charge_only",
+      "payment_intent": "",
+      "status": "warning_needs_response",
+      "amount": 4188,
+      "currency": "usd",
+      "reason": "fraudulent"
+    }
+  }
+}

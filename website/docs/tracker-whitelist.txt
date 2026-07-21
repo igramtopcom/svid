@@ -1,0 +1,2 @@
+# One allowed substring per line.
+# Keep empty unless a privacy-reviewed tracker is explicitly approved.

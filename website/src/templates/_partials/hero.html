@@ -1,0 +1,183 @@
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-orbs" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot" aria-hidden="true"></span>
+          v{{build.version}} — {{t.hero.badge}}
+        </div>
+        <h1>{{t.hero.title1}} <span class="text-gradient">{{t.hero.titleGradient}}</span></h1>
+        <p class="hero-subtitle">
+          {{t.hero.subtitle}}
+        </p>
+        <div class="hero-actions">
+          <a href="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-macos-universal.dmg" class="btn btn-primary btn-lg" id="download-btn" data-mac="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-macos-universal.dmg" data-win="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-windows-x64-setup.exe" data-linux="https://ssvid.app/downloads/SSvid-linux-x64.AppImage">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span class="download-info">
+              <span class="download-main" id="download-label">{{t.hero.downloadBtn}}</span>
+              <span class="download-meta" id="download-meta">{{t.hero.downloadMeta}}</span>
+            </span>
+          </a>
+          <a href="#pricing" class="btn-text-link">{{t.hero.viewPricing}} <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div class="hero-social-proof">
+          <span class="proof-text">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--color-primary)" stroke-width="2" style="vertical-align:-3px"><polyline points="20 6 9 17 4 12"/></svg>
+            {{t.hero.socialProof}}
+          </span>
+          <span class="proof-text proof-live" style="display:none">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:-3px"><path d="M12 .587l3.668 7.568L24 9.306l-6 5.966 1.41 8.394L12 19.187l-7.41 4.479L6 15.272 0 9.306l8.332-1.151z"/></svg>
+            <span id="github-stars">0</span> stars on GitHub
+          </span>
+        </div>
+        <div class="trust-badges">
+          <span class="trust-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            {{t.hero.trustNoTracking}}
+          </span>
+          <span class="trust-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            {{t.hero.trustVirusFree}}
+          </span>
+          <span class="trust-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg>
+            {{t.hero.trustOpenSource}}
+          </span>
+        </div>
+        <div class="hero-platforms">
+          <a href="/download" class="platform-label">{{t.hero.alsoAvailable}}</a>
+          <a href="download/macos" class="platform-link" id="alt-mac">macOS</a>
+          <span class="platform-sep">&middot;</span>
+          <a href="download/windows" class="platform-link" id="alt-win">Windows</a>
+          <span class="platform-sep">&middot;</span>
+          <a href="download/linux" class="platform-link" id="alt-linux">Linux</a>
+        </div>
+      </div>
+
+      <!-- Desktop: Animated app mockup (no video file — pure DOM animation) -->
+      <div class="hero-visual hero-visual-desktop">
+        <div class="hero-mockup" role="img" aria-label="SSvid app demo showing URL paste, quality selection, downloading, and library view">
+          <!-- macOS window chrome -->
+          <div class="mockup-chrome">
+            <div class="mockup-dots" aria-hidden="true">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <span class="mockup-app-title">SSvid</span>
+          </div>
+          <!-- Top navigation (matches real app) -->
+          <div class="mockup-nav" aria-hidden="true">
+            <span class="mockup-nav-tab is-active" data-tab="home">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              Home
+            </span>
+            <span class="mockup-nav-tab" data-tab="library">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Library
+            </span>
+            <span class="mockup-nav-tab" data-tab="browser">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg>
+              Browser
+            </span>
+          </div>
+          <!-- Animated scene viewport -->
+          <div class="mockup-viewport">
+            <!-- Scene 1: Paste URL -->
+            <div class="mockup-scene is-active" data-scene="url">
+              <div class="mockup-urlbar">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <span class="mockup-typed" id="hero-typed"></span><span class="mockup-caret"></span>
+              </div>
+              <p class="mockup-placeholder">Paste any video URL to start downloading</p>
+            </div>
+            <!-- Scene 2: Quality select -->
+            <div class="mockup-scene" data-scene="quality">
+              <div class="mockup-media-row">
+                <div class="mockup-media-thumb"></div>
+                <div>
+                  <div class="mockup-media-title">4K Travel Vlog — Tokyo Streets</div>
+                  <div class="mockup-media-channel">@TravelVibes · YouTube · 12:34</div>
+                </div>
+              </div>
+              <div class="mockup-formats">
+                <div class="mockup-fmt-row">
+                  <span class="mockup-fmt-badge badge-4k">4K</span>
+                  <span class="mockup-fmt-info">2160p · MP4 · 847 MB</span>
+                </div>
+                <div class="mockup-fmt-row is-selected">
+                  <span class="mockup-fmt-badge badge-hd">HD</span>
+                  <span class="mockup-fmt-info">1080p · MP4 · 312 MB</span>
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="mockup-fmt-row">
+                  <span class="mockup-fmt-badge">720p</span>
+                  <span class="mockup-fmt-info">MP4 · 156 MB</span>
+                </div>
+              </div>
+            </div>
+            <!-- Scene 3: Downloading -->
+            <div class="mockup-scene" data-scene="download">
+              <div class="mockup-dl-card">
+                <div class="mockup-dl-head">
+                  <span class="mockup-dl-filename">Tokyo Streets.mp4</span>
+                  <span class="mockup-dl-rate" id="hero-dl-rate">0 MB/s</span>
+                </div>
+                <div class="mockup-dl-track">
+                  <div class="mockup-dl-fill" id="hero-dl-fill"></div>
+                </div>
+                <div class="mockup-dl-foot">
+                  <span>1080p · MP4</span>
+                  <span class="mockup-dl-pct" id="hero-dl-pct">0%</span>
+                </div>
+              </div>
+              <div class="mockup-dl-card is-queued">
+                <div class="mockup-dl-head">
+                  <span class="mockup-dl-filename">Cooking Tutorial.mp4</span>
+                  <span class="mockup-dl-rate">Queued</span>
+                </div>
+                <div class="mockup-dl-track"><div class="mockup-dl-fill"></div></div>
+              </div>
+            </div>
+            <!-- Scene 4: Library -->
+            <div class="mockup-scene" data-scene="library">
+              <div class="mockup-lib-grid">
+                <div class="mockup-lib-item" style="--h:350"><div class="mockup-lib-img"></div><span class="mockup-lib-name">Tokyo Streets</span><span class="mockup-lib-sub">12:34 · 1080p</span></div>
+                <div class="mockup-lib-item" style="--h:210"><div class="mockup-lib-img"></div><span class="mockup-lib-name">Ocean Waves</span><span class="mockup-lib-sub">8:21 · 4K</span></div>
+                <div class="mockup-lib-item" style="--h:140"><div class="mockup-lib-img"></div><span class="mockup-lib-name">Cooking Show</span><span class="mockup-lib-sub">22:15 · 1080p</span></div>
+                <div class="mockup-lib-item" style="--h:30"><div class="mockup-lib-img"></div><span class="mockup-lib-name">Guitar Lesson</span><span class="mockup-lib-sub">15:42 · 720p</span></div>
+                <div class="mockup-lib-item" style="--h:270"><div class="mockup-lib-img"></div><span class="mockup-lib-name">Space Doc</span><span class="mockup-lib-sub">45:10 · 4K</span></div>
+                <div class="mockup-lib-item" style="--h:180"><div class="mockup-lib-img"></div><span class="mockup-lib-name">Cat Compilation</span><span class="mockup-lib-sub">3:28 · 1080p</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <noscript>
+          <picture class="hero-app-screenshot">
+            <source srcset="/hero-app.avif 1440w, /hero-app-2x.avif 2880w" type="image/avif">
+            <source srcset="/hero-app.webp 1440w, /hero-app-2x.webp 2880w" type="image/webp">
+            <img src="/hero-app-2x.png" width="1440" height="900" alt="SSvid desktop app" loading="eager">
+          </picture>
+        </noscript>
+      </div>
+
+      <!-- Mobile: Floating download card stack -->
+      <div class="hero-visual hero-visual-mobile">
+        <picture class="hero-cards-image">
+          <source srcset="/hero-mobile-cards.avif 390w, /hero-mobile-cards-2x.avif 780w" type="image/avif" sizes="300px">
+          <source srcset="/hero-mobile-cards.webp 390w, /hero-mobile-cards-2x.webp 780w" type="image/webp" sizes="300px">
+          <img src="/hero-mobile-cards-2x.png"
+            srcset="/hero-mobile-cards.png 390w, /hero-mobile-cards-2x.png 780w"
+            sizes="300px"
+            width="390" height="420"
+            alt="SSvid download cards showing videos from YouTube, TikTok and Instagram"
+            fetchpriority="high" decoding="async">
+        </picture>
+      </div>
+    </div>
+  </section>

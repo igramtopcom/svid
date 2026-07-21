@@ -1,0 +1,6 @@
+// VidCombo brand configuration — Arctic Command
+PRODUCT_NAME = vidcombo
+PRODUCT_BUNDLE_IDENTIFIER = com.tinasoft.vidcombo
+PRODUCT_COPYRIGHT = Copyright © 2026 VidCombo. All rights reserved.
+BRAND_DISPLAY_NAME = VidCombo
+BRAND_URL_SCHEME = vidcombo

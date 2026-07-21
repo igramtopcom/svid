@@ -1,0 +1,128 @@
+<!--@page
+title: Download SSvid for macOS, Windows, Linux, iPhone, and Android
+description: Choose the right SSvid build for macOS, Windows, Linux, iPhone, or Android. Direct desktop releases, mobile install links, and versioned download pages.
+keywords: ssvid download, download ssvid, ssvid macos, ssvid windows, ssvid linux, ssvid iphone, ssvid android
+canonical: /download
+-->
+<!DOCTYPE html>
+<html lang="{{lang.code}}" dir="{{lang.dir}}" data-theme="dark">
+<head>
+{{> head_sub}}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ssvid.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Download", "item": "https://ssvid.app/download" }
+    ]
+  }
+  </script>
+</head>
+<body>
+{{> nav_sub}}
+
+  <main>
+    <div class="container breadcrumb">
+      <a href="/">Home</a><span class="sep">/</span><span>Download</span>
+    </div>
+
+    <section class="dl-hero">
+      <div class="container">
+        <h1>Download <span class="text-gradient">SSvid</span></h1>
+        <p class="subtitle">Choose the right build for your device. Desktop releases come from GitHub Releases, and each desktop page includes version, release date, and checksum details.</p>
+        <div class="download-hub-version">
+          <span>v{{build.version}}</span>
+          <span>Released {{build.releaseDate}}</span>
+          <span>Desktop + mobile support</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="dl-features">
+      <div class="container">
+        <div class="download-hub-grid">
+          <article class="feature-card download-hub-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6c0-1.657-1.79-3-4-3s-4 1.343-4 3c0 1.238 1.014 2.301 2.455 2.769C10.978 10.187 10 11.464 10 13c0 1.657 1.79 3 4 3s4-1.343 4-3c0-1.238-1.014-2.301-2.455-2.769C17.022 8.813 18 7.536 18 6z"/><path d="M8 3c-2.21 0-4 1.343-4 3 0 1.657 1.79 3 4 3"/></svg>
+            </div>
+            <h3>macOS</h3>
+            <p>Signed and notarized desktop build for Apple Silicon and Intel Macs.</p>
+            <div class="download-hub-meta">
+              <span>Direct release</span>
+              <span>Apple Silicon + Intel</span>
+            </div>
+            <div class="download-hub-actions">
+              <a href="/download/macos" class="btn btn-primary">View macOS download</a>
+            </div>
+          </article>
+
+          <article class="feature-card download-hub-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>
+            </div>
+            <h3>Windows</h3>
+            <p>Installer and portable options for Windows 10 and 11.</p>
+            <div class="download-hub-meta">
+              <span>.exe + .zip</span>
+              <span>64-bit</span>
+            </div>
+            <div class="download-hub-actions">
+              <a href="/download/windows" class="btn btn-primary">View Windows download</a>
+            </div>
+          </article>
+
+          <article class="feature-card download-hub-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-6 0v4"/><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M9 14h.01"/><path d="M15 14h.01"/></svg>
+            </div>
+            <h3>Linux</h3>
+            <p>AppImage release for Ubuntu, Fedora, Debian, Arch, and other x86_64 distros.</p>
+            <div class="download-hub-meta">
+              <span>AppImage</span>
+              <span>No root required</span>
+            </div>
+            <div class="download-hub-actions">
+              <a href="/download/linux" class="btn btn-primary">View Linux download</a>
+            </div>
+          </article>
+
+          <article class="feature-card download-hub-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+            </div>
+            <h3>iPhone</h3>
+            <p>Install from the App Store through the VideoGo listing.</p>
+            <div class="download-hub-meta">
+              <span>App Store</span>
+              <span>iPhone</span>
+            </div>
+            <div class="download-hub-actions">
+              <a href="https://apps.apple.com/app/videogo-media-organizer/id6756922046" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open App Store</a>
+            </div>
+          </article>
+
+          <article class="feature-card download-hub-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 16V8a7 7 0 0 1 14 0v8"/><path d="M8 16h8"/><path d="M12 16v4"/></svg>
+            </div>
+            <h3>Android</h3>
+            <p>Direct APK download for Android devices and ChromeOS installs that support Android apps.</p>
+            <div class="download-hub-meta">
+              <span>v1.0.8 APK</span>
+              <span>Direct download</span>
+            </div>
+            <div class="download-hub-actions">
+              <a href="https://github.com/mydinh-studio/ssvid-releases/releases/download/v1.0.8/SSvid-android.apk" class="btn btn-primary">Download Android APK</a>
+            </div>
+          </article>
+        </div>
+
+        <p class="download-hub-note">Need checksums, release notes, or install guidance? Use the desktop download pages above for platform-specific details.</p>
+      </div>
+    </section>
+  </main>
+
+{{> footer_sub}}
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!--@page
+ title: {{copy.title}}
+ description: {{copy.description}}
+keywords: video downloader Windows, PC video downloader, YouTube downloader Windows, TikTok downloader PC, SSvid Windows, download videos Windows
+canonical: /download/windows
+-->
+<!DOCTYPE html>
+<html lang="{{lang.code}}" dir="{{lang.dir}}" data-theme="dark">
+<head>
+{{> head_sub}}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SSvid for Windows",
+    "operatingSystem": "Windows 10, Windows 11",
+    "applicationCategory": "MultimediaApplication",
+    "url": "https://ssvid.app/download/windows",
+    "downloadUrl": "https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-windows-x64-setup.exe",
+    "softwareVersion": "{{build.version}}",
+    "fileSize": "40MB",
+    "softwareRequirements": "Windows 10 (64-bit, 1809+) or Windows 11, 200 MB disk space, WebView2 Runtime",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Organization", "name": "Downloader Software" },
+    "datePublished": "2026-04-16",
+    "image": "https://ssvid.app/og-image.png"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ssvid.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Download", "item": "https://ssvid.app/download/windows" },
+      { "@type": "ListItem", "position": 3, "name": "Windows" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "{{t.dl.windows.faq1Q}}", "acceptedAnswer": { "@type": "Answer", "text": "{{t.dl.windows.faq1A}}" } },
+      { "@type": "Question", "name": "{{t.dl.windows.faq2Q}}", "acceptedAnswer": { "@type": "Answer", "text": "{{t.dl.windows.faq2A}}" } },
+      { "@type": "Question", "name": "{{t.dl.windows.faq3Q}}", "acceptedAnswer": { "@type": "Answer", "text": "{{t.dl.windows.faq3A}}" } },
+      { "@type": "Question", "name": "{{t.dl.windows.faq5Q}}", "acceptedAnswer": { "@type": "Answer", "text": "{{t.dl.windows.faq5A}}" } }
+    ]
+  }
+  </script>
+</head>
+<body>
+{{> nav_sub}}
+
+  <main>
+    <div class="container breadcrumb">
+      <a href="/">{{t.dl.breadcrumbHome}}</a><span class="sep">/</span><span>{{t.dl.windows.breadcrumb}}</span>
+    </div>
+
+    <section class="dl-hero">
+      <div class="container">
+        <h1>{{t.dl.windows.heroTitle}}</h1>
+        <p class="subtitle">{{copy.heroSubtitle}}</p>
+        <div class="dl-btn-group">
+          <a href="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-windows-x64-setup.exe" class="btn btn-primary btn-lg">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            {{t.dl.windows.downloadBtn}}
+          </a>
+          <p class="dl-meta">v{{build.version}}<span>&middot;</span>{{t.dl.free}}<span>&middot;</span>.exe installer<span>&middot;</span>~40 MB<span>&middot;</span>{{t.dl.windows.arch}}{{#if lang.isDefault}}<span>&middot;</span>Released {{build.releaseDate}}{{/if}}</p>
+          <p class="dl-alt-link">{{t.dl.windows.altLink}} <a href="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-windows-x64.zip">{{t.dl.windows.altLinkAction}}</a></p>
+        </div>
+        <div class="trust-badges" style="margin-top:24px;justify-content:center">
+          <span class="trust-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            {{t.dl.trustVirusFree}}
+          </span>
+          <span class="trust-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            {{t.dl.windows.trustSigned}}
+          </span>
+          <span class="trust-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            {{t.dl.trustMoneyBack}}
+          </span>
+        </div>
+        <div class="other-platforms" style="margin-top:24px">
+          {{t.dl.alsoAvailable}} <a href="/download/macos">macOS</a> and <a href="/download/linux">Linux</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="dl-features">
+      <div class="container">
+        <h2>{{t.dl.windows.builtFor}}</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <h3>{{t.dl.windows.feat1Title}}</h3>
+            <p>{{t.dl.windows.feat1Desc}}</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+            </div>
+            <h3>{{t.dl.windows.feat2Title}}</h3>
+            <p>{{t.dl.windows.feat2Desc}}</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            </div>
+            <h3>{{t.dl.windows.feat3Title}}</h3>
+            <p>{{t.dl.windows.feat3Desc}}</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3>{{t.dl.windows.feat4Title}}</h3>
+            <p>{{t.dl.windows.feat4Desc}}</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            </div>
+            <h3>{{t.dl.windows.feat5Title}}</h3>
+            <p>{{t.dl.windows.feat5Desc}}</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </div>
+            <h3>{{t.dl.windows.feat6Title}}</h3>
+            <p>{{t.dl.windows.feat6Desc}}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dl-requirements">
+      <div class="container">
+        <h2>{{t.dl.sysReq}}</h2>
+        <div class="req-grid">
+          <div class="req-item">
+            <svg class="req-check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <div><strong>{{t.dl.windows.req1Title}}</strong><span>{{t.dl.windows.req1Desc}}</span></div>
+          </div>
+          <div class="req-item">
+            <svg class="req-check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <div><strong>{{t.dl.windows.req2Title}}</strong><span>{{t.dl.windows.req2Desc}}</span></div>
+          </div>
+          <div class="req-item">
+            <svg class="req-check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <div><strong>{{t.dl.windows.req3Title}}</strong><span>{{t.dl.windows.req3Desc}}</span></div>
+          </div>
+          <div class="req-item">
+            <svg class="req-check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <div><strong>{{t.dl.windows.req4Title}}</strong><span>{{t.dl.windows.req4Desc}}</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dl-steps">
+      <div class="container">
+        <h2>{{t.dl.howToInstall}}</h2>
+        <div class="steps-list">
+          <div class="step-item">
+            <div class="step-num"></div>
+            <div>
+              <h3>{{t.dl.windows.step1Title}}</h3>
+              <p>{{t.dl.windows.step1Desc}}</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num"></div>
+            <div>
+              <h3>{{t.dl.windows.step2Title}}</h3>
+              <p>{{t.dl.windows.step2Desc}}</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num"></div>
+            <div>
+              <h3>{{t.dl.windows.step3Title}}</h3>
+              <p>{{t.dl.windows.step3Desc}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dl-faq">
+      <div class="container">
+        <h2>{{t.dl.windows.faqTitle}}</h2>
+        <div class="faq-list">
+          <details>
+            <summary>{{t.dl.windows.faq1Q}}</summary>
+            <div class="faq-answer">{{t.dl.windows.faq1A}}</div>
+          </details>
+          <details>
+            <summary>{{t.dl.windows.faq2Q}}</summary>
+            <div class="faq-answer">{{t.dl.windows.faq2A}}</div>
+          </details>
+          <details>
+            <summary>{{t.dl.windows.faq3Q}}</summary>
+            <div class="faq-answer">{{t.dl.windows.faq3A}}</div>
+          </details>
+          <details>
+            <summary>{{t.dl.windows.faq4Q}}</summary>
+            <div class="faq-answer">{{t.dl.windows.faq4A}}</div>
+          </details>
+          <details>
+            <summary>{{t.dl.windows.faq5Q}}</summary>
+            <div class="faq-answer">{{t.dl.windows.faq5A}}</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="dl-cta">
+      <div class="container">
+        <h2>{{t.dl.readyTitle}}</h2>
+        <p>{{t.dl.ctaSubtitle}}</p>
+        <a href="https://github.com/mydinh-studio/ssvid-releases/releases/latest/download/SSvid-windows-x64-setup.exe" class="btn btn-primary btn-lg">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          {{t.dl.windows.downloadBtn}}
+        </a>
+        <div class="other-platforms" style="margin-top:24px">
+          {{t.dl.alsoAvailable}} <a href="/download/macos">macOS</a> and <a href="/download/linux">Linux</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+{{> footer_sub}}
+</body>
+</html>

@@ -1,0 +1,12 @@
+// Application-level settings for the Runner target.
+//
+// Brand-specific values are loaded from brands/{brand}.xcconfig.
+// Default: SSvid. To build VidCombo, run:
+//   scripts/set_brand.sh vidcombo
+// This copies the brand config here before flutter build.
+
+// Brand identity (overridden by set_brand.sh for non-default brands)
+#include "brands/ssvid.xcconfig"
+
+// Deployment target
+MACOSX_DEPLOYMENT_TARGET = 10.15

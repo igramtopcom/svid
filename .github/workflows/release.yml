@@ -1,0 +1,1156 @@
+name: Release Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.1)'
+        required: true
+        type: string
+      brand:
+        description: 'Brand to build (ssvid, vidcombo, or both)'
+        required: false
+        default: 'ssvid'
+        type: choice
+        options:
+          - ssvid
+          - vidcombo
+          - both
+      dry_run:
+        description: 'Dry run — build/sign/notarize only, NO release publish (no GitHub Release, no public-repo upload, no backend registration, no auto-update fire). Artifacts available as workflow artifacts for 30 days.'
+        required: false
+        default: false
+        type: boolean
+      skip_tests:
+        description: 'Skip Test job (analyze + flutter test). USE ONLY for internal-tester dry-run when codebase has known WIP test fails. NEVER set for production tag-push releases — the Test job is the production quality gate. Tag-push releases ignore this input.'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  FLUTTER_VERSION: '3.29.3'
+  RUST_TOOLCHAIN: 'stable'
+
+jobs:
+  # ===== TEST =====
+  # Test job runs unconditionally for tag-push releases. For
+  # workflow_dispatch, the operator may set skip_tests=true to bypass
+  # this gate when the dispatch is an internal-tester dry-run on a branch
+  # with known WIP test fails. NEVER skip tests for production releases.
+  i18n-gate:
+    name: i18n Leak Gate
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.skip_tests != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run i18n leak gate
+        # See scripts/i18n_leak_gate.py — 4 hard-fail conditions (parity,
+        # hardcoded-new, leakage-drift, protected-namespace regression).
+        # Must pass before release tag dispatch — protects against shipping
+        # an unsynced locale tree to production users.
+        run: python3 scripts/i18n_leak_gate.py
+
+  test:
+    name: Test
+    needs: i18n-gate
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.skip_tests != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+      - name: Run tests
+        run: flutter test --reporter compact
+
+  # ===== Determine brands to build =====
+  setup:
+    name: Setup Build Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      brands: ${{ steps.brands.outputs.brands }}
+    steps:
+      - id: brands
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            BRAND="${{ github.event.inputs.brand }}"
+          else
+            # Tag push (`v*`) defaults to BOTH brands so a single release
+            # tag covers SSvid + VidCombo. Previously hardcoded to "ssvid"
+            # which meant tag pushes silently skipped VidCombo and forced
+            # operators to remember the workflow_dispatch path.
+            BRAND="both"
+          fi
+          if [ "$BRAND" = "both" ]; then
+            echo 'brands=["ssvid","vidcombo"]' >> $GITHUB_OUTPUT
+          else
+            echo "brands=[\"$BRAND\"]" >> $GITHUB_OUTPUT
+          fi
+
+  # ===== macOS =====
+  build-macos:
+    name: Build macOS (${{ matrix.brand }})
+    needs: [i18n-gate, test, setup]
+    # Run when test passes OR was intentionally skipped via skip_tests=true.
+    # Block on actual test failure (production tag-push or skip_tests=false
+    # dispatch). i18n-gate must also be either success or intentionally
+    # skipped via the same skip_tests flag — without this explicit check,
+    # an i18n-gate failure would cascade-skip test, and test==skipped would
+    # silently allow the build to proceed with broken i18n.
+    if: |
+      always() &&
+      (needs.i18n-gate.result == 'success' || needs.i18n-gate.result == 'skipped') &&
+      (needs.test.result == 'success' || needs.test.result == 'skipped') &&
+      needs.setup.result == 'success'
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        brand: ${{ fromJSON(needs.setup.outputs.brands) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Override pubspec version from workflow input
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.version != ''
+        shell: bash
+        run: bash scripts/set_pubspec_version.sh "${{ github.event.inputs.version }}" "${{ github.run_number }}"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: native
+
+      - name: Verify brand assets (fail fast)
+        run: bash scripts/verify_brand_assets.sh ${{ matrix.brand }}
+
+      - name: Set brand config
+        run: bash scripts/set_brand.sh ${{ matrix.brand }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build Rust (release — universal binary)
+        run: |
+          cd native
+          # --features telemetry enables sentry-rust panic + anyhow integration
+          # for production crash visibility. See native/Cargo.toml.
+          cargo build --release --features telemetry --target aarch64-apple-darwin
+          cargo build --release --features telemetry --target x86_64-apple-darwin
+          # Create universal (fat) binary via lipo
+          mkdir -p target/universal-apple-darwin/release
+          lipo -create \
+            target/aarch64-apple-darwin/release/libnative.dylib \
+            target/x86_64-apple-darwin/release/libnative.dylib \
+            -output target/universal-apple-darwin/release/libnative.dylib
+
+      - name: Setup Rust framework
+        run: |
+          # Point build_rust.sh at the universal binary
+          CONFIGURATION=Release RUST_UNIVERSAL=1 bash macos/build_rust.sh
+
+      - name: Pre-fetch CocoaPods + media_kit libmpv (retry-tolerant)
+        # media_kit_libs_macos_video downloads libmpv binaries via a Pod
+        # post-install hook from libs.media-kit.dev. On a fresh CI account
+        # with no Pod cache, a transient network hiccup at that download
+        # leaves the .xcframework empty → SwiftCompile fails with hundreds
+        # of "cannot find 'mpv_*' in scope" errors. Pre-fetch with retry
+        # so the next `flutter build macos` step finds a fully populated
+        # Pod cache instead of triggering the download under build pressure.
+        run: |
+          cd macos
+          for attempt in 1 2 3; do
+            echo "==> Pod install attempt $attempt"
+            if pod install --repo-update; then
+              echo "==> Pod install succeeded on attempt $attempt"
+              break
+            fi
+            if [ "$attempt" = "3" ]; then
+              echo "::error::pod install failed after 3 attempts"
+              exit 1
+            fi
+            echo "==> Pod install failed, retrying after 10s"
+            sleep 10
+          done
+
+          # Verify libmpv .xcframework is non-empty — the silent failure
+          # mode ships an empty xcframework that compiles but loses every
+          # mpv_* symbol. Catch it here, not 5 minutes into SwiftCompile.
+          MPV_FW=$(find Pods -name 'Mpv.xcframework' -type d -o -name 'mpv.xcframework' -type d 2>/dev/null | head -1)
+          if [ -n "$MPV_FW" ]; then
+            HEADERS=$(find "$MPV_FW" -name 'client.h' -o -name 'mpv.h' 2>/dev/null | head -1)
+            if [ -z "$HEADERS" ]; then
+              echo "::error::libmpv xcframework present but missing headers — Pod download is broken"
+              ls -la "$MPV_FW" >&2
+              exit 1
+            fi
+            echo "==> libmpv xcframework verified at: $MPV_FW"
+          else
+            echo "::warning::No mpv.xcframework found — media_kit_libs_macos_video may use a different name; proceeding"
+          fi
+
+      - name: Build Flutter macOS
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          flutter build macos --release \
+            --dart-define=BRAND=${{ matrix.brand }} \
+            --dart-define=SENTRY_DSN="$SENTRY_DSN" \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY"
+
+      - name: Validate macOS signing inputs
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          MACOS_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+        run: |
+          for v in \
+            MACOS_CERTIFICATE \
+            MACOS_CERTIFICATE_PASSWORD \
+            MACOS_SIGNING_IDENTITY \
+            APPLE_ID \
+            APPLE_TEAM_ID \
+            APPLE_APP_PASSWORD; do
+            if [ -z "${!v}" ]; then
+              echo "ERROR: required macOS release secret missing: $v" >&2
+              exit 1
+            fi
+          done
+
+      - name: Import signing certificate
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/signing.keychain-db
+          KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          echo "$MACOS_CERTIFICATE" | base64 --decode > $RUNNER_TEMP/certificate.p12
+          security import $RUNNER_TEMP/certificate.p12 -P "$MACOS_CERTIFICATE_PASSWORD" \
+            -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          rm $RUNNER_TEMP/certificate.p12
+
+      - name: Package DMG (sign + notarize)
+        env:
+          MACOS_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+        run: |
+          bash scripts/package_macos.sh ${{ matrix.brand }}
+
+      - name: Verify macOS artifact metadata
+        run: |
+          case "${{ matrix.brand }}" in
+            ssvid) pattern='SSvid-*-macos-universal.dmg' ;;
+            vidcombo) pattern='VidCombo-*-macos-universal.dmg' ;;
+            *) echo "unknown brand: ${{ matrix.brand }}" >&2; exit 2 ;;
+          esac
+          DMG="$(find dist -maxdepth 1 -name "$pattern" -print -quit)"
+          if [ -z "$DMG" ]; then
+            echo "ERROR: no DMG found for pattern $pattern" >&2
+            find dist -maxdepth 1 -type f -print >&2
+            exit 1
+          fi
+          bash scripts/verify_macos_metadata.sh ${{ matrix.brand }} "$DMG"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.brand }}-macOS
+          path: dist/*-macos-universal.dmg
+          retention-days: 30
+
+  # ===== Windows =====
+  build-windows:
+    name: Build Windows (${{ matrix.brand }})
+    needs: [i18n-gate, test, setup]
+    # Same cascade-skip protection as build-macos — see comment there.
+    if: |
+      always() &&
+      (needs.i18n-gate.result == 'success' || needs.i18n-gate.result == 'skipped') &&
+      (needs.test.result == 'success' || needs.test.result == 'skipped') &&
+      needs.setup.result == 'success'
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        brand: ${{ fromJSON(needs.setup.outputs.brands) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Override pubspec version from workflow input
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.version != ''
+        shell: bash
+        run: bash scripts/set_pubspec_version.sh "${{ github.event.inputs.version }}" "${{ github.run_number }}"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: native
+
+      - name: Verify brand assets (fail fast)
+        shell: bash
+        run: bash scripts/verify_brand_assets.sh ${{ matrix.brand }}
+
+      - name: Set brand config
+        shell: bash
+        run: bash scripts/set_brand.sh ${{ matrix.brand }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build Rust (release)
+        run: |
+          cd native
+          cargo build --release --features telemetry --target x86_64-pc-windows-msvc
+
+      - name: Copy native.dll
+        run: |
+          copy native\target\x86_64-pc-windows-msvc\release\native.dll windows\native.dll
+
+      - name: Build Flutter Windows
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          # Skip crashpad native backend — avoids chromium.googlesource.com rate limit (HTTP 429).
+          # Sentry Dart-level error reporting still works; only native crash handler is disabled.
+          SENTRY_NATIVE_BACKEND: none
+        run: |
+          flutter build windows --release `
+            --dart-define=BRAND=${{ matrix.brand }} `
+            --dart-define=SENTRY_DSN="$env:SENTRY_DSN" `
+            --dart-define=SUPABASE_URL="$env:SUPABASE_URL" `
+            --dart-define=SUPABASE_ANON_KEY="$env:SUPABASE_ANON_KEY"
+
+      - name: Stage unsigned runtime bundle
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/windows-bundle | Out-Null
+          Copy-Item -Recurse build/windows/x64/runner/Release/* dist/windows-bundle/
+
+      - name: Bundle VC++ Runtime DLLs (app-local)
+        shell: pwsh
+        run: |
+          pwsh -NoProfile -File scripts/windows_bundle_vcruntime.ps1 `
+            -BundleDir dist/windows-bundle
+
+      - name: Dependency closure audit
+        shell: pwsh
+        run: |
+          pwsh -NoProfile -File scripts/windows_dependency_closure.ps1 `
+            -BundleDir dist/windows-bundle `
+            -Brand ${{ matrix.brand }}
+
+      - name: Verify Windows Flutter assets
+        shell: bash
+        run: bash scripts/verify_windows_flutter_assets.sh dist/windows-bundle
+
+      - name: Verify Windows runtime metadata
+        shell: pwsh
+        run: |
+          $brand = "${{ matrix.brand }}"
+          $exeName = if ($brand -eq "vidcombo") { "vidcombo.exe" } else { "ssvid.exe" }
+          $exePath = Join-Path "dist/windows-bundle" $exeName
+          ./scripts/verify_windows_metadata.ps1 -Brand $brand -ExePath $exePath
+
+      - name: Bundle smoke (icon + asset gates)
+        shell: pwsh
+        run: |
+          pwsh -NoProfile -File scripts/windows_bundle_smoke.ps1 `
+            -Brand ${{ matrix.brand }} `
+            -Mode Release `
+            -BundleDir dist/windows-bundle `
+            -NoLaunch
+
+      - name: Upload unsigned runtime bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: internal-${{ matrix.brand }}-Windows-bundle-unsigned
+          path: dist/windows-bundle/**
+          retention-days: 1
+
+  # ===== Sign Windows runtime bundle + create signed ZIP =====
+  sign-windows-bundle:
+    name: Sign Windows Bundle (${{ matrix.brand }})
+    needs: [setup, build-windows]
+    # Run when build-windows succeeds. Use !cancelled() instead of the
+    # default success() so a skipped Test job (skip_tests=true dispatch)
+    # does not cascade-skip this job through the implicit dependency chain.
+    if: |
+      !cancelled() &&
+      needs.setup.result == 'success' &&
+      needs.build-windows.result == 'success'
+    runs-on: [self-hosted, macOS, yubikey]
+    env:
+      # No fallback: workflow MUST fail if the PIV slot variable is unset.
+      # Cert algorithm (RSA vs ECC) is gated downstream in
+      # scripts/windows_signing_common.sh + scripts/preflight_yubikey.sh.
+      # Production convention is slot 9c (RSA); set via:
+      #   gh variable set WINDOWS_SIGNING_PIV_SLOT --body 9c
+      YUBIKEY_PIV_SLOT: ${{ vars.WINDOWS_SIGNING_PIV_SLOT }}
+    # Serialize ALL signing runs across the repo so 2 release tags pushed
+    # back-to-back never compete for the single physical YubiKey on this Mac.
+    concurrency:
+      group: yubikey-signer
+      cancel-in-progress: false
+    strategy:
+      # Don't abort the second brand if the first fails on a transient
+      # YubiKey hiccup (touch timeout, USB reset, etc.) — let each brand
+      # try independently so one bad run doesn't block both.
+      fail-fast: false
+      matrix:
+        brand: ${{ fromJSON(needs.setup.outputs.brands) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Override pubspec version from workflow input
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.version != ''
+        shell: bash
+        run: bash scripts/set_pubspec_version.sh "${{ github.event.inputs.version }}" "${{ github.run_number }}"
+
+      - name: Download unsigned runtime bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: internal-${{ matrix.brand }}-Windows-bundle-unsigned
+          path: bundle-unsigned/
+
+      - name: Verify unsigned Windows Flutter assets
+        run: bash scripts/verify_windows_flutter_assets.sh bundle-unsigned
+
+      - name: Enforce PIV slot is configured (no fallback)
+        shell: bash
+        run: |
+          if [ -z "${YUBIKEY_PIV_SLOT}" ]; then
+            echo "::error::WINDOWS_SIGNING_PIV_SLOT repo/org variable is not set."
+            echo "::error::Production releases must explicitly select a PIV slot — no '9a' fallback."
+            echo "::error::Set the variable: gh variable set WINDOWS_SIGNING_PIV_SLOT --body 9c"
+            exit 1
+          fi
+          echo "PIV slot configured: ${YUBIKEY_PIV_SLOT}"
+
+      - name: Pre-flight YubiKey check
+        run: bash scripts/preflight_yubikey.sh
+
+      - name: Sign runtime bundle with YubiKey
+        run: |
+          bash scripts/sign_windows_bundle.sh \
+            bundle-unsigned/ \
+            bundle-signed/ \
+            ${{ matrix.brand }}
+
+      - name: Verify signed Windows Flutter assets
+        run: bash scripts/verify_windows_flutter_assets.sh bundle-signed
+
+      - name: Package signed Windows ZIP
+        run: |
+          bash scripts/package_windows_bundle.sh \
+            bundle-signed/ \
+            dist-signed/ \
+            ${{ matrix.brand }}
+
+      - name: Upload signed runtime bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: internal-${{ matrix.brand }}-Windows-bundle-signed
+          path: bundle-signed/**
+          retention-days: 1
+
+      - name: Upload signed ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: internal-${{ matrix.brand }}-Windows-zip-signed
+          path: dist-signed/*-windows-x64.zip
+          retention-days: 1
+
+  # ===== Build installer from pre-signed Windows bundle =====
+  build-windows-installer:
+    name: Build Windows Installer From Signed Bundle (${{ matrix.brand }})
+    needs: [setup, sign-windows-bundle]
+    if: |
+      !cancelled() &&
+      needs.setup.result == 'success' &&
+      needs.sign-windows-bundle.result == 'success'
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        brand: ${{ fromJSON(needs.setup.outputs.brands) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Override pubspec version from workflow input
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.version != ''
+        shell: bash
+        run: bash scripts/set_pubspec_version.sh "${{ github.event.inputs.version }}" "${{ github.run_number }}"
+
+      - name: Verify brand assets (fail fast)
+        shell: bash
+        run: bash scripts/verify_brand_assets.sh ${{ matrix.brand }}
+
+      - name: Set brand config
+        shell: bash
+        run: bash scripts/set_brand.sh ${{ matrix.brand }}
+
+      - name: Download signed runtime bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: internal-${{ matrix.brand }}-Windows-bundle-signed
+          path: signed-bundle/
+
+      - name: Verify installer input Flutter assets
+        shell: bash
+        run: bash scripts/verify_windows_flutter_assets.sh signed-bundle
+
+      - name: Build Inno Setup installer from signed bundle
+        run: |
+          $pubspec = Get-Content pubspec.yaml -Raw
+          $version = [regex]::Match($pubspec, 'version:\s*(\S+)').Groups[1].Value -replace '\+.*', ''
+          $brand = "${{ matrix.brand }}"
+          $exeName = if ($brand -eq "vidcombo") { "vidcombo.exe" } else { "ssvid.exe" }
+          $exe = Get-ChildItem -Path signed-bundle -Recurse -Filter $exeName | Select-Object -First 1
+          if (-not $exe) {
+            throw "Could not locate $exeName under signed-bundle/"
+          }
+          $bundlePath = $exe.Directory.FullName
+          if ($brand -eq "vidcombo") {
+            iscc /DMyAppVersion="$version" /DMyAppName=VidCombo /DMyAppExeName=vidcombo.exe /DMyAppPublisher=VidCombo "/DMyAppCompany=Bui Xuan Mai" "/DMyAppProductName=VidCombo Desktop" "/DMyAppFileDescription=VidCombo Desktop Installer" "/DMyAppCopyright=Copyright (C) 2026 Bui Xuan Mai. All rights reserved." /DMyAppURL=https://vidcombo.net "/DMyAppId={{C6BC5050-3D98-47F7-8F1E-3DC53963381A}" /DMyUrlScheme=vidcombo "/DMyAppUserModelId=com.tinasoft.vidcombo.desktop" "/DMyBuildSource=$bundlePath" scripts/installer_windows.iss
+          } else {
+            iscc /DMyAppVersion="$version" /DMyAppName=SSvid /DMyAppExeName=ssvid.exe /DMyAppPublisher=SSvid "/DMyAppCompany=Bui Xuan Mai" "/DMyAppProductName=SSvid Desktop" "/DMyAppFileDescription=SSvid Desktop Installer" "/DMyAppCopyright=Copyright (C) 2026 Bui Xuan Mai. All rights reserved." /DMyAppURL=https://ssvid.app /DMyUrlScheme=ssvid "/DMyAppUserModelId=com.ssvid.app" "/DMyBuildSource=$bundlePath" scripts/installer_windows.iss
+          }
+
+      - name: Verify Windows installer metadata
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem -Path dist -Filter "*-windows-x64-setup.exe" | Select-Object -First 1
+          if (-not $installer) {
+            throw "No Windows installer found under dist/"
+          }
+          ./scripts/verify_windows_metadata.ps1 -Brand "${{ matrix.brand }}" -ExePath $installer.FullName -Installer
+
+      - name: Upload unsigned outer installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: internal-${{ matrix.brand }}-Windows-installer-unsigned-outer
+          path: dist/*-windows-x64-setup.exe
+          retention-days: 1
+
+  # ===== Finalize Windows artifacts (outer installer signature + canonical upload) =====
+  sign-windows:
+    name: Finalize Windows (${{ matrix.brand }})
+    needs: [setup, sign-windows-bundle, build-windows-installer]
+    if: |
+      !cancelled() &&
+      needs.setup.result == 'success' &&
+      needs.sign-windows-bundle.result == 'success' &&
+      needs.build-windows-installer.result == 'success'
+    runs-on: [self-hosted, macOS, yubikey]
+    env:
+      # No fallback: workflow MUST fail if the PIV slot variable is unset.
+      # Cert algorithm (RSA vs ECC) is gated downstream in
+      # scripts/windows_signing_common.sh + scripts/preflight_yubikey.sh.
+      # Production convention is slot 9c (RSA); set via:
+      #   gh variable set WINDOWS_SIGNING_PIV_SLOT --body 9c
+      YUBIKEY_PIV_SLOT: ${{ vars.WINDOWS_SIGNING_PIV_SLOT }}
+      WINDOWS_ZIP_PAYLOAD_STATE: presigned
+    concurrency:
+      group: yubikey-signer
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        brand: ${{ fromJSON(needs.setup.outputs.brands) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download signed ZIP artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: internal-${{ matrix.brand }}-Windows-zip-signed
+          path: dist-input/
+
+      - name: Download unsigned outer installer artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: internal-${{ matrix.brand }}-Windows-installer-unsigned-outer
+          path: dist-input/
+
+      - name: Enforce PIV slot is configured (no fallback)
+        shell: bash
+        run: |
+          if [ -z "${YUBIKEY_PIV_SLOT}" ]; then
+            echo "::error::WINDOWS_SIGNING_PIV_SLOT repo/org variable is not set."
+            echo "::error::Production releases must explicitly select a PIV slot — no '9a' fallback."
+            echo "::error::Set the variable: gh variable set WINDOWS_SIGNING_PIV_SLOT --body 9c"
+            exit 1
+          fi
+          echo "PIV slot configured: ${YUBIKEY_PIV_SLOT}"
+
+      - name: Pre-flight YubiKey check
+        run: bash scripts/preflight_yubikey.sh
+
+      - name: Finalize Windows artifacts with YubiKey
+        run: |
+          bash scripts/sign_windows_artifacts.sh \
+            dist-input/ \
+            dist-signed/ \
+            ${{ matrix.brand }}
+
+      - name: Upload signed artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.brand }}-Windows
+          path: dist-signed/*
+          retention-days: 30
+
+  # ===== Windows Installer Execution Smoke =====
+  # Catches the SSvid 1.3.9-class regression where the installer is
+  # Authenticode-valid but Inno's internal data archive CRC is broken —
+  # the wizard pops "The setup files are corrupted" on real user
+  # machines. Authenticode verify in sign-windows passes; only actually
+  # executing the installer detects this. Runs AFTER sign-windows so it
+  # exercises the artifact that will actually ship.
+  #
+  # windows_qa_smoke.ps1 is the single source of truth for this gate:
+  # it runs the installer once (/CURRENTUSER /VERYSILENT /LOG=...),
+  # checks the install log for corruption markers, scans installed PE
+  # files for Authenticode + RSA OID + x64, requires critical binaries
+  # (app exe, native.dll), launches the app, checks Windows Event Log
+  # for crashes, and cleans up lingering processes.
+  #
+  # Failure here MUST block the release — create-release reads from
+  # this job's success via needs:.
+  windows-installer-smoke:
+    name: Windows Installer Smoke (${{ matrix.brand }})
+    needs: [setup, sign-windows]
+    if: |
+      !cancelled() &&
+      needs.setup.result == 'success' &&
+      needs.sign-windows.result == 'success'
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        brand: ${{ fromJSON(needs.setup.outputs.brands) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download final signed Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.brand }}-Windows
+          path: dist-signed/
+
+      - name: Locate signed installer
+        id: locate
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem dist-signed -Recurse `
+              -Filter "*-windows-x64-setup.exe" |
+              Select-Object -First 1
+          if (-not $installer) {
+              Write-Error "No signed setup.exe found in dist-signed/"
+              exit 1
+          }
+          Write-Host "Located installer: $($installer.FullName) ($([Math]::Round($installer.Length / 1MB, 2)) MB)"
+          "installer=$($installer.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Execute Windows QA smoke (single source of truth)
+        shell: pwsh
+        env:
+          INSTALLER: ${{ steps.locate.outputs.installer }}
+          BRAND: ${{ matrix.brand }}
+        run: |
+          # windows_qa_smoke.ps1 runs the installer itself — DO NOT
+          # pre-install here or it will collide on second-run state.
+          & pwsh -NoProfile -ExecutionPolicy Bypass `
+              -File scripts/windows_qa_smoke.ps1 `
+              -Installer $env:INSTALLER `
+              -Brand $env:BRAND `
+              -LaunchTimeoutSeconds 60
+          if ($LASTEXITCODE -ne 0) {
+              Write-Error "windows_qa_smoke.ps1 reported failures — see W*.* records above. Release blocked."
+              exit $LASTEXITCODE
+          }
+
+      - name: Upload smoke logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-smoke-logs-${{ matrix.brand }}
+          path: |
+            ${{ runner.temp }}/inno-install-*.log
+          retention-days: 7
+          if-no-files-found: warn
+
+  # ===== Linux =====
+  build-linux:
+    name: Build Linux (${{ matrix.brand }})
+    needs: [i18n-gate, test, setup]
+    # Same cascade-skip protection as build-macos — see comment there.
+    if: |
+      always() &&
+      (needs.i18n-gate.result == 'success' || needs.i18n-gate.result == 'skipped') &&
+      (needs.test.result == 'success' || needs.test.result == 'skipped') &&
+      needs.setup.result == 'success'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        brand: ${{ fromJSON(needs.setup.outputs.brands) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Override pubspec version from workflow input
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.version != ''
+        shell: bash
+        run: bash scripts/set_pubspec_version.sh "${{ github.event.inputs.version }}" "${{ github.run_number }}"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-gnu
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: native
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang cmake ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev libstdc++-12-dev \
+            libmpv-dev libfuse2 libsecret-1-dev \
+            libkeybinder-3.0-dev libnotify-dev \
+            libayatana-appindicator3-dev \
+            libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+            gstreamer1.0-plugins-good \
+            libcurl4-openssl-dev libc-ares-dev
+
+      - name: Verify brand assets (fail fast)
+        run: bash scripts/verify_brand_assets.sh ${{ matrix.brand }}
+
+      - name: Set brand config
+        run: bash scripts/set_brand.sh ${{ matrix.brand }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build Rust (release)
+        run: |
+          cd native
+          cargo build --release --features telemetry --target x86_64-unknown-linux-gnu
+
+      - name: Copy libnative.so
+        run: |
+          cp native/target/x86_64-unknown-linux-gnu/release/libnative.so linux/libnative.so
+
+      - name: Build Flutter Linux
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SENTRY_NATIVE_BACKEND: none
+        run: |
+          flutter build linux --release \
+            --dart-define=BRAND=${{ matrix.brand }} \
+            --dart-define=SENTRY_DSN="$SENTRY_DSN" \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY"
+
+      - name: Package AppImage
+        run: |
+          bash scripts/package_linux.sh ${{ matrix.brand }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.brand }}-Linux
+          path: dist/*-linux-x64.AppImage
+          retention-days: 30
+
+  # ===== Create Release (SSvid) =====
+  create-release:
+    name: Create GitHub Release
+    needs: [build-macos, sign-windows, windows-installer-smoke]
+    # Skip the entire publish flow on dry-run dispatches: build/sign/notarize
+    # still run end-to-end and the artifacts are downloadable from the Actions
+    # UI for 30 days, but no GitHub Release is created, no public-download repo
+    # is touched, and the backend auto-update endpoint is never called.
+    #
+    # windows-installer-smoke is a HARD gate: corrupt installer (SSvid 1.3.9
+    # class) makes windows_qa_smoke.ps1 fail → this job will not run → no
+    # publish. Authenticode-only verification is not enough to ship.
+    if: github.event.inputs.dry_run != 'true'
+    # Windows artifacts are downloaded as `${brand}-Windows` (signed by sign-windows job).
+    # Linux decoupled — native deps keep breaking ("mole whacking")
+    # Re-add build-linux when stabilized
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      RELEASES_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Clean dist (avoid duplicates from checkout)
+        run: rm -rf dist/
+
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*-macOS'
+          path: dist/
+
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*-Windows'
+          path: dist/
+
+      - name: Download Linux artifacts
+        # Was missing before v1.3.7 — Linux build job uploaded `${brand}-Linux`
+        # artifacts but the release-creation job downloaded only mac+win
+        # patterns, so `dist/ssvid-*/*.AppImage` matched nothing and Linux
+        # binaries silently dropped from every release. Linux audience is
+        # currently 0 device on backend, but adding the symmetry now
+        # prevents the silent-skip pattern from biting any future platform.
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*-Linux'
+          path: dist/
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            INPUT_VERSION="${{ github.event.inputs.version }}"
+            PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | cut -d'+' -f1 | tr -d '[:space:]')
+            VERSION="${INPUT_VERSION:-$PUBSPEC_VERSION}"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate checksums for auto-update
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          echo '{}' > dist/checksums.json
+          for f in dist/**/*.dmg dist/**/*.zip dist/**/*.exe dist/**/*.AppImage; do
+            [ -f "$f" ] || continue
+            HASH=$(sha256sum "$f" | cut -d' ' -f1)
+            SIZE=$(stat --printf='%s' "$f" 2>/dev/null || stat -f'%z' "$f")
+            NAME=$(basename "$f")
+            jq --arg name "$NAME" --arg hash "$HASH" --arg size "$SIZE" \
+              '. + {($name): {"sha256": $hash, "size": ($size | tonumber)}}' \
+              dist/checksums.json > dist/checksums.tmp && mv dist/checksums.tmp dist/checksums.json
+          done
+          echo "Generated checksums:"
+          cat dist/checksums.json
+
+      - name: Create SSvid Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          draft: false
+          generate_release_notes: true
+          files: |
+            dist/ssvid-*/*.dmg
+            dist/ssvid-*/*.zip
+            dist/ssvid-*/*.exe
+            dist/ssvid-*/*.AppImage
+            dist/checksums.json
+
+      - name: Upload SSvid to public releases repo
+        if: ${{ env.RELEASES_TOKEN != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          # Guard: only run when SSvid artifacts were actually built. Without
+          # this gate, a single-brand `vidcombo` dispatch silently created an
+          # empty `vX.Y.Z` release on `mydinh-studio/ssvid-releases` (only
+          # checksums.json, no DMG). Github auto-promoted the empty tag to
+          # "Latest", which broke the `/releases/latest/download/...` URL
+          # the landing-page version.json fallback uses — users on a stale
+          # client hit HTTP 404 instead of the actual SSvid binary.
+          if ! find dist/ssvid-* -name "*.dmg" -o -name "*.zip" -o -name "*.exe" -o -name "*.AppImage" 2>/dev/null | grep -q .; then
+            echo "No SSvid artifacts found, skipping ssvid-releases publish"
+            exit 0
+          fi
+
+          mkdir -p dist/public
+          MACOS_DMG=$(find dist/ssvid-macOS -name "*.dmg" 2>/dev/null | head -1)
+          WINDOWS_ZIP=$(find dist/ssvid-Windows -name "*.zip" 2>/dev/null | head -1)
+          WINDOWS_EXE=$(find dist/ssvid-Windows -name "*.exe" 2>/dev/null | head -1)
+          LINUX_APPIMAGE=$(find dist/ssvid-Linux -name "*.AppImage" 2>/dev/null | head -1)
+
+          [ -n "$MACOS_DMG" ] && cp "$MACOS_DMG" dist/public/SSvid-macos-universal.dmg
+          [ -n "$WINDOWS_ZIP" ] && cp "$WINDOWS_ZIP" dist/public/SSvid-windows-x64.zip
+          [ -n "$WINDOWS_EXE" ] && cp "$WINDOWS_EXE" dist/public/SSvid-windows-x64-setup.exe
+          [ -n "$LINUX_APPIMAGE" ] && cp "$LINUX_APPIMAGE" dist/public/SSvid-linux-x64.AppImage
+          [ -f "dist/checksums.json" ] && cp dist/checksums.json dist/public/checksums.json
+
+          gh release create "v${VERSION}" \
+            --repo mydinh-studio/ssvid-releases \
+            --title "SSvid v${VERSION}" \
+            --notes "SSvid Desktop v${VERSION}" \
+            dist/public/* \
+            || true
+
+          gh release upload "v${VERSION}" dist/public/* \
+            --repo mydinh-studio/ssvid-releases \
+            --clobber 2>/dev/null || true
+
+      - name: Upload VidCombo to releases repo
+        if: ${{ env.RELEASES_TOKEN != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          # Only if VidCombo artifacts exist
+          if ! find dist/vidcombo-* -name "*.dmg" -o -name "*.zip" -o -name "*.exe" -o -name "*.AppImage" 2>/dev/null | grep -q .; then
+            echo "No VidCombo artifacts found, skipping"
+            exit 0
+          fi
+
+          mkdir -p dist/vidcombo-public
+          VC_MACOS_DMG=$(find dist/vidcombo-macOS -name "*.dmg" 2>/dev/null | head -1)
+          VC_WINDOWS_ZIP=$(find dist/vidcombo-Windows -name "*.zip" 2>/dev/null | head -1)
+          VC_WINDOWS_EXE=$(find dist/vidcombo-Windows -name "*.exe" 2>/dev/null | head -1)
+          VC_LINUX_APPIMAGE=$(find dist/vidcombo-Linux -name "*.AppImage" 2>/dev/null | head -1)
+
+          [ -n "$VC_MACOS_DMG" ] && cp "$VC_MACOS_DMG" dist/vidcombo-public/VidCombo-macos-universal.dmg
+          [ -n "$VC_WINDOWS_ZIP" ] && cp "$VC_WINDOWS_ZIP" dist/vidcombo-public/VidCombo-windows-x64.zip
+          [ -n "$VC_WINDOWS_EXE" ] && cp "$VC_WINDOWS_EXE" dist/vidcombo-public/VidCombo-windows-x64-setup.exe
+          [ -n "$VC_LINUX_APPIMAGE" ] && cp "$VC_LINUX_APPIMAGE" dist/vidcombo-public/VidCombo-linux-x64.AppImage
+
+          gh release create "v${VERSION}" \
+            --repo DinhVanMy/vidcombo-releases \
+            --title "VidCombo v${VERSION}" \
+            --notes "VidCombo Desktop v${VERSION}" \
+            dist/vidcombo-public/* \
+            || true
+
+          gh release upload "v${VERSION}" dist/vidcombo-public/* \
+            --repo DinhVanMy/vidcombo-releases \
+            --clobber 2>/dev/null || true
+
+      - name: Register SSvid release in backend (auto-update)
+        if: ${{ env.CI_RELEASE_SECRET != '' }}
+        env:
+          CI_RELEASE_SECRET: ${{ secrets.CI_RELEASE_SECRET }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          RELEASES_BASE="https://github.com/mydinh-studio/ssvid-releases/releases/download/v${VERSION}"
+          CHECKSUMS=$(cat dist/checksums.json)
+          PLATFORMS='{}'
+
+          # macOS
+          MACOS_HASH=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | endswith("-macos-universal.dmg"))] | first | .value.sha256 // empty')
+          MACOS_SIZE=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | endswith("-macos-universal.dmg"))] | first | .value.size // 0')
+          if [ -n "$MACOS_HASH" ]; then
+            PLATFORMS=$(echo "$PLATFORMS" | jq \
+              --arg url "${RELEASES_BASE}/SSvid-macos-universal.dmg" \
+              --arg hash "$MACOS_HASH" \
+              --argjson size "$MACOS_SIZE" \
+              '. + {"macos": {"download_url": $url, "checksum": $hash, "file_size": $size}}')
+          fi
+
+          # Windows
+          WIN_HASH=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | endswith("-windows-x64-setup.exe"))] | first | .value.sha256 // empty')
+          WIN_SIZE=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | endswith("-windows-x64-setup.exe"))] | first | .value.size // 0')
+          if [ -n "$WIN_HASH" ]; then
+            PLATFORMS=$(echo "$PLATFORMS" | jq \
+              --arg url "${RELEASES_BASE}/SSvid-windows-x64-setup.exe" \
+              --arg hash "$WIN_HASH" \
+              --argjson size "$WIN_SIZE" \
+              '. + {"windows": {"download_url": $url, "checksum": $hash, "file_size": $size}}')
+          fi
+
+          # Linux
+          LINUX_HASH=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | endswith("-linux-x64.AppImage"))] | first | .value.sha256 // empty')
+          LINUX_SIZE=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | endswith("-linux-x64.AppImage"))] | first | .value.size // 0')
+          if [ -n "$LINUX_HASH" ]; then
+            PLATFORMS=$(echo "$PLATFORMS" | jq \
+              --arg url "${RELEASES_BASE}/SSvid-linux-x64.AppImage" \
+              --arg hash "$LINUX_HASH" \
+              --argjson size "$LINUX_SIZE" \
+              '. + {"linux": {"download_url": $url, "checksum": $hash, "file_size": $size}}')
+          fi
+
+          RELEASE_NOTES=$(gh release view "v${VERSION}" --json body -q .body 2>/dev/null | head -c 2000 || echo "v${VERSION}")
+
+          PAYLOAD=$(jq -n \
+            --arg version "$VERSION" \
+            --arg channel "stable" \
+            --arg brand "ssvid" \
+            --arg notes "$RELEASE_NOTES" \
+            --argjson platforms "$PLATFORMS" \
+            '{version: $version, channel: $channel, brand: $brand, release_notes: $notes, platforms: $platforms}')
+
+          # Integrity guard: a /latest/ download URL must never enter a
+          # checksum-bound record — publishing a newer Latest later would
+          # change the served bytes while the stored checksum stays, bricking
+          # in-flight updaters. CI emits versioned URLs; fail loud if that breaks.
+          if printf '%s' "$PAYLOAD" | grep -q '/releases/latest/'; then
+            echo "FATAL: SSvid release payload contains a /latest/ URL — refusing registration."
+            exit 1
+          fi
+          echo "Registering SSvid release v${VERSION}..."
+          HTTP_CODE=$(curl -s --max-time 30 -o /tmp/ci-release-response.json -w "%{http_code}" \
+            -X POST "https://api.ssvid.app/internal/ci/releases" \
+            -H "Content-Type: application/json" \
+            -H "X-CI-Secret: ${CI_RELEASE_SECRET}" \
+            -d "$PAYLOAD")
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "Release registered successfully"
+            cat /tmp/ci-release-response.json | jq .
+          else
+            echo "Warning: Failed to register release (HTTP $HTTP_CODE) — auto-update uses version.json fallback"
+            cat /tmp/ci-release-response.json 2>/dev/null
+          fi
+
+      - name: Register VidCombo release in backend (auto-update)
+        if: ${{ env.CI_RELEASE_SECRET != '' }}
+        env:
+          CI_RELEASE_SECRET: ${{ secrets.CI_RELEASE_SECRET }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          # Only if VidCombo artifacts exist
+          if ! find dist/vidcombo-* -name "*.dmg" -o -name "*.zip" -o -name "*.exe" -o -name "*.AppImage" 2>/dev/null | grep -q .; then
+            echo "No VidCombo artifacts found, skipping registration"
+            exit 0
+          fi
+
+          VC_RELEASES_BASE="https://github.com/DinhVanMy/vidcombo-releases/releases/download/v${VERSION}"
+          CHECKSUMS=$(cat dist/checksums.json 2>/dev/null || echo '{}')
+          VC_PLATFORMS='{}'
+
+          # macOS
+          VC_MACOS_HASH=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | test("vidcombo.*macos.*\\.dmg$"; "i"))] | first | .value.sha256 // empty' 2>/dev/null)
+          VC_MACOS_SIZE=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | test("vidcombo.*macos.*\\.dmg$"; "i"))] | first | .value.size // 0' 2>/dev/null)
+          if [ -n "$VC_MACOS_HASH" ]; then
+            VC_PLATFORMS=$(echo "$VC_PLATFORMS" | jq \
+              --arg url "${VC_RELEASES_BASE}/VidCombo-macos-universal.dmg" \
+              --arg hash "$VC_MACOS_HASH" \
+              --argjson size "${VC_MACOS_SIZE:-0}" \
+              '. + {"macos": {"download_url": $url, "checksum": $hash, "file_size": $size}}')
+          fi
+
+          # Windows
+          VC_WIN_HASH=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | test("vidcombo.*windows.*setup\\.exe$"; "i"))] | first | .value.sha256 // empty' 2>/dev/null)
+          VC_WIN_SIZE=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | test("vidcombo.*windows.*setup\\.exe$"; "i"))] | first | .value.size // 0' 2>/dev/null)
+          if [ -n "$VC_WIN_HASH" ]; then
+            VC_PLATFORMS=$(echo "$VC_PLATFORMS" | jq \
+              --arg url "${VC_RELEASES_BASE}/VidCombo-windows-x64-setup.exe" \
+              --arg hash "$VC_WIN_HASH" \
+              --argjson size "${VC_WIN_SIZE:-0}" \
+              '. + {"windows": {"download_url": $url, "checksum": $hash, "file_size": $size}}')
+          fi
+
+          # Linux
+          VC_LINUX_HASH=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | test("vidcombo.*linux.*\\.AppImage$"; "i"))] | first | .value.sha256 // empty' 2>/dev/null)
+          VC_LINUX_SIZE=$(echo "$CHECKSUMS" | jq -r '[to_entries[] | select(.key | test("vidcombo.*linux.*\\.AppImage$"; "i"))] | first | .value.size // 0' 2>/dev/null)
+          if [ -n "$VC_LINUX_HASH" ]; then
+            VC_PLATFORMS=$(echo "$VC_PLATFORMS" | jq \
+              --arg url "${VC_RELEASES_BASE}/VidCombo-linux-x64.AppImage" \
+              --arg hash "$VC_LINUX_HASH" \
+              --argjson size "${VC_LINUX_SIZE:-0}" \
+              '. + {"linux": {"download_url": $url, "checksum": $hash, "file_size": $size}}')
+          fi
+
+          # Skip if no platforms resolved
+          if [ "$VC_PLATFORMS" = '{}' ]; then
+            echo "No VidCombo platform checksums found, skipping registration"
+            exit 0
+          fi
+
+          VC_RELEASE_NOTES=$(gh release view "v${VERSION}" --json body -q .body 2>/dev/null | head -c 2000 || echo "VidCombo v${VERSION}")
+
+          VC_PAYLOAD=$(jq -n \
+            --arg version "$VERSION" \
+            --arg channel "stable" \
+            --arg brand "vidcombo" \
+            --arg notes "$VC_RELEASE_NOTES" \
+            --argjson platforms "$VC_PLATFORMS" \
+            '{version: $version, channel: $channel, brand: $brand, release_notes: $notes, platforms: $platforms}')
+
+          # Integrity guard: a /latest/ download URL must never enter a
+          # checksum-bound record (see SSvid step above for rationale).
+          if printf '%s' "$VC_PAYLOAD" | grep -q '/releases/latest/'; then
+            echo "FATAL: VidCombo release payload contains a /latest/ URL — refusing registration."
+            exit 1
+          fi
+          echo "Registering VidCombo release v${VERSION}..."
+          VC_HTTP_CODE=$(curl -s --max-time 30 -o /tmp/ci-vc-release-response.json -w "%{http_code}" \
+            -X POST "https://api.ssvid.app/internal/ci/releases" \
+            -H "Content-Type: application/json" \
+            -H "X-CI-Secret: ${CI_RELEASE_SECRET}" \
+            -d "$VC_PAYLOAD")
+
+          if [ "$VC_HTTP_CODE" = "200" ]; then
+            echo "VidCombo release registered successfully"
+            cat /tmp/ci-vc-release-response.json | jq .
+          else
+            echo "Warning: Failed to register VidCombo release (HTTP $VC_HTTP_CODE)"
+            cat /tmp/ci-vc-release-response.json 2>/dev/null
+          fi
+
+
+

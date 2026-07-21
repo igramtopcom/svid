@@ -1,0 +1,15 @@
+name: Build Windows (Deprecated)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deprecated:
+    name: Stop legacy Windows packaging path
+    runs-on: ubuntu-latest
+    steps:
+      - name: Block deprecated workflow
+        run: |
+          echo "::error title=Deprecated workflow::build-windows-test.yml used the legacy unsigned Windows packaging path."
+          echo "Use 'Release Pipeline' with workflow_dispatch and dry_run=true for any production-like Windows build."
+          exit 1

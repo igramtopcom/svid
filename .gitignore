@@ -1,0 +1,138 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VSCode
+.vscode/
+
+# Gemini MCP (local config with hardcoded paths)
+.gemini/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Machine-local Flutter/Android config (paths differ per developer)
+android/local.properties
+
+# FVM
+.fvm/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android
+/android/app/debug
+/android/app/profile
+/android/app/release
+android/local.properties
+android/**/GeneratedPluginRegistrant.java
+
+# Rust
+/native/target/
+/native/**/*.rs.bk
+/native/.cargo/
+Cargo.lock
+
+# macOS
+/macos/Pods/
+/macos/.symlinks/
+/macos/Flutter/ephemeral/
+/macos/build/
+# native.framework — rebuild locally (cargo build + copy dylib)
+/macos/native.framework/
+
+# Windows
+/windows/flutter/ephemeral/
+
+# Linux
+/linux/flutter/ephemeral/
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.tsbuildinfo
+# FRB generated files are committed for CI stability
+# Re-generate with: flutter_rust_bridge_codegen generate
+
+# Swagger generated docs (docs.go MUST be tracked — server needs it for go build)
+# Regenerate full docs: cd backend && swag init -g cmd/api/main.go
+backend/docs/swagger.json
+backend/docs/swagger.yaml
+
+# Test files
+coverage/
+test/.test_coverage.dart
+
+# Images — only allow specific directories
+*.png
+!**/assets/**/*.png
+!**/images/**/*.png
+!website/*.png
+
+# Screenshots — local design artifacts
+/screenshots/
+
+# Tools — standalone utilities, not part of Flutter app
+/tools/
+!/tools/webhook-pull/
+
+# Memory — AI/bot session data, not source code
+/memory/
+
+# yt-dlp binaries (download via script)
+assets/bin/yt-dlp*
+assets/bin/VERSION
+!assets/bin/README.md
+
+# Build distribution artifacts
+/dist/
+
+# Environment/secrets
+.env
+*.env.local
+backend/.env
+
+# Debug/temp files
+context/
+log*.md
+/artifacts/
+
+# Playwright MCP snapshots
+.playwright-mcp/
+
+# Backend compiled binary
+/backend/api
+
+# Claude Code session state — local-only, never committed.
+# Keep shareable project agent prompts trackable; keep settings/history local.
+.claude/*
+!.claude/
+!.claude/agents/
+!.claude/agents/**

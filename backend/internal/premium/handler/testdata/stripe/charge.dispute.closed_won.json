@@ -1,0 +1,15 @@
+{
+  "id": "evt_test_dispute_closed_won",
+  "type": "charge.dispute.closed",
+  "data": {
+    "object": {
+      "id": "dp_test_closed_won",
+      "charge": "ch_test_disputed",
+      "payment_intent": "pi_test_disputed",
+      "status": "won",
+      "amount": 4188,
+      "currency": "usd",
+      "reason": "fraudulent"
+    }
+  }
+}

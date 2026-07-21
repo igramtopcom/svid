@@ -1,0 +1,2 @@
+# One relative HTML path per line.
+# Use this only when <title>, og:title, and twitter:title must intentionally differ.

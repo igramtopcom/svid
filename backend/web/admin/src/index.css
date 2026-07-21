@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-gray-900 antialiased;
+  }
+
+  /* Multi-brand dynamic theming — colors change based on selected brand */
+  :root,
+  [data-brand="all"] {
+    --brand-50: #f8fafc;
+    --brand-100: #f1f5f9;
+    --brand-200: #e2e8f0;
+    --brand-300: #cbd5e1;
+    --brand-400: #94a3b8;
+    --brand-500: #64748b;
+    --brand-600: #475569;
+    --brand-700: #334155;
+    --brand-800: #1e293b;
+    --brand-900: #0f172a;
+  }
+
+  [data-brand="ssvid"] {
+    --brand-50: #fdf2f4;
+    --brand-100: #fce7eb;
+    --brand-200: #f9d0d9;
+    --brand-300: #f5a8ba;
+    --brand-400: #ed7694;
+    --brand-500: #e04d70;
+    --brand-600: #c8294f;
+    --brand-700: #a91e40;
+    --brand-800: #8d1c3a;
+    --brand-900: #791a35;
+  }
+
+  [data-brand="vidcombo"] {
+    --brand-50: #eff6ff;
+    --brand-100: #dbeafe;
+    --brand-200: #bfdbfe;
+    --brand-300: #93c5fd;
+    --brand-400: #60a5fa;
+    --brand-500: #3b82f6;
+    --brand-600: #2563eb;
+    --brand-700: #1d4ed8;
+    --brand-800: #1e40af;
+    --brand-900: #1e3a8a;
+  }
+}

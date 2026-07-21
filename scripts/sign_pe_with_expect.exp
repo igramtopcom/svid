@@ -1,0 +1,55 @@
+#!/usr/bin/expect -f
+#
+# Wrap osslsigncode with a pseudo-TTY so libp11/OpenSSL UI PIN prompts work
+# reliably under GitHub Actions self-hosted runner services.
+#
+# Inputs are passed through environment variables to avoid exposing the PIV PIN
+# in process argv:
+#   SIGNING_PIN, SIGNING_INPUT, SIGNING_OUTPUT, SIGNING_CHAIN, SIGNING_KEY_URI,
+#   SIGNING_PKCS11_ENGINE, SIGNING_PKCS11_MODULE, SIGNING_TIMESTAMP_URL
+
+set timeout 55
+log_user 0
+
+foreach name {
+  SIGNING_PIN
+  SIGNING_INPUT
+  SIGNING_OUTPUT
+  SIGNING_CHAIN
+  SIGNING_KEY_URI
+  SIGNING_PKCS11_ENGINE
+  SIGNING_PKCS11_MODULE
+  SIGNING_TIMESTAMP_URL
+} {
+  if {![info exists env($name)] || $env($name) eq ""} {
+    puts stderr "ERROR: missing environment variable $name"
+    exit 2
+  }
+}
+
+set pin $env(SIGNING_PIN)
+
+spawn osslsigncode sign \
+  -h sha256 \
+  -pkcs11engine $env(SIGNING_PKCS11_ENGINE) \
+  -pkcs11module $env(SIGNING_PKCS11_MODULE) \
+  -certs $env(SIGNING_CHAIN) \
+  -key $env(SIGNING_KEY_URI) \
+  -ts $env(SIGNING_TIMESTAMP_URL) \
+  -in $env(SIGNING_INPUT) \
+  -out $env(SIGNING_OUTPUT)
+
+expect {
+  -re {Enter PKCS#11 .*PIN.*:} {
+    send -- "$pin\r"
+    exp_continue
+  }
+  timeout {
+    puts stderr "ERROR: osslsigncode PIN prompt/signing timed out"
+    exit 124
+  }
+  eof {
+    catch wait result
+    exit [lindex $result 3]
+  }
+}

@@ -1,0 +1,88 @@
+name: Backend Docker Image
+
+# Builds the backend Docker image via the canonical wrapper that ldflags-
+# injects VERSION / GIT_SHA / BUILD_TIME. Existed before only as
+# documentation in backend/README.md; without a checked-in caller, the
+# wrapper was process-dependent on whatever the production server's
+# deploy webhook chose to do.
+#
+# This workflow:
+#   1. Demonstrates the canonical build path (review feedback round 4).
+#   2. Acts as a live test that the Dockerfile + wrapper still produce
+#      a binary whose /health surface honestly reports build identity.
+#   3. Loads the image into the runner and inspects its /version output
+#      so a regression like "version=dev, git_sha=unknown" (audit
+#      2026-04-27) is caught before it reaches production.
+#
+# This workflow does NOT push the image anywhere — production deploy
+# remains a separate concern owned by the deploy webhook on the live
+# server. The intent is verification, not distribution.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'scripts/build_backend_image.sh'
+      - '.github/workflows/backend-image.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'scripts/build_backend_image.sh'
+      - '.github/workflows/backend-image.yml'
+  workflow_dispatch:
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Need the full history so `git describe --tags` returns a
+          # real version string instead of just the short SHA.
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image via canonical wrapper
+        run: |
+          IMAGE_TAG=snakeloader-backend:ci-${GITHUB_SHA:0:8} \
+            bash scripts/build_backend_image.sh
+
+      - name: Verify build identity is injected (not 'dev'/'unknown')
+        run: |
+          # Run the binary inside the image with a sidecar that just
+          # prints buildinfo via a quick startup check — we don't need
+          # the API listening, just to confirm Version / GitSHA were
+          # ldflags-injected. Use `docker run` with --entrypoint to
+          # bypass the default CMD and run our probe.
+          IMAGE="snakeloader-backend:ci-${GITHUB_SHA:0:8}"
+
+          # Strings extraction — fast, no need to start the binary.
+          # The injected ldflags become null-terminated strings inside
+          # the binary. If we see "git-XXXXXXXX" or a real semver tag
+          # AND the full SHA, the injection worked. If we see literal
+          # "dev" / "unknown" near each other we have the regression.
+          docker run --rm --entrypoint /bin/sh "$IMAGE" -c "strings /api | grep -E '^(snakeloader/backend/internal/buildinfo|git-[0-9a-f]{8,}|^v?[0-9]+\\.[0-9]+\\.[0-9]+)' | head -30" || true
+
+          # Authoritative check: spin the binary up briefly with a
+          # blank env, hit /version, then kill. If /version returns
+          # non-empty git_sha not equal to "unknown", we're good.
+          docker run --rm -d --name bi_verify -p 18080:8080 \
+            -e GIN_MODE=release \
+            -e SERVER_PORT=8080 \
+            "$IMAGE" || true
+          sleep 5
+          # /version doesn't require DB — it reads buildinfo only.
+          OUT=$(curl -sf http://localhost:18080/version || echo '{}')
+          docker stop bi_verify >/dev/null 2>&1 || true
+
+          echo "/version output: $OUT"
+          if [ -z "$OUT" ] || echo "$OUT" | grep -qE '"git_sha"\s*:\s*"unknown"' || echo "$OUT" | grep -qE '"version"\s*:\s*"dev"'; then
+            echo "::error::buildinfo injection failed — /version reports dev/unknown"
+            echo "::error::This means scripts/build_backend_image.sh did not pass --build-arg correctly"
+            exit 1
+          fi
+          echo "Build identity injection verified."

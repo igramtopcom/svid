@@ -1,0 +1,75 @@
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{site.title}}</title>
+  <meta name="description" content="{{site.description}}">
+  <meta name="keywords" content="{{site.keywords}}">
+  {{#if page.robots}}<meta name="robots" content="{{page.robots}}">{{/if}}
+  <link rel="canonical" href="{{site.canonical}}">
+  {{hreflangTags}}
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://api.ssvid.app https://api.github.com; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{site.canonical}}">
+  <meta property="og:title" content="{{site.title}}">
+  <meta property="og:description" content="{{site.description}}">
+  <meta property="og:image" content="{{site.url}}/og-image.png">
+  <meta property="og:site_name" content="SSvid">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="SSvid preview showing native video downloads on macOS, Windows, Linux, iPhone, and Android">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ssvid_app">
+  <meta name="twitter:creator" content="@ssvid_app">
+  <meta name="twitter:title" content="{{site.title}}">
+  <meta name="twitter:description" content="{{site.description}}">
+  <meta name="twitter:image" content="{{site.url}}/og-image.png">
+  <meta name="twitter:image:alt" content="SSvid preview showing native video downloads on macOS, Windows, Linux, iPhone, and Android">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="application-name" content="SSvid">
+  <meta name="apple-mobile-web-app-title" content="SSvid">
+  <meta name="theme-color" content="#8D021F">
+
+  <script>
+    (function(){var s=localStorage.getItem('ssvid-theme');if(s)document.documentElement.setAttribute('data-theme',s);else document.documentElement.setAttribute('data-theme','dark');})();
+  </script>
+  <style>
+  :root{--color-primary:#8D021F;--color-primary-dark:#7A011A;--color-primary-light:#B71032;--color-primary-surface:#F9E5E7;--font-heading:'Manrope','Plus Jakarta Sans','Inter',-apple-system,sans-serif;--font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--radius-sm:4px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;--shadow-sm:0 1px 3px rgba(141,2,31,.04),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(141,2,31,.05),0 2px 4px rgba(0,0,0,.04);--shadow-lg:0 10px 30px rgba(141,2,31,.06),0 4px 6px rgba(0,0,0,.03);--ease-out-expo:cubic-bezier(.16,1,.3,1);--transition:200ms var(--ease-out-expo);--section-padding:clamp(64px,8vw,120px)}
+  [data-theme="light"]{--bg:#FAFAFA;--bg-surface:#FFF;--bg-surface-alt:#F3F3F3;--text:#1A1C1C;--text-secondary:#594140;--text-muted:#8D706F;--border:rgba(225,190,189,.25);--border-light:rgba(225,190,189,.12)}
+  [data-theme="dark"]{--bg:#131313;--bg-surface:#1C1B1B;--bg-surface-alt:#2A2A2A;--text:#E5E2E1;--text-secondary:#A88989;--text-muted:#594140;--border:rgba(89,65,64,.15);--border-light:rgba(89,65,64,.08)}
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  body{font-family:var(--font-family);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}img{max-width:100%;display:block}
+  h1,h2,h3{font-family:var(--font-heading);letter-spacing:-.02em;text-wrap:balance}
+  .container{max-width:1120px;margin:0 auto;padding:0 24px}
+  .navbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.8);border-bottom:1px solid var(--border-light);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+  [data-theme="dark"] .navbar{background:rgba(19,19,19,.8)}
+  .nav-container{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-size:1.25rem;font-weight:700}
+  .nav-links{display:flex;gap:32px}.nav-links a{font-size:.9375rem;font-weight:500;color:var(--text-secondary)}
+  .nav-actions{display:flex;align-items:center;gap:12px}
+  @media(max-width:768px){.nav-links{display:none}}
+  </style>
+  <link rel="stylesheet" href="/css/styles.css?v={{build.version}}">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://api.github.com" crossorigin>
+  <link rel="preconnect" href="https://api.ssvid.app" crossorigin>
+
+  <!-- Self-hosted fonts -->
+  <link rel="preload" href="/fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/manrope-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/fonts/fonts.css">
+  <link rel="dns-prefetch" href="https://api.ssvid.app">

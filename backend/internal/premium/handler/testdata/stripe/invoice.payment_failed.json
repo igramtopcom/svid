@@ -1,0 +1,22 @@
+{
+  "id": "evt_test_invoice_payment_failed",
+  "type": "invoice.payment_failed",
+  "data": {
+    "object": {
+      "id": "in_test_failed",
+      "subscription": "sub_test_failed",
+      "customer_email": "broken@example.com",
+      "status": "open",
+      "amount_due": 4188,
+      "amount_paid": 0,
+      "currency": "usd",
+      "billing_reason": "subscription_cycle",
+      "payment_intent": "pi_test_failed",
+      "lines": {
+        "data": [
+          { "price": { "id": "price_test_yearly_ssvid" } }
+        ]
+      }
+    }
+  }
+}

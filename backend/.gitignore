@@ -1,0 +1,55 @@
+# Binaries
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Environment
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Go
+vendor/
+tmp/
+
+# Air (hot reload)
+.air.toml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+*.test
+*.out
+coverage.html
+
+# Node.js (admin dashboard)
+web/admin/node_modules/
+# dist/ is built fresh on every deploy (server: npm run build → go build).
+# Committing dist/ bloated commits to 100+ files and caused nginx 413 on
+# webhook delivery — see 2026-04-07 deploy incident. Only the .gitkeep stub
+# is tracked to satisfy //go:embed all:admin/dist at compile time.
+web/admin/dist/*
+!web/admin/dist/.gitkeep
+
+# Build output
+/api
+/snakeloader-backend
+
+# One-shot maintenance tool binaries and their audit artifacts
+# (backups + CSVs may contain license keys / customer emails — keep local only)
+/backfill_license_expiry
+/cleanup_invoices
+backfill_license_expiry_*.csv
+backfill_license_expiry_*.jsonl
+cleanup_invoices_*.csv
+cleanup_invoices_*.jsonl

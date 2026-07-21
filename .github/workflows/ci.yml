@@ -1,0 +1,161 @@
+name: CI
+
+# Lightweight build verification on every push/PR.
+# Catches platform-specific compile breakage (especially Windows native plugins)
+# before code lands on main / a release tag. Does NOT package, sign, or
+# upload — that's release.yml's job.
+#
+# Skips backend/website changes (covered by backend.yml + deploy-website.yml).
+
+on:
+  push:
+    branches-ignore:
+      - main  # main only sees release.yml on tag push
+    paths-ignore:
+      - 'backend/**'
+      - 'website/**'
+      - 'docs/**'
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - 'backend/**'
+      - 'website/**'
+      - 'docs/**'
+      - '**.md'
+  workflow_dispatch:
+
+# Cancel superseded runs on the same branch / PR — saves runner minutes when
+# pushing rapid fix-ups.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.29.3'
+
+jobs:
+  i18n-gate:
+    name: i18n Leak Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run i18n leak gate
+        # Enforces 4 hard-fail conditions on the i18n corpus:
+        #  1. Parity — every locale has identical key tree + placeholder set
+        #  2. Hardcoded NEW — no net-new user-facing English literal in
+        #     protected widget dirs (baseline-aware against
+        #     scripts/i18n_leak_baseline.json)
+        #  3. EN-leakage drift — no net-new EN literal value in non-en/vi
+        #     protected namespaces
+        #  4. Protected-namespace regression — no re-introduction of banned
+        #     voice patterns (Mission Briefing, BÁO CÁO, raw $e, emoji prefix)
+        # Soft warns are non-blocking but visible.
+        run: python3 scripts/i18n_leak_gate.py
+
+  analyze-test:
+    name: Analyze + Test
+    needs: i18n-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        run: flutter test --reporter compact
+
+  build-macos:
+    name: Build macOS (debug)
+    needs: analyze-test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: native
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build Rust + setup native.framework
+        # The naive `cp` we used before fails at codesign with "bundle
+        # format unrecognized" because a real .framework needs the
+        # full Versions/A/{native,Resources/Info.plist} layout PLUS
+        # the top-level symlinks (Versions/Current → A, native →
+        # Versions/A/native, Resources → Versions/A/Resources) AND a
+        # binary-only codesign signature. Delegating to the official
+        # build_rust.sh handles all of that — and runs `cargo build`
+        # itself (no separate cargo step needed) when RUST_UNIVERSAL
+        # is unset.
+        run: CONFIGURATION=Debug bash macos/build_rust.sh
+
+      - name: Build Flutter macOS (debug)
+        run: flutter build macos --debug
+
+  build-windows:
+    name: Build Windows (debug)
+    needs: analyze-test
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: native
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build Rust (debug)
+        run: |
+          cd native
+          cargo build --target x86_64-pc-windows-msvc
+
+      - name: Copy native.dll
+        run: |
+          copy native\target\x86_64-pc-windows-msvc\debug\native.dll windows\native.dll
+
+      - name: Build Flutter Windows (debug)
+        run: flutter build windows --debug

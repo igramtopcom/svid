@@ -1,0 +1,12 @@
+{
+  "id": "evt_test_sub_updated",
+  "type": "customer.subscription.updated",
+  "data": {
+    "object": {
+      "id": "sub_test_updated",
+      "status": "active",
+      "customer": "cus_test_updated",
+      "cancel_at_period_end": false
+    }
+  }
+}

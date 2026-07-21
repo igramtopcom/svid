@@ -1,0 +1,76 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main, mydev/production-cleanup]
+    paths:
+      - 'backend/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  test:
+    name: Test & Build
+    runs-on: ubuntu-latest
+
+    # Postgres service for integration tests (premium/handler webhook suite).
+    # Default `go test ./...` skips the integration build tag and never
+    # connects, so this service is only exercised by the dedicated step
+    # below. Health-gated so the runner waits until pg_isready succeeds.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: snakeloader
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: snakeloader_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U snakeloader"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache-dependency-path: backend/go.sum
+
+      # Create minimal admin dist for embed (CI doesn't need full React build)
+      - name: Create admin dist stub
+        run: |
+          mkdir -p web/admin/dist/assets
+          echo '<!DOCTYPE html><html><body>Admin</body></html>' > web/admin/dist/index.html
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test (unit)
+        run: go test ./... -v -count=1 -race -timeout 120s
+
+      - name: Test (integration — webhook)
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: snakeloader
+          DB_PASSWORD: test
+          DB_NAME: snakeloader_test
+          DB_SSL_MODE: disable
+          GIN_MODE: test
+        run: go test ./internal/premium/handler/... -tags=integration -count=1 -race -timeout 120s -v
+
+      - name: Build
+        run: go build -o /dev/null ./cmd/api

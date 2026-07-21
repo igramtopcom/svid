@@ -1,0 +1,28 @@
+{
+  "id": "evt_test_invoice_paid_nested",
+  "type": "invoice.paid",
+  "data": {
+    "object": {
+      "id": "in_test_nested",
+      "subscription": "sub_test_nested",
+      "customer_email": "nested@example.com",
+      "status": "paid",
+      "amount_due": 4188,
+      "amount_paid": 4188,
+      "currency": "usd",
+      "billing_reason": "subscription_cycle",
+      "invoice_pdf": "https://stripe.com/invoice/test_nested.pdf",
+      "hosted_invoice_url": "https://stripe.com/invoice/test_nested",
+      "lines": {
+        "data": [
+          { "price": { "id": "price_test_yearly_ssvid" } }
+        ]
+      },
+      "payments": {
+        "data": [
+          { "payment": { "payment_intent": "pi_test_nested" } }
+        ]
+      }
+    }
+  }
+}

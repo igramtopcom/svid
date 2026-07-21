@@ -1,0 +1,27 @@
+name: local_notifier_example
+description: Demonstrates how to use the local_notifier plugin.
+publish_to: "none"
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  bot_toast: ^4.1.3
+  cupertino_icons: ^1.0.6
+  flutter:
+    sdk: flutter
+  local_notifier:
+    path: ../
+  preference_list: ^0.0.1
+  tray_manager: ^0.2.2
+  window_manager: ^0.3.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mostly_reasonable_lints: ^0.1.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - images/

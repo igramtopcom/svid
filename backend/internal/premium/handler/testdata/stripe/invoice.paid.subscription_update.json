@@ -1,0 +1,26 @@
+{
+  "id": "evt_test_invoice_paid_update",
+  "type": "invoice.paid",
+  "data": {
+    "object": {
+      "id": "in_test_update",
+      "subscription": "sub_test_update",
+      "customer_email": "upgrader@example.com",
+      "status": "paid",
+      "amount_due": 1500,
+      "amount_paid": 1500,
+      "currency": "usd",
+      "billing_reason": "subscription_update",
+      "payment_intent": "pi_test_update",
+      "invoice_pdf": "https://stripe.com/invoice/test_update.pdf",
+      "hosted_invoice_url": "https://stripe.com/invoice/test_update",
+      "period_start": 1747720902,
+      "period_end": 1750312902,
+      "lines": {
+        "data": [
+          { "price": { "id": "price_test_yearly_ssvid" } }
+        ]
+      }
+    }
+  }
+}

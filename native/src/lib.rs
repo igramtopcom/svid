@@ -1,5 +1,5 @@
 mod frb_generated; /* AUTO INJECTED BY flutter_rust_bridge. This line may not be accurate, and you can change it according to your needs. */
-/// SSvid Native Core
+/// Svid Native Core
 /// Rust modules for high-performance download and file system operations
 
 mod api;

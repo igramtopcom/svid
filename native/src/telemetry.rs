@@ -39,7 +39,7 @@ static TELEMETRY_GUARD: Mutex<Option<sentry::ClientInitGuard>> = Mutex::new(None
 /// events.
 static PANIC_HOOK_INSTALLED: OnceLock<()> = OnceLock::new();
 
-/// Caches the Dart-provided release string (e.g. `"ssvid@1.3.7+12"`) so
+/// Caches the Dart-provided release string (e.g. `"svid@1.3.7+12"`) so
 /// `write_panic_file` can stamp panic records with the SAME release tag
 /// the live Sentry client uses. Without this, recovered-from-disk panics
 /// would tag with `CARGO_PKG_VERSION` (= `"0.1.0"`) and aggregate as a
@@ -57,7 +57,7 @@ static APP_RELEASE: Mutex<Option<String>> = Mutex::new(None);
 /// # Args
 /// - `dsn`: Sentry DSN. `None` (or empty) → telemetry disabled, only the
 ///   on-disk panic fallback runs.
-/// - `release`: e.g. `"ssvid@1.3.7+12"`. Used as the Sentry `release` tag
+/// - `release`: e.g. `"svid@1.3.7+12"`. Used as the Sentry `release` tag
 ///   so events from different shipped versions don't aggregate together.
 ///   Comes from Dart so it tracks `AppConstants.appVersion` and brand,
 ///   NOT `env!("CARGO_PKG_VERSION")` (which is the unrelated Rust crate

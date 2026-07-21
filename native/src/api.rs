@@ -31,7 +31,7 @@ pub fn get_system_info() -> String {
 /// # Args
 /// - `dsn`: Sentry DSN. Empty string disables Sentry; the on-disk panic
 ///   fallback still runs.
-/// - `release`: e.g. `"ssvid@1.3.7+12"` — passed from Dart so the release
+/// - `release`: e.g. `"svid@1.3.7+12"` — passed from Dart so the release
 ///   tag tracks `AppConstants.appVersion` + brand, NOT the Rust crate's
 ///   `0.1.0` `CARGO_PKG_VERSION`.
 /// - `panic_dir`: brand-resolved absolute path for panic JSON files.

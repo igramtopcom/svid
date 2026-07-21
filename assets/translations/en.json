@@ -166,7 +166,7 @@
     },
     "historyButton": "History",
     "batchButton": "Batch",
-    "sectionLinkOrKeyword": "Link or keyword",
+    "sectionLinkOrKeyword": "Paste a link or search",
     "downloads": {
       "historyTab": "Download history",
       "queueTab": "Queue",

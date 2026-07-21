@@ -939,17 +939,19 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
       child: Scaffold(
         body: Stack(
           children: [
-            // Main content
-            Column(
+            // Main content — full-height left rail + content column.
+            Row(
               children: [
-                // Slim window strip: logo + drag + window controls.
-                WindowTopStrip(
-                  onLogoTap:
-                      () => _handleNavigationTap(
-                        NavigationConstants.homeIndex,
-                        ref,
-                      ),
+                LeftNavRail(
+                  selectedIndex: selectedIndex,
+                  onDestinationSelected:
+                      (index) => _handleNavigationTap(index, ref),
                 ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      // Slim window strip: drag + window controls.
+                      const WindowTopStrip(),
 
                 // yt-dlp update progress indicator (thin bar)
                 Consumer(
@@ -1017,11 +1019,6 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
 
                       return Row(
                         children: [
-                          LeftNavRail(
-                            selectedIndex: selectedIndex,
-                            onDestinationSelected:
-                                (index) => _handleNavigationTap(index, ref),
-                          ),
                           Expanded(
                             child: Stack(
                               children: [
@@ -1072,6 +1069,9 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
                         ],
                       );
                     },
+                  ),
+                ),
+                    ],
                   ),
                 ),
               ],

@@ -564,10 +564,12 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
                           glow,
                         )!;
                   } else {
+                    // Subtle gray fill so the input reads as a distinct field
+                    // inside the white command card (not white-on-white).
                     fillColor =
                         isDark
                             ? AppColors.homeDarkAppBg
-                            : cs.surfaceContainerLowest;
+                            : cs.surfaceContainer;
                   }
 
                   final detectedPlatform = _detectPlatform(
@@ -1304,7 +1306,7 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
                           )
                           : (isDark
                               ? AppColors.homeDarkBorderSubtle
-                              : Colors.black.withValues(alpha: 0.08)),
+                              : Colors.black.withValues(alpha: 0.14)),
                   width: 1,
                 ),
                 boxShadow: [

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -5,12 +7,12 @@ import '../../features/settings/presentation/providers/settings_provider.dart';
 import '../core.dart';
 import 'navigation_constants.dart';
 
-/// Vertical navigation rail on the left edge.
+/// Full-height vertical navigation rail on the left edge.
 ///
-/// Replaces the old top tab bar: primary destinations (Home / Explore /
-/// Converter / Browser) sit at the top with labels; utilities (Settings,
-/// theme toggle, and an overflow menu for Activity / Assistant / Support)
-/// sit at the bottom. Keeps the content area full-width and focused.
+/// Brand logo anchors the top, primary destinations (Home / Explore /
+/// Converter / Browser) sit below, and secondary destinations + app controls
+/// (Assistant, Support, Activity, Settings, theme toggle) sit at the bottom —
+/// every item shows an icon *and* a label.
 class LeftNavRail extends ConsumerWidget {
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
@@ -21,7 +23,7 @@ class LeftNavRail extends ConsumerWidget {
     required this.onDestinationSelected,
   });
 
-  static const double railWidth = 80;
+  static const double railWidth = 88;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,6 +39,10 @@ class LeftNavRail extends ConsumerWidget {
     final isConverter = selectedIndex == NavigationConstants.converterIndex;
     final isBrowser = selectedIndex == NavigationConstants.browserIndex;
     final isSettings = selectedIndex == NavigationConstants.settingsIndex;
+    final isAssistant = selectedIndex == NavigationConstants.assistantIndex;
+    final isSupport = selectedIndex == NavigationConstants.supportIndex;
+    final isActivity =
+        selectedIndex == NavigationConstants.activityCenterIndex;
 
     return Container(
       width: railWidth,
@@ -51,6 +57,11 @@ class LeftNavRail extends ConsumerWidget {
       ),
       child: Column(
         children: [
+          // Reserve space for the macOS traffic-light buttons at the top-left.
+          SizedBox(height: Platform.isMacOS ? 32 : AppSpacing.md),
+          _RailLogo(
+            onTap: () => onDestinationSelected(NavigationConstants.homeIndex),
+          ),
           const SizedBox(height: AppSpacing.md),
           _RailItem(
             icon: isHome ? Icons.home_rounded : Icons.home_outlined,
@@ -78,15 +89,44 @@ class LeftNavRail extends ConsumerWidget {
             onTap: () => onDestinationSelected(NavigationConstants.browserIndex),
           ),
           const Spacer(),
-          _RailIconButton(
+          _RailItem(
+            icon: Icons.auto_awesome_outlined,
+            label: AppLocalizations.navAssistant,
+            selected: isAssistant,
+            onTap:
+                () => onDestinationSelected(NavigationConstants.assistantIndex),
+          ),
+          _RailItem(
+            icon: Icons.support_agent_outlined,
+            label: AppLocalizations.navSupport,
+            selected: isSupport,
+            onTap: () => onDestinationSelected(NavigationConstants.supportIndex),
+          ),
+          _RailItem(
+            icon: Icons.timeline_outlined,
+            label: AppLocalizations.activityCenterTitle,
+            selected: isActivity,
+            onTap:
+                () => onDestinationSelected(
+                  NavigationConstants.activityCenterIndex,
+                ),
+          ),
+          Divider(
+            height: AppSpacing.md,
+            thickness: 1,
+            indent: AppSpacing.smMd,
+            endIndent: AppSpacing.smMd,
+            color: cs.outlineVariant.withValues(alpha: AppOpacity.divider),
+          ),
+          _RailItem(
             icon: isSettings ? Icons.settings : Icons.settings_outlined,
-            tooltip: AppLocalizations.navSettings,
+            label: AppLocalizations.navSettings,
             selected: isSettings,
             onTap: () => onDestinationSelected(NavigationConstants.settingsIndex),
           ),
-          _RailIconButton(
+          _RailItem(
             icon: isDark ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
-            tooltip:
+            label:
                 isDark
                     ? AppLocalizations.settingsThemeLight
                     : AppLocalizations.settingsThemeDark,
@@ -97,15 +137,56 @@ class LeftNavRail extends ConsumerWidget {
                   .updateThemeMode(isDark ? ThemeMode.light : ThemeMode.dark);
             },
           ),
-          _RailOverflowButton(onSelected: onDestinationSelected),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.sm),
         ],
       ),
     );
   }
 }
 
-/// A labelled primary destination (icon over label) in the rail.
+/// Brand logo anchoring the top of the rail.
+class _RailLogo extends StatelessWidget {
+  final VoidCallback onTap;
+  const _RailLogo({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.card),
+                child: Image.asset(
+                  AppAssets.logo,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                AppConstants.appName,
+                style: AppTypography.navItemSelected.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A labelled rail entry (icon over label). Used for every destination.
 class _RailItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -128,70 +209,8 @@ class _RailItem extends StatelessWidget {
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xxs,
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadius.card),
-          child: Container(
-            height: 56,
-            width: double.infinity,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color:
-                  selected
-                      ? accent.withValues(alpha: AppOpacity.subtle)
-                      : Colors.transparent,
-              borderRadius: BorderRadius.circular(AppRadius.card),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, size: 22, color: color),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: (selected
-                          ? AppTypography.navItemSelected
-                          : AppTypography.navItem)
-                      .copyWith(color: color, fontSize: 11),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// An icon-only utility button in the rail's bottom cluster.
-class _RailIconButton extends StatelessWidget {
-  final IconData icon;
-  final String tooltip;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _RailIconButton({
-    required this.icon,
-    required this.tooltip,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final accent = AppColors.accentHighlight;
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxs,
-      ),
       child: Tooltip(
-        message: tooltip,
+        message: label,
         waitDuration: AppDurations.tooltipWaitDuration,
         child: Material(
           color: Colors.transparent,
@@ -199,7 +218,7 @@ class _RailIconButton extends StatelessWidget {
             onTap: onTap,
             borderRadius: BorderRadius.circular(AppRadius.card),
             child: Container(
-              height: 44,
+              height: 54,
               width: double.infinity,
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -209,85 +228,27 @@ class _RailIconButton extends StatelessWidget {
                         : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppRadius.card),
               ),
-              child: Icon(
-                icon,
-                size: 22,
-                color: selected ? accent : AppColors.metaText(context),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, size: 22, color: color),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: (selected
+                            ? AppTypography.navItemSelected
+                            : AppTypography.navItem)
+                        .copyWith(color: color, fontSize: 11),
+                  ),
+                ],
               ),
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-/// The ⋮ overflow at the bottom of the rail — secondary destinations.
-class _RailOverflowButton extends StatelessWidget {
-  final ValueChanged<int> onSelected;
-
-  const _RailOverflowButton({required this.onSelected});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxs,
-      ),
-      child: PopupMenuButton<int>(
-        tooltip: AppLocalizations.commonMore,
-        padding: EdgeInsets.zero,
-        position: PopupMenuPosition.over,
-        onSelected: onSelected,
-        child: Container(
-          height: 44,
-          width: double.infinity,
-          alignment: Alignment.center,
-          child: Icon(
-            Icons.more_horiz,
-            size: 22,
-            color: AppColors.metaText(context),
-          ),
-        ),
-        itemBuilder:
-            (ctx) => [
-              PopupMenuItem<int>(
-                value: NavigationConstants.activityCenterIndex,
-                child: _menuRow(
-                  ctx,
-                  Icons.timeline_outlined,
-                  AppLocalizations.activityCenterTitle,
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: NavigationConstants.assistantIndex,
-                child: _menuRow(
-                  ctx,
-                  Icons.auto_awesome_outlined,
-                  AppLocalizations.navAssistant,
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: NavigationConstants.supportIndex,
-                child: _menuRow(
-                  ctx,
-                  Icons.support_agent_outlined,
-                  AppLocalizations.navSupport,
-                ),
-              ),
-            ],
-      ),
-    );
-  }
-
-  Widget _menuRow(BuildContext context, IconData icon, String label) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: AppColors.metaText(context)),
-        const SizedBox(width: AppSpacing.sm),
-        Text(label),
-      ],
     );
   }
 }

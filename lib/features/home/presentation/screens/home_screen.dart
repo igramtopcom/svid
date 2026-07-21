@@ -877,10 +877,26 @@ class HomeScreenState extends ConsumerState<HomeScreen>
                 ],
               );
 
-              if (!needsVerticalScroll) return content;
+              // Cap + centre the content on wide windows so the command bar
+              // and list don't stretch edge-to-edge (keeps paste → download
+              // within a comfortable horizontal span).
+              const maxContentWidth = 1200.0;
+              final sideInset =
+                  constraints.maxWidth > maxContentWidth
+                      ? (constraints.maxWidth - maxContentWidth) / 2
+                      : 0.0;
+              final capped =
+                  sideInset > 0
+                      ? Padding(
+                        padding: EdgeInsets.symmetric(horizontal: sideInset),
+                        child: content,
+                      )
+                      : content;
+
+              if (!needsVerticalScroll) return capped;
 
               return SingleChildScrollView(
-                child: SizedBox(height: 620, child: content),
+                child: SizedBox(height: 620, child: capped),
               );
             },
           ),

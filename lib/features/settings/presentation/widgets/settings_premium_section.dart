@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/config/brand_config.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/navigation/navigation_constants.dart';
@@ -16,6 +17,8 @@ class SettingsPremiumSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Free-unlimited build (svid): no premium/upgrade section at all.
+    if (BrandConfig.current.allFeaturesFree) return const SizedBox.shrink();
     final license = ref.watch(premiumLicenseProvider);
 
     return Column(

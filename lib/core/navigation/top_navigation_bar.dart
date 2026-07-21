@@ -88,7 +88,8 @@ class TopNavigationBar extends ConsumerWidget {
               ),
 
               // ── Right cluster: Upgrade / Activity / Settings / Theme / Overflow ──
-              if (density.showUpgradePill) ...[
+              if (density.showUpgradePill &&
+                  !BrandConfig.current.allFeaturesFree) ...[
                 _buildUpgradePill(
                   context,
                   ref,
@@ -164,6 +165,8 @@ class TopNavigationBar extends ConsumerWidget {
     required bool isDark,
     required bool compact,
   }) {
+    // Free-unlimited build (svid): no upgrade/premium entry point in the bar.
+    if (BrandConfig.current.allFeaturesFree) return const SizedBox.shrink();
     final isPremium = ref.watch(isPremiumProvider);
     final isActive = selectedIndex == NavigationConstants.premiumIndex;
     final accent = AppColors.accentHighlight;

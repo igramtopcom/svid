@@ -22,6 +22,10 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  /// Index of the Premium section in [_sections] / [_buildSectionContent].
+  /// Hidden from the sidebar when the brand ships all features free.
+  static const _premiumSectionIndex = 8;
+
   int _selectedSectionIndex = 0;
   final _scrollController = ScrollController();
   final _searchController = TextEditingController();
@@ -272,13 +276,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                       label: group.labelGetter(),
                                     ),
                                     for (final index in group.sectionIndexes)
-                                      _SidebarItem(
-                                        icon: _sections[index].icon,
-                                        label: _sections[index].labelGetter(),
-                                        isSelected:
-                                            _selectedSectionIndex == index,
-                                        onTap: () => _selectSection(index),
-                                      ),
+                                      // Free-unlimited build: no Premium section.
+                                      if (!(BrandConfig
+                                              .current.allFeaturesFree &&
+                                          index == _premiumSectionIndex))
+                                        _SidebarItem(
+                                          icon: _sections[index].icon,
+                                          label: _sections[index].labelGetter(),
+                                          isSelected:
+                                              _selectedSectionIndex == index,
+                                          onTap: () => _selectSection(index),
+                                        ),
                                     const SizedBox(height: AppSpacing.sm),
                                   ],
                                 ],

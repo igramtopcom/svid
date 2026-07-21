@@ -21,7 +21,7 @@ param(
     [string]$BundleDir,
 
     [Parameter(Mandatory = $true)]
-    [ValidateSet('ssvid', 'vidcombo')]
+    [ValidateSet('svid', 'vidcombo')]
     [string]$Brand
 )
 

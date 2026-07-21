@@ -448,26 +448,26 @@ def gate_dispatch_resolution(en_keys: set) -> 'tuple[list[str], list[str]]':
 # Catches strings inside assets/translations/*.json that embed an identifier
 # belonging to ONE brand but get rendered for ALL brands (or the wrong
 # brand). The 2026-05-27 regression: `premium.invalidKeyFormat` hardcoded
-# "Expected: SSVID-XXXX-..." in every locale, so VidCombo users saw the
-# SSvid brand in their license-activation error dialog.
+# "Expected: SVID-XXXX-..." in every locale, so VidCombo users saw the
+# Svid brand in their license-activation error dialog.
 #
 # Detection rule: any locale string value containing a brand identity token
-# (SSVID-, VIDCOMBO-, brand display name, brand URL, brand bundle id).
+# (SVID-, VIDCOMBO-, brand display name, brand URL, brand bundle id).
 # Fix pattern: replace with `{placeholder}` and inject via
 # `BrandConfig.current.<brand-aware getter>` at call site.
 BRAND_LEAK_PATTERNS = [
     # License key prefixes (canonical Go format identifiers).
-    re.compile(r'SSVID-[A-Z0-9X]'),
+    re.compile(r'SVID-[A-Z0-9X]'),
     re.compile(r'VIDCOMBO-[A-Z0-9X]'),
-    # Brand display names (case-sensitive — avoids "ssvid" substring in URLs).
-    re.compile(r'\bSSvid\b'),
+    # Brand display names (case-sensitive — avoids "svid" substring in URLs).
+    re.compile(r'\bSvid\b'),
     re.compile(r'\bVidCombo\b'),
     # Brand URLs / bundle ids.
-    re.compile(r'ssvid\.app'),
-    re.compile(r'ssvid\.net'),
+    re.compile(r'svid\.app'),
+    re.compile(r'svid\.net'),
     re.compile(r'vidcombo\.com'),
     re.compile(r'vidcombo\.net'),
-    re.compile(r'com\.ssvid\.'),
+    re.compile(r'com\.svid\.'),
     re.compile(r'com\.tinasoft\.vidcombo'),
 ]
 
@@ -758,9 +758,9 @@ def main():
         print("\n✅ DISPATCH-RESOLUTION: every dispatch-getter runtime ID resolves to a real en.json key")
 
     # Gate 7: cross-brand identity leak in i18n strings. Added 2026-05-27
-    # after tester screenshot showed VidCombo app rendering "SSVID-XXXX-..."
+    # after tester screenshot showed VidCombo app rendering "SVID-XXXX-..."
     # in license activation error — `premium.invalidKeyFormat` hardcoded
-    # the SSvid brand prefix in every locale.
+    # the Svid brand prefix in every locale.
     baseline_brand_leak = set(baseline.get('_brand_leak_baseline', []) or []) if baseline else set()
     brand_fails, brand_warns, current_brand_leak_set = gate_brand_leak(baseline_brand_leak)
     if brand_fails:

@@ -1,25 +1,25 @@
 # clone_and_first_build.ps1
 #
 # Phase B + C of the Windows build-lab setup.
-# Clones ssvid-desktop into C:\Dev\snakeloader, checks out the requested
+# Clones svid-desktop into C:\Dev\snakeloader, checks out the requested
 # branch, runs the full Flutter + Rust + Inno build pipeline for the
 # requested brand. Idempotent: re-runs do `git fetch + reset` instead of
 # re-cloning, and skip already-built native libs unless --Clean given.
 #
 # Usage:
-#   pwsh -File clone_and_first_build.ps1 -Brand ssvid
+#   pwsh -File clone_and_first_build.ps1 -Brand svid
 #   pwsh -File clone_and_first_build.ps1 -Brand vidcombo -Branch main
-#   pwsh -File clone_and_first_build.ps1 -Brand ssvid -Clean
+#   pwsh -File clone_and_first_build.ps1 -Brand svid -Clean
 
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('ssvid', 'vidcombo')]
+    [ValidateSet('svid', 'vidcombo')]
     [string]$Brand,
 
     [string]$Branch = 'feature/floating-capture-v2.2-state-machine',
 
-    [string]$RepoUrl = 'https://github.com/mydinh-studio/ssvid-desktop.git',
+    [string]$RepoUrl = 'https://github.com/mydinh-studio/svid-desktop.git',
 
     [string]$RepoDir = 'C:\Dev\snakeloader',
 
@@ -197,14 +197,14 @@ try {
         }
         else {
             $isccArgs = @(
-                "/DMyAppVersion=$version", '/DMyAppName=SSvid',
-                '/DMyAppExeName=ssvid.exe', '/DMyAppPublisher=SSvid',
-                '/DMyAppCompany=Bui Xuan Mai', '/DMyAppProductName=SSvid Desktop',
-                '/DMyAppFileDescription=SSvid Desktop Installer',
+                "/DMyAppVersion=$version", '/DMyAppName=Svid',
+                '/DMyAppExeName=svid.exe', '/DMyAppPublisher=Svid',
+                '/DMyAppCompany=Bui Xuan Mai', '/DMyAppProductName=Svid Desktop',
+                '/DMyAppFileDescription=Svid Desktop Installer',
                 '/DMyAppCopyright=Copyright (C) 2026 Bui Xuan Mai. All rights reserved.',
-                '/DMyAppURL=https://ssvid.app',
-                '/DMyUrlScheme=ssvid',
-                '/DMyAppUserModelId=com.ssvid.app',
+                '/DMyAppURL=https://svid.app',
+                '/DMyUrlScheme=svid',
+                '/DMyAppUserModelId=com.svid.app',
                 "/DMyBuildSource=$bundleDir",
                 'scripts\installer_windows.iss'
             )

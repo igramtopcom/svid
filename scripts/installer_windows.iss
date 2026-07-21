@@ -3,7 +3,7 @@
 ; Builds professional installer EXE from Flutter release build
 ;
 ; Requirements: Inno Setup 6+ (https://jrsoftware.org/isinfo.php)
-; Usage (SSvid — default):
+; Usage (Svid — default):
 ;   iscc /DMyAppVersion=1.0.0 scripts/installer_windows.iss
 ; Usage (VidCombo):
 ;   iscc /DMyAppVersion=1.5.0 /DMyAppName=VidCombo /DMyAppExeName=vidcombo.exe /DMyAppPublisher=VidCombo /DMyAppURL=https://vidcombo.net /DMyAppId={{C6BC5050-3D98-47F7-8F1E-3DC53963381A} /DMyUrlScheme=vidcombo /DMyAppUserModelId=com.tinasoft.vidcombo.desktop scripts/installer_windows.iss
@@ -11,42 +11,42 @@
 
 ; Brand identity — all overridable via /D flags
 #ifndef MyAppName
-  #define MyAppName "SSvid"
+  #define MyAppName "Svid"
 #endif
 #ifndef MyAppExeName
-  #define MyAppExeName "ssvid.exe"
+  #define MyAppExeName "svid.exe"
 #endif
 #ifndef MyAppPublisher
-  #define MyAppPublisher "SSvid"
+  #define MyAppPublisher "Svid"
 #endif
 #ifndef MyAppCompany
   #define MyAppCompany "Bui Xuan Mai"
 #endif
 #ifndef MyAppProductName
-  #define MyAppProductName "SSvid Desktop"
+  #define MyAppProductName "Svid Desktop"
 #endif
 #ifndef MyAppFileDescription
-  #define MyAppFileDescription "SSvid Desktop Installer"
+  #define MyAppFileDescription "Svid Desktop Installer"
 #endif
 #ifndef MyAppCopyright
   #define MyAppCopyright "Copyright (C) 2026 Bui Xuan Mai. All rights reserved."
 #endif
 #ifndef MyAppURL
-  #define MyAppURL "https://ssvid.app"
+  #define MyAppURL "https://svid.app"
 #endif
 #ifndef MyAppId
   #define MyAppId "{{A3D7F1E2-8B4C-4E5A-9F6D-2C1B3A4E5F6D}"
 #endif
-; Custom URL scheme for deep-link license activation (e.g. "ssvid://key=...")
+; Custom URL scheme for deep-link license activation (e.g. "svid://key=...")
 ; Must match lib/core/config/brand_config.dart `urlScheme` for the brand.
 #ifndef MyUrlScheme
-  #define MyUrlScheme "ssvid"
+  #define MyUrlScheme "svid"
 #endif
 #ifndef MyAppUserModelId
   #if MyAppName == "VidCombo"
     #define MyAppUserModelId "com.tinasoft.vidcombo.desktop"
   #else
-    #define MyAppUserModelId "com.ssvid.app"
+    #define MyAppUserModelId "com.svid.app"
   #endif
 #endif
 
@@ -120,7 +120,7 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDi
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "{#MyAppName}"; ValueData: """{app}\{#MyAppExeName}"""; Flags: uninsdeletevalue; Tasks: launchonstartup
 
 ; Custom URL protocol handler — register at INSTALL time so deep-link
-; activation (e.g. ssvid://key=... or vidcombo://key=... from an email)
+; activation (e.g. svid://key=... or vidcombo://key=... from an email)
 ; works BEFORE the user ever launches the app. Without this, the runtime
 ; registration in StartupService only fires on first launch, leaving a
 ; gap where freshly-installed users hit "no handler for scheme". Values

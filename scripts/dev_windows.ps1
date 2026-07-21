@@ -1,4 +1,4 @@
-# scripts/dev_windows.ps1 — Unified dev runner for SSvid + VidCombo on Windows.
+# scripts/dev_windows.ps1 — Unified dev runner for Svid + VidCombo on Windows.
 #
 # Mirrors scripts/dev.sh (which is macOS-only) so the Windows workflow has
 # the same one-shot brand-switch + version-override + build behaviour. The
@@ -13,14 +13,14 @@
 #   reads with priority over PackageInfo.
 #
 # Usage:
-#   scripts\dev_windows.ps1                     # ssvid release (default)
-#   scripts\dev_windows.ps1 ssvid               # ssvid release
+#   scripts\dev_windows.ps1                     # svid release (default)
+#   scripts\dev_windows.ps1 svid               # svid release
 #   scripts\dev_windows.ps1 vidcombo            # vidcombo release
-#   scripts\dev_windows.ps1 ssvid debug         # ssvid debug build
+#   scripts\dev_windows.ps1 svid debug         # svid debug build
 #   scripts\dev_windows.ps1 vidcombo release    # vidcombo release build
 #
 # Optional env vars:
-#   SSVID_DEV_VERSION    override the default 1.4.0 dev version for SSvid
+#   SVID_DEV_VERSION    override the default 1.4.0 dev version for Svid
 #   VIDCOMBO_DEV_VERSION override the default 1.7.1 dev version for VidCombo
 #   APP_VERSION          override BOTH brands (escape hatch)
 #   SENTRY_DSN           passthrough to Sentry init in the running app
@@ -33,8 +33,8 @@
 
 [CmdletBinding()]
 param(
-    [ValidateSet('ssvid', 'vidcombo')]
-    [string]$Brand = 'ssvid',
+    [ValidateSet('svid', 'vidcombo')]
+    [string]$Brand = 'svid',
     [ValidateSet('debug', 'release')]
     [string]$Mode = 'release'
 )
@@ -47,7 +47,7 @@ $RepoRoot = (Resolve-Path (Join-Path $ScriptDir '..')).Path
 # in-app update prompt during testing. Keep these bumped whenever the
 # public latest changes.
 switch ($Brand) {
-    'ssvid'    { $defaultVersion = if ($env:SSVID_DEV_VERSION)    { $env:SSVID_DEV_VERSION }    else { '1.4.0' } }
+    'svid'    { $defaultVersion = if ($env:SVID_DEV_VERSION)    { $env:SVID_DEV_VERSION }    else { '1.4.0' } }
     'vidcombo' { $defaultVersion = if ($env:VIDCOMBO_DEV_VERSION) { $env:VIDCOMBO_DEV_VERSION } else { '1.7.1' } }
 }
 $appVersion = if ($env:APP_VERSION) { $env:APP_VERSION } else { $defaultVersion }
@@ -86,8 +86,8 @@ Write-Host ''
 # expression `$<TARGET_FILE_DIR:<other>>` unresolvable and the build
 # aborts. Detect by checking which brand exe (or .vcxproj) is on disk.
 $buildWindows = Join-Path $RepoRoot 'build\windows'
-$expectedExe = if ($Brand -eq 'ssvid') { 'ssvid.exe' } else { 'vidcombo.exe' }
-$otherExe = if ($Brand -eq 'ssvid') { 'vidcombo.exe' } else { 'ssvid.exe' }
+$expectedExe = if ($Brand -eq 'svid') { 'svid.exe' } else { 'vidcombo.exe' }
+$otherExe = if ($Brand -eq 'svid') { 'vidcombo.exe' } else { 'svid.exe' }
 $existingExe = Join-Path $buildWindows ("x64\runner\$(if ($Mode -eq 'release') { 'Release' } else { 'Debug' })\$otherExe")
 $existingProject = Join-Path $buildWindows ("x64\runner\$($otherExe -replace '\.exe$','').vcxproj")
 $brandMismatch = (Test-Path $existingExe) -or (Test-Path $existingProject)
@@ -123,7 +123,7 @@ try {
 
 # Verify exe present
 $modeDir = if ($Mode -eq 'release') { 'Release' } else { 'Debug' }
-$exeName = if ($Brand -eq 'ssvid') { 'ssvid.exe' } else { 'vidcombo.exe' }
+$exeName = if ($Brand -eq 'svid') { 'svid.exe' } else { 'vidcombo.exe' }
 $exePath = Join-Path $RepoRoot ("build\windows\x64\runner\$modeDir\$exeName")
 if (-not (Test-Path $exePath)) {
     Write-Error "Expected exe missing after build: $exePath"

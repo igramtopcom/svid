@@ -120,7 +120,7 @@ FloatingWindowEvent? parseFloatingWindowEvent(String method, dynamic args) {
 /// [WindowMethodChannel] (per spec §3.3).
 ///
 /// Channel design:
-///   - Single channel `ssvid.floating_capture` shared by both ends.
+///   - Single channel `svid.floating_capture` shared by both ends.
 ///   - Methods FROM main → popup are imperative commands
 ///     (`showPreview`, `pushQueue`, `clearQueue`, `setQuotaState`).
 ///   - Methods FROM popup → main are events with `on*` prefix
@@ -143,7 +143,7 @@ FloatingWindowEvent? parseFloatingWindowEvent(String method, dynamic args) {
 ///     `window_manager` (existing dep). Future native channel work in
 ///     spec §6.2 covers always-on-top + focus-steal prevention.
 class DesktopMultiWindowFloatingWindow implements FloatingWindow {
-  static const String _channelName = 'ssvid.floating_capture';
+  static const String _channelName = 'svid.floating_capture';
   static const String _windowType = 'floating_capture';
 
   /// Optional plugin shim — production passes null (uses real plugin).

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# run_dev.sh — Local development runner for SSvid (SSvid)
+# run_dev.sh — Local development runner for Svid (Svid)
 # Reads credentials from tools/telegram-bridge/.env and passes as --dart-define
 # Usage: ./scripts/run_dev.sh [platform] [extra flutter args]
 #   platform: macos (default) | linux | windows
@@ -37,7 +37,7 @@ done < "$ENV_FILE"
 PLATFORM="${1:-macos}"
 shift 1 2>/dev/null || true
 
-echo "==> Running SSvid on $PLATFORM with Supabase configured"
+echo "==> Running Svid on $PLATFORM with Supabase configured"
 echo "    URL: ${SUPABASE_URL:0:40}..."
 
 flutter run -d "$PLATFORM" \

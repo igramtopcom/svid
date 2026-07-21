@@ -18,10 +18,10 @@ class FlutterWindow : public Win32Window {
   explicit FlutterWindow(const flutter::DartProject& project);
   virtual ~FlutterWindow();
 
-  // Set a ssvid:// URI to send to Flutter after first frame.
+  // Set a svid:// URI to send to Flutter after first frame.
   void SetLaunchUri(const std::string& uri);
 
-  // Send a ssvid:// URI to Flutter via MethodChannel.
+  // Send a svid:// URI to Flutter via MethodChannel.
   void SendUri(const std::string& uri);
 
   // Send a Windows power event (suspend/resume) to Flutter via MethodChannel.

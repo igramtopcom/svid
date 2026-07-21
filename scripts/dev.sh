@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# dev.sh — Unified dev runner for SSvid + VidCombo (multi-brand desktop)
+# dev.sh — Unified dev runner for Svid + VidCombo (multi-brand desktop)
 #
 # Replaces the 4-step manual incantation:
 #   scripts/set_brand.sh <brand> && \
@@ -8,10 +8,10 @@
 #   fvm flutter run -d macos --dart-define=BRAND=<brand>
 #
 # Usage:
-#   scripts/dev.sh                     # ssvid debug (default)
-#   scripts/dev.sh ssvid               # ssvid debug
+#   scripts/dev.sh                     # svid debug (default)
+#   scripts/dev.sh svid               # svid debug
 #   scripts/dev.sh vidcombo            # vidcombo debug
-#   scripts/dev.sh ssvid release       # ssvid release build + verify
+#   scripts/dev.sh svid release       # svid release build + verify
 #   scripts/dev.sh vidcombo release    # vidcombo release build + verify
 #
 # Notes:
@@ -20,14 +20,14 @@
 
 set -euo pipefail
 
-BRAND="${1:-ssvid}"
+BRAND="${1:-svid}"
 MODE="${2:-debug}"
 
 # Validate brand
 case "$BRAND" in
-  ssvid|vidcombo) ;;
+  svid|vidcombo) ;;
   *)
-    echo "ERROR: unknown brand '$BRAND'. Use 'ssvid' or 'vidcombo'." >&2
+    echo "ERROR: unknown brand '$BRAND'. Use 'svid' or 'vidcombo'." >&2
     exit 1
     ;;
 esac
@@ -63,7 +63,7 @@ fi
 # pubspec.yaml directly; dev.sh uses a dart-define so switching brands does not
 # dirty pubspec on every run.
 case "$BRAND" in
-  ssvid) DEFAULT_APP_VERSION="${SSVID_DEV_VERSION:-1.4.0}" ;;
+  svid) DEFAULT_APP_VERSION="${SVID_DEV_VERSION:-1.4.0}" ;;
   vidcombo) DEFAULT_APP_VERSION="${VIDCOMBO_DEV_VERSION:-1.7.1}" ;;
 esac
 APP_VERSION="${APP_VERSION:-$DEFAULT_APP_VERSION}"

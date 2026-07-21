@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# SSvid Release Script — Local Build + Package
+# Svid Release Script — Local Build + Package
 # Usage: bash scripts/release.sh [platform] [--skip-test]
 #   platform: macos | windows | linux | all (default: current platform)
 #   --skip-test: Skip running tests (for iteration speed)
@@ -16,7 +16,7 @@ VERSION=$(grep '^version:' "$PROJECT_ROOT/pubspec.yaml" | sed 's/version: //' | 
 BUILD_NUMBER=$(grep '^version:' "$PROJECT_ROOT/pubspec.yaml" | sed 's/.*+//')
 
 echo "================================================"
-echo "  SSvid Release Pipeline v${VERSION}+${BUILD_NUMBER}"
+echo "  Svid Release Pipeline v${VERSION}+${BUILD_NUMBER}"
 echo "================================================"
 
 # Parse args
@@ -76,7 +76,7 @@ case "$PLATFORM" in
         CONFIGURATION=Release bash macos/build_rust.sh
         # Build Flutter
         flutter build macos --release
-        echo "  Built: build/macos/Build/Products/Release/ssvid.app"
+        echo "  Built: build/macos/Build/Products/Release/svid.app"
         ;;
     linux)
         # Build Rust
@@ -108,6 +108,6 @@ echo ""
 echo "================================================"
 echo "  Release artifacts in: dist/"
 echo "================================================"
-ls -lh "$DIST_DIR"/SSvid-* 2>/dev/null || echo "  (no artifacts yet)"
+ls -lh "$DIST_DIR"/Svid-* 2>/dev/null || echo "  (no artifacts yet)"
 echo ""
 echo "Done."

@@ -9,7 +9,7 @@
 #   bash scripts/verify_brand_assets.sh
 #
 # Or per-brand:
-#   bash scripts/verify_brand_assets.sh ssvid
+#   bash scripts/verify_brand_assets.sh svid
 #
 # Exits 1 on any failure. Safe to run anywhere — only reads.
 
@@ -23,7 +23,7 @@ BRANDS_DIR="$ROOT_DIR/assets/brands"
 if [[ $# -gt 0 ]]; then
   BRANDS=("$@")
 else
-  BRANDS=(ssvid vidcombo)
+  BRANDS=(svid vidcombo)
 fi
 
 # Required files per brand

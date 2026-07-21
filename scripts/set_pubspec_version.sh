@@ -2,7 +2,7 @@
 # Override pubspec.yaml version at CI build time so binaries, installers, and
 # packaging scripts all agree with the workflow_dispatch input. Without this,
 # every build tool reads pubspec directly and a cross-version multi-brand
-# release (e.g. SSvid 1.3.5 + VidCombo 1.6.2) bricks the auto-updater because
+# release (e.g. Svid 1.3.5 + VidCombo 1.6.2) bricks the auto-updater because
 # the tag says one thing and the embedded version says another.
 #
 # Usage:

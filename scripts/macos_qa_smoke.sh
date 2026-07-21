@@ -7,8 +7,8 @@
 #
 # Usage:
 #   bash scripts/macos_qa_smoke.sh \
-#        --dmg path/to/SSvid-1.3.5-macos-universal.dmg \
-#        --brand ssvid \
+#        --dmg path/to/Svid-1.3.5-macos-universal.dmg \
+#        --brand svid \
 #        [--skip-launch]
 #
 # What it covers (keyed to the waves this session shipped):
@@ -47,13 +47,13 @@ LAUNCH_TIMEOUT_SECONDS=45
 
 usage() {
   cat <<USAGE
-Usage: bash scripts/macos_qa_smoke.sh --dmg PATH --brand ssvid|vidcombo [options]
-       bash scripts/macos_qa_smoke.sh --app PATH --brand ssvid|vidcombo [options]
+Usage: bash scripts/macos_qa_smoke.sh --dmg PATH --brand svid|vidcombo [options]
+       bash scripts/macos_qa_smoke.sh --app PATH --brand svid|vidcombo [options]
 
 Options:
   --dmg PATH            path to the signed+notarized DMG under test
   --app PATH            path to a pre-mounted / copied .app bundle (skips DMG mount gates)
-  --brand ssvid|vidcombo
+  --brand svid|vidcombo
   --skip-launch         skip the launch-and-observe step (CI smoke-only mode)
   --launch-timeout N    override the 45s launch observation window
 USAGE
@@ -73,14 +73,14 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$BRAND" ]; then
-  echo "ERROR: --brand is required (ssvid | vidcombo)" >&2
+  echo "ERROR: --brand is required (svid | vidcombo)" >&2
   usage
 fi
 
 case "$BRAND" in
-  ssvid)    APP_NAME="ssvid";    BUNDLE_ID="com.ssvid.app" ;;
+  svid)    APP_NAME="svid";    BUNDLE_ID="com.svid.app" ;;
   vidcombo) APP_NAME="vidcombo"; BUNDLE_ID="com.tinasoft.vidcombo" ;;
-  *) echo "ERROR: brand must be ssvid or vidcombo (got '$BRAND')" >&2; exit 2 ;;
+  *) echo "ERROR: brand must be svid or vidcombo (got '$BRAND')" >&2; exit 2 ;;
 esac
 
 # -----------------------------------------------------------------------------

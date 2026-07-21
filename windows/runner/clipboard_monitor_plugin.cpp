@@ -11,7 +11,7 @@ namespace {
 // require generated names; a single class is fine because we instantiate the
 // plugin once per Flutter engine and the WindowProc dispatches through the
 // HWND user-data slot.
-constexpr wchar_t kWindowClassName[] = L"SSvidClipboardMonitorWindow";
+constexpr wchar_t kWindowClassName[] = L"SvidClipboardMonitorWindow";
 
 // Convert a UTF-16 wide string to UTF-8 std::string. Returns empty string on
 // conversion failure or zero-length input.
@@ -38,7 +38,7 @@ void ClipboardMonitorPlugin::RegisterWithRegistrar(
 
   plugin->method_channel_ =
       std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
-          registrar->messenger(), "ssvid.clipboard_monitor/methods",
+          registrar->messenger(), "svid.clipboard_monitor/methods",
           &flutter::StandardMethodCodec::GetInstance());
   plugin->method_channel_->SetMethodCallHandler(
       [plugin_ptr](const auto& call, auto result) {
@@ -47,7 +47,7 @@ void ClipboardMonitorPlugin::RegisterWithRegistrar(
 
   plugin->event_channel_ =
       std::make_unique<flutter::EventChannel<flutter::EncodableValue>>(
-          registrar->messenger(), "ssvid.clipboard_monitor/events",
+          registrar->messenger(), "svid.clipboard_monitor/events",
           &flutter::StandardMethodCodec::GetInstance());
   auto stream_handler =
       std::make_unique<flutter::StreamHandlerFunctions<flutter::EncodableValue>>(
@@ -146,7 +146,7 @@ bool ClipboardMonitorPlugin::StartMonitoring() {
   // appears on screen, in the taskbar, or in Alt+Tab; it only exists to
   // receive Windows messages.
   message_window_ = CreateWindowEx(
-      0, kWindowClassName, L"SSvid Clipboard Monitor", 0, 0, 0, 0, 0,
+      0, kWindowClassName, L"Svid Clipboard Monitor", 0, 0, 0, 0, 0,
       HWND_MESSAGE, nullptr, hinst, this);
   if (message_window_ == nullptr) {
     std::cerr << "[ClipboardMonitor] CreateWindowEx failed: " << GetLastError()

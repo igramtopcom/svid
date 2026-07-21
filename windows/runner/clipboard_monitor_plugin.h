@@ -12,7 +12,7 @@
 #include <optional>
 #include <string>
 
-// SSvid v2.1 floating capture — Windows clipboard monitor.
+// Svid v2.1 floating capture — Windows clipboard monitor.
 //
 // Uses Win32 AddClipboardFormatListener API (event-driven, NOT polling).
 // A hidden message-only window (HWND_MESSAGE parent) receives
@@ -22,8 +22,8 @@
 //
 // Channels (mirror macOS plugin so the Dart NativeClipboardSource works
 // unchanged across platforms):
-//   - Method: ssvid.clipboard_monitor/methods (start/stop/readText)
-//   - Event:  ssvid.clipboard_monitor/events (clipboard text changes)
+//   - Method: svid.clipboard_monitor/methods (start/stop/readText)
+//   - Event:  svid.clipboard_monitor/events (clipboard text changes)
 //
 // Image/file/HTML clipboards are filtered here (text-only) per spec
 // §11 E20. Empty strings are dropped.

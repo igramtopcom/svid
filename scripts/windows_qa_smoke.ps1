@@ -6,7 +6,7 @@
 # Usage (from an elevated-or-not PowerShell prompt):
 #   pwsh -File scripts/windows_qa_smoke.ps1 `
 #        -Installer <path-to-signed-setup.exe> `
-#        -Brand ssvid `
+#        -Brand svid `
 #        [-BluebyteLegacyExe <path-to-old-VidCombo-uninstaller>] `
 #        [-SkipLaunchCheck]
 #
@@ -36,7 +36,7 @@ param(
     [string]$Installer,
 
     [Parameter(Mandatory = $true)]
-    [ValidateSet('ssvid', 'vidcombo')]
+    [ValidateSet('svid', 'vidcombo')]
     [string]$Brand,
 
     [string]$BluebyteLegacyExe,
@@ -215,8 +215,8 @@ Write-Host ">>> Running installer silently: $Installer" -ForegroundColor Cyan
 # install-poll loop below references $exeName when killing the Inno [Run]
 # auto-launched app. The installed-payload-scan section further down
 # reuses these same variables.
-$exeName     = if ($Brand -eq 'ssvid') { 'ssvid.exe' } else { 'vidcombo.exe' }
-$brandFolder = if ($Brand -eq 'ssvid') { 'SSvid' }     else { 'VidCombo' }
+$exeName     = if ($Brand -eq 'svid') { 'svid.exe' } else { 'vidcombo.exe' }
+$brandFolder = if ($Brand -eq 'svid') { 'Svid' }     else { 'VidCombo' }
 
 $installLog = Join-Path $env:TEMP ("inno-install-{0}-{1}.log" -f $Brand, (Get-Random))
 Write-Host "    Install log: $installLog"
@@ -304,7 +304,7 @@ if (-not $installerProc.HasExited) {
 
 # Inno install log present + free of corruption markers. Inno writes the
 # "The setup files are corrupted" string into the log when its internal
-# CRC fails -- that's the smoking gun for SSvid 1.3.9-class regressions.
+# CRC fails -- that's the smoking gun for Svid 1.3.9-class regressions.
 if (-not (Test-Path $installLog)) {
     Record-Result 'W3.5b' 'Inno install log present' 'FAIL' `
         "Expected log at $installLog -- installer crashed before extraction or /LOG was ignored"
@@ -338,7 +338,7 @@ if ($hitMarker) {
 # process exits. We need a clean state for the PE scan + launch test
 # below, so kill any app process that survived the installer. The scan
 # step further down re-launches deliberately and measures startup.
-$preInstallAppName = if ($Brand -eq 'ssvid') { 'ssvid' } else { 'vidcombo' }
+$preInstallAppName = if ($Brand -eq 'svid') { 'svid' } else { 'vidcombo' }
 $leftover = Get-Process -Name $preInstallAppName -ErrorAction SilentlyContinue
 if ($leftover) {
     Record-Result 'W3.5d' ("Inno [Run] auto-launched {0} -- cleaning up before scan" -f $preInstallAppName) 'WARN' `
@@ -399,7 +399,7 @@ if ($Brand -eq 'vidcombo') {
 #    which resolves to %LOCALAPPDATA%\Programs\<Brand> on per-user installs
 #    (the actual default for non-admin runs). Scanning only ProgramFiles is
 #    a blind spot -- the WebView2Loader.dll Bad Image incident hit a per-user
-#    install at C:\Users\kynnd\AppData\Local\Programs\SSvid\.
+#    install at C:\Users\kynnd\AppData\Local\Programs\Svid\.
 #    Probe order: per-user -> ProgramFiles -> ProgramFiles(x86) -> registry
 #    uninstall InstallLocation fallback.
 # ============================================================================
@@ -456,7 +456,7 @@ if ($expectedExe) {
     Exit-WithSummary 1
 }
 
-$scheme = if ($Brand -eq 'ssvid') { 'ssvid' } else { 'vidcombo' }
+$scheme = if ($Brand -eq 'svid') { 'svid' } else { 'vidcombo' }
 $schemeKey = "HKCU:\SOFTWARE\Classes\$scheme"
 if (Test-Path $schemeKey) {
     Record-Result 'W1.1' ("URL scheme {0}:// registered in HKCU" -f $scheme) 'PASS'
@@ -532,7 +532,7 @@ Record-Result 'W3.8' 'Runtime payload: all signatures use RSA cert (SAC requirem
     $(if ($nonRsa.Count -gt 0) { ($nonRsa | Select-Object -First 5 | Format-Table -AutoSize | Out-String).Trim() } else { 'ECDSA-signed binaries trigger SAC Bad Image 0xc0e90002' })
 
 # Architecture check: every PE Machine field must be x64 (0x8664). An x86
-# (0x14C) or ARM64 (0xAA64) DLL loaded into a 64-bit ssvid.exe/vidcombo.exe
+# (0x14C) or ARM64 (0xAA64) DLL loaded into a 64-bit svid.exe/vidcombo.exe
 # process triggers Bad Image at LoadLibrary, exactly the user-reported
 # class. Reads PE header bytes directly -- no extra deps.
 # Unreadable / truncated / non-PE files are tracked separately and FAIL --
@@ -618,7 +618,7 @@ foreach ($u in $uninstallerPE) {
 
 # Spotlight critical binaries with severity differential:
 #  - <exe>, native.dll, WebView2Loader.dll: missing -> FAIL.
-#    Both SSvid 1.3.9 and VidCombo 1.6.6 build flows produce
+#    Both Svid 1.3.9 and VidCombo 1.6.6 build flows produce
 #    WebView2Loader.dll today; missing it on a real installed payload
 #    means the Browser/AI WebView surface will crash on first use.
 #    Revisit only if a future Flutter plugin version drops it
@@ -715,7 +715,7 @@ if ($SkipLaunchCheck) {
 
 # ============================================================================
 # 9. W3.12 -- Windows Event Log / Windows Error Reporting check.
-#    Application Error / .NET Runtime / WER faults emitted by ssvid.exe or
+#    Application Error / .NET Runtime / WER faults emitted by svid.exe or
 #    vidcombo.exe within the last 10 minutes indicate the app loaded but
 #    crashed on its own (e.g. Bad Image on a runtime DLL, unhandled
 #    exception during startup). The launch-test above only checks that the

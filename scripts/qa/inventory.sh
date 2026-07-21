@@ -33,12 +33,12 @@ DEF=$(probe "Defender + RTP" 'Get-MpComputerStatus | Select-Object AMServiceEnab
 SAC=$(probe "Smart App Control" 'try { (Get-MpComputerStatus).SmartAppControlState } catch { "SmartAppControlState not exposed (likely Win10)" }')
 SS=$(probe "SmartScreen policy" 'Get-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\System -ErrorAction SilentlyContinue | Select-Object EnableSmartScreen | Format-List | Out-String')
 DISK=$(probe "Disk free" 'Get-PSDrive -PSProvider FileSystem | Select-Object Name,@{n="UsedGB";e={[math]::Round($_.Used/1GB,1)}},@{n="FreeGB";e={[math]::Round($_.Free/1GB,1)}} | Format-Table | Out-String')
-INSTALLED=$(probe "Installed SSvid/VidCombo" '
+INSTALLED=$(probe "Installed Svid/VidCombo" '
 $paths = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*",
          "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*",
          "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*"
 Get-ItemProperty $paths -ErrorAction SilentlyContinue |
-    Where-Object { $_.DisplayName -match "(?i)ssvid|vidcombo|snakeloader" } |
+    Where-Object { $_.DisplayName -match "(?i)svid|vidcombo|snakeloader" } |
     Select-Object DisplayName,DisplayVersion,Publisher,InstallLocation |
     Format-List | Out-String')
 QADIR=$(probe "QA working dir" 'if (Test-Path C:\QA\Snakeloader) { Get-ChildItem C:\QA\Snakeloader -Recurse -Depth 2 -Force | Select-Object Mode,LastWriteTime,Length,FullName | Format-Table -AutoSize | Out-String } else { "C:\QA\Snakeloader does not exist" }')
@@ -109,7 +109,7 @@ $SSHD
 $DISK
 \`\`\`
 
-## Installed SSvid / VidCombo residue
+## Installed Svid / VidCombo residue
 
 \`\`\`
 $INSTALLED

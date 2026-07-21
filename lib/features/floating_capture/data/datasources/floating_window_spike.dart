@@ -38,8 +38,8 @@ import '../../../downloads/domain/entities/video_preview.dart';
 @visibleForTesting
 class FloatingWindowSpike {
   /// Channel name for IPC between main and floating engines.
-  /// Matches spec §3.3 ('ssvid.floating_capture').
-  static const String _channelName = 'ssvid.floating_capture';
+  /// Matches spec §3.3 ('svid.floating_capture').
+  static const String _channelName = 'svid.floating_capture';
 
   /// Dimensions per spec §4.1 (Portrait 300×420 collapsed).
   static const Size _floatingWindowSize = Size(300, 420);
@@ -261,7 +261,7 @@ class FloatingWindowSpike {
 // 1. Add native registration callbacks (MainFlutterWindow.swift)
 // 2. Refactor main.dart entry point for window-type dispatch (per README §1)
 // 3. Build FloatingWindowManager (this spike's logic, productionized)
-// 4. Add platform channel `ssvid.floating_capture.native` for:
+// 4. Add platform channel `svid.floating_capture.native` for:
 //    - Set NSPanel attributes (always-on-top, no-focus-steal)
 //    - Set window position relative to monitor
 //    - Listen for monitor disconnect events

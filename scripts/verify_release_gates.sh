@@ -106,7 +106,7 @@ if [ "${#present[@]}" -eq 0 ]; then
   record G2.tests SKIP "none of the locked test files exist yet"
 else
   test_out="$(mktemp)"
-  if "${FLUTTER[@]}" test "${present[@]}" --dart-define=BRAND=ssvid >"$test_out" 2>&1; then
+  if "${FLUTTER[@]}" test "${present[@]}" --dart-define=BRAND=svid >"$test_out" 2>&1; then
     passed=$(grep -oE '[0-9]+: All tests passed' "$test_out" | tail -1)
     record G2.tests PASS "${passed:-all green}"
   else
@@ -171,7 +171,7 @@ fi
 echo
 echo "== Gate 5 — Brand assets =="
 if [ -x "$SCRIPT_DIR/verify_brand_assets.sh" ]; then
-  for brand in ssvid vidcombo; do
+  for brand in svid vidcombo; do
     if bash "$SCRIPT_DIR/verify_brand_assets.sh" "$brand" >/tmp/g5.out 2>&1; then
       record "G5.assets.$brand" PASS
     else
@@ -190,7 +190,7 @@ fi
 # caught the Wave 3 dual-[Run] syntax this way.
 # -----------------------------------------------------------------------------
 echo
-echo "== Gate 6 — Inno Setup compile (ssvid + vidcombo) =="
+echo "== Gate 6 — Inno Setup compile (svid + vidcombo) =="
 if [ "$FAST_MODE" -eq 1 ]; then
   record G6.iscc SKIP "--fast mode"
 elif ! command -v docker >/dev/null 2>&1; then
@@ -200,7 +200,7 @@ elif ! docker info >/dev/null 2>&1; then
 else
   STUB_DIR="$ROOT_DIR/.iscc-stub"
   rm -rf "$STUB_DIR" && mkdir -p "$STUB_DIR"
-  touch "$STUB_DIR/ssvid.exe" "$STUB_DIR/vidcombo.exe" \
+  touch "$STUB_DIR/svid.exe" "$STUB_DIR/vidcombo.exe" \
         "$STUB_DIR/native.dll" "$STUB_DIR/app_icon.ico"
 
   compile_brand() {
@@ -222,14 +222,14 @@ else
     rm -f "$out"
   }
 
-  compile_brand ssvid "1.0.0" \
-    "/DMyAppName=SSvid" "/DMyAppExeName=ssvid.exe" \
-    "/DMyAppPublisher=SSvid" "/DMyAppCompany=Bui Xuan Mai" \
-    "/DMyAppProductName=SSvid Desktop" \
-    "/DMyAppFileDescription=SSvid Desktop Installer" \
+  compile_brand svid "1.0.0" \
+    "/DMyAppName=Svid" "/DMyAppExeName=svid.exe" \
+    "/DMyAppPublisher=Svid" "/DMyAppCompany=Bui Xuan Mai" \
+    "/DMyAppProductName=Svid Desktop" \
+    "/DMyAppFileDescription=Svid Desktop Installer" \
     "/DMyAppCopyright=Copyright (C) 2026 Bui Xuan Mai. All rights reserved." \
-    "/DMyAppURL=https://ssvid.app" "/DMyUrlScheme=ssvid" \
-    "/DMyAppUserModelId=com.ssvid.app"
+    "/DMyAppURL=https://svid.app" "/DMyUrlScheme=svid" \
+    "/DMyAppUserModelId=com.svid.app"
   compile_brand vidcombo "1.0.0" \
     "/DMyAppName=VidCombo" "/DMyAppExeName=vidcombo.exe" \
     "/DMyAppPublisher=VidCombo" "/DMyAppCompany=Bui Xuan Mai" \
@@ -243,7 +243,7 @@ else
 
   rm -rf "$STUB_DIR"
   # Clean up test installer artefacts Inno Setup dropped in dist/.
-  rm -f "$ROOT_DIR/dist/SSvid-1.0.0-windows-x64-setup.exe" \
+  rm -f "$ROOT_DIR/dist/Svid-1.0.0-windows-x64-setup.exe" \
         "$ROOT_DIR/dist/VidCombo-1.0.0-windows-x64-setup.exe"
 fi
 

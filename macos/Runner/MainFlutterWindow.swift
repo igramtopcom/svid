@@ -12,7 +12,7 @@ import window_manager
 class CookiePlugin: NSObject, FlutterPlugin {
 
     static func register(with registrar: FlutterPluginRegistrar) {
-        let channelName = "\(Bundle.main.bundleIdentifier ?? "com.ssvid.app")/native_cookies"
+        let channelName = "\(Bundle.main.bundleIdentifier ?? "com.svid.app")/native_cookies"
         let channel = FlutterMethodChannel(
             name: channelName,
             binaryMessenger: registrar.messenger
@@ -148,7 +148,7 @@ class CookiePlugin: NSObject, FlutterPlugin {
 /// hot restart, unlike the old AppDelegate direct-messenger registration.
 class MacOSActionsPlugin: NSObject, FlutterPlugin {
     static func register(with registrar: FlutterPluginRegistrar) {
-        let channelName = "\(Bundle.main.bundleIdentifier ?? "com.ssvid.app")/macos_actions"
+        let channelName = "\(Bundle.main.bundleIdentifier ?? "com.svid.app")/macos_actions"
         let channel = FlutterMethodChannel(name: channelName, binaryMessenger: registrar.messenger)
         let instance = MacOSActionsPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
@@ -205,7 +205,7 @@ class MacOSActionsPlugin: NSObject, FlutterPlugin {
 /// MissingPluginException on every requestPermission/checkPermission call.
 class NotificationPermissionPlugin: NSObject, FlutterPlugin {
     static func register(with registrar: FlutterPluginRegistrar) {
-        let channelName = "\(Bundle.main.bundleIdentifier ?? "com.ssvid.app")/notification_permission"
+        let channelName = "\(Bundle.main.bundleIdentifier ?? "com.svid.app")/notification_permission"
         let channel = FlutterMethodChannel(name: channelName, binaryMessenger: registrar.messenger)
         let instance = NotificationPermissionPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
@@ -255,8 +255,8 @@ class NotificationPermissionPlugin: NSObject, FlutterPlugin {
 /// detect change. Per spec v2.1 §3.1 + §6.2 implementation notes.
 ///
 /// Channels:
-/// - Method: ssvid.clipboard_monitor/methods (start/stop/readText)
-/// - Event:  ssvid.clipboard_monitor/events (clipboard text changes)
+/// - Method: svid.clipboard_monitor/methods (start/stop/readText)
+/// - Event:  svid.clipboard_monitor/events (clipboard text changes)
 class ClipboardMonitorPlugin: NSObject, FlutterPlugin {
 
     private var eventSink: FlutterEventSink?
@@ -265,11 +265,11 @@ class ClipboardMonitorPlugin: NSObject, FlutterPlugin {
 
     static func register(with registrar: FlutterPluginRegistrar) {
         let methodChannel = FlutterMethodChannel(
-            name: "ssvid.clipboard_monitor/methods",
+            name: "svid.clipboard_monitor/methods",
             binaryMessenger: registrar.messenger
         )
         let eventChannel = FlutterEventChannel(
-            name: "ssvid.clipboard_monitor/events",
+            name: "svid.clipboard_monitor/events",
             binaryMessenger: registrar.messenger
         )
         let instance = ClipboardMonitorPlugin()
@@ -365,7 +365,7 @@ extension ClipboardMonitorPlugin: FlutterStreamHandler {
 /// Registered ONLY on child engines (popups), NOT on the main window — the
 /// main app's window should keep normal behaviour.
 ///
-/// Channel: ssvid.floating_capture.native (popup ↔ this plugin only).
+/// Channel: svid.floating_capture.native (popup ↔ this plugin only).
 /// Method:  `configurePanel` — apply the attributes; idempotent. Returns
 ///          `true` on success, FlutterError on a missing window reference
 ///          (rare — would mean the engine isn't attached yet).
@@ -383,7 +383,7 @@ class FloatingCapturePanelPlugin: NSObject, FlutterPlugin {
 
     static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(
-            name: "ssvid.floating_capture.native",
+            name: "svid.floating_capture.native",
             binaryMessenger: registrar.messenger
         )
         let instance = FloatingCapturePanelPlugin(registrar: registrar)

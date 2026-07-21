@@ -1,7 +1,7 @@
 # bootstrap_windows_build_lab.ps1
 #
 # Run ONCE on the Windows QA box (192.168.31.75) to provision a full
-# local build+test lab for ssvid-desktop (Flutter + Rust MSVC + Inno).
+# local build+test lab for svid-desktop (Flutter + Rust MSVC + Inno).
 #
 # Idempotent: re-running is safe; only installs what's missing.
 # ASCII-only: avoids PowerShell 5.1 UTF-8-no-BOM parsing issues
@@ -414,11 +414,11 @@ $verifyResults | Format-Table -AutoSize | Out-String | ForEach-Object { Add-Cont
 
 Write-Host ""
 Write-Host "Next step (run from Mac):" -ForegroundColor Cyan
-Write-Host "  ssh ssvid-qa 'whoami; hostname'  # should succeed without password" -ForegroundColor Gray
+Write-Host "  ssh svid-qa 'whoami; hostname'  # should succeed without password" -ForegroundColor Gray
 Write-Host "  scripts/qa/inventory.sh           # full machine inventory" -ForegroundColor Gray
 Write-Host ""
 Write-Host "Then run clone+first-build on Windows via SSH from Mac:" -ForegroundColor Cyan
-Write-Host "  ssh ssvid-qa 'powershell -File C:\QA\Snakeloader\scripts\clone_and_first_build.ps1 -Brand ssvid'" -ForegroundColor Gray
+Write-Host "  ssh svid-qa 'powershell -File C:\QA\Snakeloader\scripts\clone_and_first_build.ps1 -Brand svid'" -ForegroundColor Gray
 
 $failures = ($verifyResults | Where-Object Status -ne 'OK').Count
 if ($failures -gt 0) {

@@ -2,13 +2,13 @@
 
 set -euo pipefail
 
-BRAND="${1:-ssvid}"
+BRAND="${1:-svid}"
 DURATION_SECONDS="${2:-12}"
 
 case "$BRAND" in
-  ssvid|vidcombo) ;;
+  svid|vidcombo) ;;
   *)
-    echo "ERROR: unknown brand '$BRAND'. Use 'ssvid' or 'vidcombo'." >&2
+    echo "ERROR: unknown brand '$BRAND'. Use 'svid' or 'vidcombo'." >&2
     exit 1
     ;;
 esac
@@ -53,7 +53,7 @@ current_brand="$(
   sed -n 's/^#include "brands\/\(.*\)\.xcconfig"/\1/p' "$APPINFO" | head -n 1
 )"
 if [[ -z "$current_brand" ]]; then
-  current_brand="ssvid"
+  current_brand="svid"
 fi
 
 cleanup() {

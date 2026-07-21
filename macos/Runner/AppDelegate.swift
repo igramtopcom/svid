@@ -9,7 +9,7 @@ class AppDelegate: FlutterAppDelegate {
 
   /// Brand-aware channel prefix — reads CFBundleIdentifier at runtime.
   private lazy var channelPrefix: String = {
-    Bundle.main.bundleIdentifier ?? "com.ssvid.app"
+    Bundle.main.bundleIdentifier ?? "com.svid.app"
   }()
 
   /// Brand-aware URL scheme — reads from Info.plist CFBundleURLSchemes.
@@ -19,14 +19,14 @@ class AppDelegate: FlutterAppDelegate {
        let scheme = schemes.first {
       return scheme
     }
-    return "ssvid"
+    return "svid"
   }()
 
   /// Brand display name — reads from Info.plist.
   private lazy var displayName: String = {
     Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
       ?? Bundle.main.infoDictionary?["CFBundleName"] as? String
-      ?? "SSvid"
+      ?? "Svid"
   }()
 
   override func applicationDidFinishLaunching(_ notification: Notification) {

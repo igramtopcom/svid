@@ -1,28 +1,28 @@
 #!/bin/bash
 # =============================================================================
 # Multi-Brand macOS Packaging Script — Creates .dmg from Flutter .app bundle
-# Usage: bash scripts/package_macos.sh [ssvid|vidcombo]
-# Default: ssvid
+# Usage: bash scripts/package_macos.sh [svid|vidcombo]
+# Default: svid
 # =============================================================================
 set -e
 
-BRAND="${1:-ssvid}"
+BRAND="${1:-svid}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$SCRIPT_DIR/.."
 DIST_DIR="$PROJECT_ROOT/dist"
 
 # Brand configuration
 case "$BRAND" in
-  ssvid)
-    APP_NAME="ssvid"
-    DISPLAY_NAME="SSvid"
+  svid)
+    APP_NAME="svid"
+    DISPLAY_NAME="Svid"
     ;;
   vidcombo)
     APP_NAME="vidcombo"
     DISPLAY_NAME="VidCombo"
     ;;
   *)
-    echo "Error: Unknown brand '$BRAND'. Use 'ssvid' or 'vidcombo'."
+    echo "Error: Unknown brand '$BRAND'. Use 'svid' or 'vidcombo'."
     exit 1
     ;;
 esac

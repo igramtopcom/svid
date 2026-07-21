@@ -18,9 +18,9 @@ DEST_DIR="$2"
 BRAND="$3"
 
 case "$BRAND" in
-  ssvid)    APP_NAME="SSvid";    EXE_NAME="ssvid.exe" ;;
+  svid)    APP_NAME="Svid";    EXE_NAME="svid.exe" ;;
   vidcombo) APP_NAME="VidCombo"; EXE_NAME="vidcombo.exe" ;;
-  *) echo "Unknown brand: $BRAND (expected ssvid|vidcombo)" >&2; exit 2 ;;
+  *) echo "Unknown brand: $BRAND (expected svid|vidcombo)" >&2; exit 2 ;;
 esac
 
 if [ ! -d "$BUNDLE_DIR" ]; then

@@ -1,21 +1,21 @@
 #!/bin/bash
 # =============================================================================
 # Multi-Brand Linux Packaging Script — Creates .AppImage from Flutter bundle
-# Usage: bash scripts/package_linux.sh [ssvid|vidcombo]
-# Default: ssvid
+# Usage: bash scripts/package_linux.sh [svid|vidcombo]
+# Default: svid
 # =============================================================================
 set -e
 
-BRAND="${1:-ssvid}"
+BRAND="${1:-svid}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$SCRIPT_DIR/.."
 DIST_DIR="$PROJECT_ROOT/dist"
 
 # Brand configuration
 case "$BRAND" in
-  ssvid)
-    APP_NAME="SSvid"
-    APP_BINARY="ssvid"
+  svid)
+    APP_NAME="Svid"
+    APP_BINARY="svid"
     APP_COMMENT="The fastest desktop video downloader"
     ;;
   vidcombo)
@@ -24,7 +24,7 @@ case "$BRAND" in
     APP_COMMENT="Fast & reliable video downloader"
     ;;
   *)
-    echo "Error: Unknown brand '$BRAND'. Use 'ssvid' or 'vidcombo'."
+    echo "Error: Unknown brand '$BRAND'. Use 'svid' or 'vidcombo'."
     exit 1
     ;;
 esac

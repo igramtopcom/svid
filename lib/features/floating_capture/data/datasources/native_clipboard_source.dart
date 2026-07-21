@@ -17,14 +17,14 @@ import '../../domain/services/clipboard_source.dart';
 ///
 /// Channels (identical names across platforms — Dart code below works
 /// unchanged on macOS + Windows):
-/// - Method channel `ssvid.clipboard_monitor/methods` — start/stop/readText
-/// - Event channel `ssvid.clipboard_monitor/events` — clipboard text events
+/// - Method channel `svid.clipboard_monitor/methods` — start/stop/readText
+/// - Event channel `svid.clipboard_monitor/events` — clipboard text events
 ///
 /// Native sides emit text-only events; image/file/HTML clipboards are
 /// filtered at the native layer (per spec §11 E20).
 class NativeClipboardSource implements ClipboardSource {
-  static const _methodChannelName = 'ssvid.clipboard_monitor/methods';
-  static const _eventChannelName = 'ssvid.clipboard_monitor/events';
+  static const _methodChannelName = 'svid.clipboard_monitor/methods';
+  static const _eventChannelName = 'svid.clipboard_monitor/events';
 
   final MethodChannel _methodChannel;
   final EventChannel _eventChannel;

@@ -11,9 +11,9 @@
 #              SmartScreen UX, Inno [Run] visible relaunch).
 #
 # Usage:
-#   scripts/qa/smoke.sh --brand ssvid --installer SSvid-1.3.9-windows-x64-setup.exe
+#   scripts/qa/smoke.sh --brand svid --installer Svid-1.3.9-windows-x64-setup.exe
 #   scripts/qa/smoke.sh --brand vidcombo --installer VidCombo-1.6.6-windows-x64-setup.exe --visible
-#   scripts/qa/smoke.sh --brand ssvid --installer ... --launch-timeout 90 --pull-logs
+#   scripts/qa/smoke.sh --brand svid --installer ... --launch-timeout 90 --pull-logs
 
 set -euo pipefail
 
@@ -43,8 +43,8 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-[[ -n "$BRAND" ]] || qa_fail "--brand <ssvid|vidcombo> required"
-[[ "$BRAND" == "ssvid" || "$BRAND" == "vidcombo" ]] || qa_fail "brand must be ssvid or vidcombo"
+[[ -n "$BRAND" ]] || qa_fail "--brand <svid|vidcombo> required"
+[[ "$BRAND" == "svid" || "$BRAND" == "vidcombo" ]] || qa_fail "brand must be svid or vidcombo"
 [[ -n "$INSTALLER" ]] || qa_fail "--installer <filename-in-artifacts> required"
 
 qa_assert_ssh_ready

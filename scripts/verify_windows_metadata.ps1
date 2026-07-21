@@ -1,6 +1,6 @@
 param(
   [Parameter(Mandatory = $true)]
-  [ValidateSet("ssvid", "vidcombo")]
+  [ValidateSet("svid", "vidcombo")]
   [string]$Brand,
 
   [Parameter(Mandatory = $true)]
@@ -16,9 +16,9 @@ if ($Brand -eq "vidcombo") {
   $exeName = "vidcombo.exe"
   $appUserModelId = "com.tinasoft.vidcombo.desktop"
 } else {
-  $displayName = "SSvid"
-  $exeName = "ssvid.exe"
-  $appUserModelId = "com.ssvid.app"
+  $displayName = "Svid"
+  $exeName = "svid.exe"
+  $appUserModelId = "com.svid.app"
 }
 
 $companyName = "Bui Xuan Mai"
@@ -253,7 +253,7 @@ function Assert-AssociatedIconMatchesBrand {
 # Why disabled (2026-05-12): the assertion below rendered both source and
 # embedded icons into 32bpp ARGB bitmaps and compared SHA-256 of the raw
 # pixel bytes. Real-world finding from this session's CI runs: the gate
-# fails on BOTH brands -- SSvid (run 25715556968) and VidCombo (runs
+# fails on BOTH brands -- Svid (run 25715556968) and VidCombo (runs
 # 25720753089, 25721339242) -- after equivalent .ico sources were embedded
 # by Flutter's CMake/windres pipeline. windres normalizes PNG-compressed
 # frames into BMP/DIB on its way into the .exe resource section, which

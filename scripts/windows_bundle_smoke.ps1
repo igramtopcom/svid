@@ -1,6 +1,6 @@
 # scripts/windows_bundle_smoke.ps1
 #
-# Bundle-level Windows smoke test for SSvid Desktop.
+# Bundle-level Windows smoke test for Svid Desktop.
 #
 # What this is (and is NOT):
 #   * IS: a fast, deterministic check that a Flutter Windows BUNDLE
@@ -29,11 +29,11 @@
 #       Skipped when -NoLaunch is passed (CI without a desktop session).
 #
 # Usage:
-#   pwsh -File scripts/windows_bundle_smoke.ps1 -Brand ssvid -Mode Debug
+#   pwsh -File scripts/windows_bundle_smoke.ps1 -Brand svid -Mode Debug
 #   pwsh -File scripts/windows_bundle_smoke.ps1 -Brand vidcombo -Mode Release `
 #        -LaunchTimeoutSeconds 90
-#   pwsh -File scripts/windows_bundle_smoke.ps1 -Brand ssvid -Mode Release -DryRun
-#   pwsh -File scripts/windows_bundle_smoke.ps1 -Brand ssvid -Mode Debug -NoLaunch
+#   pwsh -File scripts/windows_bundle_smoke.ps1 -Brand svid -Mode Release -DryRun
+#   pwsh -File scripts/windows_bundle_smoke.ps1 -Brand svid -Mode Debug -NoLaunch
 #
 # Exit codes:
 #   0  all scenarios PASS or WARN/SKIP (no FAIL)
@@ -43,7 +43,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('ssvid', 'vidcombo')]
+    [ValidateSet('svid', 'vidcombo')]
     [string]$Brand,
 
     [Parameter(Mandatory = $true)]
@@ -127,13 +127,13 @@ if ($Brand -eq 'vidcombo') {
     $expectedAppSupportDir = 'VidCombo Desktop'
     $brandLogPrefix        = 'vidcombo'
 } else {
-    $expectedExeName       = 'ssvid.exe'
-    $expectedProductName   = 'SSvid Desktop'
-    $expectedDescription   = 'SSvid Desktop'
+    $expectedExeName       = 'svid.exe'
+    $expectedProductName   = 'Svid Desktop'
+    $expectedDescription   = 'Svid Desktop'
     $expectedCompanyName   = 'Bui Xuan Mai'
-    $expectedBrandNameHdr  = 'SSvid'
-    $expectedAppSupportDir = 'SSvid Desktop'
-    $brandLogPrefix        = 'ssvid'
+    $expectedBrandNameHdr  = 'Svid'
+    $expectedAppSupportDir = 'Svid Desktop'
+    $brandLogPrefix        = 'svid'
 }
 
 if (-not $BundleDir) {
@@ -166,7 +166,7 @@ Record-Result 'B0.1' 'Bundle directory exists' 'PASS' $BundleDir
 $exePath = Join-Path $BundleDir $expectedExeName
 if (-not (Test-Path $exePath)) {
     # Possible cause: brand mismatch -- the bundle was built with the *other* brand.
-    $otherExe = if ($Brand -eq 'ssvid') { 'vidcombo.exe' } else { 'ssvid.exe' }
+    $otherExe = if ($Brand -eq 'svid') { 'vidcombo.exe' } else { 'svid.exe' }
     $otherFound = Test-Path (Join-Path $BundleDir $otherExe)
     $hint = if ($otherFound) {
         "Found '$otherExe' instead. Run 'scripts/set_brand.sh $Brand' before building, or pass --dart-define=BRAND=$Brand to flutter build."

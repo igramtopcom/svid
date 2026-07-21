@@ -14,7 +14,7 @@ void FloatingCapturePanelPlugin::RegisterWithRegistrar(
 
   plugin->method_channel_ =
       std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
-          registrar->messenger(), "ssvid.floating_capture.native",
+          registrar->messenger(), "svid.floating_capture.native",
           &flutter::StandardMethodCodec::GetInstance());
   plugin->method_channel_->SetMethodCallHandler(
       [plugin_ptr](const auto& call, auto result) {

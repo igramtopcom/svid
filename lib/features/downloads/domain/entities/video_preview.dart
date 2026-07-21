@@ -8,7 +8,7 @@ import '../../../../core/utils/platform_detector.dart';
 /// completes.
 ///
 /// Per spec v2.1 §3.3 (IPC architecture): instances of this class travel over
-/// MethodChannel `ssvid.floating_capture` between main and floating Flutter
+/// MethodChannel `svid.floating_capture` between main and floating Flutter
 /// engines. [toJson] / [fromJson] are required for serialization.
 ///
 /// See `docs/SSvid_v2_1_FloatingCapture_Spec.md` for full context.

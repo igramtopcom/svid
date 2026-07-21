@@ -1,0 +1,6 @@
+// Svid brand configuration — Nocturne Cinematic
+PRODUCT_NAME = svid
+PRODUCT_BUNDLE_IDENTIFIER = com.svid.app
+PRODUCT_COPYRIGHT = Copyright © 2026 Svid. All rights reserved.
+BRAND_DISPLAY_NAME = Svid
+BRAND_URL_SCHEME = svid

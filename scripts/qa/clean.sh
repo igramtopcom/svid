@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Reset Windows QA box state between smoke runs.
-# Uninstalls SSvid/VidCombo if present, kills lingering processes,
+# Uninstalls Svid/VidCombo if present, kills lingering processes,
 # clears %TEMP%\inno-install-*.log and C:\QA\Snakeloader\logs\*.
 #
-# Usage: scripts/qa/clean.sh [--brand ssvid|vidcombo|all] [--keep-logs]
+# Usage: scripts/qa/clean.sh [--brand svid|vidcombo|all] [--keep-logs]
 # Default: --brand all, logs are cleared.
 
 set -euo pipefail
@@ -28,10 +28,10 @@ qa_log "Cleaning Windows QA state (brand=$BRAND keep-logs=$KEEP_LOGS)"
 
 # Brand → match patterns for installed apps / processes.
 case "$BRAND" in
-    ssvid) PAT_INST='ssvid'; PAT_PROC='ssvid' ;;
+    svid) PAT_INST='svid'; PAT_PROC='svid' ;;
     vidcombo) PAT_INST='vidcombo'; PAT_PROC='vidcombo' ;;
-    all) PAT_INST='ssvid|vidcombo|snakeloader'; PAT_PROC='ssvid|vidcombo' ;;
-    *) qa_fail "brand must be ssvid|vidcombo|all" ;;
+    all) PAT_INST='svid|vidcombo|snakeloader'; PAT_PROC='svid|vidcombo' ;;
+    *) qa_fail "brand must be svid|vidcombo|all" ;;
 esac
 
 # Kill lingering app processes (idempotent).

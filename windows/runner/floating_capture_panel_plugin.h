@@ -7,7 +7,7 @@
 
 #include <memory>
 
-// SSvid v2.1, Phase 1C.1 — Windows floating-panel attributes.
+// Svid v2.1, Phase 1C.1 — Windows floating-panel attributes.
 //
 // Configures the spawned popup HWND with:
 //   - Always-on-top via SetWindowPos(HWND_TOPMOST, ...)
@@ -19,7 +19,7 @@
 // Registered ONLY on child engines (popups), NOT on the main runner
 // window — the main app's HWND should keep normal behaviour.
 //
-// Channel: ssvid.floating_capture.native (popup ↔ this plugin only).
+// Channel: svid.floating_capture.native (popup ↔ this plugin only).
 // Method:  `configurePanel` — apply attributes; idempotent.
 class FloatingCapturePanelPlugin : public flutter::Plugin {
  public:

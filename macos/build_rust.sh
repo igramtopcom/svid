@@ -79,7 +79,7 @@ cat > "$FRAMEWORK_DIR/Versions/A/Resources/Info.plist" << 'EOF'
 	<key>CFBundleExecutable</key>
 	<string>native</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.ssvid.app.native</string>
+	<string>com.svid.app.native</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

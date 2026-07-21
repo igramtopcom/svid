@@ -752,7 +752,7 @@ Future<void> _configureWindowChrome({List<Rect> avoidRects = const []}) async {
 /// FloatingCapturePanelPlugin (macOS Swift / Windows C++). Calling
 /// `configurePanel` lifts the popup to .statusBar level on macOS and
 /// HWND_TOPMOST + WS_EX_NOACTIVATE on Windows.
-const _kPanelChannel = MethodChannel('ssvid.floating_capture.native');
+const _kPanelChannel = MethodChannel('svid.floating_capture.native');
 
 Future<void> _applyFloatingPanelAttributes() async {
   try {
@@ -1107,7 +1107,7 @@ class _FloatingCaptureHome extends StatefulWidget {
 
 class _FloatingCaptureHomeState extends State<_FloatingCaptureHome> {
   /// Channel name matches the production [DesktopMultiWindowFloatingWindow].
-  static const _channel = WindowMethodChannel('ssvid.floating_capture');
+  static const _channel = WindowMethodChannel('svid.floating_capture');
 
   /// Codex audit P1 #2: bounded queue with explicit selection. The
   /// queue ALWAYS contains at least the initial preview (seeded in

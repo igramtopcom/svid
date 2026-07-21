@@ -3,7 +3,7 @@
 set -euo pipefail
 
 if [ "$#" -ne 2 ]; then
-  echo "Usage: bash scripts/verify_macos_metadata.sh <ssvid|vidcombo> <app-or-dmg-path>" >&2
+  echo "Usage: bash scripts/verify_macos_metadata.sh <svid|vidcombo> <app-or-dmg-path>" >&2
   exit 2
 fi
 
@@ -11,11 +11,11 @@ BRAND="$1"
 TARGET="$2"
 
 case "$BRAND" in
-  ssvid)
-    DISPLAY_NAME="SSvid"
-    BUNDLE_ID="com.ssvid.app"
-    URL_SCHEME="ssvid"
-    COPYRIGHT="Copyright © 2026 SSvid. All rights reserved."
+  svid)
+    DISPLAY_NAME="Svid"
+    BUNDLE_ID="com.svid.app"
+    URL_SCHEME="svid"
+    COPYRIGHT="Copyright © 2026 Svid. All rights reserved."
     ;;
   vidcombo)
     DISPLAY_NAME="VidCombo"

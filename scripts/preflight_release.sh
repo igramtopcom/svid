@@ -22,7 +22,7 @@
 #      installs of VidCombo until users blew through the install flow).
 #
 #   3. Backend release-record health — every brand × platform release
-#      record on api.ssvid.app `/admin/v1/releases` for the version about
+#      record on api.svid.app `/admin/v1/releases` for the version about
 #      to ship has `is_active=true` AND `published_at` non-null. The
 #      v1.3.6 dispatch went out with NULL `published_at` on every record
 #      (admin POST default), so the public `/api/v1/updates/check`
@@ -35,8 +35,8 @@
 #
 # Optional environment for Gate 3 (backend record check):
 #
-#   PREFLIGHT_VERSION_SSVID=1.3.7   PREFLIGHT_VERSION_VIDCOMBO=1.6.4
-#   ADMIN_EMAIL=admin@ssvid.app     ADMIN_PASSWORD="${ADMIN_PASSWORD}"
+#   PREFLIGHT_VERSION_SVID=1.3.7   PREFLIGHT_VERSION_VIDCOMBO=1.6.4
+#   ADMIN_EMAIL=admin@svid.app     ADMIN_PASSWORD="${ADMIN_PASSWORD}"
 #
 # Returns non-zero if ANY gate fails so it can wire into a pre-tag hook.
 # =============================================================================
@@ -76,7 +76,7 @@ Default: every WARN gate makes the script exit non-zero so the message
 
 Environment:
   ADMIN_EMAIL, ADMIN_PASSWORD              Admin login for Gate 3
-  PREFLIGHT_VERSION_SSVID                  e.g. 1.3.7
+  PREFLIGHT_VERSION_SVID                  e.g. 1.3.7
   PREFLIGHT_VERSION_VIDCOMBO               e.g. 1.6.4
   PREFLIGHT_PLATFORMS                      space-separated, default
                                            "macos windows" (linux
@@ -274,17 +274,17 @@ echo "== Gate 3 — Backend release records =="
 
 ADMIN_EMAIL="${ADMIN_EMAIL:-}"
 ADMIN_PASSWORD="${ADMIN_PASSWORD:-}"
-PREFLIGHT_VERSION_SSVID="${PREFLIGHT_VERSION_SSVID:-}"
+PREFLIGHT_VERSION_SVID="${PREFLIGHT_VERSION_SVID:-}"
 PREFLIGHT_VERSION_VIDCOMBO="${PREFLIGHT_VERSION_VIDCOMBO:-}"
 
 if [ -z "$ADMIN_EMAIL" ] || [ -z "$ADMIN_PASSWORD" ]; then
   record G3.records SKIP "ADMIN_EMAIL / ADMIN_PASSWORD not set"
-elif [ -z "$PREFLIGHT_VERSION_SSVID$PREFLIGHT_VERSION_VIDCOMBO" ]; then
-  record G3.records SKIP "PREFLIGHT_VERSION_SSVID / _VIDCOMBO not set (run after ship)"
+elif [ -z "$PREFLIGHT_VERSION_SVID$PREFLIGHT_VERSION_VIDCOMBO" ]; then
+  record G3.records SKIP "PREFLIGHT_VERSION_SVID / _VIDCOMBO not set (run after ship)"
 elif ! command -v curl >/dev/null 2>&1 || ! command -v python3 >/dev/null 2>&1; then
   record G3.records SKIP "curl or python3 missing"
 else
-  TOKEN=$(curl -s --max-time 30 -X POST "https://api.ssvid.app/admin/v1/auth/login" \
+  TOKEN=$(curl -s --max-time 30 -X POST "https://api.svid.app/admin/v1/auth/login" \
     -H "Content-Type: application/json" \
     -d "{\"email\":\"$ADMIN_EMAIL\",\"password\":\"$ADMIN_PASSWORD\"}" \
     | python3 -c "import json,sys; print(json.load(sys.stdin).get('data',{}).get('token',''))" 2>/dev/null)
@@ -294,7 +294,7 @@ else
   else
     issues=""
     no_records=""
-    for spec in "ssvid:$PREFLIGHT_VERSION_SSVID" "vidcombo:$PREFLIGHT_VERSION_VIDCOMBO"; do
+    for spec in "svid:$PREFLIGHT_VERSION_SVID" "vidcombo:$PREFLIGHT_VERSION_VIDCOMBO"; do
       brand="${spec%%:*}"
       version="${spec##*:}"
       [ -z "$version" ] && continue
@@ -311,7 +311,7 @@ else
       page=1
       while :; do
         page_resp=$(curl -s --max-time 30 \
-          "https://api.ssvid.app/admin/v1/releases?page=$page&per_page=100" \
+          "https://api.svid.app/admin/v1/releases?page=$page&per_page=100" \
           -H "Authorization: Bearer $TOKEN")
         # Append items to the accumulator and decide whether to keep
         # paging based on whether this page returned a full 100.

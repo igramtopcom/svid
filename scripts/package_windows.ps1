@@ -4,7 +4,7 @@
 # =============================================================================
 
 param(
-  [string]$Brand = "ssvid",
+  [string]$Brand = "svid",
   [string]$BundleDir = ""
 )
 
@@ -14,9 +14,9 @@ Write-Warning "Legacy unsigned packaging helper. Do not use this script for prod
 
 # Brand configuration
 switch ($Brand) {
-  "ssvid"    { $AppName = "SSvid";    $ExeName = "ssvid.exe" }
+  "svid"    { $AppName = "Svid";    $ExeName = "svid.exe" }
   "vidcombo" { $AppName = "VidCombo"; $ExeName = "vidcombo.exe" }
-  default    { Write-Error "Unknown brand: $Brand. Use 'ssvid' or 'vidcombo'."; exit 1 }
+  default    { Write-Error "Unknown brand: $Brand. Use 'svid' or 'vidcombo'."; exit 1 }
 }
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path

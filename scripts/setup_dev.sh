@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# setup_dev.sh — First-time development environment setup for SSvid Desktop
+# setup_dev.sh — First-time development environment setup for Svid Desktop
 #
 # Run this script once after cloning or pulling the repository to generate
 # all required Dart source files (Freezed, Riverpod, Drift).

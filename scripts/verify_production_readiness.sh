@@ -35,7 +35,7 @@ baseline_brand="$(
   sed -n 's/^#include "brands\/\(.*\)\.xcconfig"/\1/p' "$APPINFO" | head -n 1
 )"
 if [[ -z "$baseline_brand" ]]; then
-  baseline_brand="ssvid"
+  baseline_brand="svid"
 fi
 
 REPORT_FILE="/tmp/production_readiness_$(date +%Y%m%d_%H%M%S).log"
@@ -87,8 +87,8 @@ log_section "[2/6] Flutter Test"
 log_section "[3/6] Runtime Smoke"
 bash "$SCRIPT_DIR/run_runtime_smoke_tests.sh" | tee -a "$REPORT_FILE"
 
-log_section "[4/6] SSvid Startup Profile"
-bash "$SCRIPT_DIR/profile_startup_macos.sh" ssvid "$STARTUP_DURATION_SECONDS" | tee -a "$REPORT_FILE"
+log_section "[4/6] Svid Startup Profile"
+bash "$SCRIPT_DIR/profile_startup_macos.sh" svid "$STARTUP_DURATION_SECONDS" | tee -a "$REPORT_FILE"
 
 log_section "[5/6] VidCombo Startup Profile"
 bash "$SCRIPT_DIR/profile_startup_macos.sh" vidcombo "$STARTUP_DURATION_SECONDS" | tee -a "$REPORT_FILE"
@@ -104,7 +104,7 @@ fi
   echo "Baseline brand restored: $baseline_brand"
   echo
   echo "Startup summary"
-  summarize_brand_log ssvid
+  summarize_brand_log svid
   summarize_brand_log vidcombo
   echo
   echo "Report file: $REPORT_FILE"

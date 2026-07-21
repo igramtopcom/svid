@@ -177,7 +177,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/icons/platforms/
-    - assets/brands/ssvid/
+    - assets/brands/svid/
     - assets/brands/vidcombo/
     - assets/translations/
     - assets/fonts/Inter-LICENSE.txt

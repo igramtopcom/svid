@@ -72,7 +72,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   std::vector<std::string> command_line_arguments =
       GetCommandLineArguments();
 
-  // Check if launched via URL scheme (e.g., ssvid://activate?key=...)
+  // Check if launched via URL scheme (e.g., svid://activate?key=...)
   std::string launch_uri;
   for (const auto& arg : command_line_arguments) {
     if (arg.rfind(BRAND_URL_SCHEME, 0) == 0) {

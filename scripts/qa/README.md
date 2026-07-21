@@ -1,11 +1,11 @@
 # Mac→Windows QA Orchestration
 
-Mac-side toolchain for driving the Windows QA box (`ssvid-qa` =
+Mac-side toolchain for driving the Windows QA box (`svid-qa` =
 `qa@192.168.31.75`) from the Claude Code session on macOS.
 
 All scripts assume:
 
-1. SSH config alias `ssvid-qa` is configured in `~/.ssh/config` (done).
+1. SSH config alias `svid-qa` is configured in `~/.ssh/config` (done).
 2. SSH public key `~/.ssh/id_ed25519.pub` is installed in
    `C:\Users\qa\.ssh\authorized_keys` on the Windows box
    (or `C:\ProgramData\ssh\administrators_authorized_keys` if `qa` is
@@ -51,7 +51,7 @@ icacls C:\ProgramData\ssh\administrators_authorized_keys /inheritance:r /grant:r
 After either path:
 
 ```
-ssh ssvid-qa "whoami; hostname; [System.Environment]::OSVersion.Version"
+ssh svid-qa "whoami; hostname; [System.Environment]::OSVersion.Version"
 ```
 
 Expected: prints user/host/OS without password prompt.

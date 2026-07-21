@@ -8,7 +8,7 @@
 # Inputs:
 #   SOURCE_DIR — directory containing unsigned ZIP + setup.exe (recursive find)
 #   DEST_DIR   — directory to write signed artifacts (created if missing)
-#   BRAND      — ssvid | vidcombo
+#   BRAND      — svid | vidcombo
 #
 # Behavior:
 #   1. Finds the brand's *-windows-x64.zip and either:
@@ -38,9 +38,9 @@ DEST_DIR="$2"
 BRAND="$3"
 
 case "$BRAND" in
-  ssvid)    APP_NAME="SSvid";    EXE_NAME="ssvid.exe" ;;
+  svid)    APP_NAME="Svid";    EXE_NAME="svid.exe" ;;
   vidcombo) APP_NAME="VidCombo"; EXE_NAME="vidcombo.exe" ;;
-  *) echo "Unknown brand: $BRAND (expected ssvid|vidcombo)" >&2; exit 2 ;;
+  *) echo "Unknown brand: $BRAND (expected svid|vidcombo)" >&2; exit 2 ;;
 esac
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

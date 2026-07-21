@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-QA_HOST="${QA_HOST:-ssvid-qa}"
+QA_HOST="${QA_HOST:-svid-qa}"
 QA_WIN_ROOT="${QA_WIN_ROOT:-C:\\QA\\Snakeloader}"
 QA_WIN_ARTIFACTS="${QA_WIN_ROOT}\\artifacts"
 QA_WIN_LOGS="${QA_WIN_ROOT}\\logs"

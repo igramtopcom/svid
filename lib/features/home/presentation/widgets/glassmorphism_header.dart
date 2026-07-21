@@ -851,9 +851,6 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
             runSpacing: AppSpacing.sm,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              historyButton,
-              batchButton,
-              presetChip,
               SizedBox(
                 width: shouldStretchCta ? width : ctaWidth,
                 child: _buildDownloadCta(
@@ -864,6 +861,9 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
                   primaryCtaDisabled: primaryCtaDisabled,
                 ),
               ),
+              presetChip,
+              historyButton,
+              batchButton,
             ],
           ),
         ],
@@ -873,13 +873,9 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
     return Row(
       children: [
         Expanded(child: input),
-        SizedBox(width: isCompact ? AppSpacing.md : AppSpacing.mdLg),
-        historyButton,
-        const SizedBox(width: AppSpacing.sm),
-        batchButton,
-        SizedBox(width: isCompact ? AppSpacing.md : AppSpacing.mdLg),
-        presetChip,
-        const SizedBox(width: AppSpacing.sm),
+        SizedBox(width: isCompact ? AppSpacing.sm : AppSpacing.smMd),
+        // Primary action sits right next to the input for a tight
+        // paste → download motion; secondary options trail after it.
         _buildDownloadCta(
           height: height,
           width: ctaWidth,
@@ -887,6 +883,12 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
           primaryCtaHover: primaryCtaHover,
           primaryCtaDisabled: primaryCtaDisabled,
         ),
+        SizedBox(width: isCompact ? AppSpacing.md : AppSpacing.mdLg),
+        presetChip,
+        const SizedBox(width: AppSpacing.sm),
+        historyButton,
+        const SizedBox(width: AppSpacing.sm),
+        batchButton,
       ],
     );
   }

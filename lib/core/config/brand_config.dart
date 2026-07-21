@@ -482,19 +482,20 @@ class SvidBrand extends BrandConfig {
   @override
   ThemeMode get defaultThemeMode => ThemeMode.dark;
 
-  // Shape — angular, 3px everywhere (Nocturne Cinematic)
+  // Shape — soft rounded corners aligned with the svid.app website
+  // (buttons/inputs ~10, cards ~12, chips ~8, dialogs ~14).
   @override
-  double get cardRadius => 3;
+  double get cardRadius => 12;
   @override
-  double get buttonRadius => 3;
+  double get buttonRadius => 10;
   @override
-  double get inputRadius => 3;
+  double get inputRadius => 10;
   @override
-  double get dialogRadius => 3;
+  double get dialogRadius => 14;
   @override
-  double get chipRadius => 3;
+  double get chipRadius => 8;
   @override
-  double get popupRadius => 3;
+  double get popupRadius => 10;
   @override
   double get cardElevation => 0;
   @override

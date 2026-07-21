@@ -88,7 +88,13 @@ class LeftNavRail extends ConsumerWidget {
             selected: isBrowser,
             onTap: () => onDestinationSelected(NavigationConstants.browserIndex),
           ),
-          const Spacer(),
+          Divider(
+            height: AppSpacing.md,
+            thickness: 1,
+            indent: AppSpacing.smMd,
+            endIndent: AppSpacing.smMd,
+            color: cs.outlineVariant.withValues(alpha: AppOpacity.divider),
+          ),
           _RailItem(
             icon: Icons.auto_awesome_outlined,
             label: AppLocalizations.navAssistant,
@@ -111,13 +117,7 @@ class LeftNavRail extends ConsumerWidget {
                   NavigationConstants.activityCenterIndex,
                 ),
           ),
-          Divider(
-            height: AppSpacing.md,
-            thickness: 1,
-            indent: AppSpacing.smMd,
-            endIndent: AppSpacing.smMd,
-            color: cs.outlineVariant.withValues(alpha: AppOpacity.divider),
-          ),
+          const Spacer(),
           _RailItem(
             icon: isSettings ? Icons.settings : Icons.settings_outlined,
             label: AppLocalizations.navSettings,
@@ -158,27 +158,14 @@ class _RailLogo extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.card),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(AppRadius.card),
-                child: Image.asset(
-                  AppAssets.logo,
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.contain,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                AppConstants.appName,
-                style: AppTypography.navItemSelected.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontSize: 12,
-                ),
-              ),
-            ],
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.card),
+            child: Image.asset(
+              AppAssets.logo,
+              width: 44,
+              height: 44,
+              fit: BoxFit.contain,
+            ),
           ),
         ),
       ),
@@ -218,7 +205,7 @@ class _RailItem extends StatelessWidget {
             onTap: onTap,
             borderRadius: BorderRadius.circular(AppRadius.card),
             child: Container(
-              height: 54,
+              height: 60,
               width: double.infinity,
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -232,16 +219,16 @@ class _RailItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(icon, size: 22, color: color),
-                  const SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     label,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                     style: (selected
                             ? AppTypography.navItemSelected
                             : AppTypography.navItem)
-                        .copyWith(color: color, fontSize: 11),
+                        .copyWith(color: color, fontSize: 11, height: 1.1),
                   ),
                 ],
               ),

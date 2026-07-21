@@ -38,7 +38,7 @@ import '../../features/premium/presentation/providers/premium_providers.dart';
 
 /// Handles one-time startup tasks: device registration, heartbeat, update check.
 /// All operations are non-blocking and failure-tolerant.
-/// Delegates to brand-specific backend (Go for SSvid, PHP for VidCombo).
+/// Delegates to brand-specific backend (Go for Svid, PHP for VidCombo).
 class StartupService {
   /// SharedPreferences key for the VidCombo checkkey.php response cache.
   /// Cache stores the most recent premium response so the next app launch
@@ -92,7 +92,7 @@ class StartupService {
     _startSubscriptionPolling(container);
   }
 
-  /// SSvid startup flow — Go backend with X-API-Key auth.
+  /// Svid startup flow — Go backend with X-API-Key auth.
   static Future<void> _initializeGo(ProviderContainer container) async {
     // Migrate secrets from SharedPreferences to secure storage (one-time)
     final credentials = container.read(secureCredentialStoreProvider);
@@ -1197,7 +1197,7 @@ class StartupService {
     }
   }
 
-  /// SSvid startup self-heal (FIX #1, symptom-killer).
+  /// Svid startup self-heal (FIX #1, symptom-killer).
   ///
   /// Runs ONLY when local premium state is free. Pulls the server-authoritative
   /// entitlement (device-auth, works keyless) and re-promotes if the server
@@ -2041,7 +2041,7 @@ class StartupService {
   /// non-startup code paths (user-initiated deactivate in premium_members_screen)
   /// can purge stale premium state without reaching for the private key.
   ///
-  /// SSvid callers are no-op (this is VidCombo-only state).
+  /// Svid callers are no-op (this is VidCombo-only state).
   static Future<void> clearVidComboCheckKeyCache(
     SharedPreferences prefs,
   ) async {

@@ -35,7 +35,7 @@ abstract class ErrorReporterService {
   });
 
   /// Capture an exception with per-event scope configuration AND structured
-  /// metadata for the SSvid backend.
+  /// metadata for the Svid backend.
   ///
   /// Use this when you need to attach searchable tags/extras (e.g. `op`,
   /// operation attributes) to a single Sentry event without leaking them to
@@ -45,7 +45,7 @@ abstract class ErrorReporterService {
   /// - [configureScope] is invoked exactly once with a fresh [Scope]; the
   ///   Sentry-side implementation passes it as `withScope:` to
   ///   `Sentry.captureException`.
-  /// - [backendMetadata] is forwarded as-is to the SSvid backend's crash
+  /// - [backendMetadata] is forwarded as-is to the Svid backend's crash
   ///   submission. Implementations MUST NOT replay [configureScope] to harvest
   ///   metadata for the backend — callbacks are not guaranteed pure.
   ///
@@ -117,7 +117,7 @@ void safeBreadcrumb(
 ///
 /// This is the test default. The runtime fallback when Sentry DSN is not
 /// configured is the public [NoOpErrorReporter] in `noop_error_reporter.dart`,
-/// which forwards crashes to the SSvid backend even without Sentry.
+/// which forwards crashes to the Svid backend even without Sentry.
 class _NoOpErrorReporter implements ErrorReporterService {
   @override
   Future<void> init() async {}

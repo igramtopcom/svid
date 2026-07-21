@@ -626,7 +626,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
       _togglePip();
     };
 
-    // Global shortcuts (system-scope — work even when SSvid is in background)
+    // Global shortcuts (system-scope — work even when Svid is in background)
     KeyboardService.onShowAndNewDownload = () {
       appLogger.debug('Global Cmd+Shift+D — show window + new download');
       WindowService.show();

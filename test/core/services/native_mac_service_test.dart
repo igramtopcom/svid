@@ -10,7 +10,7 @@ void main() {
 
   // Channel name is brand-stamped at runtime via methodChannelPrefix — must
   // be derived the same way the production service does so the mock binds
-  // to the same channel under both BRAND=ssvid and BRAND=vidcombo.
+  // to the same channel under both BRAND=svid and BRAND=vidcombo.
   final channel = MethodChannel(
       '${BrandConfig.current.methodChannelPrefix}/macos_actions');
 

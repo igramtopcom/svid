@@ -338,7 +338,7 @@ class FileUtils {
       final testFile = File(
         path.join(
           directoryPath,
-          '.ssvid_write_test_${DateTime.now().millisecondsSinceEpoch}',
+          '.svid_write_test_${DateTime.now().millisecondsSinceEpoch}',
         ),
       );
       await testFile.writeAsString('test');

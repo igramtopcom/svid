@@ -244,7 +244,7 @@ VideoInfo _youtubeWithChapters() {
     title: 'Video with 3 Chapters',
     extractor: 'youtube',
     platform: 'youtube',
-    uploader: 'SSvid',
+    uploader: 'Svid',
     duration: Duration(minutes: 15),
     chapters: [
       ChapterInfo(title: 'Intro', startTime: 0, endTime: 120),
@@ -281,7 +281,7 @@ VideoInfo _highResOnlyInfo() {
     title: 'High Resolution Only',
     extractor: 'youtube',
     platform: 'youtube',
-    uploader: 'SSvid',
+    uploader: 'Svid',
     duration: Duration(minutes: 5),
     availableQualities: [
       Quality(
@@ -310,7 +310,7 @@ VideoInfo _youtube4kInfo() {
     title: '4K Test Video',
     extractor: 'youtube',
     platform: 'youtube',
-    uploader: 'SSvid',
+    uploader: 'Svid',
     duration: Duration(minutes: 3),
     availableQualities: [
       Quality(

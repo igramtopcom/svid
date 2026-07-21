@@ -43,7 +43,7 @@ final class SnoozeSelected extends FloatingWindowEvent {
   const SnoozeSelected(this.duration);
 }
 
-/// User chose "Open SSvid app" from the popup menu.
+/// User chose "Open Svid app" from the popup menu.
 final class MenuOpenAppRequested extends FloatingWindowEvent {
   const MenuOpenAppRequested();
 }
@@ -79,7 +79,7 @@ final class ThumbnailClicked extends FloatingWindowEvent {
   const ThumbnailClicked(this.url);
 }
 
-/// User clicked "Open in SSvid" for a non-video URL — main app routes to
+/// User clicked "Open in Svid" for a non-video URL — main app routes to
 /// its own browser/sheet per spec Q18.
 final class OpenInAppClicked extends FloatingWindowEvent {
   final String url;

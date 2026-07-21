@@ -104,7 +104,7 @@ void main() {
   setUp(() {
     mockYtdlp = MockYtDlpDataSource();
     mockGalleryDl = MockGalleryDlDataSource();
-    final mockApi = MockSSvidApiService();
+    final mockApi = MockSvidApiService();
     useCase = ExtractVideoInfoUseCase(mockApi, mockYtdlp, mockGalleryDl,
         delay: (_) async {});
 

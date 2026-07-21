@@ -9,7 +9,7 @@ import 'package:svid/features/downloads/data/services/vidcombo_legacy_importer.d
 
 /// Tests for [VidComboLegacyImporter].
 ///
-/// These run under the default test brand (ssvid), so the brand-guarded
+/// These run under the default test brand (svid), so the brand-guarded
 /// [VidComboLegacyImporter.runIfNeeded] is a no-op. We exercise the
 /// folder-scan + dedup + batch-insert path through the
 /// [VidComboLegacyImporter.importFolderForTest] hook instead, which is
@@ -51,7 +51,7 @@ void main() {
 
   group('runIfNeeded — brand guard', () {
     test('brand guard blocks non-VidCombo brands', () async {
-      // Under BRAND=ssvid (default test run) the importer must be a
+      // Under BRAND=svid (default test run) the importer must be a
       // complete no-op regardless of what the filesystem looks like.
       // Under BRAND=vidcombo (multi-brand CI pass) runIfNeeded actually
       // scans the user's real Documents/Downloads folders, so we can't
@@ -64,7 +64,7 @@ void main() {
       final imported = await importer.runIfNeeded();
 
       if (BrandConfig.current.brand == Brand.svid) {
-        expect(imported, 0, reason: 'brand guard must block on ssvid');
+        expect(imported, 0, reason: 'brand guard must block on svid');
         expect(await countRows(), 0);
       } else {
         // VidCombo brand: the call may scan real folders and import >=0

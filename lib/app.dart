@@ -16,10 +16,10 @@ import 'features/floating_capture/data/datasources/desktop_multi_window_floating
 import 'features/floating_capture/presentation/providers/floating_capture_providers.dart';
 import 'features/settings/presentation/providers/settings_provider.dart';
 
-/// ssvid Desktop Application
+/// svid Desktop Application
 /// High-performance video downloader powered by Rust + Flutter
-class SsvidApp extends ConsumerWidget {
-  const SsvidApp({super.key});
+class SvidApp extends ConsumerWidget {
+  const SvidApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

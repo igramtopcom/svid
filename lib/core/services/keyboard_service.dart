@@ -46,7 +46,7 @@ class KeyboardService {
   static Future<void> Function()? onQuitShortcut;
 
   // Callbacks for global (system-scope) shortcuts
-  /// Show window + open new download dialog (works even when SSvid is in background).
+  /// Show window + open new download dialog (works even when Svid is in background).
   static Function()? onShowAndNewDownload;
 
   /// Download clipboard URL silently without showing window.
@@ -219,7 +219,7 @@ class KeyboardService {
       description: 'Toggle PiP',
     );
 
-    // --- Global (system-scope) shortcuts — work even when SSvid is in background ---
+    // --- Global (system-scope) shortcuts — work even when Svid is in background ---
 
     // Cmd + Shift + D: Show window and open new download dialog (global)
     await _registerHotkey(

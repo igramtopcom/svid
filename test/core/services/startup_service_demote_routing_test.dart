@@ -12,7 +12,7 @@ import 'package:svid/core/services/startup_service.dart';
 /// server revoke (reason=='revoked' / tier resolved to free) full-wipes.
 ///
 /// This predicate is the single routing decision that both startup demotion
-/// sinks (`_maybeNotifyDemotion` for VidCombo PHP paths, SSvid `_verifyLicense`)
+/// sinks (`_maybeNotifyDemotion` for VidCombo PHP paths, Svid `_verifyLicense`)
 /// delegate to, so pinning it pins INVARIANT #1 at the wiring layer. The
 /// returned label is also the telemetry `result` value emitted via the
 /// existing analytics `license_verify` event.

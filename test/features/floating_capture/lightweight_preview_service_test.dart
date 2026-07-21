@@ -322,7 +322,7 @@ void main() {
       final service = LightweightPreviewService(client: mockClient);
       await service.fetchPreview('https://vm.tiktok.com/SHORT');
 
-      expect(sentUa, contains('SSvid'));
+      expect(sentUa, contains('Svid'));
     });
 
     test('oEmbed call carries User-Agent + Accept headers', () async {
@@ -340,7 +340,7 @@ void main() {
         'https://www.youtube.com/watch?v=abcdef12345',
       );
 
-      expect(sentHeaders!['User-Agent'], contains('SSvid'));
+      expect(sentHeaders!['User-Agent'], contains('Svid'));
       expect(sentHeaders!['Accept'], 'application/json');
     });
   });
@@ -447,10 +447,10 @@ void main() {
         'https://www.threads.net/@user/post/abc123',
       );
 
-      // Realistic browser UA used (not 'SSvid/2.2')
+      // Realistic browser UA used (not 'Svid/2.2')
       expect(capturedUserAgent, contains('Mozilla/5.0'));
       expect(capturedUserAgent, contains('Chrome'));
-      expect(capturedUserAgent, isNot(contains('SSvid')));
+      expect(capturedUserAgent, isNot(contains('Svid')));
       expect(result.thumbnailUrl, 'https://scontent.threads.com/og123.jpg');
       expect(result.platform, VideoPlatform.threads);
     });

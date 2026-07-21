@@ -168,7 +168,7 @@ void main() {
       final event = eventWith(
         excType: 'TimeoutException',
         excValue:
-            'TimeoutException https://api.ssvid.app/v1/health during heartbeat',
+            'TimeoutException https://api.svid.app/v1/health during heartbeat',
       );
       expect(SentryNoiseFilters.shouldDrop(event), isFalse);
     });

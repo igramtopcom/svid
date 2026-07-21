@@ -264,7 +264,7 @@ void main() {
     test('premium with null lastVerified needs verification', () {
       const license = PremiumLicense(
         tier: PremiumTier.premium,
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
       );
       expect(license.needsVerification(), true);
     });
@@ -272,7 +272,7 @@ void main() {
     test('premium with recent lastVerified does not need verification', () {
       final license = PremiumLicense(
         tier: PremiumTier.premium,
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
         lastVerified: DateTime.now().subtract(const Duration(days: 3)),
       );
       expect(license.needsVerification(), false);
@@ -281,7 +281,7 @@ void main() {
     test('premium with old lastVerified needs verification', () {
       final license = PremiumLicense(
         tier: PremiumTier.premium,
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
         lastVerified: DateTime.now().subtract(const Duration(days: 8)),
       );
       expect(license.needsVerification(), true);
@@ -290,7 +290,7 @@ void main() {
     test('exactly 7 days ago needs verification', () {
       final license = PremiumLicense(
         tier: PremiumTier.premium,
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
         lastVerified: DateTime.now().subtract(const Duration(days: 7)),
       );
       expect(license.needsVerification(), true);
@@ -299,7 +299,7 @@ void main() {
     test('within grace period (verified 20 days ago)', () {
       final license = PremiumLicense(
         tier: PremiumTier.premium,
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
         lastVerified: DateTime.now().subtract(const Duration(days: 20)),
       );
       expect(license.isWithinGracePeriod(), true);
@@ -308,7 +308,7 @@ void main() {
     test('outside grace period (verified 31 days ago)', () {
       final license = PremiumLicense(
         tier: PremiumTier.premium,
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
         lastVerified: DateTime.now().subtract(const Duration(days: 31)),
       );
       expect(license.isWithinGracePeriod(), false);
@@ -317,7 +317,7 @@ void main() {
     test('exactly 30 days is outside grace period', () {
       final license = PremiumLicense(
         tier: PremiumTier.premium,
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
         lastVerified: DateTime.now().subtract(const Duration(days: 30)),
       );
       expect(license.isWithinGracePeriod(), false);
@@ -330,14 +330,14 @@ void main() {
     test('null lastVerified is not within grace period', () {
       const license = PremiumLicense(
         tier: PremiumTier.premium,
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
       );
       expect(license.isWithinGracePeriod(), false);
     });
   });
 
   // FIX #2 + FIX #4 — verify() flow against a fake backend client.
-  // Default brand in tests is SSvid (Go backend) so these exercise the real
+  // Default brand in tests is Svid (Go backend) so these exercise the real
   // server-POST path (no PHP early-skip).
   group('verify() flow', () {
     late SharedPreferences prefs;

@@ -689,7 +689,7 @@ class AutoUpdateNotifier extends StateNotifier<UpdateState> {
     final sourceApp = appDirs.first.path;
 
     // 3. Get current app bundle path
-    // Platform.resolvedExecutable → .../SSvid.app/Contents/MacOS/ssvid
+    // Platform.resolvedExecutable → .../Svid.app/Contents/MacOS/svid
     final currentExe = Platform.resolvedExecutable;
     final contentsIdx = currentExe.indexOf('/Contents/');
     if (contentsIdx == -1) {

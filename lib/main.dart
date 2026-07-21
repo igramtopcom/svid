@@ -93,7 +93,7 @@ Future<void> main(List<String> args) async {
 
   // SSL: bypass certificate verification for known-safe hosts (GitHub CDN, ffmpeg CDN).
   // Fixes CERTIFICATE_VERIFY_FAILED on Windows fresh installs / corporate environments.
-  HttpOverrides.global = SsvidHttpOverrides();
+  HttpOverrides.global = SvidHttpOverrides();
 
   // Phase A: error reporter first (needed to catch errors in subsequent phases)
   final ErrorReporterService errorReporter =
@@ -290,7 +290,7 @@ Future<void> main(List<String> args) async {
       sharedPreferencesProvider.overrideWithValue(sharedPreferences),
       errorReporterServiceProvider.overrideWithValue(errorReporter),
       // Phase 1B.1+1B.2: wire floating capture's "Download" + "Open in
-      // SSvid" buttons to the host app. Each click pushes its payload
+      // Svid" buttons to the host app. Each click pushes its payload
       // into the matching pending-* provider; AppScaffold/HomeScreen consume
       // the providers depending on whether the flow can stay out-of-app.
       //
@@ -468,7 +468,7 @@ Future<void> main(List<String> args) async {
       useOnlyLangCode: true,
       child: UncontrolledProviderScope(
         container: container,
-        child: const SsvidApp(),
+        child: const SvidApp(),
       ),
     ),
   );
@@ -546,7 +546,7 @@ Future<void> _initRustBridge() async {
     ExternalLibrary? externalLibrary;
     if (!kDebugMode && Platform.isMacOS) {
       final execPath = Platform.resolvedExecutable;
-      // execPath = .../ssvid.app/Contents/MacOS/ssvid
+      // execPath = .../svid.app/Contents/MacOS/svid
       final frameworkPath = execPath.replaceFirst(
         RegExp(r'/MacOS/[^/]+$'),
         '/Frameworks/native.framework/native',
@@ -728,13 +728,13 @@ class _AppProviderObserver extends ProviderObserver {
 /// Resolve the absolute path where Rust writes panic JSON files.
 ///
 /// Layout: `<applicationSupportDirectory>/<brand>/rust_panics/`. Brand is
-/// `BrandConfig.current.brand.name` so SSvid lands at `.../ssvid/rust_panics`
+/// `BrandConfig.current.brand.name` so Svid lands at `.../svid/rust_panics`
 /// and VidCombo at `.../vidcombo/rust_panics`.
 ///
 /// **Windows double-nest guard.** `path_provider_windows` returns a path
 /// shaped like `<RoamingAppData>\<CompanyName>\<ProductName>` where
 /// ProductName is set from the app's product info (often the brand name).
-/// Naïvely appending `<brand>` again would yield `.../ssvid/ssvid/rust_panics`.
+/// Naïvely appending `<brand>` again would yield `.../svid/svid/rust_panics`.
 /// Detect via case-insensitive basename comparison and skip the second
 /// brand segment in that case.
 ///

@@ -1597,7 +1597,7 @@ class _SquareRangeThumb extends RangeSliderThumbShape {
     bool? isPressed,
   }) {
     final canvas = context.canvas;
-    // Brand-aware fallback — never hardcode SSvid wine red.
+    // Brand-aware fallback — never hardcode Svid wine red.
     final paint = Paint()
       ..color = sliderTheme.thumbColor ?? AppColors.accentHighlight
       ..style = PaintingStyle.fill;

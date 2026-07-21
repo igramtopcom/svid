@@ -134,7 +134,7 @@ void main() {
       test('clears nullable fields', () {
         final license = PremiumLicense(
           tier: PremiumTier.premium,
-          licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+          licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
           paymentMethod: 'stripe',
         );
         final cleared = license.copyWith(
@@ -207,7 +207,7 @@ void main() {
     test('toString masks license key', () {
       final license = PremiumLicense(
         tier: PremiumTier.premium,
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
       );
       expect(license.toString(), contains('***'));
       expect(license.toString(), isNot(contains('1234')));

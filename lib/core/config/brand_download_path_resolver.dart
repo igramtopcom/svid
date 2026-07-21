@@ -12,7 +12,7 @@ import 'brand_config.dart';
 /// Lives at the brand layer because each brand has its own folder
 /// history that we must respect:
 ///
-/// - **SSvid** (existing production users): `getDownloadsDirectory()` —
+/// - **Svid** (existing production users): `getDownloadsDirectory()` —
 ///   raw `~/Downloads/`. Behavior preserved unchanged so no current user
 ///   is broken.
 ///
@@ -47,8 +47,8 @@ class BrandDownloadPathResolver {
       return _osBrandedDefault('VidCombo');
     }
 
-    // SSvid: keep current behavior 100% unchanged.
-    return _ssvidPlatformDefault();
+    // Svid: keep current behavior 100% unchanged.
+    return _svidPlatformDefault();
   }
 
   /// Returns the path of the most-populated VidCombo legacy folder, or null
@@ -133,9 +133,9 @@ class BrandDownloadPathResolver {
     return count;
   }
 
-  /// SSvid pre-existing default — kept identical to the old inline logic
+  /// Svid pre-existing default — kept identical to the old inline logic
   /// in settings_provider so existing users see no behavior change.
-  Future<String> _ssvidPlatformDefault() async {
+  Future<String> _svidPlatformDefault() async {
     try {
       final downloadsDir = await getDownloadsDirectory();
       if (downloadsDir != null) return downloadsDir.path;

@@ -33,7 +33,7 @@ void main() {
   // noise the test output.
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late MockSSvidApiService mockApi;
+  late MockSvidApiService mockApi;
   late MockYtDlpDataSource mockYtdlp;
   late MockGalleryDlDataSource mockGalleryDl;
   late CircuitBreakerService circuitBreaker;
@@ -65,7 +65,7 @@ void main() {
   const unknownUrl = 'https://some-obscure-video-host.example/video/42';
 
   setUp(() {
-    mockApi = MockSSvidApiService();
+    mockApi = MockSvidApiService();
     mockYtdlp = MockYtDlpDataSource();
     mockGalleryDl = MockGalleryDlDataSource();
     circuitBreaker = CircuitBreakerService(

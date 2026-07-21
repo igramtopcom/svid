@@ -39,7 +39,7 @@ class LightweightPreviewService {
   /// User-Agent used for oEmbed/JSON API calls — identifies the app for
   /// platforms that gate by UA (TikTok especially) but doesn't pretend to
   /// be a browser since oEmbed is a documented public API. Brand + version
-  /// resolved at runtime to avoid SSvid-identity leak when running as
+  /// resolved at runtime to avoid Svid-identity leak when running as
   /// VidCombo (or any future brand).
   static String get _apiUserAgent {
     final brand = BrandConfig.current;

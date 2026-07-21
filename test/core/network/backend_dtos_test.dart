@@ -104,7 +104,7 @@ void main() {
           'current_version': '1.0.0',
           'is_mandatory': true,
           'release_notes': 'New features',
-          'download_url': 'https://ssvid.app/download',
+          'download_url': 'https://svid.app/download',
           'file_size': 50000000,
           'checksum': 'abc123',
           'published_at': '2026-02-01',

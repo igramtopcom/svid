@@ -11,7 +11,7 @@ import 'package:svid/features/premium/presentation/providers/payment_providers.d
 /// "Deactivate" we MUST (a) wipe the 15-minute premium cache so a
 /// concurrent boot cannot re-promote them and (b) record a tombstone so
 /// a leftover legacy `settings1.gs` does not silently re-import the key
-/// on the next launch. The helpers are brand-guarded — SSvid builds
+/// on the next launch. The helpers are brand-guarded — Svid builds
 /// must never read/write the VidCombo-specific key.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -132,7 +132,7 @@ void main() {
     });
   });
 
-  group('VidCombo deactivate tombstone — SSvid brand-guard', () {
+  group('VidCombo deactivate tombstone — Svid brand-guard', () {
     setUp(() {
       BrandConfig.setForTest(Brand.svid);
     });
@@ -141,15 +141,15 @@ void main() {
       BrandConfig.setForTest(null);
     });
 
-    test('hasVidComboDeactivateTombstone is unconditionally false on SSvid',
+    test('hasVidComboDeactivateTombstone is unconditionally false on Svid',
         () async {
       final prefs = await SharedPreferences.getInstance();
-      // Even if the raw key were somehow set, SSvid must NEVER react to it.
+      // Even if the raw key were somehow set, Svid must NEVER react to it.
       await prefs.setBool('vidcombo_user_deactivated_v1', true);
       expect(StartupService.hasVidComboDeactivateTombstone(prefs), isFalse);
     });
 
-    test('setVidComboDeactivateTombstone is a no-op on SSvid', () async {
+    test('setVidComboDeactivateTombstone is a no-op on Svid', () async {
       final prefs = await SharedPreferences.getInstance();
       await StartupService.setVidComboDeactivateTombstone(prefs);
       // No raw write happened.
@@ -157,14 +157,14 @@ void main() {
     });
 
     test(
-        'clearVidComboDeactivateTombstone is a no-op on SSvid — preserves any pre-existing key',
+        'clearVidComboDeactivateTombstone is a no-op on Svid — preserves any pre-existing key',
         () async {
       final prefs = await SharedPreferences.getInstance();
       // Simulate a stale VidCombo install state inherited across brands
       // (shouldn't happen in production, but the guard must be robust).
       await prefs.setBool('vidcombo_user_deactivated_v1', true);
       await StartupService.clearVidComboDeactivateTombstone(prefs);
-      // SSvid clear must NOT touch the VidCombo-only key.
+      // Svid clear must NOT touch the VidCombo-only key.
       expect(prefs.getBool('vidcombo_user_deactivated_v1'), isTrue);
     });
   });

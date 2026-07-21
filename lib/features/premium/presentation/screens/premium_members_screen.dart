@@ -716,7 +716,7 @@ class _SubscriptionDetailCard extends ConsumerWidget {
                   // Mark explicit user intent + purge stale premium cache
                   // BEFORE deactivating so a concurrent startup task cannot
                   // re-promote from cache mid-tear-down. Tombstone helper is
-                  // brand-guarded (no-op on SSvid).
+                  // brand-guarded (no-op on Svid).
                   await StartupService.setVidComboDeactivateTombstone(prefs);
                   await StartupService.clearVidComboCheckKeyCache(prefs);
                   await ref

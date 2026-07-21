@@ -49,7 +49,7 @@ void main() {
   late _FakeCookieRepository fakeRepo;
   // Header is brand-stamped at runtime via BrandConfig.current.appName, so
   // tests must compose their fixtures the same way the production service
-  // does — hard-coding "SSvid" fails the vidcombo build.
+  // does — hard-coding "Svid" fails the vidcombo build.
   final header = '# ${BrandConfig.current.appName} Cookie Export v1';
 
   setUp(() {

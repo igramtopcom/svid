@@ -306,7 +306,7 @@ class PremiumNotifier extends StateNotifier<PremiumLicense> {
     }
 
     // Explicit user re-activation: clear VidCombo deactivate tombstone so
-    // future launches resume normal legacy-file behavior. No-op on SSvid /
+    // future launches resume normal legacy-file behavior. No-op on Svid /
     // when no callback configured.
     await _fireActivationSuccessCallback();
   }

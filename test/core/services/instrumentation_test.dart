@@ -227,7 +227,7 @@ void main() {
             'test.pii',
             () => throw StateError('boom'),
             attributes: {
-              'url': 'https://api.ssvid.app/v1/x',
+              'url': 'https://api.svid.app/v1/x',
               'license': '985168ae6f117474b5f5c57609d69276',
             },
             reporter: reporter,

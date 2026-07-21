@@ -18,21 +18,21 @@ import '../../domain/services/player_safety.dart';
 /// the window with the video and smooth hover-activated controls.
 ///
 /// Actions:
-/// - **Double-click** / **back-to-app button**: restore SSvid with in-app PiP
-/// - **Fullscreen button**: restore SSvid and open fullscreen player
-/// - **Close**: dispose player and restore SSvid
+/// - **Double-click** / **back-to-app button**: restore Svid with in-app PiP
+/// - **Fullscreen button**: restore Svid and open fullscreen player
+/// - **Close**: dispose player and restore Svid
 class SystemPipView extends StatefulWidget {
   final Player player;
   final VideoController videoController;
   final String filename;
 
-  /// Restore to SSvid with in-app PiP overlay.
+  /// Restore to Svid with in-app PiP overlay.
   final VoidCallback onExpand;
 
-  /// Restore to SSvid and navigate to fullscreen video player.
+  /// Restore to Svid and navigate to fullscreen video player.
   final VoidCallback? onOpenPlayer;
 
-  /// Close PiP entirely and restore SSvid.
+  /// Close PiP entirely and restore Svid.
   final VoidCallback onClose;
 
   const SystemPipView({

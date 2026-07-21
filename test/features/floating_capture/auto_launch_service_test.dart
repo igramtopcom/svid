@@ -16,21 +16,21 @@ void main() {
     });
 
     test('isInitialized=true after initialize()', () async {
-      await launcher.initialize(appName: 'SSvid', appPath: '/path/to/app');
+      await launcher.initialize(appName: 'Svid', appPath: '/path/to/app');
       expect(launcher.isInitialized, isTrue);
       expect(launcher.initializeCallCount, 1);
     });
 
     test('multiple initialize() calls — counter tracks each', () async {
-      await launcher.initialize(appName: 'SSvid', appPath: '/path');
-      await launcher.initialize(appName: 'SSvid', appPath: '/path');
+      await launcher.initialize(appName: 'Svid', appPath: '/path');
+      await launcher.initialize(appName: 'Svid', appPath: '/path');
       expect(launcher.initializeCallCount, 2);
     });
   });
 
   group('enable / disable / isEnabled', () {
     setUp(() async {
-      await launcher.initialize(appName: 'SSvid', appPath: '/path');
+      await launcher.initialize(appName: 'Svid', appPath: '/path');
     });
 
     test('initial state is disabled', () async {
@@ -80,7 +80,7 @@ void main() {
 
   group('failure simulation', () {
     setUp(() async {
-      await launcher.initialize(appName: 'SSvid', appPath: '/path');
+      await launcher.initialize(appName: 'Svid', appPath: '/path');
     });
 
     test('enable() returns false when failNextOperation set', () async {
@@ -108,7 +108,7 @@ void main() {
 
   group('state seeding (pre-existing OS config)', () {
     setUp(() async {
-      await launcher.initialize(appName: 'SSvid', appPath: '/path');
+      await launcher.initialize(appName: 'Svid', appPath: '/path');
     });
 
     test('setStateForTest reflects in isEnabled', () async {
@@ -125,7 +125,7 @@ void main() {
 
   group('call tracking (test helpers)', () {
     setUp(() async {
-      await launcher.initialize(appName: 'SSvid', appPath: '/path');
+      await launcher.initialize(appName: 'Svid', appPath: '/path');
     });
 
     test('enable count tracks correctly', () async {

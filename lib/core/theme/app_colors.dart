@@ -16,7 +16,7 @@ class AppColors {
   static Color get accentMuted => BrandConfig.current.colors.accentMuted;
 
   // ==================== LIGHT THEME UTILITY (brand-tinted) ====================
-  // SSvid: warm tones. VidCombo: cool tones.
+  // Svid: warm tones. VidCombo: cool tones.
 
   /// Muted foreground — disabled icons, inactive tabs (light mode)
   static Color get lightMuted => BrandConfig.current.colors.lightMuted;
@@ -31,7 +31,7 @@ class AppColors {
   static Color get lightElevated => BrandConfig.current.colors.lightElevated;
 
   // ==================== DARK THEME UTILITY (brand-tinted) ====================
-  // SSvid: warm tones (rose/brown). VidCombo: cool tones (blue-gray).
+  // Svid: warm tones (rose/brown). VidCombo: cool tones (blue-gray).
 
   /// Muted foreground — disabled icons, inactive tabs, subtle borders
   static Color get darkMuted => BrandConfig.current.colors.homeDarkTextMuted;
@@ -116,7 +116,7 @@ class AppColors {
   static ColorScheme get darkColorScheme => BrandConfig.current.darkColorScheme;
 
   // ==================== SURFACE TOKENS (brand-delegated) ====================
-  // Runtime getters — values tint per active brand (SSvid warm / VidCombo cool).
+  // Runtime getters — values tint per active brand (Svid warm / VidCombo cool).
   // Callers that used these inside `const` constructors must drop `const`.
 
   static Color get lightBg => BrandConfig.current.colors.lightBase;
@@ -316,7 +316,7 @@ class AppColors {
       Theme.of(context).brightness == Brightness.light ? lightStatusWaitingForNetworkContainer : darkStatusWaitingForNetworkContainer;
 
   // ==================== BRAND-AWARE CONTEXT HELPERS ====================
-  // These use BrandColors for per-brand tinting (warm SSvid vs cool VidCombo).
+  // These use BrandColors for per-brand tinting (warm Svid vs cool VidCombo).
 
   /// Muted foreground — disabled icons, inactive tabs
   static Color muted(BuildContext context) =>

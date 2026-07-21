@@ -20,7 +20,7 @@ import '../../data/datasources/download_local_datasource.dart';
 import '../../data/datasources/download_native_datasource.dart';
 import '../../data/datasources/gallerydl_datasource.dart';
 import '../../data/datasources/ytdlp_datasource.dart';
-import '../../data/remote/api/ssvid_api_service.dart';
+import '../../data/remote/api/svid_api_service.dart';
 import '../../data/remote/ytdlp/cookie_exporter.dart';
 import '../../data/repositories/download_repository_impl.dart';
 import '../../domain/repositories/download_repository.dart';
@@ -40,9 +40,9 @@ import '../../domain/usecases/get_downloads_usecase.dart';
 
 // ==================== API SERVICE ====================
 
-/// Provider for SSvid API service
-final ssvidApiServiceProvider = Provider<SSvidApiService>((ref) {
-  return SSvidApiService();
+/// Provider for Svid API service
+final svidApiServiceProvider = Provider<SvidApiService>((ref) {
+  return SvidApiService();
 });
 
 // ==================== DATA SOURCES ====================
@@ -96,7 +96,7 @@ final downloadRepositoryProvider = Provider<DownloadRepository>((ref) {
 final extractVideoInfoUseCaseProvider = Provider<ExtractVideoInfoUseCase>((
   ref,
 ) {
-  final apiService = ref.watch(ssvidApiServiceProvider);
+  final apiService = ref.watch(svidApiServiceProvider);
   final ytdlpDataSource = ref.watch(ytdlpDataSourceProvider);
   final galleryDlDataSource = ref.watch(galleryDlDataSourceProvider);
   final circuitBreaker = ref.watch(circuitBreakerProvider);

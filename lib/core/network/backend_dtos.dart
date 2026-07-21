@@ -1,5 +1,5 @@
 // Backend API DTOs - plain Dart classes (no Freezed/build_runner)
-// Maps to SSvid backend response shapes.
+// Maps to Svid backend response shapes.
 
 // ==================== Identity ====================
 

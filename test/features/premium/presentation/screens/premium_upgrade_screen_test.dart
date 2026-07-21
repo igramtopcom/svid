@@ -87,7 +87,7 @@ void main() {
       final now = DateTime(2026, 2, 28, 12, 0);
       final license = PremiumLicense(
         tier: PremiumTier.premium,
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
         purchaseDate: now,
         lastVerified: now,
         paymentMethod: 'stripe',
@@ -97,7 +97,7 @@ void main() {
       expect(license.isPremium, true);
       expect(
         license.licenseKey,
-        'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
       );
       expect(license.purchaseDate, now);
       expect(license.paymentMethod, 'stripe');
@@ -105,9 +105,9 @@ void main() {
     });
 
     test('license key substring for display', () {
-      const key = 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0';
+      const key = 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0';
       // Screen shows first 10 chars + "..."
-      expect(key.substring(0, 10), 'SSVID-1234');
+      expect(key.substring(0, 10), 'SVID-1234-');
     });
 
     test('transaction ID substring for display', () {

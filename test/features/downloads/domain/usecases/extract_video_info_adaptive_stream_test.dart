@@ -11,7 +11,7 @@ import 'package:svid/features/settings/domain/enums/download_engine.dart';
 import '../../../../shared/mocks/mocks.dart';
 
 void main() {
-  late MockSSvidApiService mockApi;
+  late MockSvidApiService mockApi;
   late MockYtDlpDataSource mockYtdlp;
   late MockGalleryDlDataSource mockGalleryDl;
   late ExtractVideoInfoUseCase useCase;
@@ -79,7 +79,7 @@ void main() {
   }
 
   setUp(() {
-    mockApi = MockSSvidApiService();
+    mockApi = MockSvidApiService();
     mockYtdlp = MockYtDlpDataSource();
     mockGalleryDl = MockGalleryDlDataSource();
     useCase = ExtractVideoInfoUseCase(

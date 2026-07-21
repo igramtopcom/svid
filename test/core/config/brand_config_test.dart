@@ -281,12 +281,12 @@ void main() {
       expect(svid.isValidLicenseKey(svidKey), isTrue);
       expect(vidcombo.isValidLicenseKey(svidKey), isFalse);
 
-      // Foreign SSVID- key (separate ssvid product): Svid REJECTS it — Svid is
-      // independent and only knows SVID-. VidCombo still accepts it via its own
-      // pre-existing Go-legacy compat (unrelated to the svid rebrand).
-      const ssvidKey = 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0';
-      expect(svid.isValidLicenseKey(ssvidKey), isFalse);
-      expect(vidcombo.isValidLicenseKey(ssvidKey), isTrue);
+      // Foreign SSVID- key (the separate ssvid product): Svid REJECTS it — Svid
+      // is independent and only knows SVID-. VidCombo still accepts it via its
+      // own pre-existing Go-legacy compat (unrelated to the svid rebrand).
+      const foreignSsvidKey = 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0';
+      expect(svid.isValidLicenseKey(foreignSsvidKey), isFalse);
+      expect(vidcombo.isValidLicenseKey(foreignSsvidKey), isTrue);
     });
   });
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../config/brand_config.dart';
 
 /// Design System Typography — brand-aware font selection
-/// SSvid: Inter — Nocturne Cinematic (humanist, sharp terminals)
+/// Svid: Inter — Nocturne Cinematic (humanist, sharp terminals)
 /// VidCombo: DM Sans — Arctic Command (geometric-friendly, clear bold)
 class AppTypography {
   AppTypography._();

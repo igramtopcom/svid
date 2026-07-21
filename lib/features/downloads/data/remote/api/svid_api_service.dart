@@ -7,7 +7,7 @@ import '../dto/search_response_dto.dart';
 import '../dto/youtube_search_convert_response_dto.dart';
 
 /// API Service for video extraction backend (brand-aware)
-class SSvidApiService {
+class SvidApiService {
   static String get _baseUrl => BrandConfig.current.extractionApiUrl;
 
   final Dio _dio = DioClient().dio;

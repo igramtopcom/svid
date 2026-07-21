@@ -16,7 +16,7 @@ import '../../../features/premium/data/services/license_verification_service.dar
 /// VidCombo PHP backend adapter.
 ///
 /// Translates VidCombo's PHP API protocol (checkkey.php, version.php)
-/// into the same DTOs used by the SSvid Go backend, enabling the rest
+/// into the same DTOs used by the Svid Go backend, enabling the rest
 /// of the app to work identically regardless of backend type.
 class VidComboBackendAdapter {
   final String _baseUrl;
@@ -195,7 +195,7 @@ class VidComboBackendAdapter {
     return result;
   }
 
-  /// Convert checkkey.php response to SSvid's LicenseVerificationResponse format.
+  /// Convert checkkey.php response to Svid's LicenseVerificationResponse format.
   LicenseVerificationResponse toLicenseVerification(
     VidComboCheckKeyResponse ck,
   ) {

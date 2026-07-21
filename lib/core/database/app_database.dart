@@ -281,7 +281,7 @@ class AppDatabase extends _$AppDatabase {
         // user_version, re-runs the migration, and hits "duplicate column" /
         // "table already exists" → migration aborts → DB unopenable → empty UI.
         //
-        // Real incident: 2026-04-07 — user's `ssvid.db` ended at user_version=15
+        // Real incident: 2026-04-07 — user's `svid.db` ended at user_version=15
         // with v16 column `temp_dir_path` already present. addColumn re-run
         // crashed migration, downloads UI went empty. Fix: try/catch every DDL.
         // The desired end state is "column/table present"; if it already is,
@@ -1461,8 +1461,8 @@ LazyDatabase _openConnection() {
     final file = File(p.join(dbFolder.path, '$dbName.db'));
 
     // === Recovery from c8bbba91 regression ===
-    // Multi-brand commit shipped with `databaseName = 'ssvid.db'` and code that
-    // appended `.db` again, producing the orphan path `ssvid.db.db`. Users who
+    // Multi-brand commit shipped with `databaseName = 'svid.db'` and code that
+    // appended `.db` again, producing the orphan path `svid.db.db`. Users who
     // updated to that build had their real DB silently abandoned at the correct
     // path while a fresh empty DB was created at the buggy path.
     //

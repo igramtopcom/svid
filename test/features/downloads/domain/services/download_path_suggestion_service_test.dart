@@ -93,7 +93,7 @@ void main() {
 
       // Brand folder name is stamped at runtime via BrandConfig.current.appName
       // — must read it the same way the production service does so the test
-      // passes under both BRAND=ssvid and BRAND=vidcombo.
+      // passes under both BRAND=svid and BRAND=vidcombo.
       expect(result, contains('${BrandConfig.current.appName} App Downloader'));
       expect(result, contains('YouTube Videos'));
       expect(Directory(result).existsSync(), isTrue);
@@ -146,9 +146,9 @@ void main() {
 
       expect(outputPath, createdPath);
       // Brand-aware assertion — pre-fix this hardcoded
-      // `'SSvid App Downloader'`, so a VidCombo test run would
+      // `'Svid App Downloader'`, so a VidCombo test run would
       // fail even though the production code was correct (the
-      // legacy `static const brandFolder = 'SSvid App Downloader'`
+      // legacy `static const brandFolder = 'Svid App Downloader'`
       // happened to match the literal). Pulling from
       // `BrandConfig.current.appName` keeps the test paired with
       // the real branding contract.
@@ -168,23 +168,23 @@ void main() {
       );
     });
 
-    test('SSvid build produces "SSvid App Downloader"', () {
-      // Build-time invariant: when the current build is the SSvid
-      // brand, the folder is "SSvid App Downloader". This test plus
+    test('Svid build produces "Svid App Downloader"', () {
+      // Build-time invariant: when the current build is the Svid
+      // brand, the folder is "Svid App Downloader". This test plus
       // its VidCombo sibling form the matched-pair guard against
       // a future regression to a hardcoded literal.
       if (BrandConfig.current.brand != Brand.svid) return;
       expect(
         DownloadPathSuggestionService.brandFolder,
-        'SSvid App Downloader',
+        'Svid App Downloader',
       );
     });
 
     test('VidCombo build produces "VidCombo App Downloader"', () {
       // Build-time invariant. Before the brand-aware getter, this
-      // value was the literal "SSvid App Downloader" even on
+      // value was the literal "Svid App Downloader" even on
       // VidCombo builds, leaving VidCombo testers with downloads
-      // under an SSvid-named folder.
+      // under an Svid-named folder.
       if (BrandConfig.current.brand != Brand.vidcombo) return;
       expect(
         DownloadPathSuggestionService.brandFolder,

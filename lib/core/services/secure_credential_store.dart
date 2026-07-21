@@ -24,7 +24,7 @@ class SecureCredentialStore {
 
   static const _migrationDoneKey = 'secure_storage_migrated';
   static const _unavailableUntilKey = 'secure_storage_unavailable_until';
-  static const _probeKey = '_ssvid_secure_probe';
+  static const _probeKey = '_svid_secure_probe';
   static const _probeValue = 'ok';
 
   /// How long to trust a failed probe before re-trying. Keeps debug /

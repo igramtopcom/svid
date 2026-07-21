@@ -10,7 +10,7 @@ import 'package:svid/core/services/startup_service.dart';
 ///
 ///   * Legacy 32-char hex PHP keys → wipe (installer is about to re-supply
 ///     them via `%TEMP%\vidcombo_migrated_key.txt`).
-///   * Go-backend keys SSVID-*/VIDCOMBO-* → preserve (Stripe-paid, no
+///   * Go-backend keys SVID-*/VIDCOMBO-* → preserve (Stripe-paid, no
 ///     migration handoff, silent removal demotes paying users).
 ///   * Null / empty / unknown format → fail-safe (null/empty = no-op wipe,
 ///     unknown = preserve so a future key format never silently breaks).
@@ -27,14 +27,14 @@ void main() {
       );
     });
 
-    test('preserves a canonical SSvid Go-backend key (45 chars)', () {
-      // Format: SSVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX (45)
-      const key = 'SSVID-A1B2-C3D4-E5F6-7890-ABCD-EF12-3456-7890';
-      expect(key.length, 45);
+    test('preserves a canonical Svid Go-backend key (44 chars)', () {
+      // Format: SVID-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX (44)
+      const key = 'SVID-A1B2-C3D4-E5F6-7890-ABCD-EF12-3456-7890';
+      expect(key.length, 44);
       expect(
         StartupService.shouldWipeCredentialOnMarkerReset(key),
         isFalse,
-        reason: 'Legacy SSVID-* keys (pre-brand-split) must also survive',
+        reason: 'Svid Go-backend keys must survive the marker reset',
       );
     });
   });
@@ -95,9 +95,9 @@ void main() {
       );
 
       test(
-        'skips overwrite when existing slot holds a legacy SSVID Go key',
+        'skips overwrite when existing slot holds a legacy SVID Go key',
         () {
-          const goKey = 'SSVID-A1B2-C3D4-E5F6-7890-ABCD-EF12-3456-7890';
+          const goKey = 'SVID-A1B2-C3D4-E5F6-7890-ABCD-EF12-3456-7890';
           expect(
             StartupService.shouldWipeCredentialOnMarkerReset(goKey),
             isFalse,
@@ -189,11 +189,11 @@ void main() {
       );
     });
 
-    test('preserves SSVID- prefix with wrong length (treat as unknown)', () {
+    test('preserves SVID- prefix with wrong length (treat as unknown)', () {
       // Future-proofing: if Go backend changes key length, we should NOT
       // wipe based on prefix alone. Exact-length check is intentional.
-      const key = 'SSVID-TOO-SHORT';
-      expect(key.length, isNot(45));
+      const key = 'SVID-TOO-SHORT';
+      expect(key.length, isNot(44));
       expect(
         StartupService.shouldWipeCredentialOnMarkerReset(key),
         isFalse,

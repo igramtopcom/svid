@@ -5,7 +5,7 @@ import '../config/brand_config.dart';
 import '../constants/app_durations.dart';
 
 /// Design System Theme — brand-aware shape tokens
-/// SSvid: angular (3px), flat — Nocturne Cinematic
+/// Svid: angular (3px), flat — Nocturne Cinematic
 /// VidCombo: rounded (12px cards, pill buttons), subtle elevation — Arctic Command
 class AppTheme {
   AppTheme._();

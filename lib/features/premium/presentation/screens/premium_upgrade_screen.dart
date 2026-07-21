@@ -384,7 +384,7 @@ class PremiumUpgradeScreen extends ConsumerWidget {
   /// The old screen rendered pricing and features as separate islands. That made
   /// VidCombo's three-card pricing row feel detached from the feature cards
   /// below it. This surface keeps the purchase decision and value proof in one
-  /// visual rhythm while staying brand-aware for SSvid and VidCombo.
+  /// visual rhythm while staying brand-aware for Svid and VidCombo.
   Widget _buildUpgradeFunnel(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasPdfConvPayPalCapability =

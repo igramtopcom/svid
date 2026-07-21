@@ -82,7 +82,7 @@ class _EdgeInsetsHelper {
 }
 
 /// Brand-aware radius tokens — reads from BrandConfig at runtime.
-/// SSvid: angular (3px) — Nocturne Cinematic
+/// Svid: angular (3px) — Nocturne Cinematic
 /// VidCombo: rounded (8-12px, pill buttons) — Arctic Command
 class AppRadius {
   AppRadius._();

@@ -79,7 +79,7 @@ void main() {
 
     group('openFile action', () {
       test('calls process runner with file path', () async {
-        final tmpFile = await File('/tmp/ssvid_test_open.mp4').create();
+        final tmpFile = await File('/tmp/svid_test_open.mp4').create();
         try {
           String? capturedExecutable;
           List<String>? capturedArgs;
@@ -91,27 +91,27 @@ void main() {
             },
           );
           final download =
-              _makeDownload(savePath: '/tmp', filename: 'ssvid_test_open.mp4');
+              _makeDownload(savePath: '/tmp', filename: 'svid_test_open.mp4');
 
           final result =
               await svc.executeAction(download, PostDownloadAction.openFile);
 
           expect(result.isSuccess, isTrue);
           expect(capturedExecutable, isNotNull);
-          expect(capturedArgs!.join(' '), contains('ssvid_test_open.mp4'));
+          expect(capturedArgs!.join(' '), contains('svid_test_open.mp4'));
         } finally {
           await tmpFile.delete().catchError((_) => File(''));
         }
       });
 
       test('returns Failure when process exits with code > 1', () async {
-        final tmpFile = await File('/tmp/ssvid_test_fail.mp4').create();
+        final tmpFile = await File('/tmp/svid_test_fail.mp4').create();
         try {
           final svc = PostDownloadActionService(
             processRunner: (_, __) async => _failResult(2),
           );
           final download =
-              _makeDownload(savePath: '/tmp', filename: 'ssvid_test_fail.mp4');
+              _makeDownload(savePath: '/tmp', filename: 'svid_test_fail.mp4');
 
           final result =
               await svc.executeAction(download, PostDownloadAction.openFile);
@@ -123,13 +123,13 @@ void main() {
       });
 
       test('exit code 1 is acceptable (macOS open -R quirk)', () async {
-        final tmpFile = await File('/tmp/ssvid_test_ec1.mp4').create();
+        final tmpFile = await File('/tmp/svid_test_ec1.mp4').create();
         try {
           final svc = PostDownloadActionService(
             processRunner: (_, __) async => _failResult(1),
           );
           final download =
-              _makeDownload(savePath: '/tmp', filename: 'ssvid_test_ec1.mp4');
+              _makeDownload(savePath: '/tmp', filename: 'svid_test_ec1.mp4');
 
           final result =
               await svc.executeAction(download, PostDownloadAction.openFile);
@@ -143,7 +143,7 @@ void main() {
 
     group('openFolder action', () {
       test('calls process runner for folder reveal', () async {
-        final tmpFile = await File('/tmp/ssvid_test_folder.mp4').create();
+        final tmpFile = await File('/tmp/svid_test_folder.mp4').create();
         try {
           String? capturedExecutable;
           final svc = PostDownloadActionService(
@@ -153,7 +153,7 @@ void main() {
             },
           );
           final download = _makeDownload(
-              savePath: '/tmp', filename: 'ssvid_test_folder.mp4');
+              savePath: '/tmp', filename: 'svid_test_folder.mp4');
 
           final result =
               await svc.executeAction(download, PostDownloadAction.openFolder);
@@ -168,13 +168,13 @@ void main() {
 
     group('moveToFolder action', () {
       test('returns Failure when targetFolder is null', () async {
-        final tmpFile = await File('/tmp/ssvid_test_move.mp4').create();
+        final tmpFile = await File('/tmp/svid_test_move.mp4').create();
         try {
           final svc = PostDownloadActionService(
             processRunner: (_, __) async => _successResult(),
           );
           final download =
-              _makeDownload(savePath: '/tmp', filename: 'ssvid_test_move.mp4');
+              _makeDownload(savePath: '/tmp', filename: 'svid_test_move.mp4');
 
           final result = await svc.executeAction(
             download,
@@ -192,13 +192,13 @@ void main() {
 
       test('returns Failure when targetFolder is empty string', () async {
         final tmpFile =
-            await File('/tmp/ssvid_test_moveempty.mp4').create();
+            await File('/tmp/svid_test_moveempty.mp4').create();
         try {
           final svc = PostDownloadActionService(
             processRunner: (_, __) async => _successResult(),
           );
           final download = _makeDownload(
-              savePath: '/tmp', filename: 'ssvid_test_moveempty.mp4');
+              savePath: '/tmp', filename: 'svid_test_moveempty.mp4');
 
           final result = await svc.executeAction(
             download,
@@ -214,7 +214,7 @@ void main() {
 
       test('copies file to target folder and deletes original', () async {
         final tmpDir =
-            await Directory.systemTemp.createTemp('ssvid_move_');
+            await Directory.systemTemp.createTemp('svid_move_');
         final srcFile = await File('${tmpDir.path}/src.mp4').create();
         final destDir =
             await Directory('${tmpDir.path}/dest').create();
@@ -241,7 +241,7 @@ void main() {
 
       test('deleteAfterMove uses same move logic', () async {
         final tmpDir =
-            await Directory.systemTemp.createTemp('ssvid_del_');
+            await Directory.systemTemp.createTemp('svid_del_');
         await File('${tmpDir.path}/src2.mp4').create();
         final destDir =
             await Directory('${tmpDir.path}/dest2').create();
@@ -278,7 +278,7 @@ void main() {
       test('custom processRunner is called for openFile', () async {
         var callCount = 0;
         final tmpFile =
-            await File('/tmp/ssvid_injection.mp4').create();
+            await File('/tmp/svid_injection.mp4').create();
         try {
           final svc = PostDownloadActionService(
             processRunner: (_, __) async {
@@ -287,7 +287,7 @@ void main() {
             },
           );
           final download = _makeDownload(
-              savePath: '/tmp', filename: 'ssvid_injection.mp4');
+              savePath: '/tmp', filename: 'svid_injection.mp4');
 
           await svc.executeAction(download, PostDownloadAction.openFile);
 

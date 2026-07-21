@@ -55,7 +55,7 @@ void main() {
         'status': 'completed',
         'sessionId': 'cs_test_123',
         'transactionId': 'pi_456',
-        'licenseKey': 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        'licenseKey': 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
         'paymentMethod': 'stripe',
         'createdAt': '2026-02-28T10:00:00.000Z',
       };
@@ -66,7 +66,7 @@ void main() {
       expect(result.transactionId, 'pi_456');
       expect(
         result.licenseKey,
-        'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
       );
       expect(result.paymentMethod, 'stripe');
     });
@@ -87,7 +87,7 @@ void main() {
         status: PaymentStatus.completed,
         sessionId: 'cs_123',
         transactionId: 'pi_456',
-        licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
         paymentMethod: 'stripe',
         createdAt: DateTime.utc(2026, 2, 28, 10),
       );
@@ -98,7 +98,7 @@ void main() {
       expect(json['transactionId'], 'pi_456');
       expect(
         json['licenseKey'],
-        'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+        'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
       );
       expect(json['paymentMethod'], 'stripe');
       expect(json['createdAt'], '2026-02-28T10:00:00.000Z');

@@ -46,7 +46,7 @@ bool isRecoverableApiKeyErrorCode(String? code) {
       code == 'EXPIRED_API_KEY';
 }
 
-/// Dedicated Dio client for SSvid backend API.
+/// Dedicated Dio client for Svid backend API.
 /// Separate from [DioClient] which uses browser-like UA for download APIs.
 class BackendClient {
   final SecureCredentialStore _credentials;

@@ -15,12 +15,12 @@ import '../entities/video_info.dart';
 /// The brand prefix is resolved at runtime from
 /// [BrandConfig.current.appName] rather than hard-coded, so a
 /// VidCombo build lands files in `VidCombo App Downloader/` and an
-/// SSvid build lands them in `SSvid App Downloader/`. Pre-fix the
-/// constant was literal `'SSvid App Downloader'`, which violated the
+/// Svid build lands them in `Svid App Downloader/`. Pre-fix the
+/// constant was literal `'Svid App Downloader'`, which violated the
 /// multi-brand contract (`.claude/rules/brand-config.md`: "ALL
 /// brand-specific values through `BrandConfig.current` — never
 /// hardcode") and caused VidCombo testers to see their files land
-/// in an `SSvid App Downloader/` folder on disk.
+/// in an `Svid App Downloader/` folder on disk.
 class DownloadPathSuggestionService {
   /// Branded download folder name resolved at access time from
   /// [BrandConfig.current]. Kept as a getter (not `static const`)
@@ -148,7 +148,7 @@ class DownloadPathSuggestionService {
     return p.join(basePath, brandFolder, subdirectory);
   }
 
-  /// Constructs the full path `basePath/SSvid App Downloader/subdirectory`
+  /// Constructs the full path `basePath/Svid App Downloader/subdirectory`
   /// and creates the directory recursively.
   ///
   /// [directoryFactory] is injectable for testing.

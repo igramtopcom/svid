@@ -155,7 +155,7 @@ void main() {
 
       test('valid license key format is accepted', () {
         // Brand-aware fixture — exercises whichever format the current
-        // brand defines (SSvid 9-group hex vs VidCombo 32-char hex).
+        // brand defines (Svid 9-group hex vs VidCombo 32-char hex).
         expect(
           PremiumLicenseService.isValidLicenseKey(TestLicenseKeys.valid),
           true,
@@ -165,14 +165,14 @@ void main() {
       test('invalid license key format is rejected', () {
         expect(PremiumLicenseService.isValidLicenseKey('invalid'), false);
         expect(PremiumLicenseService.isValidLicenseKey(''), false);
-        // Truncated SSvid prefix is invalid under both brands.
+        // Truncated Svid prefix is invalid under both brands.
         expect(
-          PremiumLicenseService.isValidLicenseKey('SSVID-1234-5678'),
+          PremiumLicenseService.isValidLicenseKey('SVID-1234-5678'),
           false,
         );
-        // Old SSvid 4-group format is invalid under both brands.
+        // Old Svid 4-group format is invalid under both brands.
         expect(
-          PremiumLicenseService.isValidLicenseKey('SSVID-1234-5678-9ABC-DEF0'),
+          PremiumLicenseService.isValidLicenseKey('SVID-1234-5678-9ABC-DEF0'),
           false,
         );
       });
@@ -182,7 +182,7 @@ void main() {
         // fixture and verify it validates.
         final lowercaseKey =
             BrandConfig.current.brand == Brand.svid
-                ? 'SSVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789'
+                ? 'SVID-abcd-ef01-2345-6789-abcd-ef01-2345-6789'
                 : 'abcdef0123456789abcdef0123456789';
         expect(PremiumLicenseService.isValidLicenseKey(lowercaseKey), true);
       });
@@ -275,7 +275,7 @@ void main() {
         );
         addTearDown(handler.dispose);
 
-        await handler.handleUri(Uri.parse('ssvid://payment-complete'));
+        await handler.handleUri(Uri.parse('svid://payment-complete'));
         await handler.handleUri(Uri.parse('vidcombo://unrelated'));
         await handler.handleUri(null);
 

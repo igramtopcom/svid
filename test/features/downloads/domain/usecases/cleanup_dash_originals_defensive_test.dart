@@ -67,7 +67,7 @@ void main() {
         // `[]` and the outer try/catch in the helper guards against
         // any sync-throw from path resolution itself.
         final phantomPath =
-            '/var/folders/__ssvid_test_does_not_exist__/'
+            '/var/folders/__svid_test_does_not_exist__/'
             'phantom_dir/output.mkv';
 
         // The behavior we pin is "no throw". If the helper ever
@@ -92,7 +92,7 @@ void main() {
         // observed in the dev log without requiring a TCC consent
         // grant on the CI runner.
         final tempRoot = await Directory.systemTemp.createTemp(
-          'ssvid_cleanup_perm_',
+          'svid_cleanup_perm_',
         );
         try {
           // Pre-populate so the listing would otherwise succeed —

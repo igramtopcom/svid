@@ -6,11 +6,11 @@ import 'dart:io';
 /// GitHub CDN (CloudFront), causing `CERTIFICATE_VERIFY_FAILED` when downloading
 /// binaries. This override bypasses SSL verification ONLY for known-safe hosts
 /// used by the app (GitHub releases, ffmpeg CDN, etc.).
-class SsvidHttpOverrides extends HttpOverrides {
+class SvidHttpOverrides extends HttpOverrides {
   /// Hosts where SSL verification bypass is allowed.
   /// These are CDNs/services the app downloads binaries from.
   /// Minimal whitelist — only hosts actually used for binary downloads.
-  /// Removed google.com (unused) and ssvid.app (should use proper certs).
+  /// Removed google.com (unused) and svid.app (should use proper certs).
   static const _trustedHosts = [
     'github.com',
     'githubusercontent.com',

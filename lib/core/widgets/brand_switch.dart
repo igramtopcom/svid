@@ -4,7 +4,7 @@ import '../theme/app_colors.dart';
 
 /// Drop-in replacement for [Switch] that renders a brand-appropriate toggle.
 ///
-/// - **SSvid (Nocturne Cinematic)**: angular tactical toggle — rectangular
+/// - **Svid (Nocturne Cinematic)**: angular tactical toggle — rectangular
 ///   track (3px radius), square thumb (2px radius), no pill shape. Matches the
 ///   "control room" language of the rest of the brand.
 /// - **VidCombo (Arctic Command)**: Material [Switch] — soft pill/rounded
@@ -66,7 +66,7 @@ class BrandSwitchListTile extends StatelessWidget {
 }
 
 // =============================================================================
-// SSVID TACTICAL TOGGLE — Angular "control room" toggle
+// SVID TACTICAL TOGGLE — Angular "control room" toggle
 // =============================================================================
 
 class _TacticalToggle extends StatelessWidget {

@@ -17,15 +17,15 @@ void main() {
 
   group('trayTooltipForDownloads', () {
     test('returns app name only when there are no active downloads', () {
-      expect(trayTooltipForDownloads(0), 'SSvid');
+      expect(trayTooltipForDownloads(0), 'Svid');
     });
 
     test('uses singular wording for one active download', () {
-      expect(trayTooltipForDownloads(1), 'SSvid — 1 active download');
+      expect(trayTooltipForDownloads(1), 'Svid — 1 active download');
     });
 
     test('uses plural wording for multiple active downloads', () {
-      expect(trayTooltipForDownloads(3), 'SSvid — 3 active downloads');
+      expect(trayTooltipForDownloads(3), 'Svid — 3 active downloads');
     });
   });
 

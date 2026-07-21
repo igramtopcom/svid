@@ -99,7 +99,7 @@ void main() {
 
   group('FileUtils.moveFile', () {
     test('moves an existing file and removes the source', () async {
-      final dir = await Directory.systemTemp.createTemp('ssvid_file_move_');
+      final dir = await Directory.systemTemp.createTemp('svid_file_move_');
       try {
         final source = File('${dir.path}/source.txt');
         final destination = File('${dir.path}/destination.txt');
@@ -116,7 +116,7 @@ void main() {
     });
 
     test('returns false when the source file is missing', () async {
-      final dir = await Directory.systemTemp.createTemp('ssvid_file_move_');
+      final dir = await Directory.systemTemp.createTemp('svid_file_move_');
       try {
         final moved = await FileUtils.moveFile(
           '${dir.path}/missing.txt',

@@ -264,7 +264,7 @@ void main() {
       expect(
         r.isKnownUrlType,
         isTrue,
-        reason: 'search URLs must reach popup → "Open in SSvid" per spec Q18',
+        reason: 'search URLs must reach popup → "Open in Svid" per spec Q18',
       );
     });
 

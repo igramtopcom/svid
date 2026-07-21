@@ -1,7 +1,7 @@
 /// Entry point for the floating capture popup engine.
 ///
 /// This is a SEPARATE Flutter engine spawned by `desktop_multi_window`. It
-/// must NOT import the main app (`SsvidApp`) or pull in heavy services
+/// must NOT import the main app (`SvidApp`) or pull in heavy services
 /// (Rust bridge, notifications, tray, sentry). Goal: paint the first frame
 /// fast — the popup must feel snappy when the user copies a URL.
 ///
@@ -14,7 +14,7 @@
 /// Visual states handled:
 /// - Video preview with metadata (title + uploader + thumbnail)
 /// - Fallback preview (no metadata yet — platform badge + raw URL)
-/// - Non-video URL (playlist / channel / search → "Open in SSvid"
+/// - Non-video URL (playlist / channel / search → "Open in Svid"
 ///   replaces "Download")
 ///
 /// Out-of-scope here (deferred to a polish slice):
@@ -173,8 +173,8 @@ class _PopupPalette {
 const Map<String, Map<String, String>> _kPopupStrings = {
   'en': {
     // Brand-aware: {appName} is substituted at lookup time with
-    // BrandConfig.current.appName (SSvid / VidCombo) so VidCombo build
-    // doesn't show "Open SSvid".
+    // BrandConfig.current.appName (Svid / VidCombo) so VidCombo build
+    // doesn't show "Open Svid".
     'menuOpenApp': 'Open {appName}',
     'menuSettings': 'Settings',
     'tooltipMore': 'More',
@@ -627,7 +627,7 @@ class _PopupStrings {
     final raw =
         _kPopupStrings[locale]?[key] ?? _kPopupStrings['en']![key] ?? key;
     // Brand-aware substitution: VidCombo build sees its own brand name
-    // instead of hardcoded "SSvid". BrandConfig.current is initialized
+    // instead of hardcoded "Svid". BrandConfig.current is initialized
     // in the popup engine's main() before runFloatingWindow().
     return raw.replaceAll('{appName}', BrandConfig.current.appName);
   }
@@ -1846,7 +1846,7 @@ class _Header extends StatelessWidget {
         children: [
           // Brand mark — 8pt circle dot. v2.2: uses brand-aware
           // popupBrandDot token from BrandConfig (Stitch design system).
-          // SSvid: Wine Red (same as primary action — mono-accent palette).
+          // Svid: Wine Red (same as primary action — mono-accent palette).
           // VidCombo: Cyan #03BEFE — DISTINCT from primary button (Ocean Blue
           // #0066CC) per "two-color play" Stitch principle (dot=spark,
           // button=mass).
@@ -1860,7 +1860,7 @@ class _Header extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            // Brand-aware wordmark — resolves to "SSvid" or "VidCombo"
+            // Brand-aware wordmark — resolves to "Svid" or "VidCombo"
             // per compile-time BRAND dart-define.
             BrandConfig.current.appName,
             style: TextStyle(
@@ -2276,7 +2276,7 @@ class _TitleSection extends StatelessWidget {
 /// docs/mockups/queue-nav-3.png). Renders up to [_kMaxQueueSize] tiny
 /// thumbnails in a horizontal row; the currently-selected one is ringed
 /// in Wine Red. Tapping a thumbnail jumps focus to that item — the
-/// action bar's Download / Open-in-SSvid will then target the new
+/// action bar's Download / Open-in-Svid will then target the new
 /// selection. Counter "X of N" sits at the row's right edge.
 ///
 /// Hidden entirely when there's only one item in the queue (no queue

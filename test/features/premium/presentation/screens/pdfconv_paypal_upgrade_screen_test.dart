@@ -261,7 +261,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('SSvid keeps Stripe catalog and does not expose PayPal', (
+  testWidgets('Svid keeps Stripe catalog and does not expose PayPal', (
     tester,
   ) async {
     await pumpScreen(

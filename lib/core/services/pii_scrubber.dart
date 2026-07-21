@@ -13,11 +13,11 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 /// - URLs (http/https)
 /// - User-specific file paths (macOS, Linux, Windows)
 /// - Media filenames (.mp4, .mp3, .mkv, etc.)
-/// - 32-char hex license keys (VidCombo / SSvid format)
+/// - 32-char hex license keys (VidCombo / Svid format)
 /// - UUIDs (any case, with or without hyphens)
 /// - JWT tokens (3 base64url segments separated by `.`)
 /// - Stripe-style ids (`sk_*`, `pk_*` keys/secrets)
-/// - SSvid API keys (`snk_*` prefix)
+/// - Svid API keys (`snk_*` prefix)
 /// - Email addresses
 SentryEvent piiScrubber(SentryEvent event) {
   return event.copyWith(
@@ -79,8 +79,8 @@ String scrubString(String input) {
 
 /// Scrub a URL for HTTP breadcrumbs to a route template.
 ///
-/// Example: `https://api.ssvid.app/v1/tickets/abc-uuid?key=secret` →
-/// `https://api.ssvid.app/v1/tickets/{id}`.
+/// Example: `https://api.svid.app/v1/tickets/abc-uuid?key=secret` →
+/// `https://api.svid.app/v1/tickets/{id}`.
 ///
 /// Steps:
 /// 1. Strip query string entirely.
@@ -163,7 +163,7 @@ final _mediaFilePattern = RegExp(
   caseSensitive: false,
 );
 
-/// 32-char hex string with word boundaries — VidCombo / SSvid license keys.
+/// 32-char hex string with word boundaries — VidCombo / Svid license keys.
 /// Note: this also matches some MD5 hashes; that's an acceptable false-positive
 /// because we never want hex-encoded secrets in event payloads anyway.
 final _licenseKeyRegex = RegExp(r'\b[0-9a-fA-F]{32}\b');
@@ -186,7 +186,7 @@ final _stripeIdRegex = RegExp(
   r'\b(?:sk|pk|rk)_(?:live_|test_)?[A-Za-z0-9]{16,}\b',
 );
 
-/// SSvid API key prefix `snk_` followed by base64url payload.
+/// Svid API key prefix `snk_` followed by base64url payload.
 final _apiKeyRegex = RegExp(r'\bsnk_[A-Za-z0-9_-]{16,}\b');
 
 /// Email addresses — RFC-ish, intentionally broad to catch user input.

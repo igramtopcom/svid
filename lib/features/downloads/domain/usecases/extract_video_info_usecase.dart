@@ -13,7 +13,7 @@ import '../../data/datasources/gallerydl_datasource.dart';
 import '../../data/datasources/ytdlp_datasource.dart';
 // VideoInfoMapper file was removed in commit 5a2aab0f (deep cleanup).
 // Inline conversion below preserves V2 API-only fallback path.
-import '../../data/remote/api/ssvid_api_service.dart';
+import '../../data/remote/api/svid_api_service.dart';
 import '../entities/download_error_code.dart';
 import '../entities/video_info.dart';
 import '../services/download_error_classifier.dart';
@@ -52,7 +52,7 @@ typedef ExtractionFailureTelemetrySink =
 /// - auto + fallback enabled: Try yt-dlp first, fallback to API on failure
 /// - auto + fallback disabled: Try yt-dlp first, fail if not available or fails
 class ExtractVideoInfoUseCase {
-  final SSvidApiService _apiService;
+  final SvidApiService _apiService;
   final YtDlpDataSource _ytdlpDataSource;
   final GalleryDlDataSource _galleryDlDataSource;
   final CircuitBreakerService? _circuitBreaker;

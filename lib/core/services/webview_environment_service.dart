@@ -16,7 +16,7 @@ import '../logging/app_logger.dart';
 /// against ephemeral storage.
 ///
 /// We resolve a per-brand folder under `getApplicationSupportDirectory()` so
-/// SSvid and VidCombo never share state, and persistence survives app
+/// Svid and VidCombo never share state, and persistence survives app
 /// restarts and updates.
 ///
 /// On macOS/Linux this is a no-op — `webview_flutter` (WKWebView) already

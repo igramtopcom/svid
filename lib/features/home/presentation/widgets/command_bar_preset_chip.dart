@@ -1576,20 +1576,20 @@ class _CommandPopoverToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cs = Theme.of(context).colorScheme;
-    final isSsvid = BrandConfig.current.brand == Brand.svid;
+    final isSvid = BrandConfig.current.brand == Brand.svid;
     final accent = AppColors.accentHighlight;
-    final trackRadius = isSsvid ? AppRadius.input : AppRadius.full;
-    final thumbRadius = isSsvid ? 2.5 : AppRadius.full;
+    final trackRadius = isSvid ? AppRadius.input : AppRadius.full;
+    final thumbRadius = isSvid ? 2.5 : AppRadius.full;
     final onTrack =
-        isSsvid ? accent : accent.withValues(alpha: isDark ? 0.36 : 0.20);
+        isSvid ? accent : accent.withValues(alpha: isDark ? 0.36 : 0.20);
     final offTrack =
-        isSsvid
+        isSvid
             ? accent.withValues(alpha: isDark ? 0.10 : 0.055)
             : isDark
             ? Colors.white.withValues(alpha: 0.08)
             : Colors.black.withValues(alpha: 0.045);
     final offBorder =
-        isSsvid
+        isSvid
             ? accent.withValues(alpha: isDark ? 0.34 : 0.26)
             : isDark
             ? Colors.white.withValues(alpha: 0.18)
@@ -1619,12 +1619,12 @@ class _CommandPopoverToggle extends StatelessWidget {
                   border: Border.all(
                     color:
                         value
-                            ? accent.withValues(alpha: isSsvid ? 1 : 0.78)
+                            ? accent.withValues(alpha: isSvid ? 1 : 0.78)
                             : offBorder,
                     width: 1,
                   ),
                   boxShadow:
-                      value && !isSsvid
+                      value && !isSvid
                           ? [
                             BoxShadow(
                               color: accent.withValues(alpha: 0.24),
@@ -1645,13 +1645,13 @@ class _CommandPopoverToggle extends StatelessWidget {
                     decoration: BoxDecoration(
                       color:
                           value
-                              ? (isSsvid ? Colors.white : accent)
+                              ? (isSvid ? Colors.white : accent)
                               : isDark
                               ? cs.onSurfaceVariant
                               : Colors.white,
                       borderRadius: BorderRadius.circular(thumbRadius),
                       border:
-                          value || !isSsvid
+                          value || !isSvid
                               ? null
                               : Border.all(
                                 color: accent.withValues(alpha: 0.24),
@@ -1667,7 +1667,7 @@ class _CommandPopoverToggle extends StatelessWidget {
                       ],
                     ),
                     child:
-                        value && isSsvid
+                        value && isSvid
                             ? Center(
                               child: Container(
                                 width: 2,

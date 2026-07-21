@@ -8,7 +8,7 @@ void main() {
   group('scrubString — pattern coverage', () {
     test('redacts URLs', () {
       expect(
-        scrubString('Loaded https://api.ssvid.app/v1/users/abc'),
+        scrubString('Loaded https://api.svid.app/v1/users/abc'),
         contains('[URL_REDACTED]'),
       );
     });
@@ -77,7 +77,7 @@ void main() {
       );
     });
 
-    test('redacts SSvid API keys (snk_*)', () {
+    test('redacts Svid API keys (snk_*)', () {
       expect(
         scrubString('X-API-Key: snk_AbCdEfGh12345678QwErTy'),
         contains('[API_KEY_REDACTED]'),
@@ -105,55 +105,55 @@ void main() {
     test('strips query string entirely', () {
       final scrubbed = scrubHttpUrl(
         Uri.parse(
-          'https://api.ssvid.app/v1/license/activate?key=ABC&device=XYZ',
+          'https://api.svid.app/v1/license/activate?key=ABC&device=XYZ',
         ),
       );
       expect(scrubbed, isNot(contains('key=')));
       expect(scrubbed, isNot(contains('device=')));
-      expect(scrubbed, equals('https://api.ssvid.app/v1/license/activate'));
+      expect(scrubbed, equals('https://api.svid.app/v1/license/activate'));
     });
 
     test('replaces UUID path segment with {id}', () {
       final scrubbed = scrubHttpUrl(
         Uri.parse(
-          'https://api.ssvid.app/v1/tickets/019df813-b2f0-75e3-8c5c-652ec67b70b4',
+          'https://api.svid.app/v1/tickets/019df813-b2f0-75e3-8c5c-652ec67b70b4',
         ),
       );
-      expect(scrubbed, equals('https://api.ssvid.app/v1/tickets/{id}'));
+      expect(scrubbed, equals('https://api.svid.app/v1/tickets/{id}'));
     });
 
     test('replaces 32-char hex license segment with {license}', () {
       final scrubbed = scrubHttpUrl(
         Uri.parse(
-          'https://api.ssvid.app/v1/license/985168ae6f117474b5f5c57609d69276',
+          'https://api.svid.app/v1/license/985168ae6f117474b5f5c57609d69276',
         ),
       );
-      expect(scrubbed, equals('https://api.ssvid.app/v1/license/{license}'));
+      expect(scrubbed, equals('https://api.svid.app/v1/license/{license}'));
     });
 
     test('replaces email path segment with {email}', () {
       final scrubbed = scrubHttpUrl(
-        Uri.parse('https://api.ssvid.app/v1/users/user@example.com'),
+        Uri.parse('https://api.svid.app/v1/users/user@example.com'),
       );
-      expect(scrubbed, equals('https://api.ssvid.app/v1/users/{email}'));
+      expect(scrubbed, equals('https://api.svid.app/v1/users/{email}'));
     });
 
     test('keeps static path segments unchanged', () {
       final scrubbed = scrubHttpUrl(
-        Uri.parse('https://api.ssvid.app/v1/crashes'),
+        Uri.parse('https://api.svid.app/v1/crashes'),
       );
-      expect(scrubbed, equals('https://api.ssvid.app/v1/crashes'));
+      expect(scrubbed, equals('https://api.svid.app/v1/crashes'));
     });
 
     test('handles mixed segments', () {
       final scrubbed = scrubHttpUrl(
         Uri.parse(
-          'https://api.ssvid.app/v1/users/019df813-b2f0-75e3-8c5c-652ec67b70b4/tickets/abc123def456abc123def456abc123de',
+          'https://api.svid.app/v1/users/019df813-b2f0-75e3-8c5c-652ec67b70b4/tickets/abc123def456abc123def456abc123de',
         ),
       );
       expect(
         scrubbed,
-        equals('https://api.ssvid.app/v1/users/{id}/tickets/{license}'),
+        equals('https://api.svid.app/v1/users/{id}/tickets/{license}'),
       );
     });
 
@@ -172,7 +172,7 @@ void main() {
   group('piiScrubber — walks all event surfaces', () {
     test('scrubs message', () {
       final event = SentryEvent(
-        message: SentryMessage('See https://api.ssvid.app/v1/x'),
+        message: SentryMessage('See https://api.svid.app/v1/x'),
       );
       final scrubbed = piiScrubber(event);
       expect(scrubbed.message!.formatted, contains('[URL_REDACTED]'));
@@ -189,7 +189,7 @@ void main() {
     test('scrubs extras (top level + nested map)', () {
       final event = SentryEvent(
         extra: <String, dynamic>{
-          'url': 'https://api.ssvid.app/v1/x',
+          'url': 'https://api.svid.app/v1/x',
           'meta': <String, dynamic>{
             'license': '985168ae6f117474b5f5c57609d69276',
           },
@@ -208,7 +208,7 @@ void main() {
         breadcrumbs: [
           Breadcrumb(
             message: 'Loaded',
-            data: <String, dynamic>{'url': 'https://api.ssvid.app/v1/x'},
+            data: <String, dynamic>{'url': 'https://api.svid.app/v1/x'},
           ),
         ],
       );
@@ -282,7 +282,7 @@ void main() {
     test('scrubs SentryRequest url, headers, queryString, cookies', () {
       final event = SentryEvent(
         request: SentryRequest(
-          url: 'https://api.ssvid.app/v1/license/activate',
+          url: 'https://api.svid.app/v1/license/activate',
           method: 'POST',
           queryString: 'license_key=985168ae6f117474b5f5c57609d69276',
           cookies: 'session=abc; csrf=xyz',
@@ -312,7 +312,7 @@ void main() {
         'license': '985168ae6f117474b5f5c57609d69276',
         'email': 'user@example.com',
       };
-      ctx['note'] = 'Visited https://api.ssvid.app/v1/x';
+      ctx['note'] = 'Visited https://api.svid.app/v1/x';
       final event = SentryEvent(contexts: ctx);
       final scrubbed = piiScrubber(event);
       final customMap = scrubbed.contexts['custom'] as Map;

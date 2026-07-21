@@ -154,7 +154,7 @@ class TopNavigationBar extends ConsumerWidget {
   /// premium users see a quiet glyph-only badge.
   ///
   /// Brand accent reasoning: the V2 mockup uses a placeholder blue,
-  /// but SSvid is Wine Red across every other surface (CTAs, badges,
+  /// but Svid is Wine Red across every other surface (CTAs, badges,
   /// brand glyph). Adopting mockup shape (outlined pill on light bg)
   /// with brand color (Wine Red / VidCombo Cyan via BrandConfig)
   /// keeps the V2 layout intent without fracturing brand identity.
@@ -497,10 +497,10 @@ class TopNavigationBar extends ConsumerWidget {
     final cs = Theme.of(context).colorScheme;
     final showLabel = !compact || isSelected;
     // Brand-consistent active tab accent. The V2 mockup hint at blue,
-    // but SSvid identity is Wine Red across every other surface
+    // but Svid identity is Wine Red across every other surface
     // (CTAs, pills, badges, brand glyph). Copying the mockup blue
     // here would fracture the visual identity. Use the brand
-    // accent so SSvid renders Wine Red and VidCombo renders Cyan
+    // accent so Svid renders Wine Red and VidCombo renders Cyan
     // automatically via [BrandConfig].
     final navAccent = AppColors.accentHighlight;
 

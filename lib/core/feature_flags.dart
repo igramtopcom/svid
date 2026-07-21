@@ -22,7 +22,7 @@
 ///    GlassmorphismHeader rather than augmenting it. Restoring the
 ///    gate lets that scaffold come back online without re-writing
 ///    widgets that are already analyzer-clean and tested.
-/// 3. **Multi-brand HYBRID schedule.** SSvid ships V2 first; VidCombo
+/// 3. **Multi-brand HYBRID schedule.** Svid ships V2 first; VidCombo
 ///    continues v1.x until the v2.1.0 port cycle (DECISIONS.md Q13).
 ///    [homeV2Enabled] returns `false` for VidCombo today, so deleting
 ///    it would also delete the brand-conditional contract.
@@ -40,34 +40,34 @@ import 'config/brand_config.dart';
 
 /// Compile-time / hotfix-controlled rollout flags for the V2 campaign.
 ///
-/// During development the SSvid default stays `false` so PRs can ship
+/// During development the Svid default stays `false` so PRs can ship
 /// gated UI without affecting alpha builds. Each rollout milestone (alpha
 /// → beta → public) flips the default in a separate commit.
 ///
-/// VidCombo always returns `false` for V2 flags during the SSvid v2.0
+/// VidCombo always returns `false` for V2 flags during the Svid v2.0
 /// cycle. The v2.1 port branch will flip the brand-conditional check.
 class FeatureFlags {
   FeatureFlags._();
 
-  /// SSvid V2 default. Currently `false` (pre-alpha).
+  /// Svid V2 default. Currently `false` (pre-alpha).
   /// Flip sequence:
-  ///   - Internal alpha (after Phase 1A+§5):  `_kSSvidV2Default = true` in
+  ///   - Internal alpha (after Phase 1A+§5):  `_kSvidV2Default = true` in
   ///     a "release(alpha)" commit, internal builds only.
   ///   - Internal beta (after Phase 1B+1C):   stays `true`.
   ///   - Closed beta (after Phase §10):       stays `true`.
   ///   - Public release (after Polish+Buffer): stays `true`; backend can
   ///     remote-toggle via `home_v2_enabled` flag for staged rollout.
   ///   - Hotfix rollback: flip `false`, ship hotfix.
-  static const bool _kSSvidV2Default = false;
+  static const bool _kSvidV2Default = false;
 
   /// `true` when the V2 home screen + download manager redesign should
   /// render, replacing the v1 home shell. Brand-conditional: VidCombo
-  /// stays `false` until the v2.1 cycle. SSvid honors
-  /// [_kSSvidV2Default] (no remote-config wiring yet — additive in
+  /// stays `false` until the v2.1 cycle. Svid honors
+  /// [_kSvidV2Default] (no remote-config wiring yet — additive in
   /// Polish phase).
   static bool get homeV2Enabled {
     if (BrandConfig.current.brand == Brand.vidcombo) return false;
-    return _kSSvidV2Default;
+    return _kSvidV2Default;
   }
 
   /// `true` when the player can attach a [UserPlaylist] context to its

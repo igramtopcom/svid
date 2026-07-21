@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Holds the most recently emitted "Open in SSvid" URL from the floating
+/// Holds the most recently emitted "Open in Svid" URL from the floating
 /// capture popup. The user clicks this button on a non-video URL
 /// (playlist / channel / search) — per spec Q18 — when they want to
 /// interact with the URL in the main app rather than start a direct

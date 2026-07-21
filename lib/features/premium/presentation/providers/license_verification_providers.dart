@@ -15,7 +15,7 @@ final licenseVerificationServiceProvider = Provider<LicenseVerificationService>(
   },
 );
 
-/// License activation handler provider (deep-link: ssvid://activate?key=...).
+/// License activation handler provider (deep-link: svid://activate?key=...).
 ///
 /// The handler routes activation through PremiumNotifier.activateLicense
 /// (via [activateViaNotifier] callback) so Riverpod premium state updates

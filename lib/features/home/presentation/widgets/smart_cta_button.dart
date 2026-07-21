@@ -12,7 +12,7 @@
 ///   - isReclassifying          → label "Đang phân tích…", disabled spinner
 ///
 /// Wires to onPressed when not disabled. Uses brand primary color via
-/// [Theme.of(context).colorScheme.primary] so SSvid Wine Red and
+/// [Theme.of(context).colorScheme.primary] so Svid Wine Red and
 /// VidCombo Arctic Blue both render correctly without per-brand code.
 library;
 

@@ -483,7 +483,7 @@ class UrlClassification {
   /// (video/playlist/channel/live/search) vs. a non-URL keyword or
   /// unknown URL. Codex audit P1 #6 fix: include `UrlType.search` so
   /// search URLs flow through ClipboardMonitorService → CaptureService
-  /// and surface in the popup with an "Open in SSvid" action (spec Q18).
+  /// and surface in the popup with an "Open in Svid" action (spec Q18).
   /// Previously they were silently dropped at the monitor layer.
   bool get isKnownUrlType =>
       urlType == UrlType.video ||

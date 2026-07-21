@@ -205,7 +205,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
       }
       checkPendingExtraction();
 
-      // Phase 1B.2: pick up "Open in SSvid" clicks on non-video URLs
+      // Phase 1B.2: pick up "Open in Svid" clicks on non-video URLs
       // from the floating capture popup (spec Q18). Download clicks are
       // routed by AppScaffold so System PiP cannot unmount their consumer.
       // Open-in-app still belongs here because it only needs the visible URL
@@ -2688,7 +2688,7 @@ class _FreeQuotaIndicator extends ConsumerWidget {
     final isWarning = !isExhausted && remaining <= 5;
 
     // Brand-token strip: every accent flows through
-    // [AppColors.accentHighlight] so SSvid renders Wine Red and
+    // [AppColors.accentHighlight] so Svid renders Wine Red and
     // VidCombo renders Cyan. The mockup's violet crown + blue link
     // were Stitch placeholder colors, not a design-system rule.
     final brandAccent = AppColors.accentHighlight;

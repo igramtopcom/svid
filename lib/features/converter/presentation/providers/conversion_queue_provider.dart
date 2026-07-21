@@ -158,7 +158,7 @@ class ConversionQueueNotifier extends StateNotifier<List<ConversionJob>> {
       }
     }
     try {
-      final testFile = File(p.join(outputDirectory.path, '.ssvid_write_test'));
+      final testFile = File(p.join(outputDirectory.path, '.svid_write_test'));
       await testFile.writeAsString('');
       await testFile.delete();
     } catch (_) {

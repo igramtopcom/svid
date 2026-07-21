@@ -470,9 +470,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
       if (savedPath == '~/Downloads' || !await savedDir.exists()) {
         // First launch OR saved path invalid → delegate to brand-aware
-        // resolver. For SSvid this is identical to the previous inline
+        // resolver. For Svid this is identical to the previous inline
         // getDownloadsDirectory() logic (no behavior change for existing
-        // SSvid users — see BrandDownloadPathResolver._ssvidPlatformDefault).
+        // Svid users — see BrandDownloadPathResolver._svidPlatformDefault).
         // For VidCombo this auto-detects legacy ObjectBox folders
         // (~/Documents/VidCombo, ~/Downloads/VidCombo, OneDrive-redirected
         // variants) so the 1.6.x → 1.7.x rewrite does NOT silently strand

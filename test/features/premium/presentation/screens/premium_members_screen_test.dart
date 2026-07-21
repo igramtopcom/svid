@@ -51,7 +51,7 @@ void main() {
   late _TestDatasource datasource;
   late PremiumLicenseService service;
 
-  const licenseKey = 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0';
+  const licenseKey = 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0';
   final license = PremiumLicense(
     tier: PremiumTier.premium,
     licenseKey: licenseKey,

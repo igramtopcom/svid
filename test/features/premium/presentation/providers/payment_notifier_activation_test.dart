@@ -402,7 +402,7 @@ void main() {
     });
   });
 
-  // ── reconcileServerEntitlement (FIX #1 — SSvid startup self-heal) ────────────
+  // ── reconcileServerEntitlement (FIX #1 — Svid startup self-heal) ────────────
 
   group('PaymentNotifier.reconcileServerEntitlement', () {
     final licenseKey = TestLicenseKeys.valid;

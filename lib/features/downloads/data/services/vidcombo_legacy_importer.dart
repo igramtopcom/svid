@@ -36,7 +36,7 @@ import '../../../../core/providers/database_provider.dart';
 /// hint that a migration happened. They open the new app and their old
 /// library is just there.
 ///
-/// Brand-guarded: no-op for SSvid.
+/// Brand-guarded: no-op for Svid.
 class VidComboLegacyImporter {
   VidComboLegacyImporter({
     required AppDatabase database,

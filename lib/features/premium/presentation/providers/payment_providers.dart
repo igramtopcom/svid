@@ -292,7 +292,7 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
   /// Returns `true` when the server confirmed premium AND local state was
   /// hydrated to active premium.
   ///
-  /// Public so the SSvid startup self-heal ([StartupService._initializeGo])
+  /// Public so the Svid startup self-heal ([StartupService._initializeGo])
   /// can re-promote a server-premium / local-free device after a previous
   /// soft-demote (offline grace, transient backend hiccup) wiped the live
   /// premium flag but kept the device entitled server-side. The caller MUST

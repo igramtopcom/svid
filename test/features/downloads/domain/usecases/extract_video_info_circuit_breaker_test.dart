@@ -39,7 +39,7 @@ import 'package:svid/features/settings/domain/enums/download_engine.dart';
 import '../../../../shared/mocks/mocks.dart';
 
 void main() {
-  late MockSSvidApiService mockApi;
+  late MockSvidApiService mockApi;
   late MockYtDlpDataSource mockYtdlp;
   late MockGalleryDlDataSource mockGalleryDl;
   late CircuitBreakerService circuitBreaker;
@@ -51,7 +51,7 @@ void main() {
   const soundcloudUrl = 'https://soundcloud.com/artist/track';
 
   setUp(() {
-    mockApi = MockSSvidApiService();
+    mockApi = MockSvidApiService();
     mockYtdlp = MockYtDlpDataSource();
     mockGalleryDl = MockGalleryDlDataSource();
     // Use a real circuit breaker so we observe its consecutiveFailures

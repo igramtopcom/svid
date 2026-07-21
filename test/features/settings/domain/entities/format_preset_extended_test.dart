@@ -96,7 +96,7 @@ void main() {
       containerFormat: 'mp4',
       fpsPreference: 'auto',
       audioBitrate: 320,
-      saveLocation: '/Downloads/SSvid',
+      saveLocation: '/Downloads/Svid',
       createdAt: DateTime.utc(2026, 5, 5),
     );
 
@@ -116,7 +116,7 @@ void main() {
     test('nullable field unchanged when not passed', () {
       final touched = base.copyWith(name: 'X');
       expect(touched.audioBitrate, 320);
-      expect(touched.saveLocation, '/Downloads/SSvid');
+      expect(touched.saveLocation, '/Downloads/Svid');
     });
   });
 

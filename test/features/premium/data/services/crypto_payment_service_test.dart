@@ -81,7 +81,7 @@ void main() {
         final json = {
           'status': 'completed',
           'transactionId': 'tx_btc_abc123',
-          'licenseKey': 'SSVID-c4f0-1234-5678-9abc-def0-1234-5678-9abc',
+          'licenseKey': 'SVID-c4f0-1234-5678-9abc-def0-1234-5678-9abc',
           'paymentMethod': 'crypto',
           'createdAt': '2026-02-28T12:00:00.000Z',
         };
@@ -89,7 +89,7 @@ void main() {
         final result = PaymentResult.fromJson(json);
         expect(result.isSuccess, true);
         expect(result.transactionId, 'tx_btc_abc123');
-        expect(result.licenseKey, 'SSVID-c4f0-1234-5678-9abc-def0-1234-5678-9abc');
+        expect(result.licenseKey, 'SVID-c4f0-1234-5678-9abc-def0-1234-5678-9abc');
         expect(result.paymentMethod, 'crypto');
       });
 

@@ -23,14 +23,14 @@ final class OpenExternalUrl extends CaptureSideEffect {
   const OpenExternalUrl(this.url);
 }
 
-/// User clicked "Open in SSvid" for a non-video URL — main app opens its
+/// User clicked "Open in Svid" for a non-video URL — main app opens its
 /// in-app browser/sheet (per spec Q18).
 final class OpenInAppUrl extends CaptureSideEffect {
   final String url;
   const OpenInAppUrl(this.url);
 }
 
-/// User chose "Open SSvid app" from the menu — main app brings its window
+/// User chose "Open Svid app" from the menu — main app brings its window
 /// to front (per spec Q14).
 final class OpenMainAppWindow extends CaptureSideEffect {
   const OpenMainAppWindow();

@@ -11,7 +11,7 @@ import '../../../../core/utils/platform_detector.dart';
 /// MethodChannel `svid.floating_capture` between main and floating Flutter
 /// engines. [toJson] / [fromJson] are required for serialization.
 ///
-/// See `docs/SSvid_v2_1_FloatingCapture_Spec.md` for full context.
+/// See `docs/Svid_v2_1_FloatingCapture_Spec.md` for full context.
 class VideoPreview {
   /// Original URL as pasted by user (preserve query params for downstream use).
   final String rawUrl;

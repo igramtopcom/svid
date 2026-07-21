@@ -123,7 +123,7 @@ void main() {
           platformOsProvider: () => 'macos',
           osVersionProvider: () => 'macOS 14.5',
           deviceNameProvider: () => 'My Mac',
-          brandNameProvider: () => 'ssvid',
+          brandNameProvider: () => 'svid',
         );
 
         final success = await service.register();
@@ -147,7 +147,7 @@ void main() {
           client.lastPostNoAuthData,
           containsPair('device_name', 'My Mac'),
         );
-        expect(client.lastPostNoAuthData, containsPair('brand', 'ssvid'));
+        expect(client.lastPostNoAuthData, containsPair('brand', 'svid'));
         expect(
           client.lastPostNoAuthData,
           containsPair('app_version', AppConstants.appVersion),
@@ -164,7 +164,7 @@ void main() {
         platformOsProvider: () => 'macos',
         osVersionProvider: () => 'macOS 14.5',
         deviceNameProvider: () => 'My Mac',
-        brandNameProvider: () => 'ssvid',
+        brandNameProvider: () => 'svid',
         installIdProvider: () => 'install-test-123',
       );
 

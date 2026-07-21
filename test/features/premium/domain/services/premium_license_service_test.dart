@@ -139,7 +139,7 @@ void main() {
 
       test('throws for key with wrong prefix', () async {
         // 'ABCD-1234-5678-9ABC-DEF0' is malformed under both brands:
-        // - SSvid: wrong prefix + wrong group count
+        // - Svid: wrong prefix + wrong group count
         // - VidCombo: not a 32-char hex string
         expect(
           () => service.activateLicense('ABCD-1234-5678-9ABC-DEF0'),
@@ -399,27 +399,27 @@ void main() {
     });
 
     group(
-      'isValidLicenseKey (SSvid format)',
+      'isValidLicenseKey (Svid format)',
       () {
-        // These tests assert the SSvid 9-group hex format. VidCombo uses a
+        // These tests assert the Svid 9-group hex format. VidCombo uses a
         // 32-char hex string instead, so this group is brand-coupled and
-        // only runs under BRAND=ssvid.
+        // only runs under BRAND=svid.
         test('valid key formats', () {
           expect(
             PremiumLicenseService.isValidLicenseKey(
-              'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+              'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
             ),
             true,
           );
           expect(
             PremiumLicenseService.isValidLicenseKey(
-              'SSVID-aaaa-bbbb-cccc-dddd-eeee-ffff-0000-1111',
+              'SVID-aaaa-bbbb-cccc-dddd-eeee-ffff-0000-1111',
             ),
             true,
           );
           expect(
             PremiumLicenseService.isValidLicenseKey(
-              'SSVID-0000-0000-0000-0000-0000-0000-0000-0000',
+              'SVID-0000-0000-0000-0000-0000-0000-0000-0000',
             ),
             true,
           );
@@ -427,14 +427,14 @@ void main() {
 
         test('invalid key formats', () {
           expect(PremiumLicenseService.isValidLicenseKey(''), false);
-          expect(PremiumLicenseService.isValidLicenseKey('SSVID-'), false);
+          expect(PremiumLicenseService.isValidLicenseKey('SVID-'), false);
           expect(
-            PremiumLicenseService.isValidLicenseKey('SSVID-1234-5678-9ABC'),
+            PremiumLicenseService.isValidLicenseKey('SVID-1234-5678-9ABC'),
             false,
           ); // too few groups
           expect(
             PremiumLicenseService.isValidLicenseKey(
-              'SSVID-1234-5678-9ABC-DEF0',
+              'SVID-1234-5678-9ABC-DEF0',
             ),
             false,
           ); // only 4 groups (old format)
@@ -446,13 +446,13 @@ void main() {
           ); // wrong prefix
           expect(
             PremiumLicenseService.isValidLicenseKey(
-              'SSVID-ZZZZ-5678-9abc-def0-1234-5678-9abc-def0',
+              'SVID-ZZZZ-5678-9abc-def0-1234-5678-9abc-def0',
             ),
             false,
           ); // non-hex Z
           expect(
             PremiumLicenseService.isValidLicenseKey(
-              'SSVID-12345-5678-9abc-def0-1234-5678-9abc-def0',
+              'SVID-12345-5678-9abc-def0-1234-5678-9abc-def0',
             ),
             false,
           ); // 5 digits in first group
@@ -460,7 +460,7 @@ void main() {
       },
       skip:
           BrandConfig.current.brand != Brand.svid
-              ? 'SSvid-specific license format'
+              ? 'Svid-specific license format'
               : null,
     );
 

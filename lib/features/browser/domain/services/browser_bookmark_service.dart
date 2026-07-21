@@ -135,7 +135,7 @@ class BrowserBookmarkService {
   /// Exports all bookmarks as a Netscape Bookmarks HTML string.
   String exportToNetscapeHtml() => buildNetscapeHtml(_bookmarks);
 
-  /// Exports all bookmarks as a JSON string (SSvid backup format).
+  /// Exports all bookmarks as a JSON string (Svid backup format).
   String exportToJson() =>
       jsonEncode(_bookmarks.map((b) => b.toJson()).toList());
 
@@ -165,7 +165,7 @@ class BrowserBookmarkService {
     return added;
   }
 
-  /// Imports bookmarks from a JSON string (SSvid backup format).
+  /// Imports bookmarks from a JSON string (Svid backup format).
   /// Deduplicates by URL.
   /// Returns the number of new bookmarks added.
   int importFromJson(String json) {

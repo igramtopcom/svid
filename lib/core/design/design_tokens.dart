@@ -8,7 +8,7 @@
 /// are authoritative and brand-aware via [BrandConfig]. This file adds only
 /// the visual tokens the existing theme system did not yet expose.
 ///
-/// Reference: docs/SSvid_v2_Design_Spec.md §4-§8.
+/// Reference: docs/Svid_v2_Design_Spec.md §4-§8.
 library;
 
 import 'package:flutter/widgets.dart';
@@ -64,7 +64,7 @@ class AppSpacing {
 
 /// Border-radius scale. Default radius for V2 generic components is [md]
 /// (8px). Brand-defining components (cards, buttons, inputs) honor
-/// [BrandConfig.cardRadius]/[BrandConfig.buttonRadius] etc. instead so SSvid
+/// [BrandConfig.cardRadius]/[BrandConfig.buttonRadius] etc. instead so Svid
 /// (3px Nocturne angular) and VidCombo (12-999px Arctic frosted) keep their
 /// brand identity. See `docs/v2/DECISIONS.md` Q5.
 class AppRadius {

@@ -54,7 +54,7 @@ abstract class SettingsRepository {
   /// Save download engine preference
   Future<bool> saveDownloadEngine(DownloadEngine engine);
 
-  /// Save enable API fallback (yt-dlp fail → SSvid API retry)
+  /// Save enable API fallback (yt-dlp fail → Svid API retry)
   Future<bool> saveEnableApiFallback(bool enabled);
 
   /// Save show download method badge in UI

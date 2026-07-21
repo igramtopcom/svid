@@ -582,7 +582,7 @@ class _AuroraPalette {
           scale(amber, 0.46),
           scale(ember, 0.38),
           scale(copper, 0.30),
-          scale(c.brandDark, 0.18), // hint of wine so it reads as "SSvid"
+          scale(c.brandDark, 0.18), // hint of wine so it reads as "Svid"
         ],
         orbs: [
           scale(amber, 0.48),

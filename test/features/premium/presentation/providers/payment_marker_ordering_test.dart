@@ -156,7 +156,7 @@ void main() {
         pollResult: PaymentResult(
           status: PaymentStatus.completed,
           sessionId: 'sess_test',
-          licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+          licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
           paymentMethod: 'stripe',
           createdAt: DateTime.now(),
           expiresAt: DateTime.now().add(const Duration(days: 30)),
@@ -183,7 +183,7 @@ void main() {
           pollResult: PaymentResult(
             status: PaymentStatus.completed,
             sessionId: 'sess_test',
-            licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+            licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
             paymentMethod: 'stripe',
             createdAt: DateTime.now(),
             expiresAt: DateTime.now().add(const Duration(days: 30)),
@@ -335,7 +335,7 @@ void main() {
                 pollResult: PaymentResult(
                   status: PaymentStatus.completed,
                   sessionId: 'sess_resolved',
-                  licenseKey: 'SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
+                  licenseKey: 'SVID-1234-5678-9abc-def0-1234-5678-9abc-def0',
                   paymentMethod: 'stripe',
                   createdAt: DateTime.now(),
                   expiresAt: DateTime.now().add(const Duration(days: 30)),
@@ -378,7 +378,7 @@ void main() {
         expect(
           () => container
               .read(premiumLicenseProvider.notifier)
-              .activateLicense('SSVID-1234-5678-9abc-def0-1234-5678-9abc-def0'),
+              .activateLicense('SVID-1234-5678-9abc-def0-1234-5678-9abc-def0'),
           throwsA(isA<Exception>()),
           reason:
               'PremiumNotifier.activateLicense MUST throw on Keychain failure '

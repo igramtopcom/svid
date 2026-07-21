@@ -234,7 +234,7 @@ abstract class BrandConfig {
   /// by [_openConnection] in `core/database/app_database.dart`.
   ///
   /// IMPORTANT: never include `.db` here. A regression in commit c8bbba91
-  /// produced `'ssvid.db'` which then concatenated to `ssvid.db.db`, silently
+  /// produced `'svid.db'` which then concatenated to `svid.db.db`, silently
   /// splitting users' download history into an orphan file.
   /// The base-class assertion in [_assertDatabaseNameInvariant] enforces this.
   String get databaseName;
@@ -283,7 +283,7 @@ abstract class BrandConfig {
   /// App name sent to backend for device registration (e.g., 'appVidcombo')
   String get backendAppName;
 
-  /// Base URL for the video extraction API (ssvid.net/vidcombo.net backend)
+  /// Base URL for the video extraction API (svid.net/vidcombo.net backend)
   String get extractionApiUrl;
 
   /// Product website URL

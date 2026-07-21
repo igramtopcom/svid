@@ -227,7 +227,7 @@ void main() {
     });
 
     test('returns isDuplicate=true when ID is in archive file', () async {
-      final archivePath = '${tempDir.path}/.ssvid_archive.txt';
+      final archivePath = '${tempDir.path}/.svid_archive.txt';
       await File(archivePath).writeAsString(
         'youtube dQw4w9WgXcQ\nyoutube abc123\n',
       );
@@ -241,7 +241,7 @@ void main() {
     });
 
     test('returns isDuplicate=false when ID is not in archive', () async {
-      final archivePath = '${tempDir.path}/.ssvid_archive.txt';
+      final archivePath = '${tempDir.path}/.svid_archive.txt';
       await File(archivePath).writeAsString(
         'youtube abc123\nyoutube xyz789\n',
       );
@@ -262,7 +262,7 @@ void main() {
     });
 
     test('returns notFound when video ID cannot be extracted', () async {
-      final archivePath = '${tempDir.path}/.ssvid_archive.txt';
+      final archivePath = '${tempDir.path}/.svid_archive.txt';
       await File(archivePath).writeAsString('youtube abc123\n');
 
       final result = await service.checkArchiveFile(
@@ -273,7 +273,7 @@ void main() {
     });
 
     test('handles empty archive file gracefully', () async {
-      final archivePath = '${tempDir.path}/.ssvid_archive.txt';
+      final archivePath = '${tempDir.path}/.svid_archive.txt';
       await File(archivePath).writeAsString('');
 
       final result = await service.checkArchiveFile(
@@ -284,7 +284,7 @@ void main() {
     });
 
     test('handles archive with blank lines', () async {
-      final archivePath = '${tempDir.path}/.ssvid_archive.txt';
+      final archivePath = '${tempDir.path}/.svid_archive.txt';
       await File(archivePath).writeAsString(
         '\nyoutube abc123\n\n\nyoutube xyz789\n\n',
       );
@@ -297,7 +297,7 @@ void main() {
     });
 
     test('matches TikTok ID in archive', () async {
-      final archivePath = '${tempDir.path}/.ssvid_archive.txt';
+      final archivePath = '${tempDir.path}/.svid_archive.txt';
       await File(archivePath).writeAsString('tiktok 7123456789\n');
 
       final result = await service.checkArchiveFile(

@@ -91,6 +91,9 @@ class _IconColumnButtonState extends State<_IconColumnButton> {
         isDark
             ? AppColors.homeDarkBorderStrong
             : cs.outlineVariant.withValues(alpha: 0.72);
+    // Persistent subtle surface so the button reads as a sibling of the
+    // preset chip — the three form one cohesive, framed control cluster.
+    final frameBg = isDark ? AppColors.homeDarkCardBg : cs.surfaceContainerLowest;
     final iconFrameHoverBg = widget.hoverBg;
     final glyph = Stack(
       clipBehavior: Clip.none,
@@ -147,15 +150,15 @@ class _IconColumnButtonState extends State<_IconColumnButton> {
               height: widget.height,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                // Ghost/secondary: transparent by default so the primary
-                // Download CTA stays the visual anchor; frame appears on hover.
-                color: _hovered ? iconFrameHoverBg : Colors.transparent,
+                // Framed like the preset chip so the trailing controls read as
+                // one segmented cluster; hover just lifts the surface + border.
+                color: _hovered ? iconFrameHoverBg : frameBg,
                 borderRadius: BorderRadius.circular(AppRadius.input),
                 border: Border.all(
                   color:
                       _hovered
-                          ? neutralBorder.withValues(alpha: isDark ? 0.82 : 1)
-                          : Colors.transparent,
+                          ? neutralBorder.withValues(alpha: isDark ? 0.9 : 1)
+                          : neutralBorder,
                   width: 1,
                 ),
               ),
@@ -177,12 +180,6 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
   static const double _presetChipWidth = 176;
   static const double _ctaWidth = 184;
   static const double _ctaWidthCompact = 168;
-
-  /// The URL field grows with the card but is capped at a comfortable reading
-  /// width so it never stretches on wide windows; surplus space trails after
-  /// it, keeping the secondary utilities pinned to the card's right edge.
-  static const double _inputMaxWidth = 600;
-  static const double _inputMinWidth = 240;
 
   bool _isHoveringPaste = false;
   // History + Batch hover state was used by the legacy IconButton
@@ -878,33 +875,13 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
       );
     }
 
-    // Explicitly size the input so it fills tight cards but caps on wide ones;
-    // the leftover width becomes a trailing spacer that pins the secondary
-    // utilities to the right edge, so the card never reads as lopsided.
-    final iconButtonWidth = isCompact ? 56.0 : 58.0;
-    final gapAfterInput = isCompact ? AppSpacing.sm : AppSpacing.smMd;
-    final gapAfterCta = isCompact ? AppSpacing.md : AppSpacing.mdLg;
-    final fixedTrailing =
-        gapAfterInput +
-        ctaWidth +
-        gapAfterCta +
-        _presetChipWidth +
-        AppSpacing.sm +
-        iconButtonWidth +
-        AppSpacing.sm +
-        iconButtonWidth;
-    final rawInputWidth = width - fixedTrailing;
-    final inputWidth =
-        rawInputWidth > _inputMaxWidth
-            ? _inputMaxWidth
-            : (rawInputWidth < _inputMinWidth ? _inputMinWidth : rawInputWidth);
-
+    // The input takes the surplus width (bounded by the card's own max width),
+    // and every control — CTA, preset, history, batch — stays packed tightly
+    // right after it so the action cluster reads as one cohesive group.
     return Row(
       children: [
-        SizedBox(width: inputWidth, child: input),
-        SizedBox(width: gapAfterInput),
-        // Primary action sits right next to the input for a tight
-        // paste → download motion; secondary options trail after it.
+        Expanded(child: input),
+        SizedBox(width: isCompact ? AppSpacing.sm : AppSpacing.smMd),
         _buildDownloadCta(
           height: height,
           width: ctaWidth,
@@ -912,9 +889,8 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
           primaryCtaHover: primaryCtaHover,
           primaryCtaDisabled: primaryCtaDisabled,
         ),
-        SizedBox(width: gapAfterCta),
+        SizedBox(width: isCompact ? AppSpacing.smMd : AppSpacing.md),
         presetChip,
-        const Spacer(),
         const SizedBox(width: AppSpacing.sm),
         historyButton,
         const SizedBox(width: AppSpacing.sm),

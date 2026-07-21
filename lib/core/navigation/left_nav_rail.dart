@@ -51,7 +51,6 @@ class LeftNavRail extends ConsumerWidget {
     final isConverter = selectedIndex == NavigationConstants.converterIndex;
     final isBrowser = selectedIndex == NavigationConstants.browserIndex;
     final isSettings = selectedIndex == NavigationConstants.settingsIndex;
-    final isAssistant = selectedIndex == NavigationConstants.assistantIndex;
     final isSupport = selectedIndex == NavigationConstants.supportIndex;
     final isActivity =
         selectedIndex == NavigationConstants.activityCenterIndex;
@@ -116,15 +115,6 @@ class LeftNavRail extends ConsumerWidget {
             selected: isBrowser,
             expanded: expanded,
             onTap: () => onDestinationSelected(NavigationConstants.browserIndex),
-          ),
-          divider(),
-          _RailItem(
-            icon: Icons.auto_awesome_outlined,
-            label: AppLocalizations.navAssistant,
-            selected: isAssistant,
-            expanded: expanded,
-            onTap:
-                () => onDestinationSelected(NavigationConstants.assistantIndex),
           ),
           _RailItem(
             icon: Icons.support_agent_outlined,
@@ -210,13 +200,14 @@ class _RailHeader extends StatelessWidget {
                         const SizedBox(width: AppSpacing.smMd),
                         Expanded(
                           child: Text(
-                            AppConstants.appName,
+                            AppConstants.appName.toUpperCase(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppTypography.appBarTitle.copyWith(
                               color: Theme.of(context).colorScheme.onSurface,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 17,
+                              letterSpacing: 2.2,
                             ),
                           ),
                         ),

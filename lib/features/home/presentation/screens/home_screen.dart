@@ -17,6 +17,7 @@ import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../../player/presentation/providers/player_providers.dart';
 import '../../../player/presentation/providers/playback_queue_providers.dart';
 import '../widgets/glassmorphism_header.dart';
+import '../widgets/download_options_tip.dart';
 import '../widgets/batch_operations_bar.dart';
 import '../widgets/downloads_list.dart';
 import '../widgets/download_list_helpers.dart';
@@ -602,6 +603,20 @@ class HomeScreenState extends ConsumerState<HomeScreen>
 
   // ── Batch URL import dialog ──
 
+  /// Split-button ▾ action: force the per-download options sheet for the URL
+  /// currently in the input, regardless of the "ask first vs auto" default —
+  /// the discoverable entry point to quality / trim / subtitles / SponsorBlock.
+  Future<void> _startDownloadWithOptions() async {
+    final url = _urlController.text.trim();
+    if (url.isEmpty) {
+      _urlFocusNode.requestFocus();
+      return;
+    }
+    _pendingDirectDownloadUrl = null;
+    _pendingForceConfigDialogUrl = url;
+    await startDownload();
+  }
+
   void _showBatchDownloadDialog() async {
     if (!ensurePremiumBootstrapReady()) return;
 
@@ -846,9 +861,21 @@ class HomeScreenState extends ConsumerState<HomeScreen>
                         );
                       },
                       onBatchDownload: _showBatchDownloadDialog,
+                      onDownloadWithOptions: _startDownloadWithOptions,
                       showAutoPasteIndicator: _showAutoPasteIndicator,
                       historyCount: historyEntries.length,
                     ),
+                  ),
+
+                  // 1a. One-time hint introducing the Download ▾ options.
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      AppSpacing.xl,
+                      0,
+                      AppSpacing.xl,
+                      0,
+                    ),
+                    child: DownloadOptionsTip(),
                   ),
 
                   // 1b. Free tier quota indicator

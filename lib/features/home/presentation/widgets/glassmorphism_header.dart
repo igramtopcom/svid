@@ -24,6 +24,10 @@ class GlassmorphismHeader extends ConsumerStatefulWidget {
   final VoidCallback onPaste;
   final VoidCallback? onHistoryTap;
   final VoidCallback? onBatchDownload;
+  // When set, the Download button becomes a split button whose ▾ opens the
+  // per-download options sheet (quality + trim + subtitles + SponsorBlock) for
+  // the current URL, regardless of the "ask vs auto" default.
+  final VoidCallback? onDownloadWithOptions;
   final bool showAutoPasteIndicator;
   final VoidCallback? onAutoPasteAnimationDone;
   final int historyCount;
@@ -40,6 +44,7 @@ class GlassmorphismHeader extends ConsumerStatefulWidget {
     required this.onPaste,
     this.onHistoryTap,
     this.onBatchDownload,
+    this.onDownloadWithOptions,
     this.showAutoPasteIndicator = false,
     this.onAutoPasteAnimationDone,
     this.historyCount = 0,
@@ -759,7 +764,15 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
     required Color primaryCtaHover,
     required Color primaryCtaDisabled,
   }) {
-    return MouseRegion(
+    final hasOptions = widget.onDownloadWithOptions != null;
+    final mainRadius =
+        hasOptions
+            ? BorderRadius.horizontal(
+              left: Radius.circular(AppRadius.button),
+            )
+            : BorderRadius.circular(AppRadius.button);
+
+    final mainButton = MouseRegion(
       onEnter: (_) {
         if (mounted) setState(() => _isHoveringDownload = true);
       },
@@ -767,7 +780,6 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
         if (mounted) setState(() => _isHoveringDownload = false);
       },
       child: SizedBox(
-        width: width,
         height: height,
         child: FilledButton.icon(
           onPressed: widget.isExtracting ? null : widget.onDownload,
@@ -813,11 +825,60 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
             // Subtle brand-tinted lift so the primary action reads as elevated.
             elevation: 4,
             shadowColor: primaryCta.withValues(alpha: 0.45),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.button),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: mainRadius),
           ),
         ),
+      ),
+    );
+
+    if (!hasOptions) {
+      return SizedBox(width: width, height: height, child: mainButton);
+    }
+
+    // Split button: a ▾ that opens per-download options (quality, trim,
+    // subtitles, SponsorBlock) for the current URL — a permanent, discoverable
+    // entry point that doesn't depend on the "ask first" default. Total width
+    // stays `width`; the main button just yields ~39px to the caret.
+    return SizedBox(
+      width: width,
+      height: height,
+      child: Row(
+        children: [
+          Expanded(child: mainButton),
+          Container(
+            width: 1,
+            height: height,
+            color: AppColors.darkLightText.withValues(alpha: 0.28),
+          ),
+          Tooltip(
+            message: AppLocalizations.configDialogAdvancedOptions,
+            child: SizedBox(
+              width: 38,
+              height: height,
+              child: FilledButton(
+                onPressed:
+                    widget.isExtracting
+                        ? null
+                        : widget.onDownloadWithOptions,
+                style: FilledButton.styleFrom(
+                  backgroundColor: primaryCta,
+                  foregroundColor: AppColors.darkLightText,
+                  disabledBackgroundColor: primaryCtaDisabled,
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size(0, height),
+                  elevation: 4,
+                  shadowColor: primaryCta.withValues(alpha: 0.45),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.horizontal(
+                      right: Radius.circular(AppRadius.button),
+                    ),
+                  ),
+                ),
+                child: const Icon(Icons.expand_more_rounded, size: 20),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -184,7 +184,8 @@
     "platformShortcutOther": "Khác",
     "importedPresetName": "📌 {platform} (đã lưu)",
     "carouselClickHint": "Bấm vào ảnh để xem toàn màn hình (carousel).",
-    "muteToggleTooltip": "M: tắt / bật âm"
+    "muteToggleTooltip": "M: tắt / bật âm",
+    "downloadOptionsTip": "Cắt đoạn video, thêm phụ đề hay xóa quảng cáo — bấm ▾ cạnh nút Download để mở thêm tùy chọn."
   },
   "downloads": {
     "title": "Tải xuống",

@@ -1029,6 +1029,8 @@ class AppLocalizations {
         namedArgs: {'done': '$done', 'total': '$total'},
       );
   static String get homeBatchButtonTooltip => 'home.batchButtonTooltip'.tr();
+  static String get homeDownloadOptionsTip =>
+      'home.downloadOptionsTip'.tr();
   static String get homeCustomizeBeforeDownload =>
       'home.customizeBeforeDownload'.tr();
   static String downloadsFileOpened(String filename) =>

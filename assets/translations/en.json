@@ -184,7 +184,8 @@
     "importedPresetName": "📌 {platform} (saved)",
     "carouselClickHint": "Tap image for fullscreen view (carousel).",
     "muteToggleTooltip": "M: mute / unmute",
-    "autoDownloadingByPreset": "Downloading via preset \"{preset}\" → {quality}"
+    "autoDownloadingByPreset": "Downloading via preset \"{preset}\" → {quality}",
+    "downloadOptionsTip": "Trim a clip, add subtitles, or remove ads — tap the ▾ next to Download for more options."
   },
   "downloads": {
     "title": "Downloads",

@@ -88,7 +88,8 @@ class LeftNavRail extends ConsumerWidget {
           ),
           divider(),
           _RailItem(
-            icon: isHome ? Icons.home_rounded : Icons.home_outlined,
+            icon: Icons.home_outlined,
+            selectedIcon: Icons.home_rounded,
             label: AppLocalizations.navHome,
             selected: isHome,
             expanded: expanded,
@@ -96,6 +97,7 @@ class LeftNavRail extends ConsumerWidget {
           ),
           _RailItem(
             icon: Icons.explore_outlined,
+            selectedIcon: Icons.explore_rounded,
             label: AppLocalizations.youtubeTabTitle,
             selected: isExplore,
             expanded: expanded,
@@ -118,13 +120,15 @@ class LeftNavRail extends ConsumerWidget {
           ),
           _RailItem(
             icon: Icons.support_agent_outlined,
+            selectedIcon: Icons.support_agent_rounded,
             label: AppLocalizations.navSupport,
             selected: isSupport,
             expanded: expanded,
             onTap: () => onDestinationSelected(NavigationConstants.supportIndex),
           ),
           _RailItem(
-            icon: Icons.timeline_outlined,
+            icon: Icons.insights_outlined,
+            selectedIcon: Icons.insights_rounded,
             label: AppLocalizations.activityCenterTitle,
             selected: isActivity,
             expanded: expanded,
@@ -136,7 +140,8 @@ class LeftNavRail extends ConsumerWidget {
           const Spacer(),
           divider(),
           _RailItem(
-            icon: isSettings ? Icons.settings : Icons.settings_outlined,
+            icon: Icons.settings_outlined,
+            selectedIcon: Icons.settings_rounded,
             label: AppLocalizations.navSettings,
             selected: isSettings,
             expanded: expanded,
@@ -224,6 +229,9 @@ class _RailHeader extends StatelessWidget {
 /// A rail entry — `icon + label` row when expanded, icon-only when collapsed.
 class _RailItem extends StatelessWidget {
   final IconData icon;
+
+  /// Filled variant shown when the item is active. Falls back to [icon].
+  final IconData? selectedIcon;
   final String label;
   final bool selected;
   final bool expanded;
@@ -235,12 +243,52 @@ class _RailItem extends StatelessWidget {
     required this.selected,
     required this.expanded,
     required this.onTap,
+    this.selectedIcon,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final accent = AppColors.accentHighlight;
     final color = selected ? accent : AppColors.metaText(context);
+    final glyph = selected ? (selectedIcon ?? icon) : icon;
+
+    final pill = Container(
+      height: 44,
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        horizontal: expanded ? AppSpacing.smMd : 0,
+      ),
+      alignment: expanded ? Alignment.centerLeft : Alignment.center,
+      decoration: BoxDecoration(
+        color:
+            selected
+                ? accent.withValues(alpha: isDark ? 0.18 : 0.10)
+                : Colors.transparent,
+        borderRadius: BorderRadius.circular(AppRadius.button),
+      ),
+      child: Row(
+        mainAxisSize: expanded ? MainAxisSize.max : MainAxisSize.min,
+        children: [
+          Icon(glyph, size: 22, color: color),
+          if (expanded) ...[
+            const SizedBox(width: AppSpacing.smMd),
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: (selected
+                        ? AppTypography.navItemSelected
+                        : AppTypography.navItem)
+                    .copyWith(color: color, fontSize: 14),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
@@ -254,40 +302,29 @@ class _RailItem extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             borderRadius: BorderRadius.circular(AppRadius.button),
-            child: Container(
-              height: 44,
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                horizontal: expanded ? AppSpacing.smMd : 0,
-              ),
-              alignment: expanded ? Alignment.centerLeft : Alignment.center,
-              decoration: BoxDecoration(
-                color:
-                    selected
-                        ? accent.withValues(alpha: AppOpacity.subtle)
-                        : Colors.transparent,
-                borderRadius: BorderRadius.circular(AppRadius.button),
-              ),
-              child: Row(
-                mainAxisSize: expanded ? MainAxisSize.max : MainAxisSize.min,
-                children: [
-                  Icon(icon, size: 22, color: color),
-                  if (expanded) ...[
-                    const SizedBox(width: AppSpacing.smMd),
-                    Expanded(
-                      child: Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: (selected
-                                ? AppTypography.navItemSelected
-                                : AppTypography.navItem)
-                            .copyWith(color: color, fontSize: 14),
+            hoverColor: accent.withValues(alpha: isDark ? 0.08 : 0.05),
+            child: Stack(
+              children: [
+                pill,
+                // Active indicator — a soft accent bar hugging the pill's
+                // left edge (expanded only; collapsed relies on the bg tint).
+                if (selected && expanded)
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    child: Center(
+                      child: Container(
+                        width: 3,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          color: accent,
+                          borderRadius: BorderRadius.circular(3),
+                        ),
                       ),
                     ),
-                  ],
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
         ),

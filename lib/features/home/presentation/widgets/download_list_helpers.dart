@@ -403,12 +403,26 @@ class DownloadEmptyState extends StatelessWidget {
                 width: iconSize,
                 height: iconSize,
                 decoration: BoxDecoration(
-                  color:
-                      isDark
-                          ? AppColors.homeDarkAccentSoft
-                          : accent.withValues(alpha: AppOpacity.hover),
-                  borderRadius: BorderRadius.circular(AppRadius.card),
-                  border: Border.all(color: borderColor, width: 1),
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      accent.withValues(alpha: isDark ? 0.24 : 0.15),
+                      accent.withValues(alpha: isDark ? 0.10 : 0.06),
+                    ],
+                  ),
+                  border: Border.all(
+                    color: accent.withValues(alpha: isDark ? 0.34 : 0.22),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accent.withValues(alpha: isDark ? 0.20 : 0.12),
+                      blurRadius: 22,
+                      spreadRadius: 1,
+                    ),
+                  ],
                 ),
                 child: Icon(
                   Icons.download_for_offline_rounded,

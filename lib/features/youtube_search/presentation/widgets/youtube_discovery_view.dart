@@ -39,6 +39,7 @@ class YouTubeDiscoveryView extends ConsumerWidget {
 
               // Recent Searches
               _RecentSearchesSection(onSearch: onSearch),
+              const SizedBox(height: AppSpacing.lg),
 
               // Trending Now
               _DiscoverySurface(
@@ -49,7 +50,7 @@ class YouTubeDiscoveryView extends ConsumerWidget {
                 ),
                 child: _TrendingGrid(onSearch: onSearch),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.xl),
 
               // Explore Categories
               _DiscoverySurface(
@@ -60,7 +61,7 @@ class YouTubeDiscoveryView extends ConsumerWidget {
                 ),
                 child: _CategoriesGrid(onSearch: onSearch),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.xl),
 
               // Subscriptions
               _SubscriptionsSection(onSearch: onSearch),
@@ -80,30 +81,13 @@ class _DiscoverySurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.homeDarkCardBg : AppColors.surface1(context),
-        borderRadius: BorderRadius.circular(AppRadius.card),
-        border: Border.all(color: AppColors.border(context)),
-        boxShadow:
-            isDark
-                ? null
-                : [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 18,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [header, const SizedBox(height: AppSpacing.smMd), child],
-      ),
+    // No surrounding card/border — sections are just a heading + grid on the
+    // page background. The previous box-in-box (section card wrapping item
+    // cards) chopped the screen into a busy grid of lines, especially in dark
+    // mode. The item tiles carry their own subtle separation now.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [header, const SizedBox(height: AppSpacing.smMd), child],
     );
   }
 }
@@ -261,7 +245,7 @@ class _CategoryTabChipState extends State<_CategoryTabChip> {
                                 ? widget.color.withValues(
                                   alpha: AppOpacity.secondary,
                                 )
-                                : AppColors.homeDarkBorderStrong,
+                                : AppColors.homeDarkBorderSubtle,
                         width: _hovered ? 1.2 : 1,
                       )
                       : Border.all(color: AppColors.border(context)),
@@ -618,7 +602,7 @@ class _TrendingCardState extends State<_TrendingCard> {
                                 ? widget.item.color.withValues(
                                   alpha: AppOpacity.overlay,
                                 )
-                                : AppColors.homeDarkBorderStrong,
+                                : AppColors.homeDarkBorderSubtle,
                         width: _hovered ? 1.2 : 1,
                       )
                       : Border.all(color: AppColors.border(context)),
@@ -839,7 +823,7 @@ class _CategoryCardState extends State<_CategoryCard> {
                                 ? widget.category.color.withValues(
                                   alpha: AppOpacity.overlay,
                                 )
-                                : AppColors.homeDarkBorderStrong,
+                                : AppColors.homeDarkBorderSubtle,
                         width: _hovered ? 1.2 : 1,
                       )
                       : Border.all(color: AppColors.border(context)),

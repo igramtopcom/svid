@@ -427,14 +427,15 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
           foregroundColor: const WidgetStatePropertyAll(Colors.white),
           iconColor: const WidgetStatePropertyAll(Colors.white),
           minimumSize: const WidgetStatePropertyAll(
-            Size(152, commandBarHeight),
+            Size(140, commandBarHeight),
           ),
           padding: const WidgetStatePropertyAll(
             EdgeInsets.symmetric(horizontal: AppSpacing.mdLg),
           ),
+          // Match the input field's corner radius so the two sit as one unit.
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.button),
+              borderRadius: BorderRadius.circular(AppRadius.input),
             ),
           ),
         ),

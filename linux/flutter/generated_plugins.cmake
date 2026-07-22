@@ -3,20 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  desktop_drop
-  desktop_multi_window
-  flutter_secure_storage_linux
-  hotkey_manager_linux
   local_notifier
-  media_kit_libs_linux
-  media_kit_video
-  screen_retriever
-  sentry_flutter
-  sqlite3_flutter_libs
-  tray_manager
-  url_launcher_linux
-  volume_controller
-  window_manager
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

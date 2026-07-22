@@ -26,8 +26,6 @@ class YouTubeDiscoveryView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cs = Theme.of(context).colorScheme;
-
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
@@ -56,17 +54,6 @@ class YouTubeDiscoveryView extends ConsumerWidget {
               _TrendingSection(
                 onSearch: onSearch,
                 onVideoDownload: onVideoDownload,
-              ),
-              const SizedBox(height: AppSpacing.xl),
-
-              // Explore Categories
-              _DiscoverySurface(
-                header: _SectionHeader(
-                  icon: Icons.explore_rounded,
-                  title: AppLocalizations.youtubeSearchSuggestions,
-                  color: cs.primary,
-                ),
-                child: _CategoriesGrid(onSearch: onSearch),
               ),
               const SizedBox(height: AppSpacing.xl),
 
@@ -569,30 +556,23 @@ class _TrendingGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final crossAxisCount =
-            constraints.maxWidth > 800
-                ? 4
-                : (constraints.maxWidth > 500
-                    ? 3
-                    : (constraints.maxWidth > 360 ? 2 : 1));
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            mainAxisSpacing: AppSpacing.smMd,
-            crossAxisSpacing: AppSpacing.smMd,
-            childAspectRatio: 2.8,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Compact chip wrap (not big cards): these are just search shortcuts, so
+    // they read as a dense, balanced row of chips — consistent with the
+    // category tabs and recent-search chips, no wasted card real estate.
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: [
+        for (final item in _trendingTopics)
+          _CategoryTabChip(
+            label: item.title,
+            icon: item.icon,
+            color: item.color,
+            isDark: isDark,
+            onTap: () => onSearch(item.title),
           ),
-          itemCount: _trendingTopics.length,
-          itemBuilder: (context, index) {
-            final item = _trendingTopics[index];
-            return _TrendingCard(item: item, onTap: () => onSearch(item.title));
-          },
-        );
-      },
+      ],
     );
   }
 }
@@ -602,344 +582,6 @@ class _TrendingItem {
   final IconData icon;
   final Color color;
   const _TrendingItem(this.title, this.icon, this.color);
-}
-
-class _TrendingCard extends StatefulWidget {
-  final _TrendingItem item;
-  final VoidCallback onTap;
-
-  const _TrendingCard({required this.item, required this.onTap});
-
-  @override
-  State<_TrendingCard> createState() => _TrendingCardState();
-}
-
-class _TrendingCardState extends State<_TrendingCard> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-
-    return MouseRegion(
-      onEnter: (_) {
-        if (mounted) setState(() => _hovered = true);
-      },
-      onExit: (_) {
-        if (mounted) setState(() => _hovered = false);
-      },
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedSlide(
-          duration: const Duration(milliseconds: 150),
-          offset: !isDark && _hovered ? const Offset(0, -0.015) : Offset.zero,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            decoration: BoxDecoration(
-              color:
-                  _hovered
-                      ? (isDark
-                          ? AppColors.homeDarkCardHover
-                          : AppColors.surface1(context))
-                      : (isDark
-                          ? AppColors.homeDarkCardBg
-                          : AppColors.surface1(context)),
-              borderRadius: BorderRadius.circular(AppRadius.card),
-              border:
-                  isDark
-                      ? Border.all(
-                        color:
-                            _hovered
-                                ? widget.item.color.withValues(
-                                  alpha: AppOpacity.overlay,
-                                )
-                                : AppColors.homeDarkBorderSubtle,
-                        width: _hovered ? 1.2 : 1,
-                      )
-                      : Border.all(color: AppColors.border(context)),
-              boxShadow:
-                  !isDark && _hovered
-                      ? const [
-                        BoxShadow(
-                          color: Color(0x14000000),
-                          blurRadius: 16,
-                          offset: Offset(0, 6),
-                        ),
-                      ]
-                      : null,
-            ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.smMd,
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 34,
-                  height: 34,
-                  decoration: BoxDecoration(
-                    color: widget.item.color.withValues(
-                      alpha: isDark ? AppOpacity.pressed : AppOpacity.hover,
-                    ),
-                    borderRadius: BorderRadius.circular(AppRadius.card),
-                  ),
-                  child: Icon(
-                    widget.item.icon,
-                    size: 17,
-                    color: widget.item.color,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.smMd),
-                Expanded(
-                  child: Text(
-                    widget.item.title,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: cs.onSurface,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 12,
-                  color:
-                      isDark
-                          ? AppColors.homeDarkTextSecondary
-                          : cs.onSurface.withValues(
-                            alpha:
-                                _hovered
-                                    ? AppOpacity.overlay
-                                    : AppOpacity.quarter,
-                          ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// =============================================================================
-// Explore Categories (with subtitles per Stitch design)
-// =============================================================================
-
-class _CategoriesGrid extends StatelessWidget {
-  final void Function(String) onSearch;
-
-  const _CategoriesGrid({required this.onSearch});
-
-  static const _categories = [
-    _CategoryItem(
-      'Music',
-      'New Releases',
-      Icons.music_note_rounded,
-      AppColors.lightStatusFailed,
-    ),
-    _CategoryItem(
-      'Gaming',
-      'Live Now',
-      Icons.sports_esports_rounded,
-      Color(0xFF7C3AED),
-    ),
-    _CategoryItem(
-      'Education',
-      'Learn Anything',
-      Icons.school_rounded,
-      AppColors.warningAmber,
-    ),
-    _CategoryItem(
-      'Entertainment',
-      'Trending',
-      Icons.movie_rounded,
-      Color(0xFFDB2777),
-    ),
-    _CategoryItem(
-      'Sports',
-      'Major Events',
-      Icons.sports_soccer_rounded,
-      AppColors.lightStatusCompleted,
-    ),
-    _CategoryItem(
-      'Tech',
-      'Future Tech',
-      Icons.computer_rounded,
-      Color(0xFF0891B2),
-    ),
-    _CategoryItem(
-      'Film & Animation',
-      'Art & Craft',
-      Icons.animation_rounded,
-      Color(0xFF9333EA),
-    ),
-    _CategoryItem(
-      'News',
-      'Global Updates',
-      Icons.newspaper_rounded,
-      Color(0xFF2563EB),
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final crossAxisCount =
-            constraints.maxWidth > 800
-                ? 4
-                : (constraints.maxWidth > 500
-                    ? 3
-                    : (constraints.maxWidth > 360 ? 2 : 1));
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            mainAxisSpacing: AppSpacing.smMd,
-            crossAxisSpacing: AppSpacing.smMd,
-            childAspectRatio: 1.5,
-          ),
-          itemCount: _categories.length,
-          itemBuilder: (context, index) {
-            final cat = _categories[index];
-            return _CategoryCard(
-              category: cat,
-              onTap: () => onSearch(cat.title),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class _CategoryItem {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final Color color;
-  const _CategoryItem(this.title, this.subtitle, this.icon, this.color);
-}
-
-class _CategoryCard extends StatefulWidget {
-  final _CategoryItem category;
-  final VoidCallback onTap;
-
-  const _CategoryCard({required this.category, required this.onTap});
-
-  @override
-  State<_CategoryCard> createState() => _CategoryCardState();
-}
-
-class _CategoryCardState extends State<_CategoryCard> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-
-    return MouseRegion(
-      onEnter: (_) {
-        if (mounted) setState(() => _hovered = true);
-      },
-      onExit: (_) {
-        if (mounted) setState(() => _hovered = false);
-      },
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedSlide(
-          duration: const Duration(milliseconds: 150),
-          offset: !isDark && _hovered ? const Offset(0, -0.015) : Offset.zero,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            decoration: BoxDecoration(
-              color:
-                  _hovered
-                      ? (isDark
-                          ? AppColors.homeDarkCardHover
-                          : AppColors.surface1(context))
-                      : (isDark
-                          ? AppColors.homeDarkCardBg
-                          : AppColors.surface1(context)),
-              borderRadius: BorderRadius.circular(AppRadius.card),
-              border:
-                  isDark
-                      ? Border.all(
-                        color:
-                            _hovered
-                                ? widget.category.color.withValues(
-                                  alpha: AppOpacity.overlay,
-                                )
-                                : AppColors.homeDarkBorderSubtle,
-                        width: _hovered ? 1.2 : 1,
-                      )
-                      : Border.all(color: AppColors.border(context)),
-              boxShadow:
-                  !isDark && _hovered
-                      ? const [
-                        BoxShadow(
-                          color: Color(0x14000000),
-                          blurRadius: 16,
-                          offset: Offset(0, 6),
-                        ),
-                      ]
-                      : null,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: widget.category.color.withValues(
-                      alpha: isDark ? AppOpacity.pressed : AppOpacity.hover,
-                    ),
-                    borderRadius: BorderRadius.circular(AppRadius.card),
-                  ),
-                  child: Icon(
-                    widget.category.icon,
-                    size: 22,
-                    color: widget.category.color,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  widget.category.title,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: cs.onSurface,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.xxs),
-                Text(
-                  widget.category.subtitle,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: cs.onSurface.withValues(alpha: AppOpacity.strong),
-                    fontWeight: FontWeight.w500,
-                    fontSize: 11.5,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 // =============================================================================

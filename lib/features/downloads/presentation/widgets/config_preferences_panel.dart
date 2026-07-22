@@ -133,9 +133,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
   // Section expansion state
   late bool _formatExpanded;
   late bool _extrasExpanded;
-  late bool _sponsorBlockExpanded;
   late bool _platformExpanded;
-  bool _timeRangeExpanded = false;
 
   @override
   void initState() {
@@ -175,7 +173,6 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
         !s.embedThumbnail ||
         !s.embedMetadata ||
         !s.embedChapters;
-    _sponsorBlockExpanded = s.sponsorBlockEnabled;
     _platformExpanded = !s.tiktokRemoveWatermark;
   }
 
@@ -272,10 +269,15 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
         _tiktokRemoveWatermark != s.tiktokRemoveWatermark;
   }
 
-  // ── Mission Briefing style constants ──
-  static final _sectionHeaderStyle = AppTypography.briefingSection;
-  static final _labelStyle = AppTypography.microLabel;
-  static final _dropdownTextStyle = AppTypography.monoData;
+  // Clean, readable styles — sentence/title-case headers, no monospace values.
+  static final _sectionHeaderStyle = AppTypography.buttonSecondary.copyWith(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+  );
+  static final _labelStyle = AppTypography.metadata.copyWith(fontSize: 13);
+  static final _dropdownTextStyle = AppTypography.buttonSecondary.copyWith(
+    fontSize: 13.5,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -292,7 +294,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     final sectionBarBg = AppColors.surfaceLowest(context);
     final sectionBarHover = AppColors.accentHighlight.withValues(alpha: 0.06);
     final dropdownBg = AppColors.surfaceLowest(context);
-    final dropdownBorder = AppColors.accentHighlight.withValues(alpha: 0.20);
+    final dropdownBorder = AppColors.border(context);
     final cs = Theme.of(context).colorScheme;
     final labelColor = AppColors.metaText(context);
     final headerColor = cs.onSurface;
@@ -308,30 +310,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-        // CONFIGURATION CONSOLE eyebrow heading
-        Padding(
-          padding: const EdgeInsets.only(
-              left: AppSpacing.xs,
-              bottom: AppSpacing.md,
-              top: AppSpacing.xs),
-          child: Row(
-            children: [
-              Container(
-                width: 3,
-                height: 14,
-                color: AppColors.accentHighlight,
-                margin: const EdgeInsets.only(right: AppSpacing.sm),
-              ),
-              Text(
-                AppLocalizations.downloadOptionsSettings,
-                style: AppTypography.microLabel.copyWith(
-                  letterSpacing: 2.0,
-                  color: AppColors.accentHighlight,
-                ),
-              ),
-            ],
-          ),
-        ),
+        const SizedBox(height: AppSpacing.xs),
         // Time Range section (only when video has duration)
         if (videoDuration != null)
           _buildSection(
@@ -339,32 +318,30 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             title: AppLocalizations.configDialogSectionTimeRange,
             icon: Icons.content_cut,
             iconColor: AppColors.accentSecondary,
-            expanded: _timeRangeExpanded,
-            onToggle: () =>
-                setState(() => _timeRangeExpanded = !_timeRangeExpanded),
-            pinnedOpen: false,
+            expanded: false,
+            onToggle: () {},
+            toggleValue: _sectionEnabled,
+            onToggleChanged: (v) {
+              setState(() => _sectionEnabled = v);
+              _notifyChanged();
+            },
             sectionBarBg: sectionBarBg,
             sectionBarHover: sectionBarHover,
             headerColor: headerColor,
             textSecondary: textSecondary,
             children: [
-              _buildSwitch(context, AppLocalizations.configDialogDownloadSection, _sectionEnabled, (v) {
-                setState(() => _sectionEnabled = v);
-                _notifyChanged();
-              }, textPrimary: textPrimary),
-              if (_sectionEnabled) ...[
-                if (!widget.ffmpegAvailable)
-                  _buildFFmpegWarning(context, isDark),
+              if (!widget.ffmpegAvailable) _buildFFmpegWarning(context, isDark),
+              const SizedBox(height: AppSpacing.sm),
+              _buildTimeRangeSlider(context, videoDuration),
+              const SizedBox(height: AppSpacing.sm),
+              _buildTimeInputRow(context, videoDuration,
+                  dropdownBg: dropdownBg, dropdownBorder: dropdownBorder),
+              const SizedBox(height: AppSpacing.sm),
+              _buildSelectedDuration(context, videoDuration,
+                  textSecondary: textSecondary),
+              if (hasChapters) ...[
                 const SizedBox(height: AppSpacing.sm),
-                _buildTimeRangeSlider(context, videoDuration),
-                const SizedBox(height: AppSpacing.sm),
-                _buildTimeInputRow(context, videoDuration, dropdownBg: dropdownBg, dropdownBorder: dropdownBorder),
-                const SizedBox(height: AppSpacing.sm),
-                _buildSelectedDuration(context, videoDuration, textSecondary: textSecondary),
-                if (hasChapters) ...[
-                  const SizedBox(height: AppSpacing.sm),
-                  _buildChapterChips(context, isDark: isDark),
-                ],
+                _buildChapterChips(context, isDark: isDark),
               ],
             ],
           ),
@@ -505,44 +482,46 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             title: AppLocalizations.configDialogSectionSponsorBlock,
             icon: Icons.skip_next,
             iconColor: AppColors.accentSecondary,
-            expanded: _sponsorBlockExpanded,
-            onToggle: () => setState(
-                () => _sponsorBlockExpanded = !_sponsorBlockExpanded),
+            expanded: false,
+            onToggle: () {},
+            toggleValue: _sponsorBlockEnabled,
+            onToggleChanged: (v) {
+              setState(() => _sponsorBlockEnabled = v);
+              _notifyChanged();
+            },
             sectionBarBg: sectionBarBg,
             sectionBarHover: sectionBarHover,
             headerColor: headerColor,
             textSecondary: textSecondary,
             children: [
-              _buildSwitch(
-                  context, AppLocalizations.configDialogEnableSponsorBlock, _sponsorBlockEnabled, (v) {
-                setState(() => _sponsorBlockEnabled = v);
-                _notifyChanged();
-              }, textPrimary: textPrimary),
-              if (_sponsorBlockEnabled) ...[
-                _buildDropdown<String>(
-                  context,
-                  label: AppLocalizations.settingsSponsorBlockAction,
-                  value: _sponsorBlockAction,
-                  items: const ['skip', 'remove', 'chapter'],
-                  displayName: (v) {
-                    switch (v) {
-                      case 'skip': return AppLocalizations.settingsSponsorBlockActionSkip;
-                      case 'remove': return AppLocalizations.settingsSponsorBlockActionRemove;
-                      case 'chapter': return AppLocalizations.settingsSponsorBlockActionChapter;
-                      default: return v;
-                    }
-                  },
-                  onChanged: (v) {
-                    setState(() => _sponsorBlockAction = v);
-                    _notifyChanged();
-                  },
-                  labelColor: labelColor,
-                  dropdownBg: dropdownBg,
-                  dropdownBorder: dropdownBorder,
-                  textPrimary: textPrimary,
-                ),
-                _buildSponsorBlockCategories(context, isDark: isDark, textSecondary: textSecondary),
-              ],
+              _buildDropdown<String>(
+                context,
+                label: AppLocalizations.settingsSponsorBlockAction,
+                value: _sponsorBlockAction,
+                items: const ['skip', 'remove', 'chapter'],
+                displayName: (v) {
+                  switch (v) {
+                    case 'skip':
+                      return AppLocalizations.settingsSponsorBlockActionSkip;
+                    case 'remove':
+                      return AppLocalizations.settingsSponsorBlockActionRemove;
+                    case 'chapter':
+                      return AppLocalizations.settingsSponsorBlockActionChapter;
+                    default:
+                      return v;
+                  }
+                },
+                onChanged: (v) {
+                  setState(() => _sponsorBlockAction = v);
+                  _notifyChanged();
+                },
+                labelColor: labelColor,
+                dropdownBg: dropdownBg,
+                dropdownBorder: dropdownBorder,
+                textPrimary: textPrimary,
+              ),
+              _buildSponsorBlockCategories(context,
+                  isDark: isDark, textSecondary: textSecondary),
             ],
           ),
 
@@ -635,43 +614,51 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     required Color headerColor,
     required Color textSecondary,
     bool pinnedOpen = false,
+    // When provided, the section is an on/off feature: the header carries a
+    // switch and its controls appear directly when ON (no extra "enable"
+    // checkbox to hunt for). Otherwise it's a plain expand/collapse section.
+    bool? toggleValue,
+    ValueChanged<bool>? onToggleChanged,
   }) {
-    // Pinned sections always render content and omit the chevron/tap toggle —
-    // they are the primary controls (Time Range, Format) and should read as
-    // "live panel", not "click to expand".
-    final effectivelyExpanded = pinnedOpen || expanded;
+    final isToggle = toggleValue != null;
+    final effectivelyExpanded =
+        isToggle ? toggleValue : (pinnedOpen || expanded);
     final header = Container(
       padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.xs, vertical: AppSpacing.smMd),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(
-            color: AppColors.accentHighlight.withValues(alpha: 0.15),
-          ),
+          bottom: BorderSide(color: AppColors.border(context)),
         ),
       ),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: iconColor),
-          const SizedBox(width: AppSpacing.sm),
-          Text(
-            title.toUpperCase(),
-            style: _sectionHeaderStyle.copyWith(color: headerColor),
+          Icon(icon, size: 17, color: iconColor),
+          const SizedBox(width: AppSpacing.smMd),
+          Expanded(
+            child: Text(
+              title,
+              style: _sectionHeaderStyle.copyWith(color: headerColor),
+            ),
           ),
-          const Spacer(),
-          if (!pinnedOpen)
+          if (isToggle)
+            _sectionSwitch(context, toggleValue)
+          else if (!pinnedOpen)
             AnimatedRotation(
               turns: effectivelyExpanded ? 0.25 : 0,
               duration: const Duration(milliseconds: 200),
               child: Icon(
                 Icons.chevron_right,
-                size: 16,
+                size: 18,
                 color: textSecondary,
               ),
             ),
         ],
       ),
     );
+
+    final onTap =
+        isToggle ? () => onToggleChanged!(!toggleValue) : onToggle;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -684,7 +671,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: onToggle,
+                onTap: onTap,
                 hoverColor: sectionBarHover,
                 child: header,
               ),
@@ -694,11 +681,41 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
               padding: const EdgeInsets.only(
                   left: AppSpacing.sm,
                   right: AppSpacing.xs,
-                  top: AppSpacing.sm,
+                  top: AppSpacing.smMd,
                   bottom: AppSpacing.xs),
               child: Column(children: children),
             ),
         ],
+      ),
+    );
+  }
+
+  /// Compact pill switch shown in a toggle-headed section's header.
+  Widget _sectionSwitch(BuildContext context, bool value) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 160),
+      width: 38,
+      height: 22,
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color:
+            value
+                ? AppColors.accentHighlight
+                : AppColors.metaText(context).withValues(alpha: 0.28),
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
+      child: AnimatedAlign(
+        duration: const Duration(milliseconds: 160),
+        curve: Curves.easeOut,
+        alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          width: 18,
+          height: 18,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+        ),
       ),
     );
   }
@@ -724,32 +741,27 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
           Expanded(
             flex: 2,
             child: Text(
-              label.toUpperCase(),
+              label,
               style: _labelStyle.copyWith(color: labelColor),
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          // 192px (w-48) fixed dropdown with active stripe
           SizedBox(
             width: 192,
-            height: 34,
+            height: 38,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: dropdownBg,
-                border: Border(
-                  left: BorderSide(
-                      color: AppColors.accentHighlight, width: 2),
-                  top: BorderSide(color: dropdownBorder),
-                  right: BorderSide(color: dropdownBorder),
-                  bottom: BorderSide(color: dropdownBorder),
-                ),
+                border: Border.all(color: dropdownBorder),
+                borderRadius: BorderRadius.circular(AppRadius.input),
               ),
               child: DropdownButtonFormField<T>(
                 value: value,
                 isExpanded: true,
                 dropdownColor: dropdownBg,
-                icon: Icon(Icons.expand_more,
-                    size: 14, color: AppColors.accentHighlight),
+                borderRadius: BorderRadius.circular(AppRadius.input),
+                icon: Icon(Icons.expand_more_rounded,
+                    size: 18, color: AppColors.metaText(context)),
                 decoration: const InputDecoration(
                   isDense: true,
                   filled: false,
@@ -802,31 +814,27 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
           Expanded(
             flex: 2,
             child: Text(
-              AppLocalizations.settingsMaxResolution.toUpperCase(),
+              AppLocalizations.settingsMaxResolution,
               style: _labelStyle.copyWith(color: labelColor),
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
           SizedBox(
             width: 192,
-            height: 34,
+            height: 38,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: dropdownBg,
-                border: Border(
-                  left: BorderSide(
-                      color: AppColors.accentHighlight, width: 2),
-                  top: BorderSide(color: dropdownBorder),
-                  right: BorderSide(color: dropdownBorder),
-                  bottom: BorderSide(color: dropdownBorder),
-                ),
+                border: Border.all(color: dropdownBorder),
+                borderRadius: BorderRadius.circular(AppRadius.input),
               ),
               child: DropdownButtonFormField<int>(
                 value: resOptions.contains(_maxResolution) ? _maxResolution : 0,
                 isExpanded: true,
                 dropdownColor: dropdownBg,
-                icon: Icon(Icons.expand_more,
-                    size: 14, color: AppColors.accentHighlight),
+                borderRadius: BorderRadius.circular(AppRadius.input),
+                icon: Icon(Icons.expand_more_rounded,
+                    size: 18, color: AppColors.metaText(context)),
                 decoration: const InputDecoration(
                   isDense: true,
                   filled: false,
@@ -1002,7 +1010,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
                   const SizedBox(width: AppSpacing.xs),
                   Flexible(
                     child: Text(
-                      label.toUpperCase(),
+                      label,
                       style: _labelStyle.copyWith(color: textSecondary),
                     ),
                   ),
@@ -1054,7 +1062,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             child: Padding(
               padding: const EdgeInsets.only(top: AppSpacing.sm),
               child: Text(
-                AppLocalizations.configDialogSubtitleLanguages.toUpperCase(),
+                AppLocalizations.configDialogSubtitleLanguages,
                 style: _labelStyle.copyWith(color: textSecondary),
               ),
             ),
@@ -1116,7 +1124,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             child: Padding(
               padding: const EdgeInsets.only(top: AppSpacing.sm),
               child: Text(
-                AppLocalizations.configDialogSponsorBlockCategories.toUpperCase(),
+                AppLocalizations.configDialogSponsorBlockCategories,
                 style: _labelStyle.copyWith(color: textSecondary),
               ),
             ),
@@ -1152,7 +1160,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     );
   }
 
-  // ── Mission Briefing operator chip — square, no radius, accent stripe ──
+  // ── Rounded selectable chip (categories, languages) ──
 
   Widget _buildAngularChip(
     BuildContext context, {
@@ -1164,27 +1172,24 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     final accent = AppColors.accentHighlight;
     return GestureDetector(
       onTap: () => onSelected(!selected),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
         padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+            horizontal: AppSpacing.smMd, vertical: 6),
         decoration: BoxDecoration(
           color: selected
-              ? accent.withValues(alpha: 0.10)
-              : AppColors.surfaceLowest(context),
-          border: Border(
-            left: BorderSide(
-              color: selected ? accent : Colors.transparent,
-              width: 2,
-            ),
-            top: BorderSide(color: accent.withValues(alpha: 0.15)),
-            right: BorderSide(color: accent.withValues(alpha: 0.15)),
-            bottom: BorderSide(color: accent.withValues(alpha: 0.15)),
+              ? accent.withValues(alpha: isDark ? 0.16 : 0.10)
+              : AppColors.surface2(context),
+          borderRadius: BorderRadius.circular(AppRadius.input),
+          border: Border.all(
+            color: selected ? accent : AppColors.border(context),
           ),
         ),
         child: Text(
-          label.toUpperCase(),
-          style: AppTypography.briefingMicroBadge.copyWith(
-            fontSize: 10,
+          label,
+          style: AppTypography.buttonSecondary.copyWith(
+            fontSize: 12.5,
+            fontWeight: FontWeight.w600,
             color: selected ? accent : AppColors.metaText(context),
           ),
         ),
@@ -1361,7 +1366,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             child: TextField(
               controller: controller,
               decoration: inputDecoration.copyWith(
-                labelText: label.toUpperCase(),
+                labelText: label,
                 labelStyle: AppTypography.microLabel.copyWith(
                   color: AppColors.metaText(context),
                 ),
@@ -1429,7 +1434,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppLocalizations.configDialogSectionSelectChapter.toUpperCase(),
+          AppLocalizations.configDialogSectionSelectChapter,
           style: _labelStyle.copyWith(
             color: AppColors.metaText(context),
           ),
@@ -1459,7 +1464,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
                   ),
                 ),
                 child: Text(
-                  chapter.title.toUpperCase(),
+                  chapter.title,
                   style: AppTypography.briefingMicroBadge.copyWith(
                     fontSize: 10,
                     color: AppColors.metaText(context),
@@ -1529,7 +1534,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    AppLocalizations.configDialogSaveAsDefault.toUpperCase(),
+                    AppLocalizations.configDialogSaveAsDefault,
                     style: AppTypography.briefingCardTitle.copyWith(
                       color: _saveAsDefault ? accent : textPrimary,
                     ),

@@ -47,6 +47,14 @@ class DownloadsList extends ConsumerWidget {
   final ValueChanged<DownloadEntity>? onMovePlaylistItemUp;
   final ValueChanged<DownloadEntity>? onMovePlaylistItemDown;
 
+  /// When true, `yt_*` source playlists collapse into a single folder card
+  /// (used by the "All" tab). List view only — grid keeps them flat.
+  final bool groupSourcePlaylists;
+
+  /// Invoked with a playlist key ("source:yt_…") when a playlist folder card
+  /// is tapped, so the host can open that playlist's detail view.
+  final void Function(String playlistKey)? onOpenPlaylist;
+
   const DownloadsList({
     super.key,
     required this.downloads,
@@ -59,6 +67,8 @@ class DownloadsList extends ConsumerWidget {
     this.onRemoveFromPlaylist,
     this.onMovePlaylistItemUp,
     this.onMovePlaylistItemDown,
+    this.groupSourcePlaylists = false,
+    this.onOpenPlaylist,
   });
 
   @override
@@ -81,6 +91,9 @@ class DownloadsList extends ConsumerWidget {
     final listItems = buildDownloadListItems(
       downloads,
       memberships: memberships,
+      // Grid keeps playlists flat — folder cards + open-detail wiring live in
+      // the list view only.
+      groupSourcePlaylists: groupSourcePlaylists && viewMode != 'grid',
     );
     final focusedIndex = ref.watch(focusedDownloadIndexProvider);
 
@@ -327,6 +340,7 @@ class DownloadsList extends ConsumerWidget {
       final GroupedItem g => DownloadGroupedImageCard(
         group: g,
         inPanel: !inset,
+        onOpenPlaylist: onOpenPlaylist,
       ),
     };
     final key = switch (item) {

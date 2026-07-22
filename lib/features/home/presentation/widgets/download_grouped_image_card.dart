@@ -20,10 +20,16 @@ class DownloadGroupedImageCard extends ConsumerStatefulWidget {
   final GroupedItem group;
   final bool inPanel;
 
+  /// When set and this card is a playlist folder (source/user kind), a single
+  /// tap opens that playlist's detail view via this callback (key like
+  /// "source:yt_…") instead of the default preview-in-side-panel behaviour.
+  final void Function(String playlistKey)? onOpenPlaylist;
+
   const DownloadGroupedImageCard({
     super.key,
     required this.group,
     this.inPanel = false,
+    this.onOpenPlaylist,
   });
 
   @override
@@ -765,6 +771,20 @@ class _DownloadGroupedImageCardState
   /// the existing image embed path consumes `group.downloads`
   /// independently of the playback queue.
   void _onGroupCardTap() {
+    // Playlist folder (All tab): a tap opens the playlist's detail list.
+    final onOpenPlaylist = widget.onOpenPlaylist;
+    if (onOpenPlaylist != null) {
+      final keyPrefix = switch (widget.group.kind) {
+        GroupedItemKind.ytSourcePlaylist => 'source',
+        GroupedItemKind.userPlaylist => 'user',
+        GroupedItemKind.imageCarousel => null,
+      };
+      if (keyPrefix != null) {
+        onOpenPlaylist('$keyPrefix:${widget.group.groupId}');
+        return;
+      }
+    }
+
     final action = decideGroupedCardOpenAction(
       kind: widget.group.kind,
       downloads: widget.group.downloads,

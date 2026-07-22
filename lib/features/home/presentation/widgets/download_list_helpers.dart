@@ -103,6 +103,12 @@ enum GroupedItemKind {
 List<DownloadListItem> buildDownloadListItems(
   List<DownloadEntity> downloads, {
   List<UserPlaylistMembership> memberships = const [],
+  // When true (the "All" tab), a `yt_*` source playlist collapses into a
+  // single folder card instead of emitting its members as flat rows. Opening
+  // the folder navigates to the playlist detail (see home_screen). Kept off
+  // by default so every other list (media-type tabs, playlist detail) stays
+  // flat as before.
+  bool groupSourcePlaylists = false,
 }) {
   // === Pass 1: build all three group types ===
 
@@ -198,16 +204,26 @@ List<DownloadListItem> buildDownloadListItems(
     // playlist when the user opens any one of its videos.
     if (pid != null && pid.isNotEmpty && pid.startsWith('yt_')) {
       if (emittedYt.add(pid)) {
-        // Walk every member in the sorted group order, not just
-        // the current download — `downloads` is sorted by the
-        // outer caller's criteria (createdAt, etc.), but inside a
-        // playlist we want playlist order. Emitting members in
-        // group-order preserves the YouTube playlist sequence in
-        // the list view; subsequent iterations of the outer loop
-        // skip these via `emittedYt`.
         final group = ytGroups[pid]!;
-        for (final member in group) {
-          items.add(SingleItem(member));
+        if (groupSourcePlaylists && group.length > 1) {
+          // "All" tab: collapse the whole source playlist into one
+          // folder card. Title comes from the stamped playlistTitle.
+          items.add(
+            GroupedItem(
+              group,
+              groupId: pid,
+              groupTitle: group.first.playlistTitle,
+              kind: GroupedItemKind.ytSourcePlaylist,
+            ),
+          );
+        } else {
+          // Default: emit every member as an individual row in playlist
+          // order (sorted by playlistIndex inside the group). Emitting in
+          // group-order preserves the YouTube sequence; later iterations of
+          // the outer loop skip these via `emittedYt`.
+          for (final member in group) {
+            items.add(SingleItem(member));
+          }
         }
       }
       continue;

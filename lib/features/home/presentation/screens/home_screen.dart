@@ -77,6 +77,10 @@ class HomeScreenState extends ConsumerState<HomeScreen>
   bool _searchExpanded = false; // Narrow mode: search icon → expanded field
   _DownloadManagerView _downloadManagerView = _DownloadManagerView.history;
   String? _selectedPlaylistKey;
+  // Tab to return to when the open playlist is closed. Lets a playlist opened
+  // from the "All" tab (folder card) send the back button back to All rather
+  // than always landing on the Playlists library.
+  FilterTab? _playlistReturnTab;
   bool _bypassArchiveCheck = false;
 
   /// v2.2 Phase 2C reviewer-2 fix: URL-scoped one-shot intent token.
@@ -1055,6 +1059,9 @@ class HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   void _openPlaylist(PlaylistLibraryItem playlist) {
+    // Remember where we came from so the back button restores it (e.g. folder
+    // opened from the "All" tab returns to All, not the Playlists library).
+    _playlistReturnTab = ref.read(filterProvider).selectedTab;
     setState(() {
       _downloadManagerView = _DownloadManagerView.playlist;
       _selectedPlaylistKey = playlist.key;
@@ -1063,9 +1070,32 @@ class HomeScreenState extends ConsumerState<HomeScreen>
     ref.read(activePlaylistContextProvider.notifier).state = playlist.key;
   }
 
+  /// Resolve a playlist by its library key ("source:yt_…" / "user:…") and open
+  /// it — used by playlist folder cards in the "All" list.
+  void _openPlaylistByKey(String key) {
+    for (final item in ref.read(playlistLibraryProvider)) {
+      if (item.key == key) {
+        _openPlaylist(item);
+        return;
+      }
+    }
+  }
+
   void _closePlaylist() {
-    setState(() => _selectedPlaylistKey = null);
+    final returnTab = _playlistReturnTab;
+    final restoreOtherTab =
+        returnTab != null && returnTab != FilterTab.playlist;
+    setState(() {
+      _selectedPlaylistKey = null;
+      if (restoreOtherTab) {
+        _downloadManagerView = _DownloadManagerView.history;
+      }
+    });
     ref.read(activePlaylistContextProvider.notifier).state = null;
+    if (restoreOtherTab) {
+      ref.read(filterProvider.notifier).selectTab(returnTab);
+    }
+    _playlistReturnTab = null;
   }
 
   void _playPlaylist(PlaylistLibraryItem playlist) {
@@ -1501,6 +1531,11 @@ class HomeScreenState extends ConsumerState<HomeScreen>
       viewMode: ref.watch(settingsProvider).downloadsViewMode,
       scrollable: true,
       useOuterPanel: false,
+      // "All" tab: collapse pasted-URL playlists into a folder card that opens
+      // the playlist detail on tap.
+      groupSourcePlaylists:
+          ref.watch(filterProvider).selectedTab == FilterTab.all,
+      onOpenPlaylist: _openPlaylistByKey,
       onNewDownload: focusUrl,
       onOpenBrowser:
           () => ref

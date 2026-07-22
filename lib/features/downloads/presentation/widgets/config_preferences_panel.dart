@@ -173,8 +173,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     // dropdowns. A section still auto-opens when it holds a non-default value
     // (below) so the user can see what they've already customised.
     _formatExpanded = false;
-    _extrasExpanded = s.subtitlesEnabled ||
-        !s.embedThumbnail ||
+    _extrasExpanded = !s.embedThumbnail ||
         !s.embedMetadata ||
         !s.embedChapters;
     _platformExpanded = !s.tiktokRemoveWatermark;
@@ -497,12 +496,30 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
               setState(() => _embedChapters = v);
               _notifyChanged();
             }, textPrimary: textPrimary),
-            _buildSwitch(
-                context, AppLocalizations.configDialogDownloadSubtitles, _subtitlesEnabled, (v) {
-              setState(() => _subtitlesEnabled = v);
-              _notifyChanged();
-            }, textPrimary: textPrimary),
-            if (_subtitlesEnabled) _buildSubtitleControls(context,
+          ],
+        ),
+
+        // Subtitles — promoted to its own section (it carries a whole
+        // sub-panel of options: languages, format, auto-translate). The
+        // header switch is the enable toggle; controls appear when ON.
+        _buildSection(
+          context,
+          title: AppLocalizations.configDialogSectionSubtitles,
+          icon: Icons.closed_caption,
+          iconColor: AppColors.accentTertiary,
+          expanded: false,
+          onToggle: () {},
+          toggleValue: _subtitlesEnabled,
+          onToggleChanged: (v) {
+            setState(() => _subtitlesEnabled = v);
+            _notifyChanged();
+          },
+          sectionBarBg: sectionBarBg,
+          sectionBarHover: sectionBarHover,
+          headerColor: headerColor,
+          textSecondary: textSecondary,
+          children: [
+            _buildSubtitleControls(context,
               isDark: isDark,
               labelColor: labelColor,
               dropdownBg: dropdownBg,
@@ -1431,10 +1448,15 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
         inactiveTrackColor: AppColors.accentHighlight.withValues(alpha: 0.15),
         thumbColor: AppColors.accentHighlight,
         overlayColor: AppColors.accentHighlight.withValues(alpha: 0.20),
-        trackHeight: 2,
-        // Operator-grade square thumbs (Mission Briefing aesthetic)
-        rangeThumbShape: const _SquareRangeThumb(thumbWidth: 10),
-        rangeTrackShape: const RectangularRangeSliderTrackShape(),
+        trackHeight: 4,
+        // Friendly round thumbs — larger and easier to grab than the old
+        // 10px squares, with a soft white ring so they read on any track.
+        rangeThumbShape: const RoundRangeSliderThumbShape(
+          enabledThumbRadius: 9,
+          elevation: 2,
+          pressedElevation: 4,
+        ),
+        rangeTrackShape: const RoundedRectRangeSliderTrackShape(),
       ),
       child: RangeSlider(
         values: RangeValues(
@@ -1507,25 +1529,17 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     required Color dropdownBg,
     required Color dropdownBorder,
   }) {
-    // Mission Briefing operator-grade square TextField (no radius)
+    // Rounded time field — the DecoratedBox draws the border/fill, so the
+    // TextField itself is borderless and unfilled (no square corners peeking
+    // through the rounded box).
     final inputDecoration = InputDecoration(
       isDense: true,
-      filled: true,
-      fillColor: dropdownBg,
+      filled: false,
       contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.smMd, vertical: AppSpacing.sm),
-      border: const OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
-        borderSide: BorderSide.none,
-      ),
+      border: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
     );
 
     Widget buildField({
@@ -1538,25 +1552,28 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
       return DecoratedBox(
         decoration: BoxDecoration(
           color: dropdownBg,
-          border: Border(
-            left: BorderSide(color: AppColors.accentHighlight, width: 2),
-            top: BorderSide(color: dropdownBorder),
-            right: BorderSide(color: dropdownBorder),
-            bottom: BorderSide(color: dropdownBorder),
-          ),
+          border: Border.all(color: dropdownBorder),
+          borderRadius: BorderRadius.circular(AppRadius.input),
         ),
         child: Focus(
           onFocusChange: (hasFocus) {
             if (!hasFocus) onFocusLost();
           },
           child: SizedBox(
-            height: 36,
+            height: 40,
             child: TextField(
               controller: controller,
               decoration: inputDecoration.copyWith(
                 labelText: label,
-                labelStyle: AppTypography.microLabel.copyWith(
+                labelStyle: AppTypography.metadata.copyWith(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
                   color: AppColors.metaText(context),
+                ),
+                floatingLabelStyle: AppTypography.metadata.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.accentHighlight,
                 ),
               ),
               style: _dropdownTextStyle.copyWith(
@@ -1604,12 +1621,23 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
 
   Widget _buildSelectedDuration(BuildContext context, Duration videoDuration, {required Color textSecondary}) {
     final selected = _sectionEnd - _sectionStart;
-    return Text(
-      AppLocalizations.configDialogSectionSelected(
-        _formatTimestamp(selected),
-        _formatTimestamp(videoDuration),
-      ),
-      style: AppTypography.statusBadge.copyWith(fontWeight: FontWeight.w400, color: textSecondary),
+    return Row(
+      children: [
+        Icon(Icons.content_cut,
+            size: 12, color: AppColors.metaText(context)),
+        const SizedBox(width: AppSpacing.xs),
+        Text(
+          AppLocalizations.configDialogSectionSelected(
+            _formatTimestamp(selected),
+            _formatTimestamp(videoDuration),
+          ),
+          style: AppTypography.metadata.copyWith(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: AppColors.metaText(context),
+          ),
+        ),
+      ],
     );
   }
 
@@ -1776,40 +1804,3 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
   }
 }
 
-/// Mission Briefing operator-grade square thumb for RangeSlider.
-/// Replaces default rounded thumb with hard 10×10 square.
-class _SquareRangeThumb extends RangeSliderThumbShape {
-  final double thumbWidth;
-  const _SquareRangeThumb({required this.thumbWidth});
-
-  @override
-  Size getPreferredSize(bool isEnabled, bool isDiscrete) =>
-      Size(thumbWidth, thumbWidth);
-
-  @override
-  void paint(
-    PaintingContext context,
-    Offset center, {
-    required Animation<double> activationAnimation,
-    required Animation<double> enableAnimation,
-    bool isDiscrete = false,
-    bool isEnabled = false,
-    bool? isOnTop,
-    TextDirection? textDirection,
-    required SliderThemeData sliderTheme,
-    Thumb? thumb,
-    bool? isPressed,
-  }) {
-    final canvas = context.canvas;
-    // Brand-aware fallback — never hardcode Svid wine red.
-    final paint = Paint()
-      ..color = sliderTheme.thumbColor ?? AppColors.accentHighlight
-      ..style = PaintingStyle.fill;
-    final rect = Rect.fromCenter(
-      center: center,
-      width: thumbWidth,
-      height: thumbWidth,
-    );
-    canvas.drawRect(rect, paint);
-  }
-}

@@ -808,6 +808,8 @@ class AppLocalizations {
       'configDialog.sectionFormat'.tr();
   static String get configDialogSectionExtras =>
       'configDialog.sectionExtras'.tr();
+  static String get configDialogSectionSubtitles =>
+      'configDialog.sectionSubtitles'.tr();
   static String get configDialogSectionSponsorBlock =>
       'configDialog.sectionSponsorBlock'.tr();
   static String get configDialogSectionPlatform =>

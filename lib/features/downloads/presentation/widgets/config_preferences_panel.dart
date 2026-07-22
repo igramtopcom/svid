@@ -299,22 +299,25 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
       );
 
   // Small explanatory caption under a section (info icon + subtle text).
-  Widget _buildInlineHint(BuildContext context, String text, Color color) {
+  Widget _buildInlineHint(BuildContext context, String text) {
+    // metaText (full-opacity, WCAG-AA) not muted() — a hint the user can't
+    // read is worse than no hint.
+    final color = AppColors.metaText(context);
     return Padding(
       padding: const EdgeInsets.only(
           left: AppSpacing.xs, top: 2, bottom: AppSpacing.xs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.info_outline, size: 12, color: color),
+          Icon(Icons.info_outline, size: 13, color: color),
           const SizedBox(width: AppSpacing.xs),
           Expanded(
             child: Text(
               text,
               style: _labelStyle.copyWith(
                 color: color,
-                fontSize: 11.5,
-                height: 1.3,
+                fontSize: 12,
+                height: 1.35,
               ),
             ),
           ),
@@ -559,8 +562,8 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             headerColor: headerColor,
             textSecondary: textSecondary,
             children: [
-              _buildInlineHint(context,
-                  AppLocalizations.configDialogSponsorBlockHint, textSecondary),
+              _buildInlineHint(
+                  context, AppLocalizations.configDialogSponsorBlockHint),
               _buildDropdown<String>(
                 context,
                 label: AppLocalizations.settingsSponsorBlockAction,
@@ -999,10 +1002,14 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Clarify that multi-select is intentional — users can grab one
-        // language (the common case) or several (e.g. embed EN + VI tracks).
+        // When we know the video's real tracks, explain the multi-select;
+        // when we don't (no tracks detected), be honest that the language
+        // grid is a "try these" list, not a claim the video has them all.
         _buildInlineHint(
-            context, AppLocalizations.configDialogSubtitleMultiHint, textSecondary),
+            context,
+            hasVideoSubtitleData
+                ? AppLocalizations.configDialogSubtitleMultiHint
+                : AppLocalizations.configDialogSubtitleFallbackHint),
         if (hasVideoSubtitleData) ...[
           if (videoInfo.availableSubtitles.isNotEmpty)
             _buildSubtitleSection(

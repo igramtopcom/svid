@@ -862,8 +862,17 @@ mixin HomeDownloadMixin {
     // `_maybeEmitDirectDownloadStarted` to gate popup feedback emission.
     final forceDirectAutoPick = popupOriginated;
 
+    // manualMode ("Ask first") — computed up-front so it also gates the
+    // single-item / image-gallery auto-download rules below. When the user
+    // chose "Ask first" they want the picker EVERY time (to choose audio vs
+    // video, format, subtitles, trim…), even for a one-quality video or an
+    // image gallery. Previously Rule 1/1.1 only checked forceConfigDialog, so
+    // ask-first silently auto-downloaded these.
+    final manualModeOn =
+        forceConfigDialog || ref.read(activePresetProvider).useManualMode;
+
     // Rule 1: Single item -> Auto-download (no dialog)
-    if (!forceConfigDialog && videoInfo.availableQualities.length == 1) {
+    if (!manualModeOn && videoInfo.availableQualities.length == 1) {
       appLogger.info('Single item detected -> auto-downloading');
       final r = await startDownloadWithQuality(
         videoInfo,
@@ -880,7 +889,7 @@ mixin HomeDownloadMixin {
     final allImagesQuality = GalleryDefaultQualitySelector.allImagesQuality(
       videoInfo,
     );
-    if (!forceConfigDialog && allImagesQuality != null) {
+    if (!manualModeOn && allImagesQuality != null) {
       appLogger.info(
         'Pure image gallery detected -> auto-downloading all images',
       );
@@ -910,8 +919,7 @@ mixin HomeDownloadMixin {
     // Phase 2D.0: manualMode honored regardless of popup origin. Floating
     // Capture "More options" also lands here as a one-shot force-dialog
     // intent, bypassing preset/saved-pref auto-pick for this URL only.
-    final manualModeOn =
-        forceConfigDialog || activePresetSnapshot.useManualMode;
+    // (`manualModeOn` is computed once up-front, above Rule 1.)
 
     bool presetBlockedDialog = false;
     if (!manualModeOn && canApplySavedChoice(videoInfo)) {

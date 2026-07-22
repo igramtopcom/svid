@@ -130,29 +130,26 @@ class SearchFiltersBar extends StatelessWidget {
           children: [
             Icon(
               icon,
-              size: 14,
+              size: 15,
               color:
-                  isDark
-                      ? (isActive
+                  isActive
+                      ? (isDark
                           ? AppColors.darkLightText
-                          : AppColors.homeDarkTextSecondary)
-                      : (isActive
-                          ? theme.colorScheme.onSurface
-                          : theme.colorScheme.onSurfaceVariant),
+                          : theme.colorScheme.onSurface)
+                      : AppColors.metaText(context),
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(
               label,
               style: AppTypography.statusBadge.copyWith(
+                fontSize: 12.5,
                 color:
-                    isDark
-                        ? (isActive
+                    isActive
+                        ? (isDark
                             ? AppColors.darkLightText
-                            : AppColors.homeDarkTextSecondary)
-                        : (isActive
-                            ? theme.colorScheme.onSurface
-                            : theme.colorScheme.onSurfaceVariant),
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                            : theme.colorScheme.onSurface)
+                        : AppColors.metaText(context),
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
               ),
             ),
           ],

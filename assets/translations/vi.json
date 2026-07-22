@@ -417,6 +417,7 @@
     "subtitleLanguages": "Ngôn ngữ phụ đề",
     "subtitleFormat": "Định dạng phụ đề",
     "subtitleMultiHint": "Chọn một hoặc nhiều ngôn ngữ. Mỗi ngôn ngữ là một track riêng — khi xem, bạn chọn một trong trình phát.",
+    "subtitleFallbackHint": "Chưa phát hiện phụ đề nào cho video này — chọn ngôn ngữ mong muốn, cái nào video thực sự có sẽ được tải.",
     "subtitleShowAll": "Xem tất cả",
     "subtitleShowLess": "Thu gọn",
     "subtitleSelectedCount": "đã chọn",

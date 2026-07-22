@@ -891,6 +891,8 @@ class AppLocalizations {
       'configDialog.subtitleFormat'.tr();
   static String get configDialogSubtitleMultiHint =>
       'configDialog.subtitleMultiHint'.tr();
+  static String get configDialogSubtitleFallbackHint =>
+      'configDialog.subtitleFallbackHint'.tr();
   static String get configDialogSubtitleShowAll =>
       'configDialog.subtitleShowAll'.tr();
   static String get configDialogSubtitleShowLess =>

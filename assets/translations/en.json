@@ -417,6 +417,7 @@
     "subtitleLanguages": "Subtitle Languages",
     "subtitleFormat": "Subtitle Format",
     "subtitleMultiHint": "Pick one or more languages. Each is saved as its own track — the player shows one at a time and you switch between them.",
+    "subtitleFallbackHint": "No subtitle tracks were detected for this video — pick preferred languages and any the video actually has will be downloaded.",
     "subtitleShowAll": "Show all",
     "subtitleShowLess": "Show less",
     "subtitleSelectedCount": "selected",

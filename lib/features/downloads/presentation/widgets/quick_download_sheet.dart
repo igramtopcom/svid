@@ -622,9 +622,14 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
             children: [
               _radio(selected, accent),
               const SizedBox(width: AppSpacing.smMd),
-              Expanded(
+              // Title takes only the width it needs and never wraps — the long
+              // hint tag used to squeeze it onto two lines ("320" / "kbps").
+              Flexible(
                 child: Text(
                   title,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTypography.buttonSecondary.copyWith(
                     fontSize: 14.5,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
@@ -633,15 +638,23 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
                 ),
               ),
               if (tag != null) ...[
-                Text(
-                  tag,
-                  style: AppTypography.mini.copyWith(
-                    color: selected ? accent : AppColors.metaText(context),
-                    fontWeight: FontWeight.w700,
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    tag,
+                    textAlign: TextAlign.end,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.mini.copyWith(
+                      color: selected ? accent : AppColors.metaText(context),
+                      fontWeight: FontWeight.w700,
+                      height: 1.25,
+                    ),
                   ),
                 ),
                 if (trailing != null) const SizedBox(width: AppSpacing.smMd),
-              ],
+              ] else
+                const Spacer(),
               if (trailing != null)
                 Text(
                   trailing,

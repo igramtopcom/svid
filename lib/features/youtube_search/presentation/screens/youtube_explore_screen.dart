@@ -173,9 +173,6 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
   }) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final panelBg =
-        isDark ? AppColors.homeDarkCardBg : AppColors.surface1(context);
-    final borderColor = AppColors.border(context);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -189,8 +186,9 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1440),
           child: Container(
-            // Match the Home command-bar card padding so the header doesn't
-            // change height when switching Home <-> Explore.
+            // Mirror the Home command-bar card exactly (padding + fill + border
+            // + shadow) so the header looks identical and doesn't jump height
+            // when switching Home <-> Explore.
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.mdLg,
               AppSpacing.md,
@@ -198,19 +196,22 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
               AppSpacing.md,
             ),
             decoration: BoxDecoration(
-              color: panelBg,
+              color: isDark ? AppColors.homeDarkCardBg : Colors.white,
               borderRadius: BorderRadius.circular(AppRadius.card),
-              border: Border.all(color: borderColor),
-              boxShadow:
-                  isDark
-                      ? null
-                      : [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 18,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
+              border: Border.all(
+                color:
+                    isDark
+                        ? AppColors.homeDarkBorderSubtle
+                        : Colors.black.withValues(alpha: 0.14),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: cs.shadow.withValues(alpha: isDark ? 0.22 : 0.04),
+                  blurRadius: isDark ? 22 : 12,
+                  offset: Offset(0, isDark ? 10 : 2),
+                  spreadRadius: isDark ? -16 : 0,
+                ),
+              ],
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {

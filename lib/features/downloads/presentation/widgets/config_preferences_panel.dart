@@ -329,10 +329,8 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isYouTube = widget.platform == VideoPlatform.youtube;
     final isTikTok = widget.platform == VideoPlatform.tiktok;
     final showPlatformSection = isTikTok;
-    final showSponsorBlock = isYouTube;
 
     final videoDuration = widget.videoInfo?.duration;
     final hasChapters = widget.videoInfo?.hasChapters ?? false;
@@ -543,57 +541,10 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
           ],
         ),
 
-        // SponsorBlock section (YouTube only)
-        if (showSponsorBlock)
-          _buildSection(
-            context,
-            title: AppLocalizations.configDialogSectionSponsorBlock,
-            icon: Icons.skip_next,
-            iconColor: AppColors.accentSecondary,
-            expanded: false,
-            onToggle: () {},
-            toggleValue: _sponsorBlockEnabled,
-            onToggleChanged: (v) {
-              setState(() => _sponsorBlockEnabled = v);
-              _notifyChanged();
-            },
-            sectionBarBg: sectionBarBg,
-            sectionBarHover: sectionBarHover,
-            headerColor: headerColor,
-            textSecondary: textSecondary,
-            children: [
-              _buildInlineHint(
-                  context, AppLocalizations.configDialogSponsorBlockHint),
-              _buildDropdown<String>(
-                context,
-                label: AppLocalizations.settingsSponsorBlockAction,
-                value: _sponsorBlockAction,
-                items: const ['skip', 'remove', 'chapter'],
-                displayName: (v) {
-                  switch (v) {
-                    case 'skip':
-                      return AppLocalizations.settingsSponsorBlockActionSkip;
-                    case 'remove':
-                      return AppLocalizations.settingsSponsorBlockActionRemove;
-                    case 'chapter':
-                      return AppLocalizations.settingsSponsorBlockActionChapter;
-                    default:
-                      return v;
-                  }
-                },
-                onChanged: (v) {
-                  setState(() => _sponsorBlockAction = v);
-                  _notifyChanged();
-                },
-                labelColor: labelColor,
-                dropdownBg: dropdownBg,
-                dropdownBorder: dropdownBorder,
-                textPrimary: textPrimary,
-              ),
-              _buildSponsorBlockCategories(context,
-                  isDark: isDark, textSecondary: textSecondary),
-            ],
-          ),
+        // SponsorBlock section removed (Chairman 2026-07): the feature
+        // confused users more than it helped. The state fields stay at their
+        // (off) defaults and still flow through to overrides, so nothing
+        // downstream changes behaviour.
 
         // Platform section (conditional)
         if (showPlatformSection)
@@ -999,12 +950,20 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     final videoInfo = widget.videoInfo;
     final hasVideoSubtitleData = videoInfo != null && videoInfo.hasSubtitleInfo;
 
+    // videoInfo present but ZERO subtitle tracks (human + auto) → there is
+    // nothing to configure. Show only an honest "no subtitles" line; the
+    // 12-language grid, auto-translate switch and format dropdown would all be
+    // meaningless and misleading for a video that has no subtitles.
+    if (videoInfo != null && !videoInfo.hasSubtitleInfo) {
+      return _buildInlineHint(
+          context, AppLocalizations.configDialogSubtitleNone);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // When we know the video's real tracks, explain the multi-select;
-        // when we don't (no tracks detected), be honest that the language
-        // grid is a "try these" list, not a claim the video has them all.
+        // Real tracks → explain multi-select; unknown (no videoInfo) → the
+        // language grid is a "try these" list, not a claim the video has them.
         _buildInlineHint(
             context,
             hasVideoSubtitleData
@@ -1285,81 +1244,6 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
                         _subtitlesLanguages.add(lang);
                       } else {
                         _subtitlesLanguages.remove(lang);
-                      }
-                    });
-                    _notifyChanged();
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSponsorBlockCategories(BuildContext context, {required bool isDark, required Color textSecondary}) {
-    const allCategories = [
-      'sponsor', 'selfpromo', 'interaction', 'intro',
-      'outro', 'preview', 'music_offtopic', 'filler',
-    ];
-    final displayNames = {
-      'sponsor': AppLocalizations.settingsSponsorBlockCategorySponsor,
-      'selfpromo': AppLocalizations.settingsSponsorBlockCategorySelfpromo,
-      'interaction': AppLocalizations.settingsSponsorBlockCategoryInteraction,
-      'intro': AppLocalizations.settingsSponsorBlockCategoryIntro,
-      'outro': AppLocalizations.settingsSponsorBlockCategoryOutro,
-      'preview': AppLocalizations.settingsSponsorBlockCategoryPreview,
-      'music_offtopic': AppLocalizations.settingsSponsorBlockCategoryMusic,
-      'filler': AppLocalizations.settingsSponsorBlockCategoryFiller,
-    };
-    // Category names ("Interaction", "Filler"…) are cryptic — a hover tooltip
-    // explains what each segment type actually is.
-    final descriptions = {
-      'sponsor': AppLocalizations.sponsorBlockCategoryDescSponsor,
-      'selfpromo': AppLocalizations.sponsorBlockCategoryDescSelfpromo,
-      'interaction': AppLocalizations.sponsorBlockCategoryDescInteraction,
-      'intro': AppLocalizations.sponsorBlockCategoryDescIntro,
-      'outro': AppLocalizations.sponsorBlockCategoryDescOutro,
-      'preview': AppLocalizations.sponsorBlockCategoryDescPreview,
-      'music_offtopic': AppLocalizations.sponsorBlockCategoryDescMusic,
-      'filler': AppLocalizations.sponsorBlockCategoryDescFiller,
-    };
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.sm),
-              child: Text(
-                AppLocalizations.configDialogSponsorBlockCategories,
-                style: _rowLabelStyle(context),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Wrap(
-              spacing: 4,
-              runSpacing: 4,
-              children: allCategories.map((cat) {
-                final isSelected = _sponsorBlockCategories.contains(cat);
-                return _buildAngularChip(
-                  context,
-                  label: displayNames[cat] ?? cat,
-                  tooltip: descriptions[cat],
-                  selected: isSelected,
-                  isDark: isDark,
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        _sponsorBlockCategories.add(cat);
-                      } else {
-                        _sponsorBlockCategories.remove(cat);
                       }
                     });
                     _notifyChanged();

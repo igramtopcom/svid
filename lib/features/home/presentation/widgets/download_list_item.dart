@@ -474,7 +474,13 @@ class _DownloadItemCardState extends ConsumerState<DownloadItemCard>
                                 const SizedBox(height: AppSpacing.sm),
                                 _buildErrorFeedback(context, widget.download),
                               ],
-                              if (widget.download.isWatched) ...[
+                              // "Watched" is meaningless for audio (you listen,
+                              // not watch) and confused users — show it only for
+                              // video files.
+                              if (widget.download.isWatched &&
+                                  !FileUtils.isAudioFile(
+                                    widget.download.filename,
+                                  )) ...[
                                 const SizedBox(height: AppSpacing.xs),
                                 buildWatchedChip(compact: true),
                               ],

@@ -258,7 +258,11 @@ class _DownloadGridCardState extends ConsumerState<DownloadGridCard> {
                             ),
                           ],
 
-                          if (widget.download.isWatched) ...[
+                          // "Watched" is meaningless for audio — video only.
+                          if (widget.download.isWatched &&
+                              !FileUtils.isAudioFile(
+                                widget.download.filename,
+                              )) ...[
                             const SizedBox(height: AppSpacing.xs),
                             Align(
                               alignment: Alignment.centerRight,

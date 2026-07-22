@@ -893,6 +893,8 @@ class AppLocalizations {
       'configDialog.subtitleMultiHint'.tr();
   static String get configDialogSubtitleFallbackHint =>
       'configDialog.subtitleFallbackHint'.tr();
+  static String get configDialogSubtitleNone =>
+      'configDialog.subtitleNone'.tr();
   static String get configDialogHighResMkvNote =>
       'configDialog.highResMkvNote'.tr();
   static String get configDialogSubtitleShowAll =>

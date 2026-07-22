@@ -418,6 +418,7 @@
     "subtitleFormat": "Subtitle Format",
     "subtitleMultiHint": "Pick one or more languages. Each is saved as its own track — the player shows one at a time and you switch between them.",
     "subtitleFallbackHint": "No subtitle tracks were detected for this video — pick preferred languages and any the video actually has will be downloaded.",
+    "subtitleNone": "This video has no subtitles (neither uploaded nor auto-generated), so there's nothing to configure here.",
     "highResMkvNote": "4K/2K has no MP4 stream — saved as MKV (instant, same quality). Pick 1080p or lower for MP4.",
     "subtitleShowAll": "Show all",
     "subtitleShowLess": "Show less",

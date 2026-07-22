@@ -7,7 +7,6 @@ import '../../domain/entities/youtube_search_result.dart';
 import '../providers/youtube_explore_provider.dart';
 import '../providers/youtube_search_provider.dart';
 import 'search_filters_bar.dart';
-import 'video_detail_panel.dart';
 import 'youtube_search_result_item.dart';
 import 'youtube_search_skeleton.dart';
 
@@ -92,59 +91,19 @@ class _YouTubeResultsViewState extends ConsumerState<YouTubeResultsView> {
                 ),
               ),
               const SizedBox(height: AppSpacing.smMd),
+              // Full-width results list. The right-side detail panel was
+              // removed: the download dialog (opened by tapping a result) now
+              // carries the quality/format detail, so the panel was redundant,
+              // ate ~35% of the width, and vanished on narrow windows.
               Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final showDetailPanel = constraints.maxWidth >= 1080;
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          flex: showDetailPanel ? 65 : 100,
-                          child: _ExploreResultsSurface(
-                            isDark: isDark,
-                            clip: true,
-                            child: _buildResultsList(
-                              context,
-                              searchState,
-                              selectedVideoUrl,
-                            ),
-                          ),
-                        ),
-                        if (showDetailPanel) ...[
-                          const SizedBox(width: AppSpacing.smMd),
-                          Expanded(
-                            flex: 35,
-                            child: _ExploreResultsSurface(
-                              isDark: isDark,
-                              clip: true,
-                              child:
-                                  exploreState.selectedVideo != null
-                                      ? VideoDetailPanel(
-                                        video: exploreState.selectedVideo!,
-                                        videoDetail: exploreState.videoDetail,
-                                        isLoading: exploreState.isLoadingDetail,
-                                        error: exploreState.detailError,
-                                        onDownload:
-                                            () => widget.onVideoDownload(
-                                              exploreState.selectedVideo!.url,
-                                            ),
-                                        onClose:
-                                            () =>
-                                                ref
-                                                    .read(
-                                                      youtubeExploreProvider
-                                                          .notifier,
-                                                    )
-                                                    .clearSelection(),
-                                      )
-                                      : _buildEmptyPanel(context),
-                            ),
-                          ),
-                        ],
-                      ],
-                    );
-                  },
+                child: _ExploreResultsSurface(
+                  isDark: isDark,
+                  clip: true,
+                  child: _buildResultsList(
+                    context,
+                    searchState,
+                    selectedVideoUrl,
+                  ),
                 ),
               ),
             ],
@@ -316,78 +275,13 @@ class _YouTubeResultsViewState extends ConsumerState<YouTubeResultsView> {
   }
 
   void _onVideoTap(YouTubeSearchResult video) {
-    ref.read(youtubeExploreProvider.notifier).selectVideo(video);
+    // Panel removed — tapping a video result opens the download flow directly
+    // (dialog on "Ask first", else auto per the Default-download setting).
+    // Channel results aren't directly downloadable → no-op.
+    if (video.isChannel) return;
+    widget.onVideoDownload(video.url);
   }
 
-  Widget _buildEmptyPanel(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 360),
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          decoration: BoxDecoration(
-            color:
-                isDark ? AppColors.homeDarkAppBg : AppColors.surface2(context),
-            borderRadius: BorderRadius.circular(AppRadius.card),
-            border: Border.all(
-              color:
-                  isDark
-                      ? AppColors.homeDarkBorderStrong
-                      : cs.outlineVariant.withValues(alpha: AppOpacity.scrim),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: AppColors.accentHighlight.withValues(
-                    alpha: AppOpacity.subtle,
-                  ),
-                  borderRadius: BorderRadius.circular(AppRadius.card),
-                ),
-                child: Icon(
-                  Icons.playlist_play_rounded,
-                  size: 30,
-                  color: AppColors.accentHighlight.withValues(
-                    alpha: AppOpacity.overlay,
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                AppLocalizations.youtubeSearchSelectVideo,
-                style: AppTypography.metadata.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0,
-                  color: isDark ? AppColors.darkLightText : cs.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                AppLocalizations.youtubeSearchSelectVideoHint,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color:
-                      isDark
-                          ? AppColors.homeDarkTextSecondary
-                          : cs.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class _ExploreResultsSurface extends StatelessWidget {

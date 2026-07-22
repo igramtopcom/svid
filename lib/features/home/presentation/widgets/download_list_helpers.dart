@@ -895,14 +895,23 @@ void showDownloadDeleteDialog(
 }
 
 /// Metadata badge — Nocturne Cinematic: ghost-bordered, sharp corners.
-Widget buildMetadataBadge(BuildContext context, IconData icon, String text) {
+Widget buildMetadataBadge(
+  BuildContext context,
+  IconData icon,
+  String text, {
+  // Optional accent — used to make a media-type chip (e.g. audio) read
+  // distinctly from the neutral chips.
+  Color? color,
+}) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
-  final metaColor =
-      isDark
+  final tinted = color != null;
+  final fg =
+      color ??
+      (isDark
           ? AppColors.darkMetaText
           : Theme.of(
             context,
-          ).colorScheme.onSurface.withValues(alpha: AppOpacity.overlay);
+          ).colorScheme.onSurface.withValues(alpha: AppOpacity.overlay));
   return Container(
     padding: const EdgeInsets.symmetric(
       horizontal: AppSpacing.sm,
@@ -910,28 +919,32 @@ Widget buildMetadataBadge(BuildContext context, IconData icon, String text) {
     ),
     decoration: BoxDecoration(
       color:
-          isDark
-              ? AppColors.darkLightText.withValues(alpha: AppOpacity.divider)
-              : AppColors.lightSurface2,
+          tinted
+              ? color.withValues(alpha: isDark ? 0.18 : 0.10)
+              : (isDark
+                  ? AppColors.darkLightText.withValues(alpha: AppOpacity.divider)
+                  : AppColors.lightSurface2),
       borderRadius: BorderRadius.circular(AppRadius.card),
       border: Border.all(
         color:
-            isDark
-                ? AppColors.darkMuted.withValues(alpha: AppOpacity.scrim)
-                : Colors.black.withValues(alpha: AppOpacity.divider),
+            tinted
+                ? color.withValues(alpha: 0.36)
+                : (isDark
+                    ? AppColors.darkMuted.withValues(alpha: AppOpacity.scrim)
+                    : Colors.black.withValues(alpha: AppOpacity.divider)),
         width: 0.5,
       ),
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 10, color: metaColor),
+        Icon(icon, size: 10, color: fg),
         const SizedBox(width: AppSpacing.xs),
         Text(
           text,
           style: AppTypography.mini.copyWith(
-            fontWeight: FontWeight.w500,
-            color: metaColor,
+            fontWeight: tinted ? FontWeight.w700 : FontWeight.w500,
+            color: fg,
           ),
         ),
       ],

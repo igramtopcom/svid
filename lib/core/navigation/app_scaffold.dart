@@ -905,7 +905,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
     final panelState = ref.watch(rightPanelProvider);
     final batchSelection = ref.watch(batchSelectionProvider);
     final panelHasContent =
-        batchSelection.length > 1 ||
+        batchSelection.isNotEmpty ||
         (panelState.mode == RightPanelMode.detail &&
             panelState.selectedDownload != null);
     final miniPlayerState = ref.watch(miniPlayerStateProvider);

@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -118,6 +119,31 @@ class BatchOperationsBar extends ConsumerWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Retry first (recovery) when any selected item failed.
+                      if (hasRetryable) ...[
+                        _ActionButton(
+                          icon: Icons.refresh_rounded,
+                          label: AppLocalizations.batchOpsRetry,
+                          color: AppColors.successGreen,
+                          onPressed:
+                              () =>
+                                  _onRetry(context, ref, selectedIds.toList()),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                      ],
+
+                      // Delete — the most-used action, so it leads and is
+                      // visually prominent (tinted red).
+                      _ActionButton(
+                        icon: Icons.delete_outline_rounded,
+                        label: AppLocalizations.batchOpsDelete,
+                        color: AppColors.errorRed,
+                        prominent: true,
+                        onPressed:
+                            () => _onDelete(context, ref, selectedIds.toList()),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+
                       _ActionButton(
                         icon: Icons.playlist_add_rounded,
                         label: AppLocalizations.playlistRowMenuAddTo,
@@ -128,46 +154,21 @@ class BatchOperationsBar extends ConsumerWidget {
                               selectedIds.toList(),
                             ),
                       ),
-                      const SizedBox(width: AppSpacing.xs),
+                      const SizedBox(width: AppSpacing.sm),
 
-                      // Retry (only when selected items include failed downloads)
-                      if (hasRetryable) ...[
-                        _ActionButton(
-                          icon: Icons.refresh_rounded,
-                          label: AppLocalizations.batchOpsRetry,
-                          color: AppColors.successGreen,
-                          onPressed:
-                              () =>
-                                  _onRetry(context, ref, selectedIds.toList()),
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                      ],
-
-                      // Delete
-                      _ActionButton(
-                        icon: Icons.delete_outline_rounded,
-                        label: AppLocalizations.batchOpsDelete,
-                        color: AppColors.errorRed,
-                        onPressed:
-                            () => _onDelete(context, ref, selectedIds.toList()),
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-
-                      // Move
-                      _ActionButton(
-                        icon: Icons.drive_file_move_rounded,
-                        label: AppLocalizations.batchOpsMove,
-                        onPressed:
-                            () => _onMove(context, ref, selectedIds.toList()),
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-
-                      // Rename
                       _ActionButton(
                         icon: Icons.edit_rounded,
                         label: AppLocalizations.batchOpsRename,
                         onPressed:
                             () => _onRename(context, ref, selectedIds.toList()),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+
+                      _ActionButton(
+                        icon: Icons.drive_file_move_rounded,
+                        label: AppLocalizations.batchOpsMove,
+                        onPressed:
+                            () => _onMove(context, ref, selectedIds.toList()),
                       ),
                     ],
                   ),
@@ -251,7 +252,11 @@ class BatchOperationsBar extends ConsumerWidget {
     WidgetRef ref,
     List<int> ids,
   ) async {
-    final path = await _showMoveDialog(context);
+    // Native folder picker instead of a raw path field — no typos, no invalid
+    // paths, and a real destination on the correct drive.
+    final path = await FilePicker.platform.getDirectoryPath(
+      dialogTitle: AppLocalizations.batchOpsMoveDialogTitle,
+    );
     if (path == null || path.isEmpty || !context.mounted) return;
 
     await ref.read(downloadsNotifierProvider.notifier).bulkMove(ids, path);
@@ -351,57 +356,6 @@ class BatchOperationsBar extends ConsumerWidget {
     );
   }
 
-  Future<String?> _showMoveDialog(BuildContext context) async {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final controller = TextEditingController();
-    return showDialog<String>(
-      context: context,
-      builder: (ctx) {
-        final tt = Theme.of(ctx).textTheme;
-        return AlertDialog(
-          backgroundColor: isDark ? AppColors.darkBase : null,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.card),
-            side:
-                isDark
-                    ? BorderSide(
-                      color: AppColors.darkMuted.withValues(
-                        alpha: AppOpacity.subtle,
-                      ),
-                    )
-                    : BorderSide.none,
-          ),
-          title: Text(
-            AppLocalizations.batchOpsMoveDialogTitle,
-            style: tt.headlineSmall?.copyWith(
-              color: isDark ? AppColors.darkLightText : null,
-            ),
-          ),
-          content: TextField(
-            controller: controller,
-            decoration: const InputDecoration(hintText: '/path/to/folder'),
-            autofocus: true,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(AppLocalizations.commonCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-              style: FilledButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.card),
-                ),
-              ),
-              child: Text(AppLocalizations.commonOk),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Future<String?> _showRenameDialog(BuildContext context) async {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final controller = TextEditingController();
@@ -480,10 +434,12 @@ class BatchOperationsBar extends ConsumerWidget {
   }
 }
 
-class _ActionButton extends StatelessWidget {
+class _ActionButton extends StatefulWidget {
   final IconData icon;
   final String label;
   final Color? color;
+  // Filled/tinted emphasis for the primary action (Delete).
+  final bool prominent;
   final VoidCallback onPressed;
 
   const _ActionButton({
@@ -491,24 +447,69 @@ class _ActionButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.color,
+    this.prominent = false,
   });
+
+  @override
+  State<_ActionButton> createState() => _ActionButtonState();
+}
+
+class _ActionButtonState extends State<_ActionButton> {
+  bool _hovered = false;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final effectiveColor =
-        color ?? (isDark ? AppColors.darkLightText : AppColors.brand);
-    return TextButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon, size: 14, color: effectiveColor),
-      label: Text(
-        label,
-        style: AppTypography.statusBadge.copyWith(color: effectiveColor),
-      ),
-      style: TextButton.styleFrom(
-        visualDensity: VisualDensity.compact,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.card),
+    final cs = Theme.of(context).colorScheme;
+    final c =
+        widget.color ?? (isDark ? AppColors.darkLightText : cs.onSurface);
+
+    final Color bg;
+    final Color borderColor;
+    if (widget.prominent) {
+      bg = c.withValues(alpha: _hovered ? 0.20 : (isDark ? 0.16 : 0.10));
+      borderColor = c.withValues(alpha: 0.36);
+    } else {
+      bg =
+          _hovered
+              ? (isDark ? AppColors.darkCardHover : cs.surfaceContainerLow)
+              : (isDark ? AppColors.darkCardBg : AppColors.lightBase);
+      borderColor = AppColors.border(context);
+    }
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onPressed,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 120),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.smMd,
+            vertical: AppSpacing.sm,
+          ),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(AppRadius.input),
+            border: Border.all(color: borderColor),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(widget.icon, size: 18, color: c),
+              const SizedBox(width: AppSpacing.xs),
+              Text(
+                widget.label,
+                style: AppTypography.buttonSecondary.copyWith(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: c,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

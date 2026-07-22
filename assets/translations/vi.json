@@ -172,7 +172,8 @@
       "queueTab": "Hàng đợi tải",
       "queueEmpty": "Không có lượt tải đang chạy",
       "queueEmptySubtitle": "Các lượt đang chờ, tạm dừng hoặc đang tải sẽ xuất hiện tại đây.",
-      "queueCount": "{count} đang chạy"
+      "queueCount": "{count} đang chạy",
+      "allTab": "Tất cả"
     },
     "checkingPremiumLicense": "Đang kiểm tra gói premium. Thử lại sau vài giây.",
     "preparingBatch": "Đang chuẩn bị {count} video…",
@@ -185,7 +186,8 @@
     "importedPresetName": "📌 {platform} (đã lưu)",
     "carouselClickHint": "Bấm vào ảnh để xem toàn màn hình (carousel).",
     "muteToggleTooltip": "M: tắt / bật âm",
-    "downloadOptionsTip": "Cắt đoạn video, thêm phụ đề hay xóa quảng cáo — bấm ▾ cạnh nút Download để mở thêm tùy chọn."
+    "downloadOptionsTip": "Cắt đoạn video, thêm phụ đề hay xóa quảng cáo — bấm ▾ cạnh nút Download để mở thêm tùy chọn.",
+    "downloadDefaultsLabel": "Tải mặc định"
   },
   "downloads": {
     "title": "Tải xuống",

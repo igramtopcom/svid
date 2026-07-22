@@ -927,12 +927,22 @@ class HomeScreenState extends ConsumerState<HomeScreen>
             },
           ),
 
-          // Batch operations bar -- floats above content when items are selected
-          const Positioned(
+          // Batch operations bar -- floats above content when items are
+          // selected. Clamp it to the same left-anchored 1440-wide region as
+          // the content card so it never spills past the central box.
+          Positioned(
             left: 0,
             right: 0,
             bottom: 0,
-            child: BatchOperationsBar(),
+            child: LayoutBuilder(
+              builder: (context, c) {
+                final extra = c.maxWidth - 1440.0;
+                return Padding(
+                  padding: EdgeInsets.only(right: extra > 0 ? extra : 0),
+                  child: const BatchOperationsBar(),
+                );
+              },
+            ),
           ),
 
           // History Drawer (slides in from right with proper clipping)
@@ -1885,25 +1895,49 @@ class HomeScreenState extends ConsumerState<HomeScreen>
     final isPlaylistSelected =
         _downloadManagerView == _DownloadManagerView.playlist ||
         selectedTab == FilterTab.playlist;
+    final inHistory = !isPlaylistSelected;
+
+    // History-view tab (All / Video / Audio) — switches the media-type filter
+    // and stays in the downloads list view.
+    Widget historyTab(String label, FilterTab tab, int count) {
+      return _DownloadManagerTabButton(
+        label: label,
+        count: count,
+        isSelected: inHistory && selectedTab == tab,
+        isDark: isDark,
+        onTap: () {
+          ref.read(filterProvider.notifier).selectTab(tab);
+          ref.read(activePlaylistContextProvider.notifier).state = null;
+          setState(() {
+            _downloadManagerView = _DownloadManagerView.history;
+            _selectedPlaylistKey = null;
+          });
+        },
+      );
+    }
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _DownloadManagerTabButton(
-            label: AppLocalizations.homeDownloadsHistoryTab,
-            count: downloadsState.downloads.length,
-            isSelected: !isPlaylistSelected,
-            isDark: isDark,
-            onTap: () {
-              ref.read(filterProvider.notifier).selectTab(FilterTab.all);
-              ref.read(activePlaylistContextProvider.notifier).state = null;
-              setState(() {
-                _downloadManagerView = _DownloadManagerView.history;
-                _selectedPlaylistKey = null;
-              });
-            },
+          historyTab(
+            AppLocalizations.homeDownloadsAllTab,
+            FilterTab.all,
+            counts[FilterTab.all] ?? downloadsState.downloads.length,
           ),
-          const SizedBox(width: AppSpacing.mdLg),
+          const SizedBox(width: AppSpacing.md),
+          historyTab(
+            AppLocalizations.navVideo,
+            FilterTab.video,
+            counts[FilterTab.video] ?? 0,
+          ),
+          const SizedBox(width: AppSpacing.md),
+          historyTab(
+            AppLocalizations.navAudio,
+            FilterTab.audio,
+            counts[FilterTab.audio] ?? 0,
+          ),
+          const SizedBox(width: AppSpacing.md),
           _DownloadManagerTabButton(
             label: AppLocalizations.navPlaylist,
             count: playlistCount,
@@ -2007,10 +2041,10 @@ class HomeScreenState extends ConsumerState<HomeScreen>
             const SizedBox(width: AppSpacing.xs),
           ],
           _buildFilterToggle(filterState, isDark, cs),
-          const SizedBox(width: AppSpacing.xs),
+          const SizedBox(width: AppSpacing.sm),
           _buildSortMenu(filterState, isDark, cs),
           if (filterState.hasActiveFilters) ...[
-            const SizedBox(width: AppSpacing.xs),
+            const SizedBox(width: AppSpacing.sm),
             _ToolbarIconButton(
               icon: Icons.clear_all_rounded,
               tooltip: AppLocalizations.downloadFilterClearAll,
@@ -2023,9 +2057,9 @@ class HomeScreenState extends ConsumerState<HomeScreen>
               },
             ),
           ],
-          const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.smMd),
           _buildViewModeToggle(isDark, cs),
-          const SizedBox(width: AppSpacing.xs),
+          const SizedBox(width: AppSpacing.sm),
           _buildBatchActionsMenu(toolbarIconColor, isDark, cs),
         ],
       );
@@ -2982,60 +3016,63 @@ class _DownloadManagerTabButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppRadius.card),
       child: Padding(
         padding: const EdgeInsets.only(top: AppSpacing.xs),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  style: AppTypography.buttonPrimary.copyWith(
-                    color: textColor,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+        child: IntrinsicWidth(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            // Stretch so the underline spans exactly this tab's own width
+            // (label + count), instead of a fixed 128px that mismatches the
+            // narrower Video / Audio tabs.
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: AppTypography.buttonPrimary.copyWith(
+                      color: textColor,
+                      fontWeight:
+                          isSelected ? FontWeight.w700 : FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Container(
-                  height: 18,
-                  constraints: const BoxConstraints(minWidth: 18),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xs,
-                  ),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    // Neutral count pill — the active tab already reads via its
-                    // accent underline; keep wine red off secondary chrome.
-                    color: AppColors.metaText(
-                      context,
-                    ).withValues(alpha: AppOpacity.hover),
-                    borderRadius: BorderRadius.circular(AppRadius.card),
-                  ),
-                  child: Text(
-                    '$count',
-                    style: AppTypography.mini.copyWith(
-                      color: AppColors.metaText(context),
-                      fontWeight: FontWeight.w700,
+                  const SizedBox(width: AppSpacing.xs),
+                  Container(
+                    height: 18,
+                    constraints: const BoxConstraints(minWidth: 18),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.xs,
+                    ),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AppColors.metaText(
+                        context,
+                      ).withValues(alpha: AppOpacity.hover),
+                      borderRadius: BorderRadius.circular(AppRadius.card),
+                    ),
+                    child: Text(
+                      '$count',
+                      style: AppTypography.mini.copyWith(
+                        color: AppColors.metaText(context),
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            AnimatedContainer(
-              duration: AppTransitions.controls,
-              curve: Curves.easeOut,
-              height: 2,
-              width: isSelected ? 128 : 0,
-              decoration: BoxDecoration(
-                color: AppColors.accentHighlight,
-                borderRadius: BorderRadius.circular(99),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: AppSpacing.xs),
+              AnimatedContainer(
+                duration: AppTransitions.controls,
+                curve: Curves.easeOut,
+                height: isSelected ? 2 : 0,
+                decoration: BoxDecoration(
+                  color: AppColors.accentHighlight,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

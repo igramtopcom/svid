@@ -106,17 +106,40 @@ class BatchFileOperationsService {
           continue;
         }
 
+        var finalName = row.filename;
         if (row.status == 'completed') {
           final srcPath = p.join(row.savePath, row.filename);
-          final destPath = p.join(targetPath, row.filename);
           final src = File(srcPath);
-          if (src.existsSync()) {
-            await src.rename(destPath);
+          if (src.existsSync() &&
+              srcPath != p.join(targetPath, row.filename)) {
+            // Don't clobber an existing file at the destination.
+            final stem = _stemOf(row.filename);
+            final ext = _extensionOf(row.filename);
+            var destPath = p.join(targetPath, finalName);
+            var counter = 2;
+            while (File(destPath).existsSync()) {
+              finalName = '$stem ($counter)$ext';
+              destPath = p.join(targetPath, finalName);
+              counter++;
+            }
+            try {
+              await src.rename(destPath);
+            } on FileSystemException {
+              // Cross-volume move (e.g. C: → D:): rename can't cross drives,
+              // so copy then delete the source.
+              await src.copy(destPath);
+              await src.delete();
+            }
           }
         }
 
         await (db.update(db.downloads)..where((t) => t.id.equals(id)))
-            .write(DownloadsCompanion(savePath: Value(targetPath)));
+            .write(
+              DownloadsCompanion(
+                savePath: Value(targetPath),
+                filename: Value(finalName),
+              ),
+            );
         succeeded++;
       } catch (e) {
         failed++;
@@ -138,6 +161,9 @@ class BatchFileOperationsService {
     int succeeded = 0;
     int failed = 0;
     final errors = <String>[];
+    // Full destination paths already claimed in THIS batch — used to guarantee
+    // every renamed file gets a unique name (never clobber a sibling).
+    final usedPaths = <String>{};
 
     for (int i = 0; i < ids.length; i++) {
       final id = ids[i];
@@ -168,7 +194,22 @@ class BatchFileOperationsService {
         }
 
         final ext = _extensionOf(row.filename);
-        final newFilename = _sanitizeFilename(newBase) + ext;
+        final stem = _sanitizeFilename(newBase);
+        final selfPath = p.join(row.savePath, row.filename);
+        var newFilename = stem + ext;
+        var newPath = p.join(row.savePath, newFilename);
+        // Guarantee uniqueness: never overwrite another selected file (batch
+        // dedupe) or an unrelated file already on disk. A pattern without
+        // {index} that resolves to the same name for several files now yields
+        // "name.ext", "name (2).ext", "name (3).ext" instead of clobbering.
+        var counter = 2;
+        while ((usedPaths.contains(newPath) || File(newPath).existsSync()) &&
+            newPath != selfPath) {
+          newFilename = '$stem ($counter)$ext';
+          newPath = p.join(row.savePath, newFilename);
+          counter++;
+        }
+        usedPaths.add(newPath);
 
         if (newFilename == row.filename) {
           succeeded++;
@@ -176,9 +217,7 @@ class BatchFileOperationsService {
         }
 
         if (row.status == 'completed') {
-          final oldPath = p.join(row.savePath, row.filename);
-          final newPath = p.join(row.savePath, newFilename);
-          final src = File(oldPath);
+          final src = File(selfPath);
           if (src.existsSync()) {
             await src.rename(newPath);
           }

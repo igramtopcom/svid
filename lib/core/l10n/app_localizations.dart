@@ -357,6 +357,7 @@ class AppLocalizations {
   static String get homeHistoryButton => 'home.historyButton'.tr();
   static String get homeBatchButton => 'home.batchButton'.tr();
   static String get homeDownloadsHistoryTab => 'home.downloads.historyTab'.tr();
+  static String get homeDownloadsAllTab => 'home.downloads.allTab'.tr();
   static String get homeDownloadsQueueTab => 'home.downloads.queueTab'.tr();
   static String get homeDownloadsQueueEmpty => 'home.downloads.queueEmpty'.tr();
   static String get homeDownloadsQueueEmptySubtitle =>
@@ -1031,6 +1032,8 @@ class AppLocalizations {
   static String get homeBatchButtonTooltip => 'home.batchButtonTooltip'.tr();
   static String get homeDownloadOptionsTip =>
       'home.downloadOptionsTip'.tr();
+  static String get homeDownloadDefaultsLabel =>
+      'home.downloadDefaultsLabel'.tr();
   static String get homeCustomizeBeforeDownload =>
       'home.customizeBeforeDownload'.tr();
   static String downloadsFileOpened(String filename) =>

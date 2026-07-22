@@ -76,7 +76,7 @@ class RightPanel extends ConsumerWidget {
             // contention with rapidly clicked items.
             duration: const Duration(milliseconds: 80),
             child:
-                selectedIds.length > 1
+                selectedIds.isNotEmpty
                     ? RightPanelMultiSelectView(
                       // Sort id list so different selection orderings
                       // that resolve to the same set don't trigger a

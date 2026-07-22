@@ -667,6 +667,26 @@ class _DownloadItemCardState extends ConsumerState<DownloadItemCard>
                 ),
               ),
 
+            // Audio badge (bottom-left): an album-art thumbnail otherwise looks
+            // identical to a video — flag audio-only files at a glance.
+            if (FileUtils.isAudioFile(widget.download.filename))
+              Positioned(
+                bottom: 4,
+                left: 4,
+                child: Container(
+                  padding: const EdgeInsets.all(AppSpacing.xxs),
+                  decoration: BoxDecoration(
+                    color: AppColors.accentSecondary.withValues(alpha: 0.95),
+                    borderRadius: BorderRadius.circular(AppRadius.card),
+                  ),
+                  child: const Icon(
+                    Icons.music_note_rounded,
+                    size: 13,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+
             // Failed error overlay (centered)
             if (widget.download.isFailed)
               Positioned.fill(
@@ -855,7 +875,12 @@ class _DownloadItemCardState extends ConsumerState<DownloadItemCard>
       icon = Icons.insert_drive_file;
     }
 
-    return buildMetadataBadge(context, icon, ext);
+    return buildMetadataBadge(
+      context,
+      icon,
+      ext,
+      color: isAudio ? AppColors.accentSecondary : null,
+    );
   }
 
   /// Priority badge — shows smart-boost OR manual priority.

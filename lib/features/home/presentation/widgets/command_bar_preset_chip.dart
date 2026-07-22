@@ -111,43 +111,74 @@ class _CommandBarPresetChipState extends ConsumerState<CommandBarPresetChip> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: _open,
-        behavior: HitTestBehavior.opaque,
-        child: KeyedSubtree(
-          key: _anchorKey,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 120),
-            height: widget.height,
-            constraints: const BoxConstraints(minWidth: 150),
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            decoration: BoxDecoration(
-              color: _hovered ? hoverBg : bg,
-              borderRadius: BorderRadius.circular(AppRadius.input),
-              border: Border.all(color: borderColor),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  child: Text(
-                    label,
-                    style: AppTypography.buttonSecondary.copyWith(
-                      fontSize: 15,
-                      color: textColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+      child: Tooltip(
+        message: AppLocalizations.homePresetPopoverTitle,
+        waitDuration: AppDurations.tooltipWaitDuration,
+        child: GestureDetector(
+          onTap: _open,
+          behavior: HitTestBehavior.opaque,
+          child: KeyedSubtree(
+            key: _anchorKey,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 120),
+              height: widget.height,
+              constraints: const BoxConstraints(minWidth: 150),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              decoration: BoxDecoration(
+                color: _hovered ? hoverBg : bg,
+                borderRadius: BorderRadius.circular(AppRadius.input),
+                border: Border.all(color: borderColor),
+              ),
+              // Labeled control: a muted caption tells the user WHAT the chip
+              // is ("Default download"), the value line tells them its state
+              // ("Ask first" / "MP4 · 1080p").
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.tune_rounded,
+                    size: 16,
+                    color: AppColors.metaText(context),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Icon(
-                  Icons.expand_more_rounded,
-                  size: 18,
-                  color: AppColors.metaText(context),
-                ),
-              ],
+                  const SizedBox(width: AppSpacing.smMd),
+                  Flexible(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          AppLocalizations.homeDownloadDefaultsLabel,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.mini.copyWith(
+                            color: AppColors.metaText(context),
+                            fontWeight: FontWeight.w600,
+                            height: 1.05,
+                          ),
+                        ),
+                        Text(
+                          label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.buttonSecondary.copyWith(
+                            fontSize: 14,
+                            color: textColor,
+                            fontWeight: FontWeight.w700,
+                            height: 1.15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Icon(
+                    Icons.expand_more_rounded,
+                    size: 18,
+                    color: AppColors.metaText(context),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

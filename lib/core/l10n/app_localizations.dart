@@ -885,6 +885,14 @@ class AppLocalizations {
       'configDialog.subtitleLanguages'.tr();
   static String get configDialogSubtitleFormat =>
       'configDialog.subtitleFormat'.tr();
+  static String get configDialogSubtitleMultiHint =>
+      'configDialog.subtitleMultiHint'.tr();
+  static String get configDialogSubtitleShowAll =>
+      'configDialog.subtitleShowAll'.tr();
+  static String get configDialogSubtitleShowLess =>
+      'configDialog.subtitleShowLess'.tr();
+  static String get configDialogSubtitleSelectedCount =>
+      'configDialog.subtitleSelectedCount'.tr();
   static String get configDialogEnableSponsorBlock =>
       'configDialog.enableSponsorBlock'.tr();
   static String get configDialogSponsorBlockAction =>

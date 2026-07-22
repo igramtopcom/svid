@@ -108,6 +108,10 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
   late List<String> _subtitlesLanguages;
   late String _subtitlesFormat;
   late bool _includeAutoSubs;
+  // Which subtitle language groups (keyed by section label) are showing their
+  // full list vs. the capped preview. Long auto-translated lists (~100 langs)
+  // are collapsed by default to keep the panel scannable.
+  final Set<String> _expandedSubGroups = {};
   late bool _embedThumbnail;
   late bool _embedMetadata;
   late bool _embedChapters;
@@ -932,6 +936,29 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Clarify that multi-select is intentional — users can grab one
+        // language (the common case) or several (e.g. embed EN + VI tracks).
+        Padding(
+          padding: const EdgeInsets.only(
+              left: AppSpacing.xs, top: 2, bottom: AppSpacing.xs),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.info_outline, size: 12, color: textSecondary),
+              const SizedBox(width: AppSpacing.xs),
+              Expanded(
+                child: Text(
+                  AppLocalizations.configDialogSubtitleMultiHint,
+                  style: _labelStyle.copyWith(
+                    color: textSecondary,
+                    fontSize: 11.5,
+                    height: 1.3,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
         if (hasVideoSubtitleData) ...[
           if (videoInfo.availableSubtitles.isNotEmpty)
             _buildSubtitleSection(
@@ -963,7 +990,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             ),
         ] else ...[
           _buildFallbackLanguageChips(context, isDark: isDark, textSecondary: textSecondary),
-          _buildSwitch(context, 'Include auto-translated', _includeAutoSubs, (v) {
+          _buildSwitch(context, AppLocalizations.configDialogIncludeAutoTranslated, _includeAutoSubs, (v) {
             setState(() => _includeAutoSubs = v);
             _notifyChanged();
           }, textPrimary: textPrimary),
@@ -987,6 +1014,10 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     );
   }
 
+  // Long language lists (auto-translated can be ~100 items) are capped to this
+  // many chips; the rest hide behind a "Show all" pill so the panel stays scannable.
+  static const int _subtitleChipCap = 14;
+
   Widget _buildSubtitleSection(
     BuildContext context, {
     required String label,
@@ -995,6 +1026,27 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     required bool isDark,
     required Color textSecondary,
   }) {
+    final selectedCount =
+        tracks.where((t) => _subtitlesLanguages.contains(t.lang)).length;
+    final needsCap = tracks.length > _subtitleChipCap;
+    final expanded = _expandedSubGroups.contains(label);
+
+    // Keep any selected chips visible even when collapsed, then fill the
+    // remaining preview slots with unselected tracks.
+    List<SubtitleTrackInfo> visible;
+    if (expanded || !needsCap) {
+      visible = tracks;
+    } else {
+      final selected =
+          tracks.where((t) => _subtitlesLanguages.contains(t.lang)).toList();
+      final unselected =
+          tracks.where((t) => !_subtitlesLanguages.contains(t.lang)).toList();
+      final room =
+          (_subtitleChipCap - selected.length).clamp(0, unselected.length);
+      visible = [...selected, ...unselected.take(room)];
+    }
+    final hiddenCount = tracks.length - visible.length;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
@@ -1014,6 +1066,10 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
                       style: _labelStyle.copyWith(color: textSecondary),
                     ),
                   ),
+                  if (selectedCount > 0) ...[
+                    const SizedBox(width: AppSpacing.xs),
+                    _buildSelectedCountBadge(context, selectedCount),
+                  ],
                 ],
               ),
             ),
@@ -1023,25 +1079,41 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             child: Wrap(
               spacing: 4,
               runSpacing: 4,
-              children: tracks.map((track) {
-                final isSelected = _subtitlesLanguages.contains(track.lang);
-                return _buildAngularChip(
-                  context,
-                  label: track.displayName,
-                  selected: isSelected,
-                  isDark: isDark,
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        _subtitlesLanguages.add(track.lang);
+              children: [
+                ...visible.map((track) {
+                  final isSelected =
+                      _subtitlesLanguages.contains(track.lang);
+                  return _buildAngularChip(
+                    context,
+                    label: track.displayName,
+                    selected: isSelected,
+                    isDark: isDark,
+                    onSelected: (selected) {
+                      setState(() {
+                        if (selected) {
+                          _subtitlesLanguages.add(track.lang);
+                        } else {
+                          _subtitlesLanguages.remove(track.lang);
+                        }
+                      });
+                      _notifyChanged();
+                    },
+                  );
+                }),
+                if (needsCap)
+                  _buildShowMorePill(
+                    context,
+                    expanded: expanded,
+                    hiddenCount: hiddenCount,
+                    onTap: () => setState(() {
+                      if (expanded) {
+                        _expandedSubGroups.remove(label);
                       } else {
-                        _subtitlesLanguages.remove(track.lang);
+                        _expandedSubGroups.add(label);
                       }
-                    });
-                    _notifyChanged();
-                  },
-                );
-              }).toList(),
+                    }),
+                  ),
+              ],
             ),
           ),
         ],
@@ -1049,8 +1121,75 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     );
   }
 
+  // Compact count badge shown next to a subtitle group label.
+  Widget _buildSelectedCountBadge(BuildContext context, int count) {
+    final accent = AppColors.accentHighlight;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
+      child: Text(
+        '$count',
+        style: AppTypography.buttonSecondary.copyWith(
+          fontSize: 10.5,
+          fontWeight: FontWeight.w700,
+          color: accent,
+        ),
+      ),
+    );
+  }
+
+  // "Show all (N)" / "Show less" pill that toggles a capped language list.
+  Widget _buildShowMorePill(
+    BuildContext context, {
+    required bool expanded,
+    required int hiddenCount,
+    required VoidCallback onTap,
+  }) {
+    final label = expanded
+        ? AppLocalizations.configDialogSubtitleShowLess
+        : '${AppLocalizations.configDialogSubtitleShowAll} ($hiddenCount)';
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding:
+            const EdgeInsets.symmetric(horizontal: AppSpacing.smMd, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.input),
+          border: Border.all(
+            color: AppColors.border(context),
+            style: BorderStyle.solid,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              expanded ? Icons.expand_less : Icons.expand_more,
+              size: 13,
+              color: AppColors.metaText(context),
+            ),
+            const SizedBox(width: 3),
+            Text(
+              label,
+              style: AppTypography.buttonSecondary.copyWith(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w600,
+                color: AppColors.metaText(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildFallbackLanguageChips(BuildContext context, {required bool isDark, required Color textSecondary}) {
     const availableLanguages = ['en', 'vi', 'ja', 'ko', 'zh', 'es', 'fr', 'de', 'pt', 'ru', 'ar', 'hi'];
+    final selectedCount =
+        availableLanguages.where(_subtitlesLanguages.contains).length;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
@@ -1061,9 +1200,19 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             flex: 2,
             child: Padding(
               padding: const EdgeInsets.only(top: AppSpacing.sm),
-              child: Text(
-                AppLocalizations.configDialogSubtitleLanguages,
-                style: _labelStyle.copyWith(color: textSecondary),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.configDialogSubtitleLanguages,
+                      style: _labelStyle.copyWith(color: textSecondary),
+                    ),
+                  ),
+                  if (selectedCount > 0) ...[
+                    const SizedBox(width: AppSpacing.xs),
+                    _buildSelectedCountBadge(context, selectedCount),
+                  ],
+                ],
               ),
             ),
           ),

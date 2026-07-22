@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../../../../core/utils/file_utils.dart';
 import '../entities/download_context_menu_action.dart';
 import '../entities/download_entity.dart';
 import '../entities/download_status.dart';
@@ -29,7 +30,12 @@ class DownloadContextMenuService {
           }
           actions.add(DownloadContextMenuAction.playNext);
           actions.add(DownloadContextMenuAction.addToQueue);
-          actions.add(DownloadContextMenuAction.convert);
+          // Convert only makes sense for media the forge can transcode —
+          // audio/video. Hide it for images, subtitles, PDFs, etc.
+          if (FileUtils.isVideoFile(download.filename) ||
+              FileUtils.isAudioFile(download.filename)) {
+            actions.add(DownloadContextMenuAction.convert);
+          }
         } else {
           // File missing — offer re-download via source URL extraction
           actions.add(DownloadContextMenuAction.redownload);

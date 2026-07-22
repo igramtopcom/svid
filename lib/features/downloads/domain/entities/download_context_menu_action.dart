@@ -43,11 +43,11 @@ enum DownloadContextMenuAction {
       case retry:
         return Icons.refresh;
       case copyUrl:
-        return Icons.copy;
+        return Icons.link_rounded;
       case openInBrowser:
         return Icons.language_rounded;
       case copyFilePath:
-        return Icons.content_copy;
+        return Icons.content_copy_rounded;
       case editNote:
         return Icons.edit_note;
       case markWatched:

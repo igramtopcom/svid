@@ -806,12 +806,23 @@ Future<void> copyDownloadFilePath(
   DownloadEntity download,
 ) async {
   final filePath = p.join(download.savePath, download.filename);
-  await ClipboardService.setText(filePath);
-  if (context.mounted) {
-    AppSnackBar.success(
-      context,
-      message: AppLocalizations.contextMenuCopiedFilePath,
-    );
+  try {
+    await ClipboardService.setText(filePath);
+    if (context.mounted) {
+      AppSnackBar.success(
+        context,
+        message: AppLocalizations.contextMenuCopiedFilePath,
+      );
+    }
+  } catch (e) {
+    if (context.mounted) {
+      AppSnackBar.error(
+        context,
+        message: AppLocalizations.downloadsFailedToCopyUrl(
+          AppExceptionX.readableMessage(e),
+        ),
+      );
+    }
   }
 }
 

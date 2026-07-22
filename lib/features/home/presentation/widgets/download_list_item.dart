@@ -1198,8 +1198,9 @@ class _DownloadItemCardState extends ConsumerState<DownloadItemCard>
     final items = <PopupMenuEntry<DownloadContextMenuAction>>[];
 
     for (final action in actions) {
-      // Add divider before copyUrl group and before delete
+      // Group the menu: file/playback · source/clipboard · library · delete.
       if ((action == DownloadContextMenuAction.copyUrl ||
+              action == DownloadContextMenuAction.editNote ||
               action == DownloadContextMenuAction.delete) &&
           items.isNotEmpty) {
         items.add(const PopupMenuDivider(height: AppSpacing.sm));
@@ -1379,6 +1380,7 @@ class _DownloadItemCardState extends ConsumerState<DownloadItemCard>
       case DownloadContextMenuAction.copyUrl:
         copyDownloadUrl(context, widget.download);
       case DownloadContextMenuAction.openInBrowser:
+        if (widget.download.url.isEmpty) break; // no source URL → no blank tab
         ref.read(browserInitialUrlProvider.notifier).state =
             widget.download.url;
         ref
@@ -1392,16 +1394,32 @@ class _DownloadItemCardState extends ConsumerState<DownloadItemCard>
         ref
             .read(watchProgressServiceProvider)
             .markAsWatched(widget.download.id);
+        AppSnackBar.info(
+          context,
+          message: AppLocalizations.watchStatusWatched,
+        );
       case DownloadContextMenuAction.markUnwatched:
         ref
             .read(watchProgressServiceProvider)
             .markAsUnwatched(widget.download.id);
+        AppSnackBar.info(
+          context,
+          message: AppLocalizations.watchStatusUnwatched,
+        );
       case DownloadContextMenuAction.delete:
         showDownloadDeleteDialog(context, ref, widget.download);
       case DownloadContextMenuAction.playNext:
         ref.read(playbackQueueProvider.notifier).playNext(widget.download);
+        AppSnackBar.info(
+          context,
+          message: AppLocalizations.playbackQueuePlayNext,
+        );
       case DownloadContextMenuAction.addToQueue:
         ref.read(playbackQueueProvider.notifier).addToQueue(widget.download);
+        AppSnackBar.info(
+          context,
+          message: AppLocalizations.playbackQueueAddToQueue,
+        );
       case DownloadContextMenuAction.watchNow:
         openPreviewForDownload(context, widget.download);
       case DownloadContextMenuAction.scheduleFor:

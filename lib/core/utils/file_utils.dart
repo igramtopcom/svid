@@ -167,14 +167,25 @@ class FileUtils {
   /// single-character stem cannot fit — [candidateDirs] is itself so deep that
   /// no filename works. The caller must then surface a clear path-too-long
   /// error rather than let it manifest as a late, generic pathNotFound.
+  /// [preserveSuffix] is a short, must-keep tail inserted between the (possibly
+  /// trimmed) stem and the extension — e.g. a `" [MP3 · 320 kbps]"` quality
+  /// tag. It is folded into the budget and NEVER trimmed, so a long title is
+  /// shortened while the tag survives intact (WIN-1c: fixes `"…[MP.mp3"` where
+  /// the old end-trim ate the tag). Pass `''` (default) for the classic
+  /// trim-the-whole-stem behaviour.
   static String? boundFilenameToPathLimit({
     required String fileName,
     required List<String> candidateDirs,
     required int? maxPathUnits,
     int reserveUnits = _pathBudgetReserveUnits,
+    String preserveSuffix = '',
   }) {
-    if (maxPathUnits == null) return fileName; // POSIX: no MAX_PATH constraint
-    if (candidateDirs.isEmpty) return fileName;
+    if (maxPathUnits == null) {
+      return _insertBeforeExtension(fileName, preserveSuffix); // POSIX no-op
+    }
+    if (candidateDirs.isEmpty) {
+      return _insertBeforeExtension(fileName, preserveSuffix);
+    }
 
     final ext = path.extension(fileName); // leading dot included; '' if none
     final stem = fileName.substring(0, fileName.length - ext.length);
@@ -183,11 +194,19 @@ class FileUtils {
         .map((d) => d.length)
         .reduce((a, b) => a > b ? a : b);
 
-    // -1 for the path separator between the directory and the filename.
+    // -1 for the path separator; the preserved suffix is reserved up-front so
+    // it can never be trimmed away.
     final available =
-        maxPathUnits - longestDir - 1 - reserveUnits - ext.length;
+        maxPathUnits -
+        longestDir -
+        1 -
+        reserveUnits -
+        ext.length -
+        preserveSuffix.length;
     if (available < 1) return null; // even a 1-char stem cannot fit
-    if (stem.length <= available) return fileName; // already within budget
+    if (stem.length <= available) {
+      return '$stem$preserveSuffix$ext'; // already within budget
+    }
 
     var cut = available;
     // Never split a surrogate pair: if the last kept unit is a high surrogate
@@ -203,7 +222,15 @@ class FileUtils {
       if (fallback.length > available) return null;
       truncatedStem = fallback;
     }
-    return '$truncatedStem$ext';
+    return '$truncatedStem$preserveSuffix$ext';
+  }
+
+  /// Insert [suffix] between a filename's stem and its extension.
+  static String _insertBeforeExtension(String fileName, String suffix) {
+    if (suffix.isEmpty) return fileName;
+    final ext = path.extension(fileName);
+    final stem = fileName.substring(0, fileName.length - ext.length);
+    return '$stem$suffix$ext';
   }
 
   static bool _isHighSurrogate(int unit) => unit >= 0xD800 && unit <= 0xDBFF;

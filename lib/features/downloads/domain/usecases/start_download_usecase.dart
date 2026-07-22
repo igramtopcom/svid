@@ -1261,13 +1261,14 @@ class StartDownloadUseCase {
       final extension =
           extractAudio ? (audioFormat ?? 'mp3') : (videoFormat ?? 'mp4');
       var filename = FileUtils.sanitizeFilename(videoTitle);
-      // Include quality label to prevent filename collision when downloading
-      // multiple qualities concurrently (fire-and-forget returns before yt-dlp
-      // creates the file, so getUniqueFilename would return the same name).
-      if (qualityLabel != null && qualityLabel.isNotEmpty) {
-        final safeLabel = FileUtils.sanitizeFilename(qualityLabel);
-        filename = '$filename [$safeLabel]';
-      }
+      // Quality label (e.g. " [MP3 · 320 kbps]") prevents collisions between
+      // concurrent same-video qualities. It is passed to the path-limit bound
+      // as a preserved suffix (below), so a long title is shortened but the
+      // tag is never mangled into "[MP" — the extension + tag stay intact.
+      final labelSuffix =
+          (qualityLabel != null && qualityLabel.isNotEmpty)
+              ? ' [${FileUtils.sanitizeFilename(qualityLabel)}]'
+              : '';
       if (!filename.endsWith('.$extension')) {
         filename = '$filename.$extension';
       }
@@ -1280,6 +1281,7 @@ class StartDownloadUseCase {
       // the extension and (after this) the dedup counter are preserved.
       final boundedFilename = FileUtils.boundFilenameToPathLimit(
         fileName: filename,
+        preserveSuffix: labelSuffix,
         candidateDirs: [savePath, YtDlpDataSource.worstCaseIsolatedTempDir()],
         maxPathUnits: Platform.isWindows ? FileUtils.windowsMaxPathUnits : null,
       );

@@ -17,10 +17,14 @@
 library;
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/binaries/binary_providers.dart';
+import '../../../../core/binaries/binary_type.dart';
 import '../../../../core/core.dart';
+import '../../../downloads/presentation/widgets/config_preferences_panel.dart';
 import '../../../premium/domain/entities/premium_feature.dart';
 import '../../../premium/domain/entities/premium_limits.dart';
 import '../../../premium/presentation/providers/premium_providers.dart';
@@ -212,13 +216,151 @@ Future<void> showCommandBarPresetPopover({
 }
 
 // ═════════════════════════════════════════════════════════════════════
+// Advanced download defaults
+// ═════════════════════════════════════════════════════════════════════
+
+/// Opens the shared [ConfigPreferencesPanel] bound to GLOBAL settings, so the
+/// user can set advanced download defaults (codec / frame rate / subtitles /
+/// embed / SponsorBlock) once. Container + resolution are hidden — the
+/// popover's Format and Quality rows already own those. Each change persists
+/// live via [_persistAdvancedDefaults]; there's no per-video context, so trim
+/// and chapter controls don't appear.
+Future<void> showAdvancedDownloadDefaults(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  final settings = ref.read(settingsProvider);
+  final ffmpeg =
+      ref.read(binaryAvailableProvider(BinaryType.ffmpeg)).valueOrNull ?? false;
+  await showDialog<void>(
+    context: context,
+    barrierDismissible: true,
+    builder: (dialogContext) {
+      final isDark = Theme.of(dialogContext).brightness == Brightness.dark;
+      final surface = isDark ? AppColors.homeDarkCardBg : Colors.white;
+      final borderColor =
+          isDark
+              ? AppColors.homeDarkBorderStrong
+              : AppColors.border(dialogContext);
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.xl,
+          vertical: AppSpacing.xl,
+        ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 460),
+          child: Container(
+            decoration: BoxDecoration(
+              color: surface,
+              borderRadius: BorderRadius.circular(
+                BrandConfig.current.cardRadius,
+              ),
+              border: Border.all(color: borderColor),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.lg,
+                    AppSpacing.md,
+                    AppSpacing.sm,
+                    AppSpacing.sm,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          AppLocalizations.configDialogAdvancedOptions,
+                          style: AppTypography.appBarTitle.copyWith(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: isDark ? AppColors.darkLightText : null,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(dialogContext),
+                        visualDensity: VisualDensity.compact,
+                        tooltip: AppLocalizations.commonClose,
+                        icon: Icon(
+                          Icons.close_rounded,
+                          size: 18,
+                          color: AppColors.metaText(dialogContext),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(height: 1, color: borderColor),
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      AppSpacing.sm,
+                      AppSpacing.md,
+                      AppSpacing.md,
+                    ),
+                    child: ConfigPreferencesPanel(
+                      settings: settings,
+                      platform: VideoPlatform.youtube,
+                      ffmpegAvailable: ffmpeg,
+                      showSaveAsDefault: false,
+                      showContainerAndResolution: false,
+                      onChanged: (o) => _persistAdvancedDefaults(ref, o),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+/// Persist only the fields that actually changed vs the current global
+/// settings (the panel hands us its full snapshot on every edit).
+void _persistAdvancedDefaults(WidgetRef ref, PreferencesOverrides o) {
+  final s = ref.read(settingsProvider);
+  final n = ref.read(settingsProvider.notifier);
+  if (o.videoCodec != s.videoCodecPreference) {
+    n.updateVideoCodecPreference(o.videoCodec);
+  }
+  if (o.audioCodec != s.audioCodecPreference) {
+    n.updateAudioCodecPreference(o.audioCodec);
+  }
+  if (o.fps != s.fpsPreference) n.updateFpsPreference(o.fps);
+  if (o.subtitlesEnabled != s.subtitlesEnabled) n.toggleSubtitles();
+  if (!listEquals(o.subtitlesLanguages, s.subtitlesLanguages)) {
+    n.updateSubtitlesLanguages(o.subtitlesLanguages);
+  }
+  if (o.subtitlesFormat != s.subtitlesFormat) {
+    n.updateSubtitlesFormat(o.subtitlesFormat);
+  }
+  if (o.includeAutoSubs != s.includeAutoSubs) n.toggleIncludeAutoSubs();
+  if (o.embedThumbnail != s.embedThumbnail) n.toggleEmbedThumbnail();
+  if (o.embedMetadata != s.embedMetadata) n.toggleEmbedMetadata();
+  if (o.embedChapters != s.embedChapters) n.toggleEmbedChapters();
+  if (o.sponsorBlockEnabled != s.sponsorBlockEnabled) n.toggleSponsorBlock();
+  if (o.sponsorBlockAction != s.sponsorBlockAction) {
+    n.updateSponsorBlockAction(o.sponsorBlockAction);
+  }
+  if (!listEquals(o.sponsorBlockCategories, s.sponsorBlockCategories)) {
+    n.updateSponsorBlockCategories(o.sponsorBlockCategories);
+  }
+}
+
+// ═════════════════════════════════════════════════════════════════════
 // Popover content
 // ═════════════════════════════════════════════════════════════════════
 
-/// Profile selector + 4 setting rows + advanced row, fed by
-/// [activePresetProvider]. Mutations route through the controller's
-/// `setActive` / `updateConfig` so persistence + the "(modified)"
-/// detection both stay in sync.
+/// Type + Format + Quality + Save-location + Advanced, fed by
+/// [activePresetProvider] / [settingsProvider]. Mutations route through the
+/// controllers so persistence stays in sync.
 class _CommandBarPresetPopoverContent extends ConsumerWidget {
   const _CommandBarPresetPopoverContent();
 
@@ -312,6 +454,49 @@ class _CommandBarPresetPopoverContent extends ConsumerWidget {
             label: AppLocalizations.homePresetSaveLocation,
             value: saveLocationDisplay,
             onTap: () => _editSaveLocation(context, ref, preset),
+          ),
+
+          Divider(height: 1, color: dividerColor),
+
+          // Shortcut to the same advanced controls the per-download sheet
+          // exposes, but bound to the global defaults (codec / subtitles /
+          // SponsorBlock…). Container + resolution are omitted — Format and
+          // Quality above already own them.
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => showAdvancedDownloadDefaults(context, ref),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.smMd + 2,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.tune_rounded,
+                      size: 21,
+                      color: AppColors.metaText(context),
+                    ),
+                    const SizedBox(width: AppSpacing.smMd),
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.configDialogAdvancedOptions,
+                        style: AppTypography.buttonSecondary.copyWith(
+                          fontSize: 14.5,
+                          color: isDark ? AppColors.darkLightText : cs.onSurface,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      size: 18,
+                      color: AppColors.metaText(context),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),

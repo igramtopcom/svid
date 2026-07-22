@@ -293,6 +293,25 @@ class StartDownloadUseCase {
         selectedQuality,
       );
 
+      // Smart container for high-res (Chairman 2026-07). A 1440p+ MP4 pick on
+      // YouTube almost always lands VP9/AV1 (no avc1 above 1080p), which MP4
+      // can only hold via an expensive, fragile full transcode to H.264 — the
+      // root cause of slow "Converting" states and mass post-processing
+      // failures on 4K playlist downloads. Switch these to MKV, which holds
+      // VP9/AV1/Opus natively → a fast, lossless stream-copy remux. Because we
+      // reassign the container BEFORE the format parse + planner below, the
+      // whole pipeline (selector, merge target, naming, extension guard)
+      // derives from MKV, so the final file is a coherent .mkv. Sub-1440p MP4
+      // picks (where avc1 is available and remuxes to a real .mp4) are
+      // untouched, preserving pick-X-get-X for the common case.
+      final smartMkvForHighRes =
+          containerFormatPreference == ContainerFormatPreference.mp4 &&
+          detectedPlatform == VideoPlatform.youtube &&
+          (selectedQualityHeight ?? 0) >= 1440;
+      if (smartMkvForHighRes) {
+        containerFormatPreference = ContainerFormatPreference.mkv;
+      }
+
       var (
         ytdlpFormat,
         audioFormat,

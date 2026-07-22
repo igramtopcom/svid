@@ -1327,7 +1327,7 @@
       "pathNotFound": "Thư mục tải không còn tồn tại",
       "unknown": "Đã xảy ra lỗi không mong muốn",
       "binaryNotAvailable": "Thiếu công cụ cần thiết cho nền tảng/kiến trúc CPU của bạn",
-      "ffmpegError": "FFmpeg hậu xử lý thất bại. Bản tải có thể vẫn dùng được",
+      "ffmpegError": "Chuyển sang định dạng đã chọn thất bại. Thử lại, hoặc chọn MKV để bỏ qua bước chuyển đổi",
       "sslError": "Kết nối bảo mật thất bại. Thường do VPN hoặc antivirus quét HTTPS"
     }
   },

@@ -922,7 +922,23 @@ class DownloadsNotifier extends StateNotifier<DownloadsState> {
     final derivedContainer = ContainerFormatPreference.fromExtension(
       download.filename,
     );
-    final container = derivedContainer ?? settings.containerFormatPreference;
+    var container = derivedContainer ?? settings.containerFormatPreference;
+
+    // Mirror StartDownloadUseCase's smart-container-for-high-res (Chairman
+    // 2026-07): a 1440p+ MP4 retry on YouTube would force a full VP9/AV1 →
+    // H.264 transcode (slow + failure-prone). Switch to MKV (native remux)
+    // before the plan/selector below so the whole retry derives from MKV.
+    // New downloads already carry a .mkv filename (fresh-path fix) so this is
+    // belt-and-suspenders; it also upgrades retries of pre-fix .mp4 rows.
+    final retryHeightForContainer = QualityResolutionParser.parseHeight(
+      download.qualityLabel ?? '',
+    );
+    if (container == ContainerFormatPreference.mp4 &&
+        PlatformDetector.detectPlatform(download.url) ==
+            VideoPlatform.youtube &&
+        (retryHeightForContainer ?? 0) >= 1440) {
+      container = ContainerFormatPreference.mkv;
+    }
 
     // Source cookies BEFORE branching audio vs video so both paths
     // get the same cookie precedence treatment. Timeout protects

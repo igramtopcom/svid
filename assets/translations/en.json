@@ -1327,7 +1327,7 @@
       "pathNotFound": "The download folder no longer exists",
       "unknown": "An unexpected error occurred",
       "binaryNotAvailable": "A required tool is not available for your platform/CPU architecture",
-      "ffmpegError": "FFmpeg post-processing failed. The download itself may still be usable",
+      "ffmpegError": "Converting to the chosen format failed. Try again, or pick MKV to skip conversion",
       "sslError": "Secure connection failed. VPN or antivirus HTTPS scanning often causes this"
     }
   },

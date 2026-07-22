@@ -309,9 +309,11 @@ class _DownloadGridCardState extends ConsumerState<DownloadGridCard> {
         children: [
           image,
 
-          // Platform icon (top-left)
+          // Platform icon (top-left) — hidden for audio (its play-triangle
+          // logo reads as "video"; the audio badge below is the media signal).
           if (widget.download.platform.isNotEmpty &&
-              widget.download.platform != 'unknown')
+              widget.download.platform != 'unknown' &&
+              !FileUtils.isAudioFile(widget.download.filename))
             Positioned(
               top: 4,
               left: 4,
@@ -324,6 +326,26 @@ class _DownloadGridCardState extends ConsumerState<DownloadGridCard> {
                 child: PlatformIcon(
                   platform: widget.download.platform,
                   size: 14,
+                ),
+              ),
+            ),
+
+          // Audio badge (top-left) — parity with the list view: flags
+          // audio-only files whose album art looks just like a video.
+          if (FileUtils.isAudioFile(widget.download.filename))
+            Positioned(
+              top: 4,
+              left: 4,
+              child: Container(
+                padding: const EdgeInsets.all(AppSpacing.xxs),
+                decoration: BoxDecoration(
+                  color: AppColors.accentSecondary.withValues(alpha: 0.95),
+                  borderRadius: BorderRadius.circular(AppRadius.card),
+                ),
+                child: const Icon(
+                  Icons.music_note_rounded,
+                  size: 12,
+                  color: Colors.white,
                 ),
               ),
             ),

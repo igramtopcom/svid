@@ -621,9 +621,13 @@ class _DownloadItemCardState extends ConsumerState<DownloadItemCard>
           children: [
             thumbnailImage,
 
-            // Platform icon overlay (top-left) — SVG brand logo
+            // Platform icon overlay (top-left) — SVG brand logo.
+            // Hidden for audio files: the YouTube/etc. logo is a play-triangle
+            // that reads as "video" and clashes with the audio badge below —
+            // the music-note badge is the single, unambiguous media signal.
             if (widget.download.platform.isNotEmpty &&
-                widget.download.platform != 'unknown')
+                widget.download.platform != 'unknown' &&
+                !FileUtils.isAudioFile(widget.download.filename))
               Positioned(
                 top: 4,
                 left: 4,

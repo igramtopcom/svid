@@ -570,6 +570,7 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
                               : YouTubeDiscoveryView(
                                 key: const ValueKey('discovery'),
                                 onSearch: _onDiscoverySearch,
+                                onVideoDownload: widget.onVideoDownload,
                               ),
                     ),
                   ),

@@ -1434,6 +1434,8 @@ class AppLocalizations {
       'youtubeSearch.suggestions'.tr();
   static String get youtubeSearchPopularSearches =>
       'youtubeSearch.popularSearches'.tr();
+  static String get youtubeSearchTrendingTitle =>
+      'youtubeSearch.trendingTitle'.tr();
   static String get youtubeSearchFilterSortBy =>
       'youtubeSearch.filterSortBy'.tr();
   static String get youtubeSearchFilterDuration =>

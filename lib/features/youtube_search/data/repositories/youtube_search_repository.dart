@@ -124,6 +124,64 @@ class YouTubeSearchRepository {
     }
   }
 
+  /// Fetch the real YouTube "Trending" feed (region-aware, best-effort).
+  ///
+  /// Unlike [search], this always uses the Dart `ProcessHelper` path (even on
+  /// Windows) because the native search bridge only speaks `ytsearch:` — here
+  /// we need to point yt-dlp at the trending TAB URL. Region is best-effort:
+  /// `--geo-bypass-country XX` nudges YouTube toward that region's feed; if it
+  /// doesn't take, the caller still gets *some* real trending (better than a
+  /// hardcoded list). Returns videos only (channels filtered out).
+  Future<Result<List<YouTubeSearchResult>>> trending({
+    String? regionCode,
+    int maxResults = 20,
+  }) async {
+    try {
+      final limit = maxResults.clamp(1, 50);
+      final region = (regionCode ?? '').trim().toUpperCase();
+      appLogger.info('[YouTube Trending] region="$region" (max: $limit)');
+
+      final args = <String>[
+        '--dump-json',
+        '--no-download',
+        '--no-warnings',
+        '--flat-playlist',
+        '--ignore-errors',
+        '--socket-timeout',
+        '15',
+        '--extractor-retries',
+        '2',
+        '--no-check-certificates',
+        '--playlist-end',
+        '$limit',
+        if (region.isNotEmpty) ...['--geo-bypass-country', region],
+        if (_denoPath != null) ...['--js-runtimes', 'deno:$_denoPath'],
+        if (_cookiesFile != null) ...['--cookies', _cookiesFile],
+        'https://www.youtube.com/feed/trending',
+      ];
+
+      final result = await ProcessHelper.run(_binaryPath, args).timeout(
+        _nativeSearchTimeout,
+        onTimeout: () => throw TimeoutException('YouTube trending timeout'),
+      );
+
+      if (result.exitCode != 0 && result.stdout.toString().trim().isEmpty) {
+        return Result.failure(
+          Exception('YouTube trending failed: ${result.stderr}'),
+        );
+      }
+
+      final entities =
+          _parseSearchResults(
+            result.stdout.toString(),
+          ).where((e) => !e.isChannel).toList();
+      return Result.success(entities);
+    } catch (e, stack) {
+      appLogger.error('[YouTube Trending] failed', e, stack);
+      return Result.failure(Exception('Trending failed: $e'));
+    }
+  }
+
   static Duration _guardTimeoutFor(Duration nativeTimeout) {
     return nativeTimeout + _nativeTimeoutBuffer;
   }

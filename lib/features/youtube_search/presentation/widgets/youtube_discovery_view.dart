@@ -6,13 +6,23 @@ import '../../../../core/core.dart';
 import '../../../youtube_channel/domain/entities/subscribed_channel.dart';
 import '../../../youtube_channel/presentation/providers/channel_subscriptions_provider.dart';
 import '../providers/recent_searches_provider.dart';
+import '../providers/youtube_trending_provider.dart';
+import 'youtube_search_result_item.dart';
 
 /// Discovery view — landing state of YouTube Explore tab.
 /// Sections: Category tabs → Recent Searches → Trending → Explore Categories → Subscriptions
 class YouTubeDiscoveryView extends ConsumerWidget {
   final void Function(String query) onSearch;
 
-  const YouTubeDiscoveryView({super.key, required this.onSearch});
+  /// Download a real trending video in place (wired to the Explore
+  /// "download in place" flow). Null falls back to the curated topic grid.
+  final void Function(String url)? onVideoDownload;
+
+  const YouTubeDiscoveryView({
+    super.key,
+    required this.onSearch,
+    this.onVideoDownload,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,14 +51,11 @@ class YouTubeDiscoveryView extends ConsumerWidget {
               _RecentSearchesSection(onSearch: onSearch),
               const SizedBox(height: AppSpacing.lg),
 
-              // Trending Now
-              _DiscoverySurface(
-                header: _SectionHeader(
-                  icon: Icons.trending_up_rounded,
-                  title: AppLocalizations.youtubeSearchPopularSearches,
-                  color: AppColors.accentHighlight,
-                ),
-                child: _TrendingGrid(onSearch: onSearch),
+              // Trending Now — real YouTube trending for the user's region,
+              // with a graceful fallback to curated topic shortcuts.
+              _TrendingSection(
+                onSearch: onSearch,
+                onVideoDownload: onVideoDownload,
               ),
               const SizedBox(height: AppSpacing.xl),
 
@@ -475,6 +482,54 @@ class _RecentSearchChipState extends State<_RecentSearchChip> {
 // =============================================================================
 // Trending Now
 // =============================================================================
+
+/// Shows REAL YouTube trending videos for the user's region when available;
+/// otherwise falls back to the curated topic shortcuts ([_TrendingGrid]).
+class _TrendingSection extends ConsumerWidget {
+  final void Function(String) onSearch;
+  final void Function(String url)? onVideoDownload;
+
+  const _TrendingSection({required this.onSearch, this.onVideoDownload});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final videos = ref.watch(youtubeTrendingProvider).valueOrNull ?? const [];
+
+    if (videos.isNotEmpty && onVideoDownload != null) {
+      final top = videos.take(8).toList();
+      return _DiscoverySurface(
+        header: _SectionHeader(
+          icon: Icons.trending_up_rounded,
+          title: AppLocalizations.youtubeSearchTrendingTitle,
+          color: AppColors.accentHighlight,
+        ),
+        child: Column(
+          children: [
+            for (final v in top)
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: YouTubeSearchResultItem(
+                  video: v,
+                  onTap: () => onVideoDownload!(v.url),
+                  onDownload: () => onVideoDownload!(v.url),
+                ),
+              ),
+          ],
+        ),
+      );
+    }
+
+    // Fallback (also while trending loads / on failure): curated shortcuts.
+    return _DiscoverySurface(
+      header: _SectionHeader(
+        icon: Icons.trending_up_rounded,
+        title: AppLocalizations.youtubeSearchPopularSearches,
+        color: AppColors.accentHighlight,
+      ),
+      child: _TrendingGrid(onSearch: onSearch),
+    );
+  }
+}
 
 class _TrendingGrid extends StatelessWidget {
   final void Function(String) onSearch;

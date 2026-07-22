@@ -238,51 +238,16 @@ class VideoDetailPanel extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
 
-                // Video-only sections: metadata, quality, download
+                // Video-only: a slim one-line tech summary + the quality list.
+                // The Download button is pinned in the fixed footer below so it
+                // never falls under the fold.
                 if (!video.isChannel) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  // Metadata section (from ytdlpExtractInfo)
+                  const SizedBox(height: AppSpacing.smMd),
                   if (videoDetail != null) ...[
                     _buildMetadataSection(context),
-                    const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.smMd),
                   ],
-                  // Quality section
                   _buildQualitySection(context),
-                  const SizedBox(height: AppSpacing.mdLg),
-                  // Download button — angular, wine-red
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: onDownload,
-                      icon: const Icon(Icons.download_rounded, size: 18),
-                      label: Text(AppLocalizations.youtubeSearchDownload,
-                        style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.5, color: Colors.white)),
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.resolveWith((states) {
-                          if (states.contains(WidgetState.hovered)) {
-                            return const Color(0xFF1D4ED8);
-                          }
-                          return AppColors.brand;
-                        }),
-                        foregroundColor: const WidgetStatePropertyAll(Colors.white),
-                        iconColor: const WidgetStatePropertyAll(Colors.white),
-                        overlayColor: WidgetStateProperty.resolveWith((states) {
-                          if (states.contains(WidgetState.hovered)) {
-                            return Colors.white.withValues(alpha: AppOpacity.subtle);
-                          }
-                          return null;
-                        }),
-                        padding: const WidgetStatePropertyAll(
-                          EdgeInsets.symmetric(vertical: AppSpacing.md),
-                        ),
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadius.card),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
 
                 // Channel description
@@ -310,6 +275,49 @@ class VideoDetailPanel extends StatelessWidget {
             ),
           ),
         ),
+        // Pinned download footer — always visible, no scrolling to reach it.
+        if (!video.isChannel)
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: AppColors.border(context), width: 0.5),
+              ),
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: onDownload,
+                icon: const Icon(Icons.download_rounded, size: 18),
+                label: Text(
+                  AppLocalizations.youtubeSearchDownload,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
+                    color: Colors.white,
+                  ),
+                ),
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.hovered)) {
+                      return AppColors.accentHighlight;
+                    }
+                    return AppColors.brand;
+                  }),
+                  foregroundColor: const WidgetStatePropertyAll(Colors.white),
+                  iconColor: const WidgetStatePropertyAll(Colors.white),
+                  padding: const WidgetStatePropertyAll(
+                    EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  ),
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.input),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -362,79 +370,31 @@ class VideoDetailPanel extends StatelessWidget {
 
     if (metadataItems.isEmpty) return const SizedBox.shrink();
 
-    // Technical metadata 2×2 grid — Command Center style
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    // Slim one-line summary (was a heavy boxed 2×2 grid). Drop the hardcoded
+    // "Source: Direct" filler — the per-quality codec/size list below already
+    // carries the technical detail.
+    final summary = metadataItems
+        .where((m) => m.value != AppLocalizations.videoDetailMetaSourceDirect)
+        .map((m) => m.value)
+        .join('  ·  ');
+    if (summary.isEmpty) return const SizedBox.shrink();
+    return Row(
       children: [
-        // 2×N metadata grid — Table sizes rows to content, no fixed aspect ratio
-        () {
-          final dividerColor = isDark
-              ? const Color(0xFF313A45)
-              : theme.colorScheme.outlineVariant.withValues(alpha: AppOpacity.quarter);
-          final items4 = metadataItems.take(4).toList();
-
-          Widget cell(_MetaItem item) => Container(
-            color: isDark ? const Color(0xFF1B2128) : AppColors.lightSurface2,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.smMd,
-              vertical: AppSpacing.smMd,
+        Icon(Icons.info_outline_rounded,
+            size: 13, color: AppColors.metaText(context)),
+        const SizedBox(width: AppSpacing.xs),
+        Expanded(
+          child: Text(
+            summary,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: isDark
+                  ? AppColors.homeDarkTextSecondary
+                  : AppColors.metaText(context),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  item.label,
-                  style: AppTypography.mini.copyWith(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 1.5,
-                    color: isDark
-                        ? const Color(0xFFA7B1BC)
-                        : theme.colorScheme.onSurface.withValues(alpha: AppOpacity.scrim),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xxs),
-                Text(
-                  item.value,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: item.label == 'SOURCE'
-                        ? AppColors.accentHighlight
-                        : (isDark ? AppColors.darkLightText : theme.colorScheme.onSurface),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          );
-
-          final rows = <Widget>[];
-          for (int i = 0; i < items4.length; i += 2) {
-            if (rows.isNotEmpty) {
-              rows.add(Container(height: 0.5, color: dividerColor));
-            }
-            rows.add(IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(child: cell(items4[i])),
-                  if (i + 1 < items4.length) ...[
-                    Container(width: 0.5, color: dividerColor),
-                    Expanded(child: cell(items4[i + 1])),
-                  ],
-                ],
-              ),
-            ));
-          }
-
-          return Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: dividerColor, width: 0.5),
-            ),
-            child: Column(children: rows),
-          );
-        }(),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       ],
     );
   }

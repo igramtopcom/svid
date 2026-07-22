@@ -140,12 +140,11 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
             Expanded(
               child: subscriptionsAsync.when(
                 data: (allSubscriptions) {
-                  if (allSubscriptions.isEmpty) {
-                    return _buildEmptyState(isDark);
-                  }
-
-                  final subscriptions = _filterSubscriptions(allSubscriptions);
-
+                  // Opening a channel (from the "@ Enter channel URL" box) must
+                  // render the detail screen FIRST — even with 0 subscriptions —
+                  // so its loading/error is visible. Previously the empty-state
+                  // short-circuited here, so a bad handle just hid the input
+                  // with no feedback.
                   if (_showingChannelDetail) {
                     return ChannelVideoListScreen(
                       embedded: true,
@@ -153,6 +152,12 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
                       onDownloadSelected: widget.onDownloadSelected,
                     );
                   }
+
+                  if (allSubscriptions.isEmpty) {
+                    return _buildEmptyState(isDark);
+                  }
+
+                  final subscriptions = _filterSubscriptions(allSubscriptions);
 
                   return Column(
                     children: [
@@ -581,7 +586,7 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
                   ),
                 ),
                 Icon(
-                  Icons.wifi_off_outlined,
+                  Icons.subscriptions_outlined,
                   size: 44,
                   color:
                       isDark

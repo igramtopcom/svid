@@ -1026,7 +1026,9 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
                             child: Stack(
                               children: [
                                 if (selectedIndex !=
-                                    NavigationConstants.browserIndex)
+                                        NavigationConstants.browserIndex &&
+                                    selectedIndex !=
+                                        NavigationConstants.homeIndex)
                                   ClipRect(
                                     child: AnimatedSwitcher(
                                       duration: AppTransitions.normal,
@@ -1042,6 +1044,19 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
                                       ),
                                     ),
                                   ),
+                                // Home persists offstage (like Browser) so its
+                                // download flow (extract → picker → dispatch)
+                                // stays callable from any tab — e.g. the Explore
+                                // "Download" opens the picker in place instead
+                                // of switching to the Home tab. It's already the
+                                // default tab, so this doesn't change when it
+                                // first mounts.
+                                Offstage(
+                                  offstage:
+                                      selectedIndex !=
+                                      NavigationConstants.homeIndex,
+                                  child: HomeScreen(key: _homeScreenKey),
+                                ),
                                 if (_browserVisited)
                                   Offstage(
                                     offstage:
@@ -1371,17 +1386,16 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
             index == NavigationConstants.subscriptionsIndex
                 ? ExploreSection.subscriptions
                 : ExploreSection.discovery,
+        // Download in place: HomeScreen is mounted offstage, so its flow runs
+        // here and the QuickDownloadSheet (when the user is on "Ask first") is
+        // a modal over the whole app — it appears over Explore without a tab
+        // switch. A saved preset auto-downloads in place, honoring the same
+        // "Default download" setting as the Home tab.
         onVideoDownload: (url) {
-          _navigateToHome();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _homeScreenKey.currentState?.setUrlAndStart(url);
-          });
+          _homeScreenKey.currentState?.setUrlAndStart(url);
         },
         onBatchDownloadSelected: (urls) {
-          _navigateToHome();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _homeScreenKey.currentState?.handleBatchDownload(urls);
-          });
+          _homeScreenKey.currentState?.handleBatchDownload(urls);
         },
       );
     }

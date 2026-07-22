@@ -891,88 +891,61 @@ class _PresetOptionRow<T> extends StatelessWidget {
             : isDark
             ? AppColors.darkLightText
             : cs.onSurface;
-    final rowBg =
-        selected
-            ? toneColor.withValues(alpha: isDark ? 0.14 : 0.08)
-            : hovered
-            ? (isDark ? AppColors.homeDarkCardHover : cs.surfaceContainerLow)
-            : Colors.transparent;
-
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => onHoverStart(),
       onExit: (_) => onHoverEnd(),
-      child: InkWell(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 120),
-          constraints: const BoxConstraints(minHeight: 54),
-          color: rowBg,
+          margin: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, 6),
+          constraints: const BoxConstraints(minHeight: 50),
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.sm,
+            horizontal: AppSpacing.smMd,
+            vertical: AppSpacing.smMd,
+          ),
+          decoration: BoxDecoration(
+            color:
+                selected
+                    ? toneColor.withValues(alpha: isDark ? 0.16 : 0.08)
+                    : hovered
+                    ? (isDark
+                        ? AppColors.homeDarkCardHover
+                        : cs.surfaceContainerLow)
+                    : (isDark
+                        ? AppColors.homeDarkAppBg
+                        : AppColors.surface2(context)),
+            borderRadius: BorderRadius.circular(AppRadius.input),
+            border: Border.all(
+              color: selected ? toneColor : AppColors.border(context),
+              width: selected ? 1.5 : 1,
+            ),
           ),
           child: Row(
             children: [
-              SizedBox(
-                width: 26,
-                child: Center(
-                  child:
-                      option.isLocked
-                          ? Icon(
-                            Icons.lock_outline_rounded,
-                            size: 17,
-                            color: muted,
-                          )
-                          : selected
-                          ? Icon(
-                            Icons.check_circle_rounded,
-                            size: 18,
-                            color: toneColor,
-                          )
-                          : Icon(
-                            Icons.circle_outlined,
-                            size: 16,
-                            color: muted.withValues(alpha: AppOpacity.medium),
-                          ),
-                ),
-              ),
+              option.isLocked
+                  ? Icon(Icons.lock_outline_rounded, size: 18, color: muted)
+                  : Container(
+                    width: 18,
+                    height: 18,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: selected ? toneColor : muted,
+                        width: selected ? 5 : 1.5,
+                      ),
+                    ),
+                  ),
               const SizedBox(width: AppSpacing.smMd),
               if (option.leadingIcon != null) ...[
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color:
-                        selected
-                            ? toneColor.withValues(alpha: isDark ? 0.16 : 0.10)
-                            : (isDark
-                                ? AppColors.homeDarkAccentSoft
-                                : cs.surfaceContainerLow),
-                    borderRadius: BorderRadius.circular(
-                      BrandConfig.current.cardRadius,
-                    ),
-                    border: Border.all(
-                      color:
-                          selected
-                              ? toneColor.withValues(alpha: 0.34)
-                              : (isDark
-                                  ? AppColors.homeDarkBorderSubtle
-                                  : cs.outlineVariant.withValues(alpha: 0.56)),
-                    ),
-                  ),
-                  child: Icon(
-                    option.leadingIcon,
-                    size: 17,
-                    color:
-                        selected
-                            ? toneColor
-                            : option.tone == _OptionTone.warning
-                            ? toneColor.withValues(alpha: 0.86)
-                            : muted,
-                  ),
+                Icon(
+                  option.leadingIcon,
+                  size: 18,
+                  color: selected ? toneColor : muted,
                 ),
-                const SizedBox(width: AppSpacing.smMd),
+                const SizedBox(width: AppSpacing.sm),
               ],
               Expanded(
                 child: Column(
@@ -1021,15 +994,6 @@ class _PresetOptionRow<T> extends StatelessWidget {
                   selected: selected,
                 ),
               ],
-              if (!option.isLocked)
-                Icon(
-                  Icons.chevron_right_rounded,
-                  size: 18,
-                  color:
-                      hovered || selected
-                          ? toneColor
-                          : muted.withValues(alpha: AppOpacity.medium),
-                ),
             ],
           ),
         ),

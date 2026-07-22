@@ -435,6 +435,30 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
     );
   }
 
+  /// Batch download lives inside the URL field — it's "paste multiple links",
+  /// an advanced form of pasting, so it belongs with the paste affordances.
+  Widget _buildBatchIconButton(
+    BuildContext context, {
+    required bool isDark,
+    required Color metadataColor,
+    required ColorScheme cs,
+  }) {
+    return Tooltip(
+      message: AppLocalizations.homeBatchButtonTooltip,
+      waitDuration: AppDurations.tooltipWaitDuration,
+      child: IconButton(
+        onPressed: widget.onBatchDownload,
+        visualDensity: VisualDensity.compact,
+        splashRadius: 20,
+        icon: Icon(
+          Icons.playlist_add_rounded,
+          size: 20,
+          color: isDark ? metadataColor : cs.onSurfaceVariant,
+        ),
+      ),
+    );
+  }
+
   /// Classify the current text-field value via the shared
   /// [UrlClassifierService]. Used to drive the adaptive CTA label.
   SmartInputType _classifyCurrent() =>
@@ -633,7 +657,17 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
                         minWidth: 0,
                         minHeight: 0,
                       ),
-                      suffixIcon:
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Batch = "paste multiple links": an advanced form of
+                          // pasting, so it lives inside the URL field.
+                          _buildBatchIconButton(
+                            context,
+                            isDark: isDark,
+                            metadataColor: metadataColor,
+                            cs: cs,
+                          ),
                           widget.urlController.text.isNotEmpty
                               ? IconButton(
                                 icon: Icon(
@@ -661,6 +695,8 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
                                 ghostColor: ghostColor,
                                 cs: cs,
                               ),
+                        ],
+                      ),
                       suffixIconConstraints: const BoxConstraints(
                         minWidth: 0,
                         minHeight: 0,
@@ -828,17 +864,6 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
       width: isCompact ? 56 : 58,
     );
 
-    final batchButton = _IconColumnButton(
-      icon: Icons.layers_outlined,
-      label: AppLocalizations.homeBatchButton,
-      tooltip: AppLocalizations.homeBatchButtonTooltip,
-      iconColor: iconColor,
-      hoverBg: iconHoverBg,
-      onPressed: widget.onBatchDownload,
-      height: height,
-      width: isCompact ? 56 : 58,
-    );
-
     final presetChip = SizedBox(
       width: _presetChipWidth,
       child: CommandBarPresetChip(height: height),
@@ -868,7 +893,6 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
               ),
               presetChip,
               historyButton,
-              batchButton,
             ],
           ),
         ],
@@ -876,8 +900,9 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
     }
 
     // The input takes the surplus width (bounded by the card's own max width),
-    // and every control — CTA, preset, history, batch — stays packed tightly
-    // right after it so the action cluster reads as one cohesive group.
+    // and the controls — CTA, preset, history — stay packed tightly right
+    // after it so the action cluster reads as one cohesive group. (Batch now
+    // lives inside the URL field as a paste affordance.)
     return Row(
       children: [
         Expanded(child: input),
@@ -893,8 +918,6 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
         presetChip,
         const SizedBox(width: AppSpacing.sm),
         historyButton,
-        const SizedBox(width: AppSpacing.sm),
-        batchButton,
       ],
     );
   }

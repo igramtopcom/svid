@@ -676,8 +676,9 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
         isVideo
             ? AppLocalizations.configDialogVideoFormat
             : AppLocalizations.configDialogAudioFormat;
+    // Short label (MP4, not "MP4 (Recommended)") so the pill hugs its text.
     final current =
-        isVideo ? _videoFormat.displayName : _audioFormat.toUpperCase();
+        isVideo ? _videoFormat.name.toUpperCase() : _audioFormat.toUpperCase();
 
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.xs, bottom: AppSpacing.xs),

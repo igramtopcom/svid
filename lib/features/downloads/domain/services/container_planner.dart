@@ -327,6 +327,28 @@ class ContainerPlanner {
   ///      avc1 but the source row's vcodec is unknown/absent. On YouTube
   ///      a 1080p+ MP4 pick increasingly lands VP9, so recode is the only
   ///      way to honor the pick.
+  /// Minimum height (px) at which a YouTube MP4 pick is delivered as MKV.
+  /// 1440p+ streams are VP9/AV1 only (no avc1), so MP4 would force a slow,
+  /// fragile transcode — MKV remuxes them losslessly and instantly.
+  static const int smartMkvMinHeight = 1440;
+
+  /// Chairman 2026-07 — single source of truth for the "high-res YouTube MP4
+  /// is delivered as MKV" rule, shared by the picker UI (so it can show MKV
+  /// honestly) and the download pipeline (StartDownloadUseCase + retry) so
+  /// the two never diverge. Returns the container that will actually be used.
+  static ContainerFormatPreference resolveSmartContainer({
+    required ContainerFormatPreference picked,
+    required VideoPlatform platform,
+    int? height,
+  }) {
+    if (picked == ContainerFormatPreference.mp4 &&
+        platform == VideoPlatform.youtube &&
+        (height ?? 0) >= smartMkvMinHeight) {
+      return ContainerFormatPreference.mkv;
+    }
+    return picked;
+  }
+
   static bool shouldForceMp4OutputRecode({
     required VideoPlatform platform,
     String? videoFormat,

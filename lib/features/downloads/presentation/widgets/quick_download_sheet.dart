@@ -15,6 +15,7 @@ import '../../../settings/presentation/providers/active_preset_provider.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../domain/entities/download_config.dart';
 import '../../domain/entities/video_info.dart';
+import '../../domain/services/container_planner.dart';
 import '../../domain/services/quality_resolution_parser.dart';
 import 'config_preferences_panel.dart';
 
@@ -151,6 +152,19 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
   bool get _isLosslessAudio =>
       _audioFormat == 'wav' || _audioFormat == 'flac';
 
+  /// The container we'll ACTUALLY deliver — MKV for high-res YouTube MP4 picks
+  /// (shared rule with the download pipeline via ContainerPlanner). Lets the
+  /// picker show the truth instead of "MP4" for a file that lands as .mkv.
+  ContainerFormatPreference get _effectiveVideoFormat =>
+      ContainerPlanner.resolveSmartContainer(
+        picked: _videoFormat,
+        platform: widget.platform,
+        height: _height,
+      );
+
+  bool get _mkvForcedForHighRes =>
+      _mode == _DlMode.video && _effectiveVideoFormat != _videoFormat;
+
   static String _formatBytes(int bytes) {
     const units = ['B', 'KB', 'MB', 'GB', 'TB'];
     double value = bytes.toDouble();
@@ -222,9 +236,12 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
         targetHeight: opt.height,
         targetFpsCap: opt.quality.fps?.round(),
       );
+      // Use the EFFECTIVE container (MKV for high-res YouTube) so this
+      // download's file matches what the picker shows. "Remember" below still
+      // stores the raw pick so the rule re-applies per resolution next time.
       containerOverride =
-          _videoFormat != settings.containerFormatPreference
-              ? _videoFormat
+          _effectiveVideoFormat != settings.containerFormatPreference
+              ? _effectiveVideoFormat
               : null;
     } else {
       final normalized = _normalizeAudioFormat(_audioFormat);
@@ -690,23 +707,53 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
             ? AppLocalizations.configDialogVideoFormat
             : AppLocalizations.configDialogAudioFormat;
     // Short label (MP4, not "MP4 (Recommended)") so the pill hugs its text.
+    // Video shows the EFFECTIVE container so a 4K pick reads "MKV", not "MP4".
     final current =
-        isVideo ? _videoFormat.name.toUpperCase() : _audioFormat.toUpperCase();
+        isVideo
+            ? _effectiveVideoFormat.name.toUpperCase()
+            : _audioFormat.toUpperCase();
 
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.xs, bottom: AppSpacing.xs),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(
-              label,
-              style: AppTypography.buttonSecondary.copyWith(
-                fontSize: 13.5,
-                color: AppColors.metaText(context),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: AppTypography.buttonSecondary.copyWith(
+                    fontSize: 13.5,
+                    color: AppColors.metaText(context),
+                  ),
+                ),
+              ),
+              _formatMenu(context, isDark, isVideo, current),
+            ],
+          ),
+          // Honesty note: explain why a 4K MP4 pick is delivered as MKV.
+          if (_mkvForcedForHighRes)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.info_outline,
+                      size: 12, color: AppColors.metaText(context)),
+                  const SizedBox(width: AppSpacing.xs),
+                  Expanded(
+                    child: Text(
+                      AppLocalizations.configDialogHighResMkvNote,
+                      style: AppTypography.mini.copyWith(
+                        color: AppColors.metaText(context),
+                        height: 1.3,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          _formatMenu(context, isDark, isVideo, current),
         ],
       ),
     );

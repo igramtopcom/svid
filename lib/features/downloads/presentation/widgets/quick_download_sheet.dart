@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/binaries/binary_providers.dart';
+import '../../../../core/binaries/binary_type.dart';
 import '../../../../core/core.dart';
 import '../../../premium/domain/entities/premium_feature.dart';
 import '../../../premium/domain/entities/premium_limits.dart';
@@ -13,7 +16,7 @@ import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../domain/entities/download_config.dart';
 import '../../domain/entities/video_info.dart';
 import '../../domain/services/quality_resolution_parser.dart';
-import 'download_config_dialog.dart';
+import 'config_preferences_panel.dart';
 
 /// Compact, YouTube-style download picker — the everyday surface for a paste →
 /// download. Shows only the essentials (Video/Audio, a quality list with
@@ -74,6 +77,8 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
   int _bitrate = 320;
   String _audioFormat = 'mp3';
   bool _remember = false;
+  bool _advancedExpanded = false;
+  final _prefsKey = GlobalKey<ConfigPreferencesPanelState>();
 
   @override
   void initState() {
@@ -187,6 +192,13 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
     final settings = ref.read(settingsProvider);
     final DownloadConfig config;
 
+    // Branch picks the stream / type / target / container; everything else is
+    // shared, so we build one DownloadConfig below.
+    late final List<Quality> qualities;
+    late final DownloadFileType fileType;
+    late final PortableQualityTarget target;
+    ContainerFormatPreference? containerOverride;
+
     if (_mode == _DlMode.video) {
       final height = _height;
       if (height == null) return;
@@ -204,19 +216,16 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
       }
 
       final opt = _videoOptions.firstWhere((o) => o.height == height);
-      config = DownloadConfig(
-        selectedQualities: [opt.quality],
-        fileType: DownloadFileType.video,
-        qualityIntent: DownloadQualityIntent.specific,
-        qualityTarget: PortableQualityTarget.video(
-          targetHeight: opt.height,
-          targetFpsCap: opt.quality.fps?.round(),
-        ),
-        containerFormatOverride:
-            _videoFormat != settings.containerFormatPreference
-                ? _videoFormat
-                : null,
+      qualities = [opt.quality];
+      fileType = DownloadFileType.video;
+      target = PortableQualityTarget.video(
+        targetHeight: opt.height,
+        targetFpsCap: opt.quality.fps?.round(),
       );
+      containerOverride =
+          _videoFormat != settings.containerFormatPreference
+              ? _videoFormat
+              : null;
     } else {
       final normalized = _normalizeAudioFormat(_audioFormat);
       final lossless = normalized == 'wav' || normalized == 'flac';
@@ -225,24 +234,101 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
               ? '${normalized.toUpperCase()} · '
                   '${AppLocalizations.configDialogAudioLosslessLabel}'
               : '${normalized.toUpperCase()} · $_bitrate kbps';
-      final audioQuality = Quality(
-        qualityText: label,
-        size: '',
-        encryptedUrl: 'ytdlp:audio:$normalized',
-        mediaType: MediaType.audio,
-        isAudioOnly: true,
-        tbr: lossless ? null : _bitrate.toDouble(),
-      );
-      config = DownloadConfig(
-        selectedQualities: [audioQuality],
-        fileType: DownloadFileType.audio,
-        qualityIntent: DownloadQualityIntent.specific,
-        qualityTarget: PortableQualityTarget.audio(
-          outputFormat: normalized,
-          targetBitrateKbps: lossless ? null : _bitrate,
+      qualities = [
+        Quality(
+          qualityText: label,
+          size: '',
+          encryptedUrl: 'ytdlp:audio:$normalized',
+          mediaType: MediaType.audio,
+          isAudioOnly: true,
+          tbr: lossless ? null : _bitrate.toDouble(),
         ),
+      ];
+      fileType = DownloadFileType.audio;
+      target = PortableQualityTarget.audio(
+        outputFormat: normalized,
+        targetBitrateKbps: lossless ? null : _bitrate,
       );
+      containerOverride = null;
     }
+
+    // Advanced overrides from the inline panel — each sent only when it
+    // genuinely differs from the global setting, so the sheet never
+    // duplicates format/quality and only real deltas reach the download.
+    final adv = _prefsKey.currentState?.currentState;
+    config = DownloadConfig(
+      selectedQualities: qualities,
+      fileType: fileType,
+      qualityIntent: DownloadQualityIntent.specific,
+      qualityTarget: target,
+      containerFormatOverride: containerOverride,
+      videoCodecOverride:
+          adv != null && adv.videoCodec != settings.videoCodecPreference
+              ? adv.videoCodec
+              : null,
+      audioCodecOverride:
+          adv != null && adv.audioCodec != settings.audioCodecPreference
+              ? adv.audioCodec
+              : null,
+      fpsOverride:
+          adv != null && adv.fps != settings.fpsPreference ? adv.fps : null,
+      subtitlesEnabled:
+          adv != null && adv.subtitlesEnabled != settings.subtitlesEnabled
+              ? adv.subtitlesEnabled
+              : null,
+      subtitlesLanguages:
+          adv != null &&
+                  !listEquals(
+                    adv.subtitlesLanguages,
+                    settings.subtitlesLanguages,
+                  )
+              ? adv.subtitlesLanguages
+              : null,
+      subtitlesFormat:
+          adv != null && adv.subtitlesFormat != settings.subtitlesFormat
+              ? adv.subtitlesFormat
+              : null,
+      includeAutoSubs:
+          adv != null && adv.includeAutoSubs != settings.includeAutoSubs
+              ? adv.includeAutoSubs
+              : null,
+      embedThumbnail:
+          adv != null && adv.embedThumbnail != settings.embedThumbnail
+              ? adv.embedThumbnail
+              : null,
+      embedMetadata:
+          adv != null && adv.embedMetadata != settings.embedMetadata
+              ? adv.embedMetadata
+              : null,
+      embedChapters:
+          adv != null && adv.embedChapters != settings.embedChapters
+              ? adv.embedChapters
+              : null,
+      sponsorBlockEnabled:
+          adv != null &&
+                  adv.sponsorBlockEnabled != settings.sponsorBlockEnabled
+              ? adv.sponsorBlockEnabled
+              : null,
+      sponsorBlockAction:
+          adv != null && adv.sponsorBlockAction != settings.sponsorBlockAction
+              ? adv.sponsorBlockAction
+              : null,
+      sponsorBlockCategories:
+          adv != null &&
+                  !listEquals(
+                    adv.sponsorBlockCategories,
+                    settings.sponsorBlockCategories,
+                  )
+              ? adv.sponsorBlockCategories
+              : null,
+      tiktokRemoveWatermark:
+          adv != null &&
+                  adv.tiktokRemoveWatermark != settings.tiktokRemoveWatermark
+              ? adv.tiktokRemoveWatermark
+              : null,
+      sectionStartTime: adv?.sectionStartTime,
+      sectionEndTime: adv?.sectionEndTime,
+    );
 
     // "Remember this choice" makes it the default: write the selection into the
     // active download config and turn OFF ask-mode, so the next paste
@@ -273,18 +359,6 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
 
     if (!mounted) return;
     Navigator.pop(context, config);
-  }
-
-  Future<void> _openAdvanced() async {
-    final cfg = await DownloadConfigDialog.show(
-      context,
-      widget.videoInfo,
-      widget.platform,
-    );
-    if (!mounted) return;
-    if (cfg != null && cfg.selectedQualities.isNotEmpty) {
-      Navigator.pop(context, cfg);
-    }
   }
 
   // ── Build ─────────────────────────────────────────────────────────────
@@ -342,11 +416,11 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
                       const SizedBox(height: AppSpacing.xs),
                       _buildFormatRow(context, isDark),
                       _buildRememberRow(context),
+                      _buildAdvancedSection(context, isDark),
                     ],
                   ),
                 ),
               ),
-              _buildAdvancedRow(context),
               _buildFooter(context, isDark),
             ],
           ),
@@ -741,44 +815,74 @@ class _QuickDownloadSheetState extends ConsumerState<QuickDownloadSheet> {
     );
   }
 
-  Widget _buildAdvancedRow(BuildContext context) {
-    return InkWell(
-      onTap: _openAdvanced,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.smMd,
+  /// Advanced options as an INLINE expander — only processing overrides
+  /// (trim, subtitles, embed, SponsorBlock, codec/fps). Container + resolution
+  /// are hidden here because the sheet's Format + Quality already own them, so
+  /// nothing duplicates. The panel stays mounted (Offstage) once built, so
+  /// edits survive collapse/expand within the sheet.
+  Widget _buildAdvancedSection(BuildContext context, bool isDark) {
+    final ffmpegAvailable =
+        ref.watch(binaryAvailableProvider(BinaryType.ffmpeg)).valueOrNull ??
+        false;
+    final settings = ref.watch(settingsProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.xs),
+          child: Divider(height: 1, color: AppColors.border(context)),
         ),
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: AppColors.border(context)),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.tune_rounded,
-              size: 17,
-              color: AppColors.metaText(context),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                AppLocalizations.configDialogAdvancedOptions,
-                style: AppTypography.buttonSecondary.copyWith(
-                  fontSize: 13.5,
+        InkWell(
+          onTap:
+              () => setState(() => _advancedExpanded = !_advancedExpanded),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.smMd),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.tune_rounded,
+                  size: 17,
                   color: AppColors.metaText(context),
                 ),
-              ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.configDialogAdvancedOptions,
+                    style: AppTypography.buttonSecondary.copyWith(
+                      fontSize: 13.5,
+                      color: AppColors.metaText(context),
+                    ),
+                  ),
+                ),
+                Icon(
+                  _advancedExpanded
+                      ? Icons.keyboard_arrow_up_rounded
+                      : Icons.keyboard_arrow_down_rounded,
+                  size: 20,
+                  color: AppColors.metaText(context),
+                ),
+              ],
             ),
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 18,
-              color: AppColors.metaText(context),
-            ),
-          ],
+          ),
         ),
-      ),
+        Offstage(
+          offstage: !_advancedExpanded,
+          child: ConfigPreferencesPanel(
+            key: _prefsKey,
+            settings: settings,
+            platform: widget.platform,
+            onChanged: (_) {},
+            videoInfo: widget.videoInfo,
+            ffmpegAvailable: ffmpegAvailable,
+            showSaveAsDefault: false,
+            showContainerAndResolution: false,
+            fileType:
+                _mode == _DlMode.audio
+                    ? DownloadFileType.audio
+                    : DownloadFileType.video,
+          ),
+        ),
+      ],
     );
   }
 

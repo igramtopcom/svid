@@ -28,6 +28,11 @@ class ConfigPreferencesPanel extends StatefulWidget {
   // Restrict format/codec sections relevant to the chosen file type. When
   // null, the panel renders every section (current behavior).
   final DownloadFileType? fileType;
+  // Hide the Container Format + Max Resolution rows. Set false when the host
+  // already owns those choices (e.g. the QuickDownloadSheet picks format +
+  // quality), so this panel shows only processing overrides and never
+  // duplicates the outer surface. Default true keeps the full dialog intact.
+  final bool showContainerAndResolution;
 
   const ConfigPreferencesPanel({
     super.key,
@@ -38,6 +43,7 @@ class ConfigPreferencesPanel extends StatefulWidget {
     this.ffmpegAvailable = false,
     this.showSaveAsDefault = true,
     this.fileType,
+    this.showContainerAndResolution = true,
   });
 
   @override
@@ -410,21 +416,22 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
               dropdownBorder: dropdownBorder,
               textPrimary: textPrimary,
             ),
-            _buildDropdown<ContainerFormatPreference>(
-              context,
-              label: AppLocalizations.settingsContainerFormat,
-              value: _containerFormat,
-              items: ContainerFormatPreference.values,
-              displayName: (v) => v.displayName,
-              onChanged: (v) {
-                setState(() => _containerFormat = v);
-                _notifyChanged();
-              },
-              labelColor: labelColor,
-              dropdownBg: dropdownBg,
-              dropdownBorder: dropdownBorder,
-              textPrimary: textPrimary,
-            ),
+            if (widget.showContainerAndResolution)
+              _buildDropdown<ContainerFormatPreference>(
+                context,
+                label: AppLocalizations.settingsContainerFormat,
+                value: _containerFormat,
+                items: ContainerFormatPreference.values,
+                displayName: (v) => v.displayName,
+                onChanged: (v) {
+                  setState(() => _containerFormat = v);
+                  _notifyChanged();
+                },
+                labelColor: labelColor,
+                dropdownBg: dropdownBg,
+                dropdownBorder: dropdownBorder,
+                textPrimary: textPrimary,
+              ),
             _buildDropdown<FpsPreference>(
               context,
               label: AppLocalizations.settingsFrameRate,
@@ -440,12 +447,13 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
               dropdownBorder: dropdownBorder,
               textPrimary: textPrimary,
             ),
-            _buildResolutionDropdown(context,
-              labelColor: labelColor,
-              dropdownBg: dropdownBg,
-              dropdownBorder: dropdownBorder,
-              textPrimary: textPrimary,
-            ),
+            if (widget.showContainerAndResolution)
+              _buildResolutionDropdown(context,
+                labelColor: labelColor,
+                dropdownBg: dropdownBg,
+                dropdownBorder: dropdownBorder,
+                textPrimary: textPrimary,
+              ),
           ],
         ),
 

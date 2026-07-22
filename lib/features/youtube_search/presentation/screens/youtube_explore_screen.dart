@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/core.dart';
 import '../../../../core/providers/backend_providers.dart';
+import '../../../home/presentation/widgets/command_bar_preset_chip.dart';
 import '../../../youtube_channel/presentation/screens/subscriptions_screen.dart';
 import '../providers/recent_searches_provider.dart';
 import '../providers/youtube_autocomplete_provider.dart';
@@ -209,6 +210,14 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
                 final isCompact = constraints.maxWidth < 820;
                 final searchInput = _buildSearchInput(context, isDark);
                 final searchButton = _buildSearchButton(context, isDark);
+                // "Default download" preset chip — lets the user set the
+                // download defaults right here (applies when downloading a
+                // search result), same control as the Home command bar.
+                const commandBarHeight = 52.0;
+                final presetChip = SizedBox(
+                  width: 210,
+                  child: CommandBarPresetChip(height: commandBarHeight),
+                );
                 final backButton =
                     isResults
                         ? Padding(
@@ -262,7 +271,13 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
                         ],
                       ),
                       const SizedBox(height: AppSpacing.smMd),
-                      SizedBox(width: double.infinity, child: searchButton),
+                      Row(
+                        children: [
+                          Expanded(child: searchButton),
+                          const SizedBox(width: AppSpacing.sm),
+                          presetChip,
+                        ],
+                      ),
                     ],
                   );
                 }
@@ -273,6 +288,8 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
                     Expanded(child: searchInput),
                     const SizedBox(width: AppSpacing.smMd),
                     searchButton,
+                    const SizedBox(width: AppSpacing.sm),
+                    presetChip,
                   ],
                 );
               },

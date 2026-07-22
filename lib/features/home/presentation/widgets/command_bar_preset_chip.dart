@@ -123,7 +123,7 @@ class _CommandBarPresetChipState extends ConsumerState<CommandBarPresetChip> {
               duration: const Duration(milliseconds: 120),
               height: widget.height,
               constraints: const BoxConstraints(minWidth: 150),
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.smMd),
               decoration: BoxDecoration(
                 color: _hovered ? hoverBg : bg,
                 borderRadius: BorderRadius.circular(AppRadius.input),

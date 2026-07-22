@@ -846,7 +846,7 @@
   },
   "extractionHistory": {
     "title": "Lịch sử phân tích",
-    "cacheInfo": "{count} mục (cache 1 giờ)",
+    "cacheInfo": "{count} mục · lưu 1 giờ",
     "clearAllTooltip": "Xóa toàn bộ lịch sử",
     "closeTooltip": "Đóng",
     "empty": "Chưa có lịch sử phân tích",

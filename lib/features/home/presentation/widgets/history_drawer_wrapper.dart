@@ -74,12 +74,11 @@ class _HistoryDrawerWrapperState extends State<HistoryDrawerWrapper>
           return const SizedBox.shrink();
         }
 
-        return ClipRect(
-          child: Align(
-            alignment: Alignment.centerRight,
-            widthFactor: 1.0 - _slideAnimation.value,
-            child: child,
-          ),
+        // Slide in from the right edge (1.0 = fully off-screen right,
+        // 0.0 = docked). No clip — lets the panel's left drop-shadow show.
+        return FractionalTranslation(
+          translation: Offset(_slideAnimation.value, 0),
+          child: child,
         );
       },
       child: SizedBox(

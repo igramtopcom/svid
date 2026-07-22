@@ -846,7 +846,7 @@
   },
   "extractionHistory": {
     "title": "Extraction History",
-    "cacheInfo": "{count} items (cached 1 hour)",
+    "cacheInfo": "{count} cached · kept 1h",
     "clearAllTooltip": "Clear all history",
     "closeTooltip": "Close",
     "empty": "No extraction history",

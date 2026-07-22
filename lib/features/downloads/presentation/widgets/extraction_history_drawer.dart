@@ -19,19 +19,28 @@ class ExtractionHistoryDrawer extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cs = Theme.of(context).colorScheme;
 
+    final borderColor = isDark
+        ? AppColors.homeDarkBorderStrong
+        : cs.outlineVariant.withValues(alpha: AppOpacity.strong);
+    const radius = Radius.circular(18);
+
     return Container(
       width: double.infinity,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: AppColors.base(context),
-        border: Border(
-          left: BorderSide(
-            color:
-                isDark
-                    ? AppColors.homeDarkBorderStrong
-                    : cs.outlineVariant.withValues(alpha: AppOpacity.strong),
-            width: 1,
-          ),
+        borderRadius: const BorderRadius.only(
+          topLeft: radius,
+          bottomLeft: radius,
         ),
+        border: Border.all(color: borderColor, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.32 : 0.10),
+            blurRadius: 28,
+            offset: const Offset(-10, 0),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -94,7 +103,7 @@ class ExtractionHistoryDrawer extends ConsumerWidget {
                   ),
                 ),
                 child: Icon(
-                  Icons.manage_search_rounded,
+                  Icons.history_rounded,
                   size: 18,
                   color: accent,
                 ),
@@ -124,25 +133,14 @@ class ExtractionHistoryDrawer extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  AppLocalizations.extractionHistoryEmptySubtitle.replaceAll(
-                    '\n',
-                    ' ',
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    height: 1.35,
-                    color: AppColors.metaText(context),
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Container(
+          // Cache-retention pill — only when there's something cached. The
+          // long "recently extracted URLs…" description is dropped here (it
+          // duplicates the empty-state copy and only truncated awkwardly).
+          if (count > 0) ...[
+            const SizedBox(height: AppSpacing.smMd),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
                   vertical: AppSpacing.xs,
@@ -156,16 +154,27 @@ class ExtractionHistoryDrawer extends ConsumerWidget {
                     ).withValues(alpha: isDark ? AppOpacity.strong : 1),
                   ),
                 ),
-                child: Text(
-                  AppLocalizations.extractionHistoryCacheInfo(count),
-                  style: AppTypography.compact.copyWith(
-                    color: AppColors.metaText(context),
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.cached_rounded,
+                      size: 12,
+                      color: AppColors.metaText(context),
+                    ),
+                    const SizedBox(width: AppSpacing.xxs),
+                    Text(
+                      AppLocalizations.extractionHistoryCacheInfo(count),
+                      style: AppTypography.compact.copyWith(
+                        color: AppColors.metaText(context),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ],
       ),
     );

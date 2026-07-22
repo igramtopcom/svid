@@ -182,7 +182,7 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
   static const double _stackedCommandBreakpoint = 760;
   static const double _commandBarHeight = 52;
   static const double _commandBarHeightCompact = 48;
-  static const double _presetChipWidth = 176;
+  static const double _presetChipWidth = 200;
   static const double _ctaWidth = 184;
   static const double _ctaWidthCompact = 168;
 
@@ -914,7 +914,7 @@ class _GlassmorphismHeaderState extends ConsumerState<GlassmorphismHeader>
     );
 
     final historyButton = _IconColumnButton(
-      icon: Icons.schedule_outlined,
+      icon: Icons.history_rounded,
       label: AppLocalizations.homeHistoryButton,
       tooltip: AppLocalizations.homeExtractionHistoryTooltip,
       iconColor: iconColor,

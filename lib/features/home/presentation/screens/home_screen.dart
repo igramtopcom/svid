@@ -945,14 +945,21 @@ class HomeScreenState extends ConsumerState<HomeScreen>
             ),
           ),
 
-          // History Drawer (slides in from right with proper clipping)
-          HistoryDrawerWrapper(
-            isOpen: _showHistoryDrawer,
-            onItemTap: (videoInfo) {
-              setState(() => _showHistoryDrawer = false);
-              handleDownloadDecision(videoInfo);
-            },
-            onClose: () => setState(() => _showHistoryDrawer = false),
+          // History Drawer — anchored to the RIGHT edge (next to the history
+          // button in the command bar) so it opens where the cursor already is,
+          // instead of sliding out on the far left.
+          Positioned(
+            top: 0,
+            right: 0,
+            bottom: 0,
+            child: HistoryDrawerWrapper(
+              isOpen: _showHistoryDrawer,
+              onItemTap: (videoInfo) {
+                setState(() => _showHistoryDrawer = false);
+                handleDownloadDecision(videoInfo);
+              },
+              onClose: () => setState(() => _showHistoryDrawer = false),
+            ),
           ),
         ],
       ),

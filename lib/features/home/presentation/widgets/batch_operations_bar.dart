@@ -472,8 +472,8 @@ class _ActionButtonState extends State<_ActionButton> {
     } else {
       bg =
           _hovered
-              ? (isDark ? AppColors.darkCardHover : cs.surfaceContainerLow)
-              : (isDark ? AppColors.darkCardBg : AppColors.lightBase);
+              ? (isDark ? AppColors.homeDarkCardHover : cs.surfaceContainerLow)
+              : (isDark ? AppColors.homeDarkCardBg : AppColors.lightBase);
       borderColor = AppColors.border(context);
     }
 

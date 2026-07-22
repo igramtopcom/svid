@@ -208,13 +208,22 @@ class AppSnackBar {
     messenger.hideCurrentSnackBar();
     final controller = messenger.showSnackBar(
       SnackBar(
-        content: _ProgressSnackContent(
-          notifier: notifier,
-          textColor: textColor,
-          mutedColor: mutedColor,
-          borderColor: borderColor,
-          bgColor: bgColor,
-          isDark: isDark,
+        // Cap the width and anchor bottom-right so the progress toast reads as
+        // a compact floating card instead of a full-window bar spanning under
+        // the nav rail and past the content box.
+        content: Align(
+          alignment: Alignment.centerRight,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 460),
+            child: _ProgressSnackContent(
+              notifier: notifier,
+              textColor: textColor,
+              mutedColor: mutedColor,
+              borderColor: borderColor,
+              bgColor: bgColor,
+              isDark: isDark,
+            ),
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,

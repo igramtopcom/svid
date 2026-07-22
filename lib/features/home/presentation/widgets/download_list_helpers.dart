@@ -463,6 +463,44 @@ class DownloadEmptyState extends StatelessWidget {
                   ],
                 ),
               ],
+              // Supported-platforms reassurance for first-time users — answers
+              // "will this work with my site?" without turning the empty state
+              // into a tutorial. Hidden in tight/compact embeddings.
+              if (!compact) ...[
+                const SizedBox(height: AppSpacing.md),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.public_rounded,
+                        size: 13,
+                        color: bodyColor.withValues(alpha: 0.7),
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Flexible(
+                        child: Text(
+                          AppLocalizations.downloadsEmptyPlatformHint,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                color: bodyColor.withValues(alpha: 0.85),
+                                height: 1.3,
+                                fontSize: 12,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ),
         );

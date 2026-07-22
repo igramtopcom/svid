@@ -539,6 +539,8 @@ class AppLocalizations {
       'downloads.emptyPasteAction'.tr();
   static String get downloadsEmptyOpenBrowserAction =>
       'downloads.emptyOpenBrowserAction'.tr();
+  static String get downloadsEmptyPlatformHint =>
+      'downloads.emptyPlatformHint'.tr();
   static String get downloadsPause => 'downloads.pause'.tr();
   static String get downloadsResume => 'downloads.resume'.tr();
   static String get downloadsCancel => 'downloads.cancel'.tr();

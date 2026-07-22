@@ -33,6 +33,12 @@ class ConfigPreferencesPanel extends StatefulWidget {
   // quality), so this panel shows only processing overrides and never
   // duplicates the outer surface. Default true keeps the full dialog intact.
   final bool showContainerAndResolution;
+  // Hide the whole Subtitles section. Subtitles are inherently video-specific
+  // (which languages exist depends on the actual video), so configuring them
+  // as a blind default — before any URL is entered — is ambiguous. The
+  // Default-download-options dialog sets this false; the per-download config
+  // dialog (which has videoInfo) keeps it true.
+  final bool showSubtitles;
 
   const ConfigPreferencesPanel({
     super.key,
@@ -44,6 +50,7 @@ class ConfigPreferencesPanel extends StatefulWidget {
     this.showSaveAsDefault = true,
     this.fileType,
     this.showContainerAndResolution = true,
+    this.showSubtitles = true,
   });
 
   @override
@@ -502,7 +509,10 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
         // Subtitles — promoted to its own section (it carries a whole
         // sub-panel of options: languages, format, auto-translate). The
         // header switch is the enable toggle; controls appear when ON.
-        _buildSection(
+        // Hidden in the blind-defaults dialog: which subtitle languages a
+        // video has is unknowable until a URL is entered.
+        if (widget.showSubtitles)
+          _buildSection(
           context,
           title: AppLocalizations.configDialogSectionSubtitles,
           icon: Icons.closed_caption,

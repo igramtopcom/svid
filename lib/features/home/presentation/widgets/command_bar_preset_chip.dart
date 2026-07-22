@@ -340,6 +340,9 @@ Future<void> showAdvancedDownloadDefaults(
                       ffmpegAvailable: ffmpeg,
                       showSaveAsDefault: false,
                       showContainerAndResolution: false,
+                      // No video context yet — the available subtitle
+                      // languages are unknowable, so don't pre-configure them.
+                      showSubtitles: false,
                       onChanged: (o) => _persistAdvancedDefaults(ref, o),
                     ),
                   ),

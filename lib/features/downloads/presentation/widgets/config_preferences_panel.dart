@@ -283,6 +283,40 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     fontSize: 13.5,
   );
 
+  // Row-level field labels (Action, Categories, Subtitle languages, …).
+  // Uses metaText (WCAG-AA, full opacity) + w600 so they read clearly next
+  // to the bright chips — muted() is reserved for disabled/inactive UI, not
+  // real labels, and made "Categories" look washed out.
+  TextStyle _rowLabelStyle(BuildContext context) => _labelStyle.copyWith(
+        color: AppColors.metaText(context),
+        fontWeight: FontWeight.w600,
+      );
+
+  // Small explanatory caption under a section (info icon + subtle text).
+  Widget _buildInlineHint(BuildContext context, String text, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(
+          left: AppSpacing.xs, top: 2, bottom: AppSpacing.xs),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.info_outline, size: 12, color: color),
+          const SizedBox(width: AppSpacing.xs),
+          Expanded(
+            child: Text(
+              text,
+              style: _labelStyle.copyWith(
+                color: color,
+                fontSize: 11.5,
+                height: 1.3,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -498,6 +532,8 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             headerColor: headerColor,
             textSecondary: textSecondary,
             children: [
+              _buildInlineHint(context,
+                  AppLocalizations.configDialogSponsorBlockHint, textSecondary),
               _buildDropdown<String>(
                 context,
                 label: AppLocalizations.settingsSponsorBlockAction,
@@ -746,7 +782,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
             flex: 2,
             child: Text(
               label,
-              style: _labelStyle.copyWith(color: labelColor),
+              style: _rowLabelStyle(context),
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -938,27 +974,8 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
       children: [
         // Clarify that multi-select is intentional — users can grab one
         // language (the common case) or several (e.g. embed EN + VI tracks).
-        Padding(
-          padding: const EdgeInsets.only(
-              left: AppSpacing.xs, top: 2, bottom: AppSpacing.xs),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.info_outline, size: 12, color: textSecondary),
-              const SizedBox(width: AppSpacing.xs),
-              Expanded(
-                child: Text(
-                  AppLocalizations.configDialogSubtitleMultiHint,
-                  style: _labelStyle.copyWith(
-                    color: textSecondary,
-                    fontSize: 11.5,
-                    height: 1.3,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        _buildInlineHint(
+            context, AppLocalizations.configDialogSubtitleMultiHint, textSecondary),
         if (hasVideoSubtitleData) ...[
           if (videoInfo.availableSubtitles.isNotEmpty)
             _buildSubtitleSection(
@@ -1058,12 +1075,12 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
               padding: const EdgeInsets.only(top: AppSpacing.sm),
               child: Row(
                 children: [
-                  Icon(icon, size: 12, color: textSecondary),
+                  Icon(icon, size: 12, color: AppColors.metaText(context)),
                   const SizedBox(width: AppSpacing.xs),
                   Flexible(
                     child: Text(
                       label,
-                      style: _labelStyle.copyWith(color: textSecondary),
+                      style: _rowLabelStyle(context),
                     ),
                   ),
                   if (selectedCount > 0) ...[
@@ -1205,7 +1222,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
                   Flexible(
                     child: Text(
                       AppLocalizations.configDialogSubtitleLanguages,
-                      style: _labelStyle.copyWith(color: textSecondary),
+                      style: _rowLabelStyle(context),
                     ),
                   ),
                   if (selectedCount > 0) ...[
@@ -1262,6 +1279,18 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
       'music_offtopic': AppLocalizations.settingsSponsorBlockCategoryMusic,
       'filler': AppLocalizations.settingsSponsorBlockCategoryFiller,
     };
+    // Category names ("Interaction", "Filler"…) are cryptic — a hover tooltip
+    // explains what each segment type actually is.
+    final descriptions = {
+      'sponsor': AppLocalizations.sponsorBlockCategoryDescSponsor,
+      'selfpromo': AppLocalizations.sponsorBlockCategoryDescSelfpromo,
+      'interaction': AppLocalizations.sponsorBlockCategoryDescInteraction,
+      'intro': AppLocalizations.sponsorBlockCategoryDescIntro,
+      'outro': AppLocalizations.sponsorBlockCategoryDescOutro,
+      'preview': AppLocalizations.sponsorBlockCategoryDescPreview,
+      'music_offtopic': AppLocalizations.sponsorBlockCategoryDescMusic,
+      'filler': AppLocalizations.sponsorBlockCategoryDescFiller,
+    };
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
@@ -1274,7 +1303,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
               padding: const EdgeInsets.only(top: AppSpacing.sm),
               child: Text(
                 AppLocalizations.configDialogSponsorBlockCategories,
-                style: _labelStyle.copyWith(color: textSecondary),
+                style: _rowLabelStyle(context),
               ),
             ),
           ),
@@ -1288,6 +1317,7 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
                 return _buildAngularChip(
                   context,
                   label: displayNames[cat] ?? cat,
+                  tooltip: descriptions[cat],
                   selected: isSelected,
                   isDark: isDark,
                   onSelected: (selected) {
@@ -1317,9 +1347,10 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
     required bool selected,
     required bool isDark,
     required ValueChanged<bool> onSelected,
+    String? tooltip,
   }) {
     final accent = AppColors.accentHighlight;
-    return GestureDetector(
+    Widget chip = GestureDetector(
       onTap: () => onSelected(!selected),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 120),
@@ -1344,6 +1375,14 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
         ),
       ),
     );
+    if (tooltip != null && tooltip.isNotEmpty) {
+      chip = Tooltip(
+        message: tooltip,
+        waitDuration: const Duration(milliseconds: 400),
+        child: chip,
+      );
+    }
+    return chip;
   }
 
   // ── FFmpeg Warning (Mission Briefing alert) ──

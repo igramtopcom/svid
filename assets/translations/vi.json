@@ -421,6 +421,7 @@
     "enableSponsorBlock": "Bật SponsorBlock",
     "sponsorBlockAction": "Hành động",
     "sponsorBlockCategories": "Danh mục",
+    "sponsorBlockHint": "Xử lý các đoạn do cộng đồng đánh dấu (quảng cáo, intro, outro…). 'Cắt bỏ' xóa hẳn khỏi file; 'Bỏ qua' và 'Chương' chỉ đánh dấu thành chương để trình phát hỗ trợ tự nhảy qua.",
     "removeTiktokWatermark": "Xóa watermark TikTok",
     "saveAsDefault": "Lưu làm mặc định",
     "saveAsDefaultSubtitle": "Áp dụng cài đặt này toàn cục",
@@ -974,7 +975,15 @@
     "categoryOutro": "Kết thúc",
     "categoryPreview": "Xem trước",
     "categoryMusic": "Nhạc",
-    "categoryFiller": "Nội dung phụ"
+    "categoryFiller": "Nội dung phụ",
+    "descSponsor": "Đoạn quảng cáo trả phí, giới thiệu sản phẩm/tài trợ.",
+    "descSelfpromo": "Tác giả tự quảng bá kênh, merch hoặc Patreon.",
+    "descInteraction": "Nhắc like, đăng ký, bấm chuông thông báo.",
+    "descIntro": "Intro, hoạt hình mở đầu hoặc khoảng nghỉ.",
+    "descOutro": "Đoạn kết, endcard và danh đề cuối video.",
+    "descPreview": "Tóm tắt hoặc nhắc lại nội dung video.",
+    "descMusic": "Đoạn không phải nhạc trong video ca nhạc.",
+    "descFiller": "Đoạn lan man, chèn thêm không thuộc nội dung chính."
   },
   "settingsSmartHints": {
     "resolutionUpgrade": "Màn hình của bạn hỗ trợ {resolution}p",

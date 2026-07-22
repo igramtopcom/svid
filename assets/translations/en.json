@@ -421,6 +421,7 @@
     "enableSponsorBlock": "Enable SponsorBlock",
     "sponsorBlockAction": "Action",
     "sponsorBlockCategories": "Categories",
+    "sponsorBlockHint": "Handles community-flagged segments (sponsors, intros, outros…). 'Remove' cuts them out of the file; 'Skip' and 'Chapter' just mark them as chapters a compatible player can jump past.",
     "removeTiktokWatermark": "Remove TikTok Watermark",
     "saveAsDefault": "Save as default",
     "saveAsDefaultSubtitle": "Apply these settings globally",
@@ -974,7 +975,15 @@
     "categoryOutro": "Outro",
     "categoryPreview": "Preview",
     "categoryMusic": "Music",
-    "categoryFiller": "Filler"
+    "categoryFiller": "Filler",
+    "descSponsor": "Paid promotion, product placement or sponsorship.",
+    "descSelfpromo": "Creator promoting their own channel, merch or Patreon.",
+    "descInteraction": "Reminders to like, subscribe or hit the bell.",
+    "descIntro": "Intro animation, title card or intermission.",
+    "descOutro": "End cards and credits at the end.",
+    "descPreview": "Recap or preview of this or other videos.",
+    "descMusic": "Non-music sections inside a music video.",
+    "descFiller": "Tangential filler or jokes, not part of the main content."
   },
   "settingsSmartHints": {
     "resolutionUpgrade": "Your screen supports {resolution}p",

@@ -1810,6 +1810,26 @@ class AppLocalizations {
   static String get settingsSponsorBlockCategoryFiller =>
       'settingsSponsorBlock.categoryFiller'.tr();
 
+  // SponsorBlock — config-dialog helpers (section hint + category tooltips)
+  static String get configDialogSponsorBlockHint =>
+      'configDialog.sponsorBlockHint'.tr();
+  static String get sponsorBlockCategoryDescSponsor =>
+      'settingsSponsorBlock.descSponsor'.tr();
+  static String get sponsorBlockCategoryDescSelfpromo =>
+      'settingsSponsorBlock.descSelfpromo'.tr();
+  static String get sponsorBlockCategoryDescInteraction =>
+      'settingsSponsorBlock.descInteraction'.tr();
+  static String get sponsorBlockCategoryDescIntro =>
+      'settingsSponsorBlock.descIntro'.tr();
+  static String get sponsorBlockCategoryDescOutro =>
+      'settingsSponsorBlock.descOutro'.tr();
+  static String get sponsorBlockCategoryDescPreview =>
+      'settingsSponsorBlock.descPreview'.tr();
+  static String get sponsorBlockCategoryDescMusic =>
+      'settingsSponsorBlock.descMusic'.tr();
+  static String get sponsorBlockCategoryDescFiller =>
+      'settingsSponsorBlock.descFiller'.tr();
+
   // ==================== SMART HINTS ====================
   static String settingsSmartHintsResolutionUpgrade(int resolution) =>
       'settingsSmartHints.resolutionUpgrade'.tr(

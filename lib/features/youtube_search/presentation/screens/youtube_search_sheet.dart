@@ -51,7 +51,7 @@ class YouTubeSearchSheet extends ConsumerStatefulWidget {
               vertical: AppSpacing.xl,
             ),
             clipBehavior: Clip.antiAlias,
-            backgroundColor: isDark ? const Color(0xFF1B2128) : null,
+            backgroundColor: isDark ? AppColors.darkBase : null,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.card),
             ),
@@ -224,7 +224,7 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
               height: 0.5,
               color:
                   isDark
-                      ? const Color(0xFF313A45)
+                      ? AppColors.homeDarkBorderStrong
                       : theme.colorScheme.outlineVariant.withValues(
                         alpha: AppOpacity.quarter,
                       ),
@@ -243,12 +243,12 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
       height: 52,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.smMd),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF111418) : null,
+        color: isDark ? AppColors.darkBg : null,
         border: Border(
           bottom: BorderSide(
             color:
                 isDark
-                    ? const Color(0xFF313A45)
+                    ? AppColors.homeDarkBorderStrong
                     : theme.colorScheme.outlineVariant.withValues(
                       alpha: AppOpacity.quarter,
                     ),
@@ -287,12 +287,15 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
               ],
             ),
           ),
-          const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.smMd),
           Text(
             AppLocalizations.youtubeSearchSearch,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: isDark ? AppColors.darkLightText : null,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w500,
+              color:
+                  isDark
+                      ? AppColors.darkMetaText
+                      : theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const Spacer(),
@@ -302,11 +305,14 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
               size: 20,
               color:
                   isDark
-                      ? const Color(0xFFA7B1BC)
+                      ? AppColors.darkMetaText
                       : theme.colorScheme.onSurfaceVariant,
             ),
             onPressed: () => Navigator.of(context).pop(),
             tooltip: AppLocalizations.commonClose,
+            hoverColor: AppColors.accentHighlight.withValues(
+              alpha: AppOpacity.subtle,
+            ),
           ),
         ],
       ),
@@ -374,7 +380,7 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color:
                       isDark
-                          ? const Color(0xFFA7B1BC)
+                          ? AppColors.darkMetaText
                           : theme.colorScheme.onSurfaceVariant,
                 ),
               ),
@@ -415,7 +421,7 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
                 size: 48,
                 color:
                     isDark
-                        ? const Color(0xFF636D7A)
+                        ? AppColors.darkMuted
                         : theme.colorScheme.outlineVariant,
               ),
               const SizedBox(height: AppSpacing.md),
@@ -435,7 +441,7 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color:
                       isDark
-                          ? const Color(0xFFA7B1BC)
+                          ? AppColors.darkMetaText
                           : theme.colorScheme.onSurfaceVariant,
                 ),
               ),
@@ -562,7 +568,7 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
             size: 56,
             color:
                 isDark
-                    ? const Color(0xFF636D7A)
+                    ? AppColors.darkMuted
                     : theme.colorScheme.outlineVariant,
           ),
           const SizedBox(height: AppSpacing.mdLg),
@@ -580,7 +586,7 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
             style: theme.textTheme.bodyMedium?.copyWith(
               color:
                   isDark
-                      ? const Color(0xFFA7B1BC)
+                      ? AppColors.darkMetaText
                       : theme.colorScheme.onSurfaceVariant,
             ),
           ),
@@ -625,7 +631,7 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
               height: 0.5,
               color:
                   isDark
-                      ? const Color(0xFF313A45)
+                      ? AppColors.homeDarkBorderStrong
                       : theme.colorScheme.outlineVariant.withValues(
                         alpha: AppOpacity.quarter,
                       ),
@@ -640,7 +646,7 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
                 : AppLocalizations.youtubeSearchPopularSearches,
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color: isDark ? const Color(0xFFA7B1BC) : null,
+              color: isDark ? AppColors.darkMetaText : null,
             ),
           ),
           const SizedBox(height: AppSpacing.smMd),
@@ -687,12 +693,12 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
       avatar: Icon(
         Icons.history,
         size: 16,
-        color: isDark ? const Color(0xFFA7B1BC) : null,
+        color: isDark ? AppColors.darkMetaText : null,
       ),
       deleteIcon: Icon(
         Icons.close,
         size: 14,
-        color: isDark ? const Color(0xFF636D7A) : null,
+        color: isDark ? AppColors.darkMuted : null,
       ),
       onPressed: () => _onRecentSearchTap(keyword),
       onDeleted: () {
@@ -700,11 +706,11 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
       },
       backgroundColor:
           isDark
-              ? const Color(0xFF242C35)
+              ? AppColors.homeDarkCardBg
               : theme.colorScheme.surfaceContainerHighest,
       side:
           isDark
-              ? const BorderSide(color: Color(0xFF313A45), width: 0.5)
+              ? BorderSide(color: AppColors.homeDarkBorderStrong, width: 0.5)
               : null,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.card),
@@ -729,7 +735,7 @@ class _YouTubeSearchSheetState extends ConsumerState<YouTubeSearchSheet> {
         _searchController.text = label;
         _onSearch();
       },
-      backgroundColor: isDark ? const Color(0xFF242C35) : null,
+      backgroundColor: isDark ? AppColors.homeDarkCardBg : null,
       side:
           isDark
               ? BorderSide(

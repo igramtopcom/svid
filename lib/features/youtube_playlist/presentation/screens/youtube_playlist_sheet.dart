@@ -255,7 +255,7 @@ class _YouTubePlaylistSheetState extends ConsumerState<YouTubePlaylistSheet> {
           const Spacer(),
           // Select All / Deselect All
           if (state.videos.isNotEmpty)
-            TextButton(
+            TextButton.icon(
               onPressed: () {
                 if (state.isAllSelected) {
                   ref.read(youtubePlaylistProvider.notifier).deselectAll();
@@ -263,13 +263,22 @@ class _YouTubePlaylistSheetState extends ConsumerState<YouTubePlaylistSheet> {
                   ref.read(youtubePlaylistProvider.notifier).selectAll();
                 }
               },
+              icon: Icon(
+                state.isAllSelected
+                    ? Icons.remove_done_rounded
+                    : Icons.done_all_rounded,
+                size: 16,
+              ),
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.accentHighlight,
                 textStyle: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.full),
+                ),
               ),
-              child: Text(
+              label: Text(
                 state.isAllSelected
                     ? AppLocalizations.youtubePlaylistDeselectAll
                     : AppLocalizations.youtubePlaylistSelectAll,
@@ -286,6 +295,9 @@ class _YouTubePlaylistSheetState extends ConsumerState<YouTubePlaylistSheet> {
             ),
             onPressed: () => Navigator.of(context).pop(),
             tooltip: AppLocalizations.commonClose,
+            hoverColor: AppColors.accentHighlight.withValues(
+              alpha: AppOpacity.subtle,
+            ),
           ),
         ],
       ),

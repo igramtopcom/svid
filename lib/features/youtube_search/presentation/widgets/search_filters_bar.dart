@@ -34,11 +34,11 @@ class SearchFiltersBar extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(6),
+              padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                 color:
                     isDark ? AppColors.homeDarkAppBg : AppColors.lightSurface2,
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(AppRadius.full),
                 border: Border.all(
                   color:
                       isDark
@@ -105,8 +105,8 @@ class SearchFiltersBar extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.smMd,
+          horizontal: AppSpacing.smMd,
+          vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
           color:
@@ -115,27 +115,15 @@ class SearchFiltersBar extends StatelessWidget {
                       ? AppColors.homeDarkCardBg
                       : AppColors.surface3(context))
                   : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.full),
           border: Border.all(
             color:
-                isDark
-                    ? (isActive
+                isActive
+                    ? (isDark
                         ? AppColors.homeDarkBorderStrong
-                        : Colors.transparent)
-                    : (isActive
-                        ? AppColors.border(context)
-                        : Colors.transparent),
+                        : AppColors.border(context))
+                    : Colors.transparent,
           ),
-          boxShadow:
-              !isDark && isActive
-                  ? const [
-                    BoxShadow(
-                      color: Color(0x0A000000),
-                      blurRadius: 10,
-                      offset: Offset(0, 2),
-                    ),
-                  ]
-                  : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

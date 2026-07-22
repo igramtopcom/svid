@@ -183,9 +183,10 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
         AppSpacing.lg,
         AppSpacing.smMd,
       ),
-      child: Center(
+      child: Align(
+        alignment: Alignment.centerLeft,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1320),
+          constraints: const BoxConstraints(maxWidth: 1440),
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
@@ -503,43 +504,59 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
         fit: StackFit.expand,
         children: [
           Positioned.fill(child: ColoredBox(color: pageBg)),
-          Column(
-            children: [
-              _buildExploreCommandBar(
-                context,
-                isDark: isDark,
-                isResults: isResults,
-              ),
-              if (!isResults)
-                _ExploreSectionTabs(
-                  activeSection: activeSection,
-                  onSectionChanged: _switchSection,
-                  isDark: isDark,
-                ),
-              Expanded(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  switchInCurve: Curves.easeOut,
-                  switchOutCurve: Curves.easeIn,
-                  child:
-                      isResults
-                          ? YouTubeResultsView(
-                            key: const ValueKey('results'),
-                            onVideoDownload: widget.onVideoDownload,
-                          )
-                          : activeSection == ExploreSection.subscriptions
-                          ? SubscriptionsScreen(
-                            key: const ValueKey('subscriptions'),
-                            embedded: true,
-                            onDownloadSelected: widget.onBatchDownloadSelected,
-                          )
-                          : YouTubeDiscoveryView(
-                            key: const ValueKey('discovery'),
-                            onSearch: _onDiscoverySearch,
-                          ),
-                ),
-              ),
-            ],
+          // Left-anchor the whole Explore column to the same 1440-wide region
+          // as the Home tab (surplus falls to the right), so the two tabs read
+          // as the same content box instead of Explore stretching wider.
+          LayoutBuilder(
+            builder: (context, constraints) {
+              const maxContentWidth = 1440.0;
+              final extra = constraints.maxWidth - maxContentWidth;
+              final column = Column(
+                children: [
+                  _buildExploreCommandBar(
+                    context,
+                    isDark: isDark,
+                    isResults: isResults,
+                  ),
+                  if (!isResults)
+                    _ExploreSectionTabs(
+                      activeSection: activeSection,
+                      onSectionChanged: _switchSection,
+                      isDark: isDark,
+                    ),
+                  Expanded(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      switchInCurve: Curves.easeOut,
+                      switchOutCurve: Curves.easeIn,
+                      child:
+                          isResults
+                              ? YouTubeResultsView(
+                                key: const ValueKey('results'),
+                                onVideoDownload: widget.onVideoDownload,
+                              )
+                              : activeSection == ExploreSection.subscriptions
+                              ? SubscriptionsScreen(
+                                key: const ValueKey('subscriptions'),
+                                embedded: true,
+                                onDownloadSelected:
+                                    widget.onBatchDownloadSelected,
+                              )
+                              : YouTubeDiscoveryView(
+                                key: const ValueKey('discovery'),
+                                onSearch: _onDiscoverySearch,
+                              ),
+                    ),
+                  ),
+                ],
+              );
+              return extra > 0
+                  ? Padding(
+                      padding: EdgeInsets.only(right: extra),
+                      child: column,
+                    )
+                  : column;
+            },
           ),
         ],
       ),
@@ -777,14 +794,46 @@ class _ExploreSectionTabs extends StatelessWidget {
         AppSpacing.lg,
         AppSpacing.smMd,
       ),
-      child: Center(
+      child: Align(
+        alignment: Alignment.centerLeft,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1320),
+          constraints: const BoxConstraints(maxWidth: 1440),
           child: LayoutBuilder(
             builder: (context, constraints) {
               final showDescription = constraints.maxWidth >= 720;
               return Row(
                 children: [
+                  // Explore is YouTube-only (yt-dlp only exposes YouTube
+                  // search) — mark it plainly so it's clear other platforms
+                  // live under Home / Browser, not here.
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.smMd, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColors.brand
+                          .withValues(alpha: isDark ? 0.16 : 0.10),
+                      borderRadius: BorderRadius.circular(AppRadius.full),
+                      border: Border.all(
+                          color: AppColors.brand.withValues(alpha: 0.30)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.smart_display_rounded,
+                            size: 15, color: AppColors.brand),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          'YouTube',
+                          style: AppTypography.statusBadge.copyWith(
+                            color: AppColors.brand,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.smMd),
                   _ExploreSectionButton(
                     icon: Icons.explore_rounded,
                     label: AppLocalizations.youtubeTabTitle,

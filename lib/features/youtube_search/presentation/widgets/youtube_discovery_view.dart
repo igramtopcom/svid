@@ -25,9 +25,10 @@ class YouTubeDiscoveryView extends ConsumerWidget {
         AppSpacing.lg,
         AppSpacing.xl,
       ),
-      child: Center(
+      child: Align(
+        alignment: Alignment.centerLeft,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1120),
+          constraints: const BoxConstraints(maxWidth: 1440),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

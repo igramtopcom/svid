@@ -689,7 +689,7 @@
   },
   "youtube": {
     "tabTitle": "Khám phá",
-    "tabDescription": "Tìm kiếm, duyệt danh sách phát và khám phá kênh",
+    "tabDescription": "Tìm kiếm & khám phá video trên YouTube",
     "searchAction": "Tìm trên YouTube"
   },
   "errors": {
@@ -739,7 +739,7 @@
     "title": "YouTube",
     "button": "Tìm kiếm video",
     "searchTitle": "Tìm kiếm video YouTube",
-    "searchPlaceholder": "Tìm kiếm video...",
+    "searchPlaceholder": "Tìm kiếm trên YouTube...",
     "searchHint": "Nhập từ khóa ở trên để tìm video",
     "searching": "Đang tìm kiếm YouTube...",
     "searchFailed": "Tìm kiếm thất bại",

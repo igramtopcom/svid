@@ -64,9 +64,10 @@ class _YouTubeResultsViewState extends ConsumerState<YouTubeResultsView> {
         AppSpacing.lg,
         AppSpacing.md,
       ),
-      child: Center(
+      child: Align(
+        alignment: Alignment.centerLeft,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1320),
+          constraints: const BoxConstraints(maxWidth: 1440),
           child: Column(
             children: [
               _ExploreResultsSurface(

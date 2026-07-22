@@ -689,7 +689,7 @@
   },
   "youtube": {
     "tabTitle": "Explore",
-    "tabDescription": "Search, browse playlists, and discover channels",
+    "tabDescription": "Search & discover videos on YouTube",
     "searchAction": "Search YouTube"
   },
   "errors": {
@@ -739,7 +739,7 @@
     "title": "YouTube",
     "button": "Search Videos",
     "searchTitle": "Search YouTube Videos",
-    "searchPlaceholder": "Search videos...",
+    "searchPlaceholder": "Search YouTube...",
     "searchHint": "Enter a search term above to find videos",
     "searching": "Searching YouTube...",
     "searchFailed": "Search failed",

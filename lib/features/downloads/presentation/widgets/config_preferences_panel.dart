@@ -882,29 +882,29 @@ class ConfigPreferencesPanelState extends State<ConfigPreferencesPanel> {
               horizontal: AppSpacing.xs, vertical: AppSpacing.sm),
           child: Row(
             children: [
-              // Hard 14×14 square checkbox (operator hatch)
               Container(
-                width: 14,
-                height: 14,
+                width: 18,
+                height: 18,
                 decoration: BoxDecoration(
                   color: value ? accent : Colors.transparent,
+                  borderRadius: BorderRadius.circular(4),
                   border: Border.all(
                     color: value ? accent : AppColors.metaText(context),
                     width: 1.5,
                   ),
                 ),
                 child: value
-                    ? const Icon(Icons.check, size: 10, color: Colors.white)
+                    ? const Icon(Icons.check_rounded,
+                        size: 13, color: Colors.white)
                     : null,
               ),
               const SizedBox(width: AppSpacing.smMd),
               Expanded(
                 child: Text(
                   label,
-                  style: AppTypography.briefingCardSubtitle.copyWith(
+                  style: AppTypography.buttonSecondary.copyWith(
                     color: textPrimary,
-                    fontSize: 11,
-                    letterSpacing: 0.2,
+                    fontSize: 13.5,
                   ),
                 ),
               ),

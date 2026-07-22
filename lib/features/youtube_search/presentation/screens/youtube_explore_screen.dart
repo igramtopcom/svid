@@ -189,7 +189,14 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1440),
           child: Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            // Match the Home command-bar card padding so the header doesn't
+            // change height when switching Home <-> Explore.
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.mdLg,
+              AppSpacing.md,
+              AppSpacing.mdLg,
+              AppSpacing.md,
+            ),
             decoration: BoxDecoration(
               color: panelBg,
               borderRadius: BorderRadius.circular(AppRadius.card),

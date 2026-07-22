@@ -268,11 +268,8 @@ class _CategoryTabChipState extends State<_CategoryTabChip> {
                 Text(
                   widget.label,
                   style: theme.textTheme.labelMedium?.copyWith(
-                    color:
-                        _hovered
-                            ? cs.onSurface
-                            : cs.onSurface.withValues(alpha: AppOpacity.strong),
-                    fontWeight: FontWeight.w500,
+                    color: cs.onSurface,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -296,7 +293,6 @@ class _RecentSearchesSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final cs = theme.colorScheme;
     final recents = ref.watch(recentSearchesProvider);
 
     return recents.when(
@@ -310,10 +306,7 @@ class _RecentSearchesSection extends ConsumerWidget {
                 Icon(
                   Icons.history_rounded,
                   size: 18,
-                  color:
-                      theme.brightness == Brightness.dark
-                          ? AppColors.homeDarkTextSecondary
-                          : cs.onSurface.withValues(alpha: AppOpacity.medium),
+                  color: AppColors.accentHighlight,
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
@@ -323,14 +316,23 @@ class _RecentSearchesSection extends ConsumerWidget {
                   ),
                 ),
                 const Spacer(),
-                TextButton(
+                TextButton.icon(
                   onPressed:
                       () =>
                           ref.read(recentSearchesProvider.notifier).clearAll(),
-                  child: Text(
-                    AppLocalizations.commonClear,
-                    style: AppTypography.metadata.copyWith(
-                      color: cs.onSurface.withValues(alpha: AppOpacity.medium),
+                  icon: const Icon(Icons.clear_all_rounded, size: 16),
+                  label: Text(AppLocalizations.commonClear),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.metaText(context),
+                    textStyle: AppTypography.metadata.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.xs,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.full),
                     ),
                   ),
                 ),
@@ -437,18 +439,14 @@ class _RecentSearchChipState extends State<_RecentSearchChip> {
                 Icon(
                   Icons.search_rounded,
                   size: 14,
-                  color:
-                      isDark
-                          ? AppColors.homeDarkTextSecondary
-                          : cs.onSurface.withValues(alpha: AppOpacity.scrim),
+                  color: AppColors.metaText(context),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   widget.label,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: cs.onSurface.withValues(
-                      alpha: AppOpacity.nearOpaque,
-                    ),
+                    fontWeight: FontWeight.w500,
+                    color: cs.onSurface,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.xxs),
@@ -457,10 +455,10 @@ class _RecentSearchChipState extends State<_RecentSearchChip> {
                   height: 24,
                   child: IconButton(
                     onPressed: widget.onDelete,
-                    icon: Icon(
-                      Icons.close_rounded,
-                      size: 13,
-                      color: cs.onSurface.withValues(alpha: AppOpacity.scrim),
+                    icon: const Icon(Icons.close_rounded, size: 14),
+                    color: AppColors.metaText(context),
+                    hoverColor: AppColors.accentHighlight.withValues(
+                      alpha: AppOpacity.subtle,
                     ),
                     padding: EdgeInsets.zero,
                   ),
@@ -642,8 +640,9 @@ class _TrendingCardState extends State<_TrendingCard> {
                 Expanded(
                   child: Text(
                     widget.item.title,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w500,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurface,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -859,8 +858,9 @@ class _CategoryCardState extends State<_CategoryCard> {
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   widget.category.title,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: cs.onSurface,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -870,8 +870,9 @@ class _CategoryCardState extends State<_CategoryCard> {
                 Text(
                   widget.category.subtitle,
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: cs.onSurface.withValues(alpha: AppOpacity.medium),
-                    fontSize: 11,
+                    color: cs.onSurface.withValues(alpha: AppOpacity.strong),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 11.5,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

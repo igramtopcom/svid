@@ -6,6 +6,34 @@ import '../../domain/entities/browser_bookmark.dart';
 import '../providers/browser_tab_providers.dart';
 import '../providers/content_filter_providers.dart';
 
+// ── Bookmark-card visual tokens ──
+// A softer, larger corner than the brand's 12px card radius so the tiles read
+// as friendly feature cards; the badge echoes it one step tighter.
+const double _kTileRadius = 18;
+const double _kBadgeRadius = 14;
+
+// Layered, slate-tinted elevation (matching AppShadow's palette) so cards lift
+// off the page with a soft, diffuse edge rather than a hard grey line. The
+// resting level already gives clear separation; hover deepens and spreads it.
+const List<BoxShadow> _kCardShadowRest = [
+  BoxShadow(color: Color(0x0D0F172A), offset: Offset(0, 1), blurRadius: 3),
+  BoxShadow(
+    color: Color(0x140F172A),
+    offset: Offset(0, 6),
+    blurRadius: 16,
+    spreadRadius: -6,
+  ),
+];
+const List<BoxShadow> _kCardShadowHover = [
+  BoxShadow(color: Color(0x140F172A), offset: Offset(0, 2), blurRadius: 6),
+  BoxShadow(
+    color: Color(0x240F172A),
+    offset: Offset(0, 14),
+    blurRadius: 28,
+    spreadRadius: -8,
+  ),
+];
+
 /// Clean browser start page: a prominent URL/search bar + an editable grid of
 /// bookmarks (seeded with popular platforms). No download stats or visited-site
 /// clutter — just "type a URL / search" and "click a saved site".
@@ -176,10 +204,12 @@ class _BookmarkGrid extends StatelessWidget {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      // Don't clip the hover-lift shadow at the grid's edges.
+      clipBehavior: Clip.none,
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 150,
-        mainAxisSpacing: AppSpacing.md,
-        crossAxisSpacing: AppSpacing.md,
+        maxCrossAxisExtent: 156,
+        mainAxisSpacing: AppSpacing.lg,
+        crossAxisSpacing: AppSpacing.lg,
         childAspectRatio: 0.95,
       ),
       itemCount: bookmarks.length + 1,
@@ -261,10 +291,14 @@ class _BookmarkTileState extends State<_BookmarkTile> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          // Soft upward lift on hover.
+          transform: Matrix4.translationValues(0, _hovered ? -4 : 0, 0),
+          transformAlignment: Alignment.center,
           decoration: BoxDecoration(
             color: isDark ? AppColors.homeDarkCardBg : Colors.white,
-            borderRadius: BorderRadius.circular(AppRadius.card),
+            borderRadius: BorderRadius.circular(_kTileRadius),
             border: Border.all(
               color:
                   _hovered
@@ -273,21 +307,15 @@ class _BookmarkTileState extends State<_BookmarkTile> {
                       )
                       : (isDark
                           ? AppColors.homeDarkBorderStrong
-                          : cs.outline.withValues(alpha: 0.55)),
+                          : cs.outline.withValues(alpha: 0.4)),
               width: _hovered ? 1.4 : 1,
             ),
-            // A resting shadow (light mode) so the cards lift off the page
-            // instead of dissolving into it; deepens on hover.
+            // Layered soft elevation; deepens on hover. (Dark mode leans on the
+            // border — shadows read poorly on a dark surface.)
             boxShadow:
                 isDark
                     ? null
-                    : [
-                      BoxShadow(
-                        color: Color(_hovered ? 0x14000000 : 0x0F000000),
-                        blurRadius: _hovered ? 16 : 7,
-                        offset: Offset(0, _hovered ? 6 : 2),
-                      ),
-                    ],
+                    : (_hovered ? _kCardShadowHover : _kCardShadowRest),
           ),
           child: Stack(
             alignment: Alignment.center,
@@ -303,7 +331,7 @@ class _BookmarkTileState extends State<_BookmarkTile> {
                       height: 48,
                       decoration: BoxDecoration(
                         color: badgeBg,
-                        borderRadius: BorderRadius.circular(AppRadius.card),
+                        borderRadius: BorderRadius.circular(_kBadgeRadius),
                       ),
                       child: Center(
                         child:
@@ -408,11 +436,14 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
           alignment: Alignment.center,
+          transform: Matrix4.translationValues(0, _hovered ? -4 : 0, 0),
+          transformAlignment: Alignment.center,
           decoration: BoxDecoration(
             color: isDark ? AppColors.homeDarkCardBg : Colors.white,
-            borderRadius: BorderRadius.circular(AppRadius.card),
+            borderRadius: BorderRadius.circular(_kTileRadius),
             border: Border.all(
               color: _hovered ? accent.withValues(alpha: 0.5) : base,
               width: _hovered ? 1.4 : 1,
@@ -420,13 +451,7 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
             boxShadow:
                 isDark
                     ? null
-                    : [
-                      BoxShadow(
-                        color: Color(_hovered ? 0x14000000 : 0x0F000000),
-                        blurRadius: _hovered ? 16 : 7,
-                        offset: Offset(0, _hovered ? 6 : 2),
-                      ),
-                    ],
+                    : (_hovered ? _kCardShadowHover : _kCardShadowRest),
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
@@ -439,7 +464,7 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
                   height: 48,
                   decoration: BoxDecoration(
                     color: _hovered ? accent.withValues(alpha: AppOpacity.hover) : badgeBg,
-                    borderRadius: BorderRadius.circular(AppRadius.card),
+                    borderRadius: BorderRadius.circular(_kBadgeRadius),
                   ),
                   child: Icon(
                     Icons.add_rounded,

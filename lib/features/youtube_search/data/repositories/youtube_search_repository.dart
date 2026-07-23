@@ -124,22 +124,24 @@ class YouTubeSearchRepository {
     }
   }
 
-  /// Fetch the real YouTube "Trending" feed (region-aware, best-effort).
+  /// Fetch real popular YouTube videos via a **hashtag feed** (best-effort).
   ///
-  /// Unlike [search], this always uses the Dart `ProcessHelper` path (even on
-  /// Windows) because the native search bridge only speaks `ytsearch:` — here
-  /// we need to point yt-dlp at the trending TAB URL. Region is best-effort:
-  /// `--geo-bypass-country XX` nudges YouTube toward that region's feed; if it
-  /// doesn't take, the caller still gets *some* real trending (better than a
-  /// hardcoded list). Returns videos only (channels filtered out).
+  /// YouTube retired the old `/feed/trending` page, so instead we point yt-dlp
+  /// at a hashtag tab (`/hashtag/<tag>`) — these are still live and return the
+  /// tag's top (most-popular) real videos with thumbnails. Unlike [search],
+  /// this always uses the Dart `ProcessHelper` path (even on Windows) because
+  /// the native search bridge only speaks `ytsearch:`. Returns videos only
+  /// (channels filtered out); the caller falls back to curated shortcuts on
+  /// failure.
   Future<Result<List<YouTubeSearchResult>>> trending({
-    String? regionCode,
+    String hashtag = 'trending',
     int maxResults = 20,
   }) async {
     try {
       final limit = maxResults.clamp(1, 50);
-      final region = (regionCode ?? '').trim().toUpperCase();
-      appLogger.info('[YouTube Trending] region="$region" (max: $limit)');
+      final tag = hashtag.trim().replaceAll(RegExp(r'[^A-Za-z0-9]'), '');
+      final safeTag = tag.isEmpty ? 'trending' : tag;
+      appLogger.info('[YouTube Trending] hashtag="#$safeTag" (max: $limit)');
 
       final args = <String>[
         '--dump-json',
@@ -154,10 +156,9 @@ class YouTubeSearchRepository {
         '--no-check-certificates',
         '--playlist-end',
         '$limit',
-        if (region.isNotEmpty) ...['--geo-bypass-country', region],
         if (_denoPath != null) ...['--js-runtimes', 'deno:$_denoPath'],
         if (_cookiesFile != null) ...['--cookies', _cookiesFile],
-        'https://www.youtube.com/feed/trending',
+        'https://www.youtube.com/hashtag/$safeTag',
       ];
 
       final result = await ProcessHelper.run(_binaryPath, args).timeout(

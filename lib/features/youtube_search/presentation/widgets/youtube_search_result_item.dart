@@ -169,7 +169,7 @@ class _YouTubeSearchResultItemState
                       height: thumbnailHeight,
                     ),
                     SizedBox(width: tight ? AppSpacing.sm : AppSpacing.md),
-                    Expanded(child: _buildVideoInfo(theme, video)),
+                    Expanded(child: _buildVideoInfo(theme, video, download)),
                     if (showActions)
                       Padding(
                         padding: const EdgeInsets.only(left: AppSpacing.sm),
@@ -206,7 +206,7 @@ class _YouTubeSearchResultItemState
     } else if (download == null) {
       primary = _downloadButton(context, compact: compact);
     } else if (download.isCompleted) {
-      primary = _openFolderButton(context, download, compact: compact);
+      primary = _completedActions(context, download);
     } else if (download.isFailed) {
       primary = _retryButton(context, download, compact: compact);
     } else {
@@ -366,48 +366,105 @@ class _YouTubeSearchResultItemState
   }
 
   /// After completion: open the containing folder so the user finds the file.
-  Widget _openFolderButton(
-    BuildContext context,
-    DownloadEntity download, {
-    required bool compact,
-  }) {
-    final green = AppColors.lightStatusCompleted;
-    if (compact) {
-      return Tooltip(
-        message: AppLocalizations.youtubeSearchOpenFolder,
-        child: IconButton(
-          onPressed: () => openFileLocation(context, ref, download),
-          icon: const Icon(Icons.folder_open_rounded, size: 18),
-          constraints: const BoxConstraints.tightFor(width: 40, height: 40),
-          padding: EdgeInsets.zero,
-          style: IconButton.styleFrom(
-            foregroundColor: green,
-            backgroundColor: green.withValues(alpha: 0.12),
-            side: BorderSide(color: green.withValues(alpha: 0.4)),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.button),
+  /// Completed download → Play the file + a More menu (open folder / copy /
+  /// delete), so the user can act on it without switching to the Home tab.
+  Widget _completedActions(BuildContext context, DownloadEntity download) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Tooltip(
+          message: AppLocalizations.youtubeSearchPlay,
+          child: IconButton(
+            onPressed: () => openPlayerForDownload(context, ref, download),
+            icon: const Icon(Icons.play_arrow_rounded, size: 20),
+            constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+            padding: EdgeInsets.zero,
+            style: IconButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: AppColors.brand,
+              hoverColor: AppColors.accentHighlight,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.button),
+              ),
             ),
           ),
         ),
-      );
-    }
-    return OutlinedButton.icon(
-      onPressed: () => openFileLocation(context, ref, download),
-      icon: const Icon(Icons.check_circle_rounded, size: 18),
-      label: Text(AppLocalizations.youtubeSearchOpenFolder),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: green,
-        side: BorderSide(color: green.withValues(alpha: 0.5)),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.smMd,
-          vertical: AppSpacing.sm,
-        ),
+        const SizedBox(width: AppSpacing.xs),
+        _moreMenu(context, download),
+      ],
+    );
+  }
+
+  Widget _moreMenu(BuildContext context, DownloadEntity download) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final muted = AppColors.metaText(context);
+    return SizedBox(
+      width: 40,
+      height: 40,
+      child: PopupMenuButton<String>(
+        tooltip: '',
+        icon: Icon(Icons.more_vert_rounded, size: 20, color: muted),
+        padding: EdgeInsets.zero,
+        position: PopupMenuPosition.under,
+        color: isDark ? AppColors.homeDarkCardBg : Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.button),
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          side: BorderSide(
+            color:
+                isDark
+                    ? AppColors.homeDarkBorderStrong
+                    : AppColors.border(context),
+          ),
         ),
-        textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+        onSelected: (value) {
+          if (value == 'folder') {
+            openFileLocation(context, ref, download);
+          } else if (value == 'copy') {
+            copyDownloadUrl(context, download);
+          } else if (value == 'delete') {
+            showDownloadDeleteDialog(context, ref, download);
+          }
+        },
+        itemBuilder:
+            (context) => [
+              _menuItem(
+                'folder',
+                Icons.folder_open_rounded,
+                AppLocalizations.youtubeSearchOpenFolder,
+              ),
+              _menuItem(
+                'copy',
+                Icons.link_rounded,
+                AppLocalizations.downloadsCopyUrl,
+              ),
+              const PopupMenuDivider(),
+              _menuItem(
+                'delete',
+                Icons.delete_outline_rounded,
+                AppLocalizations.downloadsDelete,
+                danger: true,
+              ),
+            ],
+      ),
+    );
+  }
+
+  PopupMenuItem<String> _menuItem(
+    String value,
+    IconData icon,
+    String label, {
+    bool danger = false,
+  }) {
+    final color = danger ? AppColors.lightStatusFailed : null;
+    return PopupMenuItem<String>(
+      value: value,
+      height: 42,
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: color),
+          const SizedBox(width: AppSpacing.smMd),
+          Text(label, style: TextStyle(color: color)),
+        ],
       ),
     );
   }
@@ -607,7 +664,11 @@ class _YouTubeSearchResultItemState
     );
   }
 
-  Widget _buildVideoInfo(ThemeData theme, YouTubeSearchResult video) {
+  Widget _buildVideoInfo(
+    ThemeData theme,
+    YouTubeSearchResult video,
+    DownloadEntity? download,
+  ) {
     final isDark = theme.brightness == Brightness.dark;
     final metaColor =
         isDark
@@ -690,8 +751,49 @@ class _YouTubeSearchResultItemState
                 ),
             ],
           ),
+          // Downloaded-file hint (quality · format · size) — shown once the
+          // matching download completes, so Explore mirrors just enough of the
+          // Home info without becoming a full download-manager row.
+          if (download != null && download.isCompleted) ...[
+            const SizedBox(height: AppSpacing.xxs),
+            Row(
+              children: [
+                Icon(
+                  Icons.check_circle_rounded,
+                  size: 13,
+                  color: AppColors.lightStatusCompleted,
+                ),
+                const SizedBox(width: AppSpacing.xxs),
+                Flexible(
+                  child: Text(
+                    _downloadedHint(download),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppColors.lightStatusCompleted,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ],
     );
+  }
+
+  String _downloadedHint(DownloadEntity d) {
+    final parts = <String>[];
+    if (d.qualityLabel != null && d.qualityLabel!.trim().isNotEmpty) {
+      parts.add(d.qualityLabel!.trim());
+    }
+    final name = d.filename;
+    final dot = name.lastIndexOf('.');
+    if (dot > 0 && dot < name.length - 1) {
+      parts.add(name.substring(dot + 1).toUpperCase());
+    }
+    if (d.totalBytes > 0) parts.add(FileUtils.formatBytes(d.totalBytes));
+    return parts.join('  ·  ');
   }
 }

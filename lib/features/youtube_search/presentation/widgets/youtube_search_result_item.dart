@@ -7,6 +7,7 @@ import '../../../downloads/domain/entities/download_entity.dart';
 import '../../../downloads/domain/entities/download_status.dart';
 import '../../../downloads/domain/services/download_archive_service.dart';
 import '../../../downloads/presentation/providers/downloads_notifier.dart';
+import '../../../downloads/presentation/providers/extraction_provider.dart';
 import '../../../home/presentation/widgets/download_list_helpers.dart';
 import '../../domain/entities/youtube_search_result.dart';
 import 'video_preview_dialog.dart';
@@ -83,6 +84,18 @@ class _YouTubeSearchResultItemState
     // Rebuild only when *this* video's matching download changes.
     final download = ref.watch(
       downloadsNotifierProvider.select((s) => _matchDownload(s.downloads)),
+    );
+
+    // True while yt-dlp is extracting THIS video's formats (the few seconds
+    // between tapping Download and the quality dialog appearing). Drives a
+    // spinner so the click doesn't feel like it did nothing.
+    final isPreparing = ref.watch(
+      extractionProvider.select(
+        (s) =>
+            s.isExtracting &&
+            s.extractingUrl != null &&
+            UrlNormalizer.same(s.extractingUrl!, video.url),
+      ),
     );
 
     final showActions =
@@ -164,6 +177,7 @@ class _YouTubeSearchResultItemState
                           context,
                           compact: compact,
                           download: download,
+                          isPreparing: isPreparing,
                         ),
                       ),
                   ],
@@ -184,9 +198,12 @@ class _YouTubeSearchResultItemState
     BuildContext context, {
     required bool compact,
     required DownloadEntity? download,
+    required bool isPreparing,
   }) {
     final Widget primary;
-    if (download == null) {
+    if (download == null && isPreparing) {
+      primary = _preparingChip(context);
+    } else if (download == null) {
       primary = _downloadButton(context, compact: compact);
     } else if (download.isCompleted) {
       primary = _openFolderButton(context, download, compact: compact);
@@ -264,6 +281,42 @@ class _YouTubeSearchResultItemState
                   ),
                 ),
               ),
+    );
+  }
+
+  /// Shown between tapping Download and the quality dialog appearing, while
+  /// yt-dlp extracts the video's formats. Indeterminate — we can't know how
+  /// long extraction takes, only that it's working.
+  Widget _preparingChip(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final accent = AppColors.accentHighlight;
+    return Container(
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.smMd),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: isDark ? 0.14 : 0.10),
+        borderRadius: BorderRadius.circular(AppRadius.button),
+        border: Border.all(color: accent.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 15,
+            height: 15,
+            child: CircularProgressIndicator(strokeWidth: 2, color: accent),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Text(
+            AppLocalizations.youtubeSearchPreparing,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: accent,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

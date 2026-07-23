@@ -1652,7 +1652,9 @@
     "addBookmark": "Thêm",
     "addBookmarkTitle": "Thêm dấu trang",
     "addBookmarkHint": "Nhập địa chỉ website",
-    "removeBookmark": "Xoá"
+    "removeBookmark": "Xoá",
+    "browserTitle": "Duyệt web & tải media",
+    "browserSubtitle": "Tải video & audio từ hàng nghìn website — dán link hoặc mở nền tảng bên dưới"
   },
   "browserMenu": {
     "downloadVideo": "Tải video",

@@ -33,10 +33,6 @@ class NewTabPage extends ConsumerWidget {
         isDark
             ? AppColors.homeDarkTextSecondary
             : cs.onSurface.withValues(alpha: AppOpacity.secondary);
-    final textTertiary =
-        isDark
-            ? AppColors.homeDarkTextMuted
-            : cs.onSurface.withValues(alpha: AppOpacity.scrim);
 
     return Container(
       color: AppColors.surface1(context),
@@ -51,6 +47,30 @@ class NewTabPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(height: AppSpacing.xxl),
+                // Feature hero — what this tab is for.
+                Text(
+                  AppLocalizations.newTabBrowserTitle,
+                  textAlign: TextAlign.center,
+                  style: AppTypography.appBarTitle.copyWith(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? AppColors.darkLightText : cs.onSurface,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+                  child: Text(
+                    AppLocalizations.newTabBrowserSubtitle,
+                    textAlign: TextAlign.center,
+                    style: AppTypography.compact.copyWith(
+                      color: textSecondary,
+                      letterSpacing: 0,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.xl),
                 Center(
                   child: _MissionControlSearch(
@@ -58,18 +78,6 @@ class NewTabPage extends ConsumerWidget {
                     onNavigate: onNavigate,
                     cardBg: cardBg,
                     textSecondary: textSecondary,
-                  ),
-                ),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.sm),
-                    child: Text(
-                      AppLocalizations.newTabSearchHint,
-                      style: AppTypography.compact.copyWith(
-                        color: textTertiary,
-                        letterSpacing: 0,
-                      ),
-                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xxl),
@@ -169,10 +177,10 @@ class _BookmarkGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 128,
-        mainAxisSpacing: AppSpacing.smMd,
-        crossAxisSpacing: AppSpacing.smMd,
-        childAspectRatio: 1.05,
+        maxCrossAxisExtent: 150,
+        mainAxisSpacing: AppSpacing.md,
+        crossAxisSpacing: AppSpacing.md,
+        childAspectRatio: 0.95,
       ),
       itemCount: bookmarks.length + 1,
       itemBuilder: (context, index) {
@@ -247,66 +255,68 @@ class _BookmarkTileState extends State<_BookmarkTile> {
     // and some read as grey, some pink.
     final badgeBg = isDark ? AppColors.homeDarkAppBg : AppColors.lightSurface2;
 
+    final cs = Theme.of(context).colorScheme;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: widget.onTap,
-        child: Stack(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.smMd),
-              decoration: BoxDecoration(
-                color:
-                    _hovered
-                        ? (isDark
-                            ? AppColors.homeDarkCardHover
-                            : AppColors.lightSurface2)
-                        : (isDark ? AppColors.homeDarkCardBg : Colors.white),
-                borderRadius: BorderRadius.circular(AppRadius.card),
-                border: Border.all(
-                  color:
-                      _hovered
-                          ? AppColors.accentHighlight.withValues(
-                            alpha: AppOpacity.secondary,
-                          )
-                          : (isDark
-                              ? AppColors.homeDarkBorderSubtle
-                              : outline),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: badgeBg,
-                      borderRadius: BorderRadius.circular(AppRadius.card),
-                    ),
-                    child: Center(
-                      child:
-                          hasIcon
-                              ? PlatformIcon(platform: platform, size: 26)
-                              : Text(
-                                _initial,
-                                style: AppTypography.appBarTitle.copyWith(
-                                  fontSize: 20,
-                                  color: color,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.homeDarkCardBg : Colors.white,
+            borderRadius: BorderRadius.circular(AppRadius.card),
+            border: Border.all(
+              color:
+                  _hovered
+                      ? AppColors.accentHighlight.withValues(
+                        alpha: AppOpacity.secondary,
+                      )
+                      : (isDark ? AppColors.homeDarkBorderSubtle : outline),
+              width: _hovered ? 1.4 : 1,
+            ),
+            boxShadow:
+                _hovered && !isDark
+                    ? const [
+                      BoxShadow(
+                        color: Color(0x14000000),
+                        blurRadius: 16,
+                        offset: Offset(0, 6),
+                      ),
+                    ]
+                    : null,
+          ),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: badgeBg,
+                        borderRadius: BorderRadius.circular(AppRadius.card),
+                      ),
+                      child: Center(
+                        child:
+                            hasIcon
+                                ? PlatformIcon(platform: platform, size: 28)
+                                : Text(
+                                  _initial,
+                                  style: AppTypography.appBarTitle.copyWith(
+                                    fontSize: 22,
+                                    color: color,
+                                  ),
                                 ),
-                              ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xs,
-                    ),
-                    child: Text(
+                    const SizedBox(height: AppSpacing.smMd),
+                    Text(
                       title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -314,43 +324,53 @@ class _BookmarkTileState extends State<_BookmarkTile> {
                       style: AppTypography.compact.copyWith(
                         color:
                             _hovered
-                                ? (isDark
-                                    ? Colors.white
-                                    : Theme.of(context).colorScheme.onSurface)
+                                ? (isDark ? Colors.white : cs.onSurface)
                                 : widget.textSecondary,
+                        fontWeight: FontWeight.w500,
                         letterSpacing: 0,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            // Remove (✕) — appears on hover
-            if (_hovered)
-              Positioned(
-                top: 4,
-                right: 4,
-                child: Tooltip(
-                  message: AppLocalizations.newTabRemoveBookmark,
-                  child: GestureDetector(
-                    onTap: widget.onRemove,
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.55),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.close_rounded,
-                        size: 13,
-                        color: Colors.white,
+              // Remove — a clean, self-contained corner button on hover.
+              if (_hovered)
+                Positioned(
+                  top: 6,
+                  right: 6,
+                  child: Tooltip(
+                    message: AppLocalizations.newTabRemoveBookmark,
+                    child: GestureDetector(
+                      onTap: widget.onRemove,
+                      child: Container(
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.homeDarkAppBg : Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color:
+                                isDark
+                                    ? AppColors.homeDarkBorderStrong
+                                    : cs.outline.withValues(
+                                      alpha: AppOpacity.medium,
+                                    ),
+                          ),
+                          boxShadow: const [
+                            BoxShadow(color: Color(0x1A000000), blurRadius: 4),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.close_rounded,
+                          size: 13,
+                          color: cs.onSurface.withValues(alpha: AppOpacity.overlay),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -370,10 +390,13 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final accent = AppColors.accentHighlight;
     final base = Theme.of(
       context,
     ).colorScheme.outline.withValues(alpha: AppOpacity.medium);
+    final badgeBg = isDark ? AppColors.homeDarkAppBg : AppColors.lightSurface2;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
@@ -382,38 +405,43 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.smMd),
           decoration: BoxDecoration(
-            color:
-                _hovered ? accent.withValues(alpha: AppOpacity.hover) : null,
+            color: isDark ? AppColors.homeDarkCardBg : Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.card),
             border: Border.all(
               color: _hovered ? accent.withValues(alpha: 0.5) : base,
+              width: _hovered ? 1.4 : 1,
             ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.add_rounded,
-                  size: 26,
-                  color: _hovered ? accent : base,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: _hovered ? accent.withValues(alpha: AppOpacity.hover) : badgeBg,
+                    borderRadius: BorderRadius.circular(AppRadius.card),
+                  ),
+                  child: Icon(
+                    Icons.add_rounded,
+                    size: 26,
+                    color: _hovered ? accent : base,
+                  ),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                AppLocalizations.newTabAddBookmark,
-                style: AppTypography.compact.copyWith(
-                  color: _hovered ? accent : base,
-                  letterSpacing: 0,
+                const SizedBox(height: AppSpacing.smMd),
+                Text(
+                  AppLocalizations.newTabAddBookmark,
+                  style: AppTypography.compact.copyWith(
+                    color: _hovered ? accent : base,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

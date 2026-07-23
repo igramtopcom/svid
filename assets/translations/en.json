@@ -1652,7 +1652,9 @@
     "addBookmark": "Add",
     "addBookmarkTitle": "Add bookmark",
     "addBookmarkHint": "Enter a website URL",
-    "removeBookmark": "Remove"
+    "removeBookmark": "Remove",
+    "browserTitle": "Browse & download media",
+    "browserSubtitle": "Download video & audio from thousands of websites — paste a link or open a platform below"
   },
   "browserMenu": {
     "downloadVideo": "Download Video",

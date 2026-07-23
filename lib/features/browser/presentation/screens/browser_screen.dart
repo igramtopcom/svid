@@ -266,8 +266,10 @@ class _BrowserScreenState extends ConsumerState<BrowserScreen>
   }
 
   void _goHome() {
-    final homePage = ref.read(browserHomePageProvider);
-    activeController?.loadUrl(homePage);
+    // The Home button returns to the start page (the bookmark grid), which is
+    // rendered whenever the tab URL is about:blank — that's the page users
+    // actually want to get back to, not a configured web homepage.
+    activeController?.loadUrl('about:blank');
   }
 
   Future<void> _openExternal() async {

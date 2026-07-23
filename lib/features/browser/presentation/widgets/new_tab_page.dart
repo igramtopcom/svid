@@ -163,42 +163,29 @@ class _BookmarkGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-        final columns =
-            width >= 720
-                ? 6
-                : width >= 520
-                ? 5
-                : width >= 380
-                ? 4
-                : 3;
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columns,
-            mainAxisSpacing: AppSpacing.sm,
-            crossAxisSpacing: AppSpacing.sm,
-            // Slightly wider than tall — keeps the icon+label tight instead of
-            // floating in a tall, mostly-empty square.
-            childAspectRatio: 1.25,
-          ),
-          itemCount: bookmarks.length + 1,
-          itemBuilder: (context, index) {
-            if (index == bookmarks.length) {
-              return _AddBookmarkTile(onTap: onAdd);
-            }
-            final bm = bookmarks[index];
-            return _BookmarkTile(
-              bookmark: bm,
-              onTap: () => onNavigate(bm.url),
-              onRemove: () => onRemove(bm.id),
-              cardBg: cardBg,
-              textSecondary: textSecondary,
-            );
-          },
+    // Fixed-size tiles (max-extent) so they stay compact and uniform no matter
+    // how wide the browser pane is, instead of stretching into tall cards.
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 128,
+        mainAxisSpacing: AppSpacing.smMd,
+        crossAxisSpacing: AppSpacing.smMd,
+        childAspectRatio: 1.05,
+      ),
+      itemCount: bookmarks.length + 1,
+      itemBuilder: (context, index) {
+        if (index == bookmarks.length) {
+          return _AddBookmarkTile(onTap: onAdd);
+        }
+        final bm = bookmarks[index];
+        return _BookmarkTile(
+          bookmark: bm,
+          onTap: () => onNavigate(bm.url),
+          onRemove: () => onRemove(bm.id),
+          cardBg: cardBg,
+          textSecondary: textSecondary,
         );
       },
     );
@@ -255,6 +242,11 @@ class _BookmarkTileState extends State<_BookmarkTile> {
     final title =
         widget.bookmark.title.isNotEmpty ? widget.bookmark.title : _host;
 
+    // Uniform neutral badge for EVERY tile (icon/letter carries the colour) —
+    // avoids the previous look where each tile's badge took the platform tint
+    // and some read as grey, some pink.
+    final badgeBg = isDark ? AppColors.homeDarkAppBg : AppColors.lightSurface2;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
@@ -265,40 +257,41 @@ class _BookmarkTileState extends State<_BookmarkTile> {
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 150),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.smMd),
               decoration: BoxDecoration(
                 color:
                     _hovered
-                        ? color.withValues(alpha: AppOpacity.hover)
-                        : widget.cardBg.withValues(alpha: AppOpacity.medium),
+                        ? (isDark
+                            ? AppColors.homeDarkCardHover
+                            : AppColors.lightSurface2)
+                        : (isDark ? AppColors.homeDarkCardBg : Colors.white),
                 borderRadius: BorderRadius.circular(AppRadius.card),
-                border:
-                    isDark
-                        ? (_hovered
-                            ? Border.all(
-                              color: Colors.white.withValues(
-                                alpha: AppOpacity.medium,
-                              ),
-                            )
-                            : Border.all(color: AppColors.homeDarkBorderSubtle))
-                        : Border.all(color: outline),
+                border: Border.all(
+                  color:
+                      _hovered
+                          ? AppColors.accentHighlight.withValues(
+                            alpha: AppOpacity.secondary,
+                          )
+                          : (isDark
+                              ? AppColors.homeDarkBorderSubtle
+                              : outline),
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 40,
-                    height: 40,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
-                      color:
-                          _hovered
-                              ? color.withValues(alpha: AppOpacity.subtle)
-                              : color.withValues(alpha: AppOpacity.pressed),
+                      color: badgeBg,
                       borderRadius: BorderRadius.circular(AppRadius.card),
                     ),
                     child: Center(
                       child:
                           hasIcon
-                              ? PlatformIcon(platform: platform, size: 24)
+                              ? PlatformIcon(platform: platform, size: 26)
                               : Text(
                                 _initial,
                                 style: AppTypography.appBarTitle.copyWith(
@@ -321,7 +314,9 @@ class _BookmarkTileState extends State<_BookmarkTile> {
                       style: AppTypography.compact.copyWith(
                         color:
                             _hovered
-                                ? (isDark ? Colors.white : color)
+                                ? (isDark
+                                    ? Colors.white
+                                    : Theme.of(context).colorScheme.onSurface)
                                 : widget.textSecondary,
                         letterSpacing: 0,
                       ),
@@ -333,8 +328,8 @@ class _BookmarkTileState extends State<_BookmarkTile> {
             // Remove (✕) — appears on hover
             if (_hovered)
               Positioned(
-                top: 2,
-                right: 2,
+                top: 4,
+                right: 4,
                 child: Tooltip(
                   message: AppLocalizations.newTabRemoveBookmark,
                   child: GestureDetector(
@@ -387,6 +382,7 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.smMd),
           decoration: BoxDecoration(
             color:
                 _hovered ? accent.withValues(alpha: AppOpacity.hover) : null,
@@ -397,13 +393,19 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.add_rounded,
-                size: 26,
-                color: _hovered ? accent : base,
+              Container(
+                width: 44,
+                height: 44,
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.add_rounded,
+                  size: 26,
+                  color: _hovered ? accent : base,
+                ),
               ),
-              const SizedBox(height: AppSpacing.xs),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 AppLocalizations.newTabAddBookmark,
                 style: AppTypography.compact.copyWith(

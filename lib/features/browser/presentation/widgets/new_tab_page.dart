@@ -181,7 +181,9 @@ class _BookmarkGrid extends StatelessWidget {
             crossAxisCount: columns,
             mainAxisSpacing: AppSpacing.sm,
             crossAxisSpacing: AppSpacing.sm,
-            childAspectRatio: 1.0,
+            // Slightly wider than tall — keeps the icon+label tight instead of
+            // floating in a tall, mostly-empty square.
+            childAspectRatio: 1.25,
           ),
           itemCount: bookmarks.length + 1,
           itemBuilder: (context, index) {

@@ -17,9 +17,7 @@ import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../data/webview/app_webview.dart';
 import '../../domain/entities/intercepted_media.dart';
 import '../../domain/entities/unified_media_item.dart';
-import '../providers/browser_providers.dart';
 import '../providers/content_filter_providers.dart';
-import '../providers/media_detector_provider.dart';
 import '../providers/unified_media_provider.dart';
 
 /// Right-side media panel that surfaces downloadable media detected on the page.
@@ -923,9 +921,7 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
       }
       final headersJson = headers.isNotEmpty ? jsonEncode(headers) : null;
 
-      final filename =
-          item.filename ??
-          _generateFilename(item.downloadUrl!, item.originalCategory);
+      final filename = _resolveOutputFilename(item);
 
       final settingsPath = ref.read(downloadPathProvider);
       final basePath =
@@ -1008,6 +1004,31 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
     }
     if (category == MediaCategory.audio) return 2;
     return 1;
+  }
+
+  /// Resolves the output filename for a download. Critically, HLS manifests must
+  /// NOT keep the detected '.m3u8' name (that's the playlist, not the video) —
+  /// the engine assembles the segments into a real video, so it needs a real
+  /// media extension or the saved file won't play. Prefer the page title.
+  String _resolveOutputFilename(UnifiedMediaItem item) {
+    final isHls = item.originalCategory == MediaCategory.hlsStream ||
+        item.type == MediaItemType.hlsManifest;
+    if (isHls) {
+      final base = _sanitizeFilename(item.title) ??
+          'media_${DateTime.now().millisecondsSinceEpoch}';
+      return '$base.mp4';
+    }
+    return item.filename ??
+        _generateFilename(item.downloadUrl!, item.originalCategory);
+  }
+
+  /// Strips characters illegal in filenames and trims to a safe length.
+  String? _sanitizeFilename(String? name) {
+    if (name == null) return null;
+    var s = name.trim().replaceAll(RegExp(r'[<>:"/\\|?*\x00-\x1F]'), ' ');
+    s = s.replaceAll(RegExp(r'\s+'), ' ').trim();
+    if (s.isEmpty) return null;
+    return s.length > 120 ? s.substring(0, 120).trim() : s;
   }
 
   String _generateFilename(String url, MediaCategory? category) {

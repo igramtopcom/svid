@@ -49,7 +49,6 @@ import '../../features/downloads/presentation/screens/collections_screen.dart';
 import '../../features/activity_center/presentation/screens/activity_center_screen.dart';
 import '../../features/downloads/domain/services/download_scheduler_service.dart';
 import '../../features/converter/presentation/screens/forge_screen.dart';
-import '../../features/youtube_search/presentation/providers/youtube_explore_provider.dart';
 import '../../features/youtube_search/presentation/screens/youtube_explore_screen.dart';
 import 'navigation_constants.dart';
 import '../../features/downloads/presentation/providers/batch_selection_provider.dart';
@@ -1378,14 +1377,10 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
       return HomeScreen(key: _homeScreenKey);
     }
 
-    // Explore tab — full inline YouTube discovery + subscriptions experience.
+    // Explore tab — inline YouTube discovery + search.
     if (index == NavigationConstants.youtubeIndex ||
         index == NavigationConstants.subscriptionsIndex) {
       return YouTubeExploreScreen(
-        initialSection:
-            index == NavigationConstants.subscriptionsIndex
-                ? ExploreSection.subscriptions
-                : ExploreSection.discovery,
         // Download in place: HomeScreen is mounted offstage, so its flow runs
         // here and the QuickDownloadSheet (when the user is on "Ask first") is
         // a modal over the whole app — it appears over Explore without a tab
@@ -1393,9 +1388,6 @@ class _AppScaffoldState extends ConsumerState<AppScaffold>
         // "Default download" setting as the Home tab.
         onVideoDownload: (url) {
           _homeScreenKey.currentState?.setUrlAndStart(url);
-        },
-        onBatchDownloadSelected: (urls) {
-          _homeScreenKey.currentState?.handleBatchDownload(urls);
         },
       );
     }

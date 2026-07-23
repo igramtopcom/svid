@@ -1,16 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/core.dart';
-import '../../../youtube_channel/domain/entities/subscribed_channel.dart';
-import '../../../youtube_channel/presentation/providers/channel_subscriptions_provider.dart';
 import '../providers/recent_searches_provider.dart';
 import '../providers/youtube_trending_provider.dart';
 import 'youtube_search_result_item.dart';
 
-/// Discovery view — landing state of YouTube Explore tab.
-/// Sections: Category tabs → Recent Searches → Trending → Explore Categories → Subscriptions
+/// Discovery view — landing state of the Explore tab.
+/// Sections: Category tabs → Recent Searches → Trending.
 class YouTubeDiscoveryView extends ConsumerWidget {
   final void Function(String query) onSearch;
 
@@ -55,10 +52,6 @@ class YouTubeDiscoveryView extends ConsumerWidget {
                 onSearch: onSearch,
                 onVideoDownload: onVideoDownload,
               ),
-              const SizedBox(height: AppSpacing.xl),
-
-              // Subscriptions
-              _SubscriptionsSection(onSearch: onSearch),
             ],
           ),
         ),
@@ -584,165 +577,3 @@ class _TrendingItem {
   const _TrendingItem(this.title, this.icon, this.color);
 }
 
-// =============================================================================
-// Subscriptions
-// =============================================================================
-
-class _SubscriptionsSection extends ConsumerWidget {
-  final void Function(String) onSearch;
-
-  const _SubscriptionsSection({required this.onSearch});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final cs = Theme.of(context).colorScheme;
-    final subscriptions = ref.watch(subscribedChannelsStreamProvider);
-
-    return subscriptions.when(
-      data: (channels) {
-        if (channels.isEmpty) return const SizedBox.shrink();
-        return _DiscoverySurface(
-          header: _SectionHeader(
-            icon: Icons.subscriptions_rounded,
-            title: AppLocalizations.youtubeSearchYourSubscriptions,
-            color: cs.primary,
-          ),
-          child: SizedBox(
-            height: 84,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: channels.length,
-              separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
-              itemBuilder: (context, index) {
-                final channel = channels[index];
-                return _SubscriptionAvatar(
-                  channel: channel,
-                  onTap: () => onSearch(channel.channelName),
-                );
-              },
-            ),
-          ),
-        );
-      },
-      loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
-    );
-  }
-}
-
-class _SubscriptionAvatar extends StatefulWidget {
-  final SubscribedChannel channel;
-  final VoidCallback onTap;
-
-  const _SubscriptionAvatar({required this.channel, required this.onTap});
-
-  @override
-  State<_SubscriptionAvatar> createState() => _SubscriptionAvatarState();
-}
-
-class _SubscriptionAvatarState extends State<_SubscriptionAvatar> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-
-    return MouseRegion(
-      onEnter: (_) {
-        if (mounted) setState(() => _hovered = true);
-      },
-      onExit: (_) {
-        if (mounted) setState(() => _hovered = false);
-      },
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: SizedBox(
-          width: 68,
-          child: Column(
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color:
-                        _hovered
-                            ? AppColors.accentHighlight
-                            : (theme.brightness == Brightness.dark
-                                ? AppColors.homeDarkBorderStrong
-                                : Colors.transparent),
-                    width: 2,
-                  ),
-                ),
-                child: ClipOval(
-                  child:
-                      widget.channel.thumbnail != null
-                          ? CachedNetworkImage(
-                            imageUrl: widget.channel.thumbnail!,
-                            width: 46,
-                            height: 46,
-                            fit: BoxFit.cover,
-                            memCacheWidth: 92,
-                            memCacheHeight: 92,
-                            placeholder:
-                                (_, __) => Container(
-                                  color: AppColors.surface2(context),
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 20,
-                                    color: cs.onSurface.withValues(
-                                      alpha: AppOpacity.quarter,
-                                    ),
-                                  ),
-                                ),
-                            errorWidget:
-                                (_, __, ___) => Container(
-                                  color: AppColors.surface2(context),
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 20,
-                                    color: cs.onSurface.withValues(
-                                      alpha: AppOpacity.quarter,
-                                    ),
-                                  ),
-                                ),
-                          )
-                          : Container(
-                            width: 46,
-                            height: 46,
-                            color: AppColors.surface2(context),
-                            child: Icon(
-                              Icons.person,
-                              size: 20,
-                              color: cs.onSurface.withValues(
-                                alpha: AppOpacity.quarter,
-                              ),
-                            ),
-                          ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                widget.channel.channelName,
-                style: AppTypography.mini.copyWith(
-                  color:
-                      theme.brightness == Brightness.dark
-                          ? AppColors.homeDarkTextSecondary
-                          : cs.onSurface.withValues(
-                            alpha: AppOpacity.secondary,
-                          ),
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

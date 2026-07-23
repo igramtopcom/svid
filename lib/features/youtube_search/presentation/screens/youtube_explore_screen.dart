@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/core.dart';
 import '../../../../core/providers/backend_providers.dart';
 import '../../../home/presentation/widgets/command_bar_preset_chip.dart';
-import '../../../youtube_channel/presentation/screens/subscriptions_screen.dart';
 import '../providers/recent_searches_provider.dart';
 import '../providers/youtube_autocomplete_provider.dart';
 import '../providers/youtube_explore_provider.dart';
@@ -14,14 +13,10 @@ import '../widgets/youtube_results_view.dart';
 
 class YouTubeExploreScreen extends ConsumerStatefulWidget {
   final void Function(String url) onVideoDownload;
-  final void Function(List<String> urls)? onBatchDownloadSelected;
-  final ExploreSection initialSection;
 
   const YouTubeExploreScreen({
     super.key,
     required this.onVideoDownload,
-    this.onBatchDownloadSelected,
-    this.initialSection = ExploreSection.discovery,
   });
 
   @override
@@ -44,14 +39,6 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
     super.initState();
     _searchController.addListener(_onSearchTextChanged);
     _searchFocusNode.addListener(_onFocusChanged);
-    if (widget.initialSection != ExploreSection.discovery) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        ref
-            .read(youtubeExploreProvider.notifier)
-            .switchSection(widget.initialSection);
-      });
-    }
   }
 
   @override
@@ -150,12 +137,6 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
     _searchController.text = query;
     _searchController.selection = TextSelection.collapsed(offset: query.length);
     _performSearch(query);
-  }
-
-  void _switchSection(ExploreSection section) {
-    _removeAutocompleteOverlay();
-    _searchFocusNode.unfocus();
-    ref.read(youtubeExploreProvider.notifier).switchSection(section);
   }
 
   Future<void> _pasteFromClipboard() async {
@@ -527,7 +508,6 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
     final isDark = theme.brightness == Brightness.dark;
     final exploreState = ref.watch(youtubeExploreProvider);
     final isResults = exploreState.mode == ExploreMode.searchResults;
-    final activeSection = exploreState.section;
     final pageBg = isDark ? AppColors.homeDarkAppBg : AppColors.lightBase;
 
     ref.listen(youtubeAutocompleteProvider, (_, __) {
@@ -557,12 +537,6 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
                     isDark: isDark,
                     isResults: isResults,
                   ),
-                  if (!isResults)
-                    _ExploreSectionTabs(
-                      activeSection: activeSection,
-                      onSectionChanged: _switchSection,
-                      isDark: isDark,
-                    ),
                   Expanded(
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
@@ -586,13 +560,6 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
                               ? YouTubeResultsView(
                                 key: const ValueKey('results'),
                                 onVideoDownload: widget.onVideoDownload,
-                              )
-                              : activeSection == ExploreSection.subscriptions
-                              ? SubscriptionsScreen(
-                                key: const ValueKey('subscriptions'),
-                                embedded: true,
-                                onDownloadSelected:
-                                    widget.onBatchDownloadSelected,
                               )
                               : YouTubeDiscoveryView(
                                 key: const ValueKey('discovery'),
@@ -820,165 +787,6 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
                       ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ExploreSectionTabs extends StatelessWidget {
-  final ExploreSection activeSection;
-  final ValueChanged<ExploreSection> onSectionChanged;
-  final bool isDark;
-
-  const _ExploreSectionTabs({
-    required this.activeSection,
-    required this.onSectionChanged,
-    required this.isDark,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        0,
-        AppSpacing.lg,
-        AppSpacing.smMd,
-      ),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1440),
-          child: Builder(
-            builder: (context) {
-              return Row(
-                children: [
-                  // Explore is YouTube-only (yt-dlp only exposes YouTube
-                  // search) — mark it plainly so it's clear other platforms
-                  // live under Home / Browser, not here.
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.smMd, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: AppColors.brand
-                          .withValues(alpha: isDark ? 0.16 : 0.10),
-                      borderRadius: BorderRadius.circular(AppRadius.full),
-                      border: Border.all(
-                          color: AppColors.brand.withValues(alpha: 0.30)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.smart_display_rounded,
-                            size: 15, color: AppColors.brand),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          'YouTube',
-                          style: AppTypography.statusBadge.copyWith(
-                            color: AppColors.brand,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.smMd),
-                  _ExploreSectionButton(
-                    icon: Icons.explore_rounded,
-                    label: AppLocalizations.youtubeTabTitle,
-                    isSelected: activeSection == ExploreSection.discovery,
-                    isDark: isDark,
-                    onTap: () => onSectionChanged(ExploreSection.discovery),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  _ExploreSectionButton(
-                    icon: Icons.subscriptions_rounded,
-                    label: AppLocalizations.navSubscriptions,
-                    isSelected: activeSection == ExploreSection.subscriptions,
-                    isDark: isDark,
-                    onTap: () => onSectionChanged(ExploreSection.subscriptions),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ExploreSectionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isSelected;
-  final bool isDark;
-  final VoidCallback onTap;
-
-  const _ExploreSectionButton({
-    required this.icon,
-    required this.label,
-    required this.isSelected,
-    required this.isDark,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final accent = AppColors.accentHighlight;
-    final bg =
-        isSelected
-            ? accent.withValues(alpha: isDark ? AppOpacity.pressed : 0.10)
-            : (isDark ? AppColors.homeDarkCardBg : AppColors.surface1(context));
-    final border =
-        isSelected
-            ? accent.withValues(alpha: AppOpacity.secondary)
-            : (isDark
-                ? AppColors.homeDarkBorderSubtle
-                : cs.outlineVariant.withValues(alpha: AppOpacity.scrim));
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppRadius.card),
-      child: AnimatedContainer(
-        duration: AppTransitions.fast,
-        height: 36,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.smMd),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(AppRadius.card),
-          border: Border.all(color: border, width: isSelected ? 1.2 : 1),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 16,
-              color:
-                  isSelected
-                      ? accent
-                      : (isDark
-                          ? AppColors.homeDarkTextSecondary
-                          : cs.onSurfaceVariant),
-            ),
-            const SizedBox(width: AppSpacing.xs),
-            Text(
-              label,
-              style: AppTypography.buttonSecondary.copyWith(
-                color:
-                    isSelected
-                        ? accent
-                        : (isDark
-                            ? AppColors.homeDarkTextSecondary
-                            : cs.onSurface),
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-              ),
-            ),
-          ],
         ),
       ),
     );

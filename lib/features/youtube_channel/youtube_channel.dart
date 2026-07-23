@@ -13,8 +13,6 @@ export 'presentation/providers/youtube_channel_provider.dart';
 export 'presentation/providers/channel_subscriptions_provider.dart';
 export 'presentation/screens/youtube_channel_sheet.dart';
 export 'presentation/screens/channel_video_list_screen.dart';
-export 'presentation/screens/subscriptions_screen.dart';
 export 'presentation/widgets/channel_video_item.dart';
-export 'presentation/widgets/subscription_button.dart';
 export 'presentation/widgets/subscribed_channel_card.dart';
 export 'presentation/widgets/channel_info_header.dart';

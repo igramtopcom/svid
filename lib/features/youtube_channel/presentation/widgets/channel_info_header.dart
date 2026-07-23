@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
 import '../../domain/entities/channel_info.dart';
-import 'subscription_button.dart';
 
 /// Subject Profile — Nocturne Cinematic "The Dossier" surveillance style
 /// Design ref: Stitch screen aeb19b1031ea45b4b26f3cfbf57f0cc6
@@ -155,10 +154,6 @@ class _ChannelInfoHeaderState extends State<ChannelInfoHeader> {
               ),
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
-
-          // Subscribe button — Nocturne capsule
-          SubscriptionButton(channel: ch),
         ],
       ),
     );

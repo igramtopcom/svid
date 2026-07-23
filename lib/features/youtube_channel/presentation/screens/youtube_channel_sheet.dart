@@ -6,7 +6,6 @@ import '../../../../core/core.dart';
 import '../providers/youtube_channel_provider.dart';
 import '../widgets/channel_video_item.dart';
 import '../widgets/channel_video_skeleton.dart';
-import '../widgets/subscription_button.dart';
 
 /// YouTube Channel browser — Nocturne Cinematic "Intelligence Terminal" dialog
 class YouTubeChannelSheet extends ConsumerStatefulWidget {
@@ -780,8 +779,6 @@ class _YouTubeChannelSheetState
               ],
             ),
           ),
-          // Subscribe button
-          SubscriptionButton(channel: channel),
         ],
       ),
     );

@@ -9,13 +9,9 @@ import 'youtube_search_provider.dart';
 /// View mode for YouTube Explore tab
 enum ExploreMode { discovery, searchResults }
 
-/// Top-level section inside the unified Explore surface.
-enum ExploreSection { discovery, subscriptions }
-
 /// State for the YouTube Explore screen
 class YouTubeExploreState {
   final ExploreMode mode;
-  final ExploreSection section;
   final YouTubeSearchResult? selectedVideo;
   final YtDlpVideoInfo? videoDetail;
   final bool isLoadingDetail;
@@ -23,7 +19,6 @@ class YouTubeExploreState {
 
   const YouTubeExploreState({
     this.mode = ExploreMode.discovery,
-    this.section = ExploreSection.discovery,
     this.selectedVideo,
     this.videoDetail,
     this.isLoadingDetail = false,
@@ -32,7 +27,6 @@ class YouTubeExploreState {
 
   YouTubeExploreState copyWith({
     ExploreMode? mode,
-    ExploreSection? section,
     YouTubeSearchResult? selectedVideo,
     YtDlpVideoInfo? videoDetail,
     bool? isLoadingDetail,
@@ -43,7 +37,6 @@ class YouTubeExploreState {
   }) {
     return YouTubeExploreState(
       mode: mode ?? this.mode,
-      section: section ?? this.section,
       selectedVideo:
           clearSelection ? null : (selectedVideo ?? this.selectedVideo),
       videoDetail: clearDetail ? null : (videoDetail ?? this.videoDetail),
@@ -64,7 +57,6 @@ class YouTubeExploreNotifier extends StateNotifier<YouTubeExploreState> {
     if (query.trim().isEmpty) return;
     state = state.copyWith(
       mode: ExploreMode.searchResults,
-      section: ExploreSection.discovery,
       clearSelection: true,
       clearDetail: true,
       clearError: true,
@@ -75,20 +67,6 @@ class YouTubeExploreNotifier extends StateNotifier<YouTubeExploreState> {
   /// Return to discovery mode
   void backToDiscovery() {
     state = const YouTubeExploreState();
-    _ref.read(youtubeSearchProvider.notifier).clear();
-  }
-
-  /// Switch between Explore sections without leaving the unified tab.
-  void switchSection(ExploreSection section) {
-    if (state.section == section && state.mode == ExploreMode.discovery) return;
-    state = state.copyWith(
-      mode: ExploreMode.discovery,
-      section: section,
-      clearSelection: true,
-      clearDetail: true,
-      clearError: true,
-      isLoadingDetail: false,
-    );
     _ref.read(youtubeSearchProvider.notifier).clear();
   }
 

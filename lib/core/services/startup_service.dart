@@ -16,14 +16,11 @@ import '../network/backend_dtos.dart';
 import '../providers/backend_providers.dart';
 import '../../features/settings/presentation/providers/settings_provider.dart'
     show sharedPreferencesProvider;
-import '../../features/youtube_channel/data/datasources/channel_subscription_local_datasource.dart';
 import 'auto_update_service.dart';
 import 'error_reporter_service.dart';
 import 'instrumentation.dart';
 import 'notification_center_service.dart';
-import 'subscription_poll_service.dart';
 import 'ticket_poll_service.dart';
-import '../providers/database_provider.dart';
 import 'vidcombo/vidcombo_backend_adapter.dart';
 import '../providers/notification_center_provider.dart';
 import '../../features/downloads/data/services/vidcombo_installer_marker_policy.dart';
@@ -87,9 +84,6 @@ class StartupService {
     try {
       container.read(premiumBootstrapReadyProvider.notifier).state = true;
     } catch (_) {}
-
-    // Subscription polling is brand-agnostic (uses yt-dlp, not backend API).
-    _startSubscriptionPolling(container);
   }
 
   /// Svid startup flow — Go backend with X-API-Key auth.
@@ -863,21 +857,6 @@ class StartupService {
       // since the app process terminates on close.
     } catch (e) {
       appLogger.debug('Ticket polling start failed (non-critical): $e');
-    }
-  }
-
-  static void _startSubscriptionPolling(ProviderContainer container) {
-    try {
-      final database = container.read(databaseProvider);
-      final localDataSource = ChannelSubscriptionLocalDataSource(database);
-
-      final pollService = SubscriptionPollService(
-        localDataSource: localDataSource,
-        container: container,
-      );
-      pollService.start();
-    } catch (e) {
-      appLogger.debug('Subscription polling start failed (non-critical): $e');
     }
   }
 

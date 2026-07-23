@@ -9,8 +9,9 @@ import '../providers/content_filter_providers.dart';
 // ── Bookmark-card visual tokens ──
 // A softer, larger corner than the brand's 12px card radius so the tiles read
 // as friendly feature cards; the badge echoes it one step tighter.
-const double _kTileRadius = 18;
-const double _kBadgeRadius = 14;
+const double _kTileRadius = 16;
+const double _kBadgeRadius = 12;
+const double _kBadgeSize = 42;
 
 // Layered, slate-tinted elevation (matching AppShadow's palette) so cards lift
 // off the page with a soft, diffuse edge rather than a hard grey line. The
@@ -207,10 +208,10 @@ class _BookmarkGrid extends StatelessWidget {
       // Don't clip the hover-lift shadow at the grid's edges.
       clipBehavior: Clip.none,
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 156,
-        mainAxisSpacing: AppSpacing.lg,
-        crossAxisSpacing: AppSpacing.lg,
-        childAspectRatio: 0.95,
+        maxCrossAxisExtent: 132,
+        mainAxisSpacing: AppSpacing.md,
+        crossAxisSpacing: AppSpacing.md,
+        childAspectRatio: 1.0,
       ),
       itemCount: bookmarks.length + 1,
       itemBuilder: (context, index) {
@@ -279,8 +280,9 @@ class _BookmarkTileState extends State<_BookmarkTile> {
 
     // Uniform neutral badge for EVERY tile (icon/letter carries the colour) —
     // avoids the previous look where each tile's badge took the platform tint
-    // and some read as grey, some pink.
-    final badgeBg = isDark ? AppColors.homeDarkAppBg : AppColors.lightSurface2;
+    // and some read as grey, some pink. Uses the page's surface colour so it
+    // reads as a soft inset "chip" on the white card (adds internal contrast).
+    final badgeBg = isDark ? AppColors.homeDarkAppBg : AppColors.surface1(context);
 
     final cs = Theme.of(context).colorScheme;
 
@@ -327,8 +329,8 @@ class _BookmarkTileState extends State<_BookmarkTile> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 48,
-                      height: 48,
+                      width: _kBadgeSize,
+                      height: _kBadgeSize,
                       decoration: BoxDecoration(
                         color: badgeBg,
                         borderRadius: BorderRadius.circular(_kBadgeRadius),
@@ -336,11 +338,11 @@ class _BookmarkTileState extends State<_BookmarkTile> {
                       child: Center(
                         child:
                             hasIcon
-                                ? PlatformIcon(platform: platform, size: 28)
+                                ? PlatformIcon(platform: platform, size: 24)
                                 : Text(
                                   _initial,
                                   style: AppTypography.appBarTitle.copyWith(
-                                    fontSize: 22,
+                                    fontSize: 19,
                                     color: color,
                                   ),
                                 ),
@@ -353,11 +355,12 @@ class _BookmarkTileState extends State<_BookmarkTile> {
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
                       style: AppTypography.compact.copyWith(
+                        fontSize: 14,
                         color:
                             _hovered
                                 ? (isDark ? Colors.white : cs.onSurface)
                                 : widget.textSecondary,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                         letterSpacing: 0,
                       ),
                     ),
@@ -427,7 +430,7 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
     final base = Theme.of(
       context,
     ).colorScheme.outline.withValues(alpha: AppOpacity.medium);
-    final badgeBg = isDark ? AppColors.homeDarkAppBg : AppColors.lightSurface2;
+    final badgeBg = isDark ? AppColors.homeDarkAppBg : AppColors.surface1(context);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
@@ -460,15 +463,15 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: _kBadgeSize,
+                  height: _kBadgeSize,
                   decoration: BoxDecoration(
                     color: _hovered ? accent.withValues(alpha: AppOpacity.hover) : badgeBg,
                     borderRadius: BorderRadius.circular(_kBadgeRadius),
                   ),
                   child: Icon(
                     Icons.add_rounded,
-                    size: 26,
+                    size: 23,
                     color: _hovered ? accent : base,
                   ),
                 ),
@@ -476,8 +479,9 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
                 Text(
                   AppLocalizations.newTabAddBookmark,
                   style: AppTypography.compact.copyWith(
+                    fontSize: 14,
                     color: _hovered ? accent : base,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                     letterSpacing: 0,
                   ),
                 ),

@@ -520,7 +520,7 @@ class _TrendingSection extends ConsumerWidget {
       final async = ref.watch(categoryVideosProvider(category));
       return _DiscoverySurface(
         header: _SectionHeader(
-          icon: Icons.tag_rounded,
+          icon: Icons.trending_up_rounded,
           title: category,
           color: AppColors.accentHighlight,
         ),

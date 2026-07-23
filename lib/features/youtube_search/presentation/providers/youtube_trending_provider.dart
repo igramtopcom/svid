@@ -46,21 +46,19 @@ final youtubeTrendingProvider = FutureProvider<List<YouTubeSearchResult>>((
 /// Null means the default region-trending feed is shown.
 final exploreCategoryProvider = StateProvider<String?>((ref) => null);
 
-/// Real videos for a category, sourced from the matching YouTube hashtag
-/// (#music, #gaming, #sports …). Cached per category by the family, so
-/// re-selecting a chip is instant. Empty list on failure.
+/// Real videos for a category. Uses the native **search** bridge (reliable
+/// in-app) rather than the #hashtag/tab extractor, which YouTube blocks for the
+/// app's yt-dlp (returns empty). The chip label is the query; channels are
+/// filtered out. Cached per category by the family, so re-selecting is instant.
 final categoryVideosProvider =
     FutureProvider.family<List<YouTubeSearchResult>, String>((
       ref,
       category,
     ) async {
       final repo = await ref.watch(youtubeSearchRepositoryProvider.future);
-      final result = await repo.trending(
-        hashtag: category.toLowerCase(),
-        maxResults: 18,
-      );
+      final result = await repo.search(query: category, maxResults: 18);
       return result.when(
-        success: (list) => list,
+        success: (list) => list.where((v) => !v.isChannel).toList(),
         failure: (_) => const <YouTubeSearchResult>[],
       );
     });

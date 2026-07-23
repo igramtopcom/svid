@@ -346,24 +346,25 @@ class _BookmarkTileState extends State<_BookmarkTile> {
                         width: 22,
                         height: 22,
                         decoration: BoxDecoration(
-                          color: isDark ? AppColors.homeDarkAppBg : Colors.white,
+                          // Soft dark disc so it reads clearly on the white
+                          // card (a white button was invisible), with a light
+                          // ring for separation.
+                          color: Colors.black.withValues(alpha: 0.5),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color:
-                                isDark
-                                    ? AppColors.homeDarkBorderStrong
-                                    : cs.outline.withValues(
-                                      alpha: AppOpacity.medium,
-                                    ),
+                            color: Colors.white.withValues(
+                              alpha: AppOpacity.secondary,
+                            ),
+                            width: 1.2,
                           ),
                           boxShadow: const [
-                            BoxShadow(color: Color(0x1A000000), blurRadius: 4),
+                            BoxShadow(color: Color(0x33000000), blurRadius: 4),
                           ],
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.close_rounded,
                           size: 13,
-                          color: cs.onSurface.withValues(alpha: AppOpacity.overlay),
+                          color: Colors.white,
                         ),
                       ),
                     ),

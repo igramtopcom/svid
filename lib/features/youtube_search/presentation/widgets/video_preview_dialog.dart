@@ -47,9 +47,10 @@ class VideoPreviewDialog extends StatefulWidget {
 class _VideoPreviewDialogState extends State<VideoPreviewDialog> {
   bool _loading = true;
 
-  String get _embedUrl =>
-      'https://www.youtube.com/embed/${widget.video.id}'
-      '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+  // Load the full watch page, not the /embed player: many music videos (VEVO,
+  // label/official channels) disable third-party embedding, which makes the
+  // embed player fail with "Error 153". The watch page plays regardless.
+  String get _watchUrl => widget.video.url;
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +177,7 @@ class _VideoPreviewDialogState extends State<VideoPreviewDialog> {
       children: [
         iaw.InAppWebView(
           webViewEnvironment: WebViewEnvironmentService.instance,
-          initialUrlRequest: iaw.URLRequest(url: iaw.WebUri(_embedUrl)),
+          initialUrlRequest: iaw.URLRequest(url: iaw.WebUri(_watchUrl)),
           initialSettings: iaw.InAppWebViewSettings(
             javaScriptEnabled: true,
             transparentBackground: true,

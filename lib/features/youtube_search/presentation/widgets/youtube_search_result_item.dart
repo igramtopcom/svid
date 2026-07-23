@@ -126,7 +126,9 @@ class _YouTubeSearchResultItemState
                   : null,
         ),
         child: InkWell(
-          onTap: widget.onTap,
+          // Tap anywhere on the card to preview; the Download button (and only
+          // it) starts a download. Channels aren't previewable.
+          onTap: video.isChannel ? null : _openPreview,
           borderRadius: BorderRadius.circular(AppRadius.card),
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -194,50 +196,8 @@ class _YouTubeSearchResultItemState
       primary = _progressChip(context, download);
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _previewButton(context),
-        const SizedBox(width: AppSpacing.xs),
-        primary,
-      ],
-    );
-  }
-
-  Widget _previewButton(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 120),
-      opacity: _isHovered ? 1.0 : 0.72,
-      child: Tooltip(
-        message: AppLocalizations.youtubeSearchPreview,
-        child: IconButton(
-          onPressed: _openPreview,
-          icon: const Icon(Icons.play_arrow_rounded, size: 20),
-          constraints: const BoxConstraints.tightFor(width: 40, height: 40),
-          padding: EdgeInsets.zero,
-          style: IconButton.styleFrom(
-            foregroundColor:
-                isDark ? AppColors.darkLightText : theme.colorScheme.onSurface,
-            backgroundColor:
-                isDark
-                    ? AppColors.homeDarkAppBg
-                    : AppColors.surface3(context),
-            side: BorderSide(
-              color:
-                  isDark
-                      ? AppColors.homeDarkBorderStrong
-                      : AppColors.border(context),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.button),
-            ),
-          ),
-        ),
-      ),
-    );
+    // Tapping the card previews; only this action triggers a download.
+    return primary;
   }
 
   Widget _downloadButton(BuildContext context, {required bool compact}) {

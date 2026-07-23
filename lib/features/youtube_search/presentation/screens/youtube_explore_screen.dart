@@ -421,8 +421,11 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
+                // Vertical padding centres the text + icons in the 52px box.
+                // Without it (isDense + borderless) the content hugs the top.
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.md,
                 ),
                 isDense: true,
               ),

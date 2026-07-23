@@ -160,6 +160,12 @@ UnifiedMediaItem? _classifyInterceptedMedia(
     return null;
   }
 
+  // Belt-and-suspenders: never surface a raw HLS/DASH segment as a standalone
+  // download (a single .ts/.m4s is unplayable, e.g. seg-1-v1-a1.ts). classifyUrl
+  // tags most of these as segments, but extensionless CDN segments can slip
+  // through — the .m3u8 manifest above is the real, assemblable item.
+  if (_looksLikeStreamSegment(media.url)) return null;
+
   // Known platform CDN activity → streaming signal (route to yt-dlp)
   if (currentPlatform != VideoPlatform.unknown) {
     if (_isFacebookDirectCdnMedia(media, currentPlatform)) {
@@ -296,6 +302,16 @@ bool _isFeedUrl(String url) {
   if (isProfileRoot) return true;
 
   return false;
+}
+
+/// Whether a URL points at an individual HLS/DASH stream segment (not a full,
+/// independently playable file). Matches `.ts`/`.m4s` files and the common
+/// seg-/segment/chunk/frag naming, so a single segment is never offered as a
+/// standalone download.
+bool _looksLikeStreamSegment(String url) {
+  final path = (Uri.tryParse(url)?.path ?? url).toLowerCase();
+  if (path.endsWith('.ts') || path.endsWith('.m4s')) return true;
+  return RegExp(r'[/_-](seg|segment|chunk|frag)[-_]?\d').hasMatch(path);
 }
 
 String _extractDomain(String url) {

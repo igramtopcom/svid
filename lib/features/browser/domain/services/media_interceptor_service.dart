@@ -106,9 +106,13 @@ class MediaInterceptorService {
       var u = new URL(url, location.href);
       var path = u.pathname;
       if (_streamExts.test(path)) return 'stream';
+      // Segments MUST be checked before video: '.ts' is also in _videoExts, but
+      // an HLS/DASH segment (.ts/.m4s, or seg-/chunk-/frag-named) is NOT an
+      // independently downloadable file — the .m3u8 manifest is the real item.
+      if (_segmentExts.test(path)) return 'segment';
+      if (/[\\/_-](seg|segment|chunk|frag)[-_]?\\d/i.test(path)) return 'segment';
       if (_audioExts.test(path)) return 'audio';
       if (_videoExts.test(path)) return 'video';
-      if (_segmentExts.test(path)) return 'segment';
       // CDN domain without media extension → likely video
       if (_cdnDomains.test(u.hostname)) return 'video';
       return 'unknown';

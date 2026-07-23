@@ -2,18 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/core.dart';
-import '../../domain/entities/intercepted_media.dart';
 import '../../domain/services/cookie_inspector_service.dart';
 import '../../domain/services/video_url_detector.dart';
 import '../providers/content_filter_providers.dart';
-import '../providers/media_detector_provider.dart';
 import '../providers/unified_media_provider.dart';
 import 'browser_bookmarks_panel.dart';
 import 'browser_history_panel.dart';
 import 'browser_security_indicators.dart';
-import '../../../premium/domain/entities/premium_feature.dart';
-import '../../../premium/presentation/providers/premium_providers.dart';
-import '../../../premium/presentation/widgets/upgrade_prompt_dialog.dart';
 
 /// The browser's top toolbar containing navigation buttons, URL field,
 /// bookmark toggle, history, bookmarks, external-open, and fullscreen buttons.
@@ -223,6 +218,11 @@ class BrowserToolbar extends ConsumerWidget {
             ),
           ),
 
+          // Media download pill (IDM mode) — first in the trailing cluster,
+          // right after the URL bar, so it's easy to spot (not jammed in the
+          // far corner).
+          _MediaSniffButton(),
+
           // Bookmark toggle
           IconButton(
             onPressed: onToggleBookmark,
@@ -287,9 +287,6 @@ class BrowserToolbar extends ConsumerWidget {
                     : AppLocalizations.browserFullscreenEnter,
             visualDensity: VisualDensity.compact,
           ),
-
-          // Media sniff toggle (IDM mode)
-          _MediaSniffButton(),
 
           // Security shield icon
           BrowserSecurityShield(currentUrl: currentUrl),
@@ -426,23 +423,71 @@ class _MediaSniffButton extends ConsumerWidget {
     final count =
         ref.watch(unifiedMediaProvider).where((i) => i.isDownloadable).length;
     final isOpen = ref.watch(sniffPanelOpenProvider);
-    final active = count > 0 || isOpen;
 
-    return Badge(
-      isLabelVisible: count > 0,
-      label: Text('$count', style: AppTypography.mini),
-      backgroundColor: AppColors.accentHighlight,
-      child: IconButton(
-        onPressed:
-            () => ref.read(sniffPanelOpenProvider.notifier).state = !isOpen,
-        icon: Icon(
-          Icons.download_rounded,
-          size: 20,
-          color: active ? AppColors.accentHighlight : null,
+    void toggle() =>
+        ref.read(sniffPanelOpenProvider.notifier).state = !isOpen;
+
+    // Prominent accent pill when media is available (Cốc Cốc-style) so it's
+    // easy to notice; a subtle icon otherwise.
+    if (count > 0) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+        child: Tooltip(
+          message: AppLocalizations.browserMediaSniffTitle,
+          child: Material(
+            color: AppColors.accentHighlight,
+            borderRadius: BorderRadius.circular(AppRadius.full),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppRadius.full),
+              onTap: toggle,
+              child: const Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.smMd,
+                  vertical: 6,
+                ),
+                child: _MediaSniffPillContent(),
+              ),
+            ),
+          ),
         ),
-        tooltip: AppLocalizations.browserMediaSniffTitle,
-        visualDensity: VisualDensity.compact,
+      );
+    }
+
+    return IconButton(
+      onPressed: toggle,
+      icon: Icon(
+        Icons.download_rounded,
+        size: 20,
+        color: isOpen ? AppColors.accentHighlight : null,
       ),
+      tooltip: AppLocalizations.browserMediaSniffTitle,
+      visualDensity: VisualDensity.compact,
+    );
+  }
+}
+
+/// Inner content of the media pill — kept separate so the outer wrapper can be
+/// `const` up to the count text.
+class _MediaSniffPillContent extends ConsumerWidget {
+  const _MediaSniffPillContent();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count =
+        ref.watch(unifiedMediaProvider).where((i) => i.isDownloadable).length;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.download_rounded, size: 18, color: Colors.white),
+        const SizedBox(width: AppSpacing.xs),
+        Text(
+          '$count',
+          style: AppTypography.metadata.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
     );
   }
 }

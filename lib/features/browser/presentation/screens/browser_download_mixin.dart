@@ -88,9 +88,9 @@ mixin BrowserDownloadMixin {
     if (autoLoginAttemptedUrls.contains(failedUrl)) {
       final platform = PlatformDetector.detectPlatform(failedUrl);
       if (platform == VideoPlatform.facebook) {
-        if (ref.read(isPremiumProvider)) {
-          await ref.read(mediaSniffingEnabledProvider.notifier).setValue(true);
-        }
+        // The sniffing engine is always on now; surface what it found by
+        // opening the media panel (no premium gate — svid is free/unlimited).
+        ref.read(sniffPanelOpenProvider.notifier).state = true;
         if (!mounted) return true;
         if (mounted) {
           AppSnackBar.error(

@@ -7,6 +7,7 @@ import '../../domain/services/cookie_inspector_service.dart';
 import '../../domain/services/video_url_detector.dart';
 import '../providers/content_filter_providers.dart';
 import '../providers/media_detector_provider.dart';
+import '../providers/unified_media_provider.dart';
 import 'browser_bookmarks_panel.dart';
 import 'browser_history_panel.dart';
 import 'browser_security_indicators.dart';
@@ -415,40 +416,31 @@ class _UrlBarPrefixIconState extends State<_UrlBarPrefixIcon>
   }
 }
 
-/// Quick toggle for IDM media sniffing mode.
-/// Shows badge with detected media count when active.
+/// Cốc Cốc-style "download media" button. The sniffing engine always runs; this
+/// button surfaces how many downloadable items were found and opens the media
+/// panel on click (it does NOT toggle the engine on/off).
 class _MediaSniffButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isEnabled = ref.watch(mediaSniffingEnabledProvider);
-    final mediaList = ref.watch(interceptedMediaProvider);
-    // Filter out segments for count display
+    // Match the panel's own "Found N" count (downloadable items only).
     final count =
-        mediaList
-            .where((m) => m.category != MediaCategory.streamSegment)
-            .length;
+        ref.watch(unifiedMediaProvider).where((i) => i.isDownloadable).length;
+    final isOpen = ref.watch(sniffPanelOpenProvider);
+    final active = count > 0 || isOpen;
 
     return Badge(
-      isLabelVisible: isEnabled && count > 0,
-      label: Text('$count', style: AppTypography.mini.copyWith()),
+      isLabelVisible: count > 0,
+      label: Text('$count', style: AppTypography.mini),
+      backgroundColor: AppColors.accentHighlight,
       child: IconButton(
-        onPressed: () {
-          if (!isEnabled && !ref.read(isPremiumProvider)) {
-            UpgradePromptDialog.showAndNavigate(
-              context,
-              ref,
-              feature: PremiumFeature.browserShield,
-            );
-            return;
-          }
-          ref.read(mediaSniffingEnabledProvider.notifier).toggle();
-        },
+        onPressed:
+            () => ref.read(sniffPanelOpenProvider.notifier).state = !isOpen,
         icon: Icon(
-          Icons.sensors_rounded,
+          Icons.download_rounded,
           size: 20,
-          color: isEnabled ? AppColors.accentHighlight : null,
+          color: active ? AppColors.accentHighlight : null,
         ),
-        tooltip: AppLocalizations.browserMediaSniffEnabled,
+        tooltip: AppLocalizations.browserMediaSniffTitle,
         visualDensity: VisualDensity.compact,
       ),
     );

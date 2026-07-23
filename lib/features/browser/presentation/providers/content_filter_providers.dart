@@ -81,13 +81,21 @@ final fingerprintProtectionEnabledProvider =
       defaultValue: true);
 });
 
-/// Whether IDM-style media sniffing is enabled. Default: false.
+/// Whether IDM-style media sniffing is enabled. Default: true.
 /// When enabled, the browser injects JS interceptors to detect media
-/// network requests (video, audio, HLS/DASH streams).
+/// network requests (video, audio, HLS/DASH streams). svid is free/unlimited,
+/// so the engine runs by default (Cốc Cốc-style) rather than being opt-in;
+/// the toolbar count-button surfaces what it finds and opens the panel.
 final mediaSniffingEnabledProvider =
     StateNotifierProvider<_BoolPrefNotifier, bool>((ref) {
-  return _BoolPrefNotifier(_mediaSniffingEnabledKey, defaultValue: false);
+  return _BoolPrefNotifier(_mediaSniffingEnabledKey, defaultValue: true);
 });
+
+/// Whether the right-side media panel is currently open. Decoupled from
+/// [mediaSniffingEnabledProvider]: the engine always runs, but the panel only
+/// appears when the user opens it via the toolbar download button (and closes
+/// via the panel's ✕). Ephemeral UI state — not persisted.
+final sniffPanelOpenProvider = StateProvider<bool>((ref) => false);
 
 // ==================== SEARCH ENGINE & HOME PAGE ====================
 

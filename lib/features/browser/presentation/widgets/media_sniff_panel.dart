@@ -38,19 +38,21 @@ class MediaSniffPanel extends ConsumerStatefulWidget {
 class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
   @override
   Widget build(BuildContext context) {
-    final isEnabled = ref.watch(mediaSniffingEnabledProvider);
-    if (!isEnabled) return const SizedBox.shrink();
+    // Panel visibility is driven by the user opening it (toolbar button),
+    // NOT by whether the engine is running — the engine always runs.
+    final isOpen = ref.watch(sniffPanelOpenProvider);
+    if (!isOpen) return const SizedBox.shrink();
 
     final items = ref.watch(unifiedMediaProvider);
-    final isFeed = ref.watch(isBrowserOnFeedProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final panelWidth = _panelWidth(context);
 
     final downloadable = items.where((i) => i.isDownloadable).toList();
 
+    // Panel was opened explicitly, so always show something: a scanning/empty
+    // state rather than vanishing when nothing has been detected yet.
     if (downloadable.isEmpty) {
-      if (isFeed) return _buildScanningState(isDark);
-      return const SizedBox.shrink();
+      return _buildScanningState(isDark);
     }
 
     // Classify: first video/page-link = PRIMARY, rest = SUPPORTING
@@ -260,12 +262,13 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
             width: 22,
             height: 22,
             child: IconButton(
+              // Close the panel (keep detected media so re-opening still shows
+              // it); the engine keeps running in the background.
               onPressed: () {
-                ref.read(interceptedMediaProvider.notifier).clear();
-                ref.read(browserDetectedVideosProvider.notifier).state = [];
+                ref.read(sniffPanelOpenProvider.notifier).state = false;
               },
               icon: const Icon(Icons.close_rounded, size: 14),
-              tooltip: AppLocalizations.browserMediaSniffClear,
+              tooltip: AppLocalizations.commonClose,
               padding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
               color: textTertiary,

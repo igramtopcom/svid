@@ -136,6 +136,8 @@ class _CategoryTabs extends ConsumerWidget {
     _TabItem('Cooking', Icons.restaurant_rounded, Color(0xFFEA580C)),
     _TabItem('Workout', Icons.fitness_center_rounded, AppColors.warningAmber),
     _TabItem('Travel', Icons.flight_takeoff_rounded, Color(0xFF0EA5E9)),
+    _TabItem('Funny', Icons.sentiment_very_satisfied_rounded, Color(0xFFF59E0B)),
+    _TabItem('Skincare', Icons.spa_rounded, Color(0xFFEC4899)),
     _TabItem('Drawing', Icons.brush_rounded, Color(0xFF9333EA)),
     _TabItem('Science', Icons.science_rounded, Color(0xFF0D9488)),
   ];

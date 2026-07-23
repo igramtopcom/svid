@@ -47,6 +47,30 @@ class VideoPreviewDialog extends StatefulWidget {
 class _VideoPreviewDialogState extends State<VideoPreviewDialog> {
   bool _loading = true;
 
+  /// Strips the YouTube watch-page chrome (header, comments, sidebar) and blows
+  /// the video player up to fill the whole webview, so the full watch page reads
+  /// as a clean mini-player. The watch page is used (not /embed) because many
+  /// music videos disable embedding; this CSS makes it look embedded anyway.
+  static const String _cleanCss = '''
+    #masthead-container, ytd-masthead, #masthead,
+    #secondary, #below, #comments, ytd-comments,
+    ytd-watch-metadata, #related, #chips-wrapper, tp-yt-app-drawer,
+    ytd-mini-guide-renderer, #guide { display: none !important; }
+    html, body {
+      overflow: hidden !important; margin: 0 !important;
+      background: #000 !important;
+    }
+    #movie_player, .html5-video-player {
+      position: fixed !important; top: 0 !important; left: 0 !important;
+      width: 100vw !important; height: 100vh !important;
+      z-index: 2147483647 !important;
+    }
+    video.html5-main-video {
+      width: 100% !important; height: 100% !important;
+      object-fit: contain !important;
+    }
+  ''';
+
   // Load the full watch page, not the /embed player: many music videos (VEVO,
   // label/official channels) disable third-party embedding, which makes the
   // embed player fail with "Error 153". The watch page plays regardless.
@@ -191,7 +215,10 @@ class _VideoPreviewDialogState extends State<VideoPreviewDialog> {
                 'AppleWebKit/537.36 (KHTML, like Gecko) '
                 'Chrome/134.0.0.0 Safari/537.36',
           ),
-          onLoadStop: (controller, url) {
+          onLoadStop: (controller, url) async {
+            // Inject once the page is up; the <style> persists as YouTube's SPA
+            // hydrates, so the player stays maximised and the chrome hidden.
+            await controller.injectCSSCode(source: _cleanCss);
             if (mounted) setState(() => _loading = false);
           },
           onReceivedError: (controller, request, error) {

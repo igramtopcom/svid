@@ -1647,7 +1647,12 @@
     "quickAccess": "Quick Access",
     "recentBookmarks": "Recent Bookmarks",
     "noQuickAccess": "Start browsing to see your most visited sites here",
-    "searchHint": "Quickly navigate through your cinematic library"
+    "searchHint": "Quickly navigate through your cinematic library",
+    "bookmarks": "Bookmarks",
+    "addBookmark": "Add",
+    "addBookmarkTitle": "Add bookmark",
+    "addBookmarkHint": "Enter a website URL",
+    "removeBookmark": "Remove"
   },
   "browserMenu": {
     "downloadVideo": "Download Video",

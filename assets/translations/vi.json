@@ -1647,7 +1647,12 @@
     "quickAccess": "Truy cập nhanh",
     "recentBookmarks": "Dấu trang gần đây",
     "noQuickAccess": "Bắt đầu duyệt web để xem các trang truy cập nhiều nhất tại đây",
-    "searchHint": "Điều hướng nhanh qua thư viện của bạn"
+    "searchHint": "Điều hướng nhanh qua thư viện của bạn",
+    "bookmarks": "Dấu trang",
+    "addBookmark": "Thêm",
+    "addBookmarkTitle": "Thêm dấu trang",
+    "addBookmarkHint": "Nhập địa chỉ website",
+    "removeBookmark": "Xoá"
   },
   "browserMenu": {
     "downloadVideo": "Tải video",

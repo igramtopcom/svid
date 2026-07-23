@@ -59,7 +59,25 @@ List<({String url, String title})> parseNetscapeHtml(String html) {
 /// Persists browser bookmarks in SharedPreferences JSON.
 class BrowserBookmarkService {
   static const String _storageKey = 'browser_bookmarks_data';
+  static const String _seededKey = 'browser_bookmarks_seeded_v1';
   static const _uuid = Uuid();
+
+  /// Popular video/audio/social platforms seeded on first run so the new-tab
+  /// page starts useful. Users can freely remove these or add their own.
+  /// (TikTok is intentionally excluded — it crashes WebView2 on Windows.)
+  static const List<({String url, String title})> defaultSeeds = [
+    (url: 'https://www.youtube.com', title: 'YouTube'),
+    (url: 'https://www.facebook.com', title: 'Facebook'),
+    (url: 'https://www.instagram.com', title: 'Instagram'),
+    (url: 'https://x.com', title: 'X'),
+    (url: 'https://www.reddit.com', title: 'Reddit'),
+    (url: 'https://vimeo.com', title: 'Vimeo'),
+    (url: 'https://www.dailymotion.com', title: 'Dailymotion'),
+    (url: 'https://www.twitch.tv', title: 'Twitch'),
+    (url: 'https://soundcloud.com', title: 'SoundCloud'),
+    (url: 'https://www.bilibili.com', title: 'Bilibili'),
+    (url: 'https://www.pinterest.com', title: 'Pinterest'),
+  ];
 
   final SharedPreferences _prefs;
   List<BrowserBookmark> _bookmarks = [];
@@ -68,6 +86,27 @@ class BrowserBookmarkService {
 
   BrowserBookmarkService(this._prefs) {
     _load();
+    _seedDefaultsIfFirstRun();
+  }
+
+  /// Seeds [defaultSeeds] exactly once (first run). Guarded by a prefs flag so
+  /// that a user who removes the defaults doesn't get them back on next launch.
+  void _seedDefaultsIfFirstRun() {
+    if (_prefs.getBool(_seededKey) ?? false) return;
+    for (final s in defaultSeeds) {
+      if (_bookmarks.any((b) => b.url == s.url)) continue;
+      // Append (not insert) so YouTube stays first in the grid.
+      _bookmarks.add(
+        BrowserBookmark(
+          id: _uuid.v4(),
+          url: s.url,
+          title: s.title,
+          createdAt: DateTime.now(),
+        ),
+      );
+    }
+    _prefs.setBool(_seededKey, true);
+    _save();
   }
 
   /// Current bookmarks (newest first)

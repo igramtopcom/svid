@@ -244,9 +244,6 @@ class _BookmarkTileState extends State<_BookmarkTile> {
         hasIcon
             ? PlatformStyleHelper.getColorForPlatform(platform)
             : AppColors.accentHighlight;
-    final outline = Theme.of(
-      context,
-    ).colorScheme.outline.withValues(alpha: AppOpacity.subtle);
     final title =
         widget.bookmark.title.isNotEmpty ? widget.bookmark.title : _host;
 
@@ -274,26 +271,32 @@ class _BookmarkTileState extends State<_BookmarkTile> {
                       ? AppColors.accentHighlight.withValues(
                         alpha: AppOpacity.secondary,
                       )
-                      : (isDark ? AppColors.homeDarkBorderSubtle : outline),
+                      : (isDark
+                          ? AppColors.homeDarkBorderStrong
+                          : cs.outline.withValues(alpha: 0.55)),
               width: _hovered ? 1.4 : 1,
             ),
+            // A resting shadow (light mode) so the cards lift off the page
+            // instead of dissolving into it; deepens on hover.
             boxShadow:
-                _hovered && !isDark
-                    ? const [
+                isDark
+                    ? null
+                    : [
                       BoxShadow(
-                        color: Color(0x14000000),
-                        blurRadius: 16,
-                        offset: Offset(0, 6),
+                        color: Color(_hovered ? 0x14000000 : 0x0F000000),
+                        blurRadius: _hovered ? 16 : 7,
+                        offset: Offset(0, _hovered ? 6 : 2),
                       ),
-                    ]
-                    : null,
+                    ],
           ),
           child: Stack(
+            alignment: Alignment.center,
             children: [
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
                       width: 48,
@@ -406,6 +409,7 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             color: isDark ? AppColors.homeDarkCardBg : Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.card),
@@ -413,11 +417,22 @@ class _AddBookmarkTileState extends State<_AddBookmarkTile> {
               color: _hovered ? accent.withValues(alpha: 0.5) : base,
               width: _hovered ? 1.4 : 1,
             ),
+            boxShadow:
+                isDark
+                    ? null
+                    : [
+                      BoxShadow(
+                        color: Color(_hovered ? 0x14000000 : 0x0F000000),
+                        blurRadius: _hovered ? 16 : 7,
+                        offset: Offset(0, _hovered ? 6 : 2),
+                      ),
+                    ],
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   width: 48,

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/core.dart';
 import '../providers/recent_searches_provider.dart';
+import '../../domain/entities/youtube_search_result.dart';
 import '../providers/youtube_trending_provider.dart';
 import 'youtube_search_result_item.dart';
 
@@ -39,7 +40,7 @@ class YouTubeDiscoveryView extends ConsumerWidget {
             children: [
               // Category quick-tabs (horizontal scrollable)
               const SizedBox(height: AppSpacing.sm),
-              _CategoryTabs(onSearch: onSearch),
+              const _CategoryTabs(),
               const SizedBox(height: AppSpacing.md),
 
               // Recent Searches
@@ -113,30 +114,36 @@ class _SectionHeader extends StatelessWidget {
 // Category Quick-Tabs (horizontal, per Stitch design)
 // =============================================================================
 
-class _CategoryTabs extends StatelessWidget {
-  final void Function(String) onSearch;
+class _CategoryTabs extends ConsumerWidget {
+  const _CategoryTabs();
 
-  const _CategoryTabs({required this.onSearch});
-
+  // Curated set of globally-popular YouTube hashtags that actually return
+  // real, watchable content (verified via yt-dlp). The chip label lowercased +
+  // stripped of punctuation IS the hashtag (e.g. "K-Pop" -> #kpop), fetched by
+  // categoryVideosProvider. Spammy/short-only tags (#shorts, #trending, #fyp)
+  // are deliberately excluded.
   static const _tabs = [
     _TabItem('Music', Icons.music_note_rounded, AppColors.lightStatusFailed),
+    _TabItem('K-Pop', Icons.mic_external_on_rounded, Color(0xFFDB2777)),
     _TabItem('Gaming', Icons.sports_esports_rounded, Color(0xFF7C3AED)),
-    _TabItem('Education', Icons.school_rounded, AppColors.warningAmber),
-    _TabItem('Entertainment', Icons.movie_rounded, Color(0xFFDB2777)),
-    _TabItem('Tech', Icons.computer_rounded, Color(0xFF0891B2)),
+    _TabItem('AI', Icons.auto_awesome_rounded, Color(0xFF2563EB)),
+    _TabItem('Tech', Icons.devices_rounded, Color(0xFF0891B2)),
     _TabItem(
-      'Sports',
+      'Football',
       Icons.sports_soccer_rounded,
       AppColors.lightStatusCompleted,
     ),
-    _TabItem('Cooking', Icons.restaurant_menu_rounded, Color(0xFFEA580C)),
-    _TabItem('News', Icons.newspaper_rounded, Color(0xFF2563EB)),
+    _TabItem('Cooking', Icons.restaurant_rounded, Color(0xFFEA580C)),
+    _TabItem('Workout', Icons.fitness_center_rounded, AppColors.warningAmber),
+    _TabItem('Travel', Icons.flight_takeoff_rounded, Color(0xFF0EA5E9)),
+    _TabItem('Drawing', Icons.brush_rounded, Color(0xFF9333EA)),
+    _TabItem('Science', Icons.science_rounded, Color(0xFF0D9488)),
   ];
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final active = ref.watch(exploreCategoryProvider);
 
     return SizedBox(
       height: 36,
@@ -151,7 +158,14 @@ class _CategoryTabs extends StatelessWidget {
             icon: tab.icon,
             color: tab.color,
             isDark: isDark,
-            onTap: () => onSearch(tab.label),
+            selected: active == tab.label,
+            // Tapping a category loads its real videos into the Trending
+            // section (via the #hashtag feed); tapping it again clears back
+            // to the default region-trending feed.
+            onTap: () {
+              ref.read(exploreCategoryProvider.notifier).state =
+                  active == tab.label ? null : tab.label;
+            },
           );
         },
       ),
@@ -171,6 +185,7 @@ class _CategoryTabChip extends StatefulWidget {
   final IconData icon;
   final Color color;
   final bool isDark;
+  final bool selected;
   final VoidCallback onTap;
 
   const _CategoryTabChip({
@@ -178,6 +193,7 @@ class _CategoryTabChip extends StatefulWidget {
     required this.icon,
     required this.color,
     required this.isDark,
+    this.selected = false,
     required this.onTap,
   });
 
@@ -192,6 +208,41 @@ class _CategoryTabChipState extends State<_CategoryTabChip> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final selected = widget.selected;
+    final accent = AppColors.accentHighlight;
+
+    final Color bg;
+    if (selected) {
+      bg = accent.withValues(alpha: widget.isDark ? 0.16 : 0.10);
+    } else if (_hovered) {
+      bg =
+          widget.isDark
+              ? AppColors.homeDarkCardHover
+              : widget.color.withValues(alpha: AppOpacity.pressed);
+    } else {
+      bg =
+          widget.isDark
+              ? AppColors.homeDarkCardBg
+              : AppColors.surface1(context);
+    }
+
+    final Border border;
+    if (selected) {
+      border = Border.all(
+        color: accent.withValues(alpha: AppOpacity.secondary),
+        width: 1.4,
+      );
+    } else if (widget.isDark) {
+      border = Border.all(
+        color:
+            _hovered
+                ? widget.color.withValues(alpha: AppOpacity.secondary)
+                : AppColors.homeDarkBorderSubtle,
+        width: _hovered ? 1.2 : 1,
+      );
+    } else {
+      border = Border.all(color: AppColors.border(context));
+    }
 
     return MouseRegion(
       onEnter: (_) {
@@ -205,7 +256,7 @@ class _CategoryTabChipState extends State<_CategoryTabChip> {
         child: AnimatedSlide(
           duration: const Duration(milliseconds: 150),
           offset:
-              !widget.isDark && _hovered
+              !widget.isDark && _hovered && !selected
                   ? const Offset(0, -0.015)
                   : Offset.zero,
           child: AnimatedContainer(
@@ -215,29 +266,11 @@ class _CategoryTabChipState extends State<_CategoryTabChip> {
               vertical: AppSpacing.sm,
             ),
             decoration: BoxDecoration(
-              color:
-                  _hovered
-                      ? (widget.isDark
-                          ? AppColors.homeDarkCardHover
-                          : widget.color.withValues(alpha: AppOpacity.pressed))
-                      : (widget.isDark
-                          ? AppColors.homeDarkCardBg
-                          : AppColors.surface1(context)),
+              color: bg,
               borderRadius: BorderRadius.circular(AppRadius.card),
-              border:
-                  widget.isDark
-                      ? Border.all(
-                        color:
-                            _hovered
-                                ? widget.color.withValues(
-                                  alpha: AppOpacity.secondary,
-                                )
-                                : AppColors.homeDarkBorderSubtle,
-                        width: _hovered ? 1.2 : 1,
-                      )
-                      : Border.all(color: AppColors.border(context)),
+              border: border,
               boxShadow:
-                  !widget.isDark && _hovered
+                  !widget.isDark && _hovered && !selected
                       ? const [
                         BoxShadow(
                           color: Color(0x14000000),
@@ -250,13 +283,17 @@ class _CategoryTabChipState extends State<_CategoryTabChip> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(widget.icon, size: 15, color: widget.color),
+                Icon(
+                  widget.icon,
+                  size: 15,
+                  color: selected ? accent : widget.color,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   widget.label,
                   style: theme.textTheme.labelMedium?.copyWith(
-                    color: cs.onSurface,
-                    fontWeight: FontWeight.w600,
+                    color: selected ? accent : cs.onSurface,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
                   ),
                 ),
               ],
@@ -473,33 +510,45 @@ class _TrendingSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final videos = ref.watch(youtubeTrendingProvider).valueOrNull ?? const [];
+    final category = ref.watch(exploreCategoryProvider);
 
+    // A category chip is active → show that #hashtag's real videos, with an
+    // explicit loading + empty state (it's a fresh fetch on each selection).
+    if (category != null) {
+      final async = ref.watch(categoryVideosProvider(category));
+      return _DiscoverySurface(
+        header: _SectionHeader(
+          icon: Icons.tag_rounded,
+          title: category,
+          color: AppColors.accentHighlight,
+        ),
+        child: async.when(
+          loading: () => _statusBox(context, loading: true),
+          error: (_, __) => _statusBox(context, loading: false),
+          data: (videos) {
+            if (videos.isEmpty || onVideoDownload == null) {
+              return _statusBox(context, loading: false);
+            }
+            return _videoList(videos);
+          },
+        ),
+      );
+    }
+
+    // Default (no category): region trending (Charts → hashtag fallback).
+    final videos = ref.watch(youtubeTrendingProvider).valueOrNull ?? const [];
     if (videos.isNotEmpty && onVideoDownload != null) {
-      final top = videos.take(8).toList();
       return _DiscoverySurface(
         header: _SectionHeader(
           icon: Icons.trending_up_rounded,
           title: AppLocalizations.youtubeSearchTrendingTitle,
           color: AppColors.accentHighlight,
         ),
-        child: Column(
-          children: [
-            for (final v in top)
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: YouTubeSearchResultItem(
-                  video: v,
-                  onTap: () => onVideoDownload!(v.url),
-                  onDownload: () => onVideoDownload!(v.url),
-                ),
-              ),
-          ],
-        ),
+        child: _videoList(videos),
       );
     }
 
-    // Fallback (also while trending loads / on failure): curated shortcuts.
+    // Last resort (trending still loading / failed): curated topic shortcuts.
     return _DiscoverySurface(
       header: _SectionHeader(
         icon: Icons.trending_up_rounded,
@@ -507,6 +556,57 @@ class _TrendingSection extends ConsumerWidget {
         color: AppColors.accentHighlight,
       ),
       child: _TrendingGrid(onSearch: onSearch),
+    );
+  }
+
+  Widget _videoList(List<YouTubeSearchResult> videos) {
+    final top = videos.take(8).toList();
+    return Column(
+      children: [
+        for (final v in top)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: YouTubeSearchResultItem(
+              video: v,
+              onTap: () => onVideoDownload!(v.url),
+              onDownload: () => onVideoDownload!(v.url),
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Loading spinner / empty message for a category feed.
+  Widget _statusBox(BuildContext context, {required bool loading}) {
+    final theme = Theme.of(context);
+    final muted = AppColors.metaText(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+      child: Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (loading)
+              SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppColors.accentHighlight,
+                ),
+              )
+            else
+              Icon(Icons.videocam_off_rounded, size: 18, color: muted),
+            const SizedBox(width: AppSpacing.smMd),
+            Text(
+              loading
+                  ? AppLocalizations.youtubeSearchPreparing
+                  : AppLocalizations.youtubeSearchNoVideos,
+              style: theme.textTheme.bodyMedium?.copyWith(color: muted),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

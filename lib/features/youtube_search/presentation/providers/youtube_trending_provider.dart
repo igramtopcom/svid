@@ -41,3 +41,26 @@ final youtubeTrendingProvider = FutureProvider<List<YouTubeSearchResult>>((
     failure: (_) => const <YouTubeSearchResult>[],
   );
 });
+
+/// The Explore category the user has tapped (chip label, e.g. "Sports").
+/// Null means the default region-trending feed is shown.
+final exploreCategoryProvider = StateProvider<String?>((ref) => null);
+
+/// Real videos for a category, sourced from the matching YouTube hashtag
+/// (#music, #gaming, #sports …). Cached per category by the family, so
+/// re-selecting a chip is instant. Empty list on failure.
+final categoryVideosProvider =
+    FutureProvider.family<List<YouTubeSearchResult>, String>((
+      ref,
+      category,
+    ) async {
+      final repo = await ref.watch(youtubeSearchRepositoryProvider.future);
+      final result = await repo.trending(
+        hashtag: category.toLowerCase(),
+        maxResults: 18,
+      );
+      return result.when(
+        success: (list) => list,
+        failure: (_) => const <YouTubeSearchResult>[],
+      );
+    });

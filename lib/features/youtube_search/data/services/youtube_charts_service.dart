@@ -18,6 +18,28 @@ class YouTubeChartsService {
   static const String _endpoint =
       'https://charts.youtube.com/youtubei/v1/browse?alt=json&prettyPrint=false';
 
+  /// Best-effort IP-based region (ISO-3166 country) via Cloudflare's trace
+  /// endpoint. This reflects where the user actually is (e.g. VN), unlike the
+  /// device locale, which follows the OS display language (often en-US).
+  /// Returns null on any failure so the caller can fall back to the locale.
+  static Future<String?> detectRegion() async {
+    try {
+      final resp = await http
+          .get(Uri.parse('https://www.cloudflare.com/cdn-cgi/trace'))
+          .timeout(const Duration(seconds: 6));
+      if (resp.statusCode != 200) return null;
+      for (final line in const LineSplitter().convert(resp.body)) {
+        if (line.startsWith('loc=')) {
+          final loc = line.substring(4).trim().toUpperCase();
+          if (loc.length == 2) return loc;
+        }
+      }
+    } catch (_) {
+      // Ignore — caller falls back to the device locale.
+    }
+    return null;
+  }
+
   /// Real trending videos for [countryCode] (ISO-3166, e.g. `VN`, `US`).
   ///
   /// Returns an empty list on any failure (network, unsupported region,

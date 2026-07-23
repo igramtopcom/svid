@@ -18,7 +18,12 @@ import 'youtube_search_provider.dart' show youtubeSearchRepositoryProvider;
 final youtubeTrendingProvider = FutureProvider<List<YouTubeSearchResult>>((
   ref,
 ) async {
-  final countryCode = PlatformDispatcher.instance.locale.countryCode ?? 'US';
+  // Region: prefer the user's real location (IP) over the device locale,
+  // which follows the OS language (often en-US) and would show US trending.
+  final countryCode =
+      await YouTubeChartsService.detectRegion() ??
+      PlatformDispatcher.instance.locale.countryCode ??
+      'US';
 
   // 1. Official YouTube Charts trending (region-aware, freshest source).
   //    Pure HTTP — runs first so it doesn't wait on yt-dlp initialisation.

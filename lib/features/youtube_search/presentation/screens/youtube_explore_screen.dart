@@ -326,106 +326,111 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
       child: SizedBox(
         key: _searchInputKey,
         height: commandBarHeight,
-        child: Focus(
-          onKeyEvent: _handleKeyEvent,
-          child: TextField(
-            controller: _searchController,
-            focusNode: _searchFocusNode,
-            decoration: InputDecoration(
-              hintText: AppLocalizations.youtubeSearchPlaceholder,
-              hintStyle: AppTypography.input.copyWith(color: secondaryText),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-                child: Icon(
-                  Icons.search_rounded,
-                  size: 22,
-                  color:
-                      isDark
-                          ? AppColors.homeDarkTextSecondary
-                          : cs.onSurfaceVariant,
+        // Paint the fill + border on a fixed-height Container and keep the
+        // TextField itself borderless/transparent. This guarantees the field
+        // box is exactly the command-bar height (52px) so it matches the
+        // Search button — a `filled` TextField with `isDense` paints a shorter
+        // pill centred in the box and can't be forced to fill it.
+        child: AnimatedBuilder(
+          animation: _searchFocusNode,
+          builder: (context, child) {
+            final focused = _searchFocusNode.hasFocus;
+            return Container(
+              decoration: BoxDecoration(
+                color: fieldBg,
+                borderRadius: BorderRadius.circular(AppRadius.input),
+                border: Border.all(
+                  color: focused ? AppColors.accentHighlight : fieldBorder,
+                  width: focused ? 1.5 : 1,
                 ),
               ),
-              prefixIconConstraints: const BoxConstraints(
-                minWidth: 44,
-                maxHeight: commandBarHeight,
-              ),
-              suffixIcon: Padding(
-                padding: const EdgeInsets.only(right: AppSpacing.smMd),
-                child: Container(
-                  decoration: BoxDecoration(
+              child: child,
+            );
+          },
+          child: Focus(
+            onKeyEvent: _handleKeyEvent,
+            child: TextField(
+              controller: _searchController,
+              focusNode: _searchFocusNode,
+              decoration: InputDecoration(
+                hintText: AppLocalizations.youtubeSearchPlaceholder,
+                hintStyle: AppTypography.input.copyWith(color: secondaryText),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                  ),
+                  child: Icon(
+                    Icons.search_rounded,
+                    size: 22,
                     color:
                         isDark
-                            ? AppColors.homeDarkCardBg
-                            : AppColors.surface3(context),
-                    borderRadius: BorderRadius.circular(AppRadius.button),
-                    border: Border.all(
-                      color:
-                          isDark
-                              ? AppColors.homeDarkBorderStrong
-                              : cs.outlineVariant.withValues(
-                                alpha: AppOpacity.scrim,
-                              ),
-                    ),
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      _searchController.text.isNotEmpty
-                          ? Icons.clear_rounded
-                          : Icons.content_paste_rounded,
-                      size: 16,
-                      color:
-                          isDark
-                              ? AppColors.homeDarkTextSecondary
-                              : cs.onSurfaceVariant,
-                    ),
-                    onPressed: () {
-                      if (_searchController.text.isNotEmpty) {
-                        _searchController.clear();
-                        _searchFocusNode.requestFocus();
-                      } else {
-                        _pasteFromClipboard();
-                      }
-                    },
-                    constraints: const BoxConstraints.tightFor(
-                      width: 28,
-                      height: 28,
-                    ),
-                    padding: EdgeInsets.zero,
+                            ? AppColors.homeDarkTextSecondary
+                            : cs.onSurfaceVariant,
                   ),
                 ),
-              ),
-              filled: true,
-              fillColor: fieldBg,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.input),
-                borderSide: BorderSide(color: fieldBorder),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.input),
-                borderSide: BorderSide(color: fieldBorder),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.input),
-                borderSide: BorderSide(
-                  color: AppColors.accentHighlight,
-                  width: 1.5,
+                prefixIconConstraints: const BoxConstraints(
+                  minWidth: 44,
+                  maxHeight: commandBarHeight,
                 ),
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(right: AppSpacing.smMd),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color:
+                          isDark
+                              ? AppColors.homeDarkCardBg
+                              : AppColors.surface3(context),
+                      borderRadius: BorderRadius.circular(AppRadius.button),
+                      border: Border.all(
+                        color:
+                            isDark
+                                ? AppColors.homeDarkBorderStrong
+                                : cs.outlineVariant.withValues(
+                                  alpha: AppOpacity.scrim,
+                                ),
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        _searchController.text.isNotEmpty
+                            ? Icons.clear_rounded
+                            : Icons.content_paste_rounded,
+                        size: 16,
+                        color:
+                            isDark
+                                ? AppColors.homeDarkTextSecondary
+                                : cs.onSurfaceVariant,
+                      ),
+                      onPressed: () {
+                        if (_searchController.text.isNotEmpty) {
+                          _searchController.clear();
+                          _searchFocusNode.requestFocus();
+                        } else {
+                          _pasteFromClipboard();
+                        }
+                      },
+                      constraints: const BoxConstraints.tightFor(
+                        width: 28,
+                        height: 28,
+                      ),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ),
+                filled: false,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                ),
+                isDense: true,
               ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm,
-                vertical: AppSpacing.md,
-              ),
-              isDense: true,
-              // Force the decorator (and its fill) to occupy the full command-
-              // bar height, so the filled field matches the Search button's
-              // height exactly. Without this, isDense paints a ~44px pill
-              // centred inside the 52px box, making the button look taller.
-              constraints: const BoxConstraints(minHeight: commandBarHeight),
+              textAlignVertical: TextAlignVertical.center,
+              textInputAction: TextInputAction.search,
+              onSubmitted: (_) => _performSearch(_searchController.text),
+              style: AppTypography.input.copyWith(color: textColor),
             ),
-            textAlignVertical: TextAlignVertical.center,
-            textInputAction: TextInputAction.search,
-            onSubmitted: (_) => _performSearch(_searchController.text),
-            style: AppTypography.input.copyWith(color: textColor),
           ),
         ),
       ),

@@ -261,7 +261,7 @@ func Load() *Config {
 			Host:     getEnv("DB_HOST", "localhost"),
 			Port:     getEnv("DB_PORT", "5432"),
 			User:     getEnv("DB_USER", "snakeloader"),
-			Password: getEnv("DB_PASSWORD", "snakeloader_dev_2025"),
+			Password: getEnv("DB_PASSWORD", "changeme_local_dev"),
 			DBName:   getEnv("DB_NAME", "snakeloader_dev"),
 			SSLMode:  dbSSLMode,
 		},

@@ -5,13 +5,16 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: snakeloader
-      POSTGRES_PASSWORD: snakeloader_dev_2025
-      POSTGRES_DB: snakeloader_dev
+      POSTGRES_USER: ${DB_USER:-snakeloader}
+      # Read from backend/.env (compose auto-loads it). Falls back to a throwaway
+      # local-only default so `docker compose up` still works standalone. Never
+      # put a real password here — set DB_PASSWORD in backend/.env.
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme_local_dev}
+      POSTGRES_DB: ${DB_NAME:-snakeloader_dev}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U snakeloader"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5

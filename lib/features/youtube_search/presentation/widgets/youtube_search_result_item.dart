@@ -369,22 +369,26 @@ class _YouTubeSearchResultItemState
   /// Completed download → Play the file + a More menu (open folder / copy /
   /// delete), so the user can act on it without switching to the Home tab.
   Widget _completedActions(BuildContext context, DownloadEntity download) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.accentHighlight;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Soft-tinted play — mirrors the Home download-row action button.
         Tooltip(
           message: AppLocalizations.youtubeSearchPlay,
           child: IconButton(
             onPressed: () => openPlayerForDownload(context, ref, download),
-            icon: const Icon(Icons.play_arrow_rounded, size: 20),
+            icon: const Icon(Icons.play_arrow_rounded, size: 18),
             constraints: const BoxConstraints.tightFor(width: 40, height: 40),
             padding: EdgeInsets.zero,
             style: IconButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: AppColors.brand,
-              hoverColor: AppColors.accentHighlight,
+              foregroundColor: accent,
+              backgroundColor: accent.withValues(
+                alpha: isDark ? AppOpacity.pressed : AppOpacity.hover,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.button),
+                borderRadius: BorderRadius.circular(AppRadius.card),
               ),
             ),
           ),

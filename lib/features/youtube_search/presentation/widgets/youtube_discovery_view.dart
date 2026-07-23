@@ -147,30 +147,27 @@ class _CategoryTabs extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final active = ref.watch(exploreCategoryProvider);
 
-    return SizedBox(
-      height: 36,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: _tabs.length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
-        itemBuilder: (context, index) {
-          final tab = _tabs[index];
-          return _CategoryTabChip(
+    // Wrap (not a single scrolling row) so every chip is visible — with 13
+    // categories a horizontal row hid the last few off the right edge.
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: [
+        for (final tab in _tabs)
+          _CategoryTabChip(
             label: tab.label,
             icon: tab.icon,
             color: tab.color,
             isDark: isDark,
             selected: active == tab.label,
-            // Tapping a category loads its real videos into the Trending
-            // section (via the #hashtag feed); tapping it again clears back
-            // to the default region-trending feed.
+            // Tapping a category loads its videos into the Trending section;
+            // tapping it again clears back to the default region trending.
             onTap: () {
               ref.read(exploreCategoryProvider.notifier).state =
                   active == tab.label ? null : tab.label;
             },
-          );
-        },
-      ),
+          ),
+      ],
     );
   }
 }

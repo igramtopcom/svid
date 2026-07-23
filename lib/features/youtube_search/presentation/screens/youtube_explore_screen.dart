@@ -416,6 +416,11 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
                 vertical: AppSpacing.md,
               ),
               isDense: true,
+              // Force the decorator (and its fill) to occupy the full command-
+              // bar height, so the filled field matches the Search button's
+              // height exactly. Without this, isDense paints a ~44px pill
+              // centred inside the 52px box, making the button look taller.
+              constraints: const BoxConstraints(minHeight: commandBarHeight),
             ),
             textAlignVertical: TextAlignVertical.center,
             textInputAction: TextInputAction.search,
@@ -555,6 +560,19 @@ class _YouTubeExploreScreenState extends ConsumerState<YouTubeExploreScreen> {
                       duration: const Duration(milliseconds: 300),
                       switchInCurve: Curves.easeOut,
                       switchOutCurve: Curves.easeIn,
+                      // Top-anchor the switched content. The default layout
+                      // builder centres children in a Stack, so a short
+                      // discovery page (just a couple of chip rows) floats to
+                      // the vertical middle — leaving a big empty gap below the
+                      // tabs. Align to the top so content sits right under them.
+                      layoutBuilder:
+                          (currentChild, previousChildren) => Stack(
+                            alignment: Alignment.topCenter,
+                            children: <Widget>[
+                              ...previousChildren,
+                              if (currentChild != null) currentChild,
+                            ],
+                          ),
                       child:
                           isResults
                               ? YouTubeResultsView(
@@ -813,7 +831,6 @@ class _ExploreSectionTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
@@ -825,9 +842,8 @@ class _ExploreSectionTabs extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1440),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final showDescription = constraints.maxWidth >= 720;
+          child: Builder(
+            builder: (context) {
               return Row(
                 children: [
                   // Explore is YouTube-only (yt-dlp only exposes YouTube
@@ -876,23 +892,6 @@ class _ExploreSectionTabs extends StatelessWidget {
                     isDark: isDark,
                     onTap: () => onSectionChanged(ExploreSection.subscriptions),
                   ),
-                  if (showDescription) ...[
-                    const Spacer(),
-                    Flexible(
-                      child: Text(
-                        AppLocalizations.youtubeTabDescription,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.metadata.copyWith(
-                          color:
-                              isDark
-                                  ? AppColors.homeDarkTextMuted
-                                  : cs.onSurfaceVariant.withValues(
-                                    alpha: AppOpacity.overlay,
-                                  ),
-                        ),
-                      ),
-                    ),
-                  ],
                 ],
               );
             },

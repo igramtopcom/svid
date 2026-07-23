@@ -18,10 +18,10 @@ import 'youtube_search_provider.dart' show youtubeSearchRepositoryProvider;
 final youtubeTrendingProvider = FutureProvider<List<YouTubeSearchResult>>((
   ref,
 ) async {
-  final repo = await ref.watch(youtubeSearchRepositoryProvider.future);
   final countryCode = PlatformDispatcher.instance.locale.countryCode ?? 'US';
 
   // 1. Official YouTube Charts trending (region-aware, freshest source).
+  //    Pure HTTP — runs first so it doesn't wait on yt-dlp initialisation.
   final charts = await YouTubeChartsService().trendingVideos(
     countryCode: countryCode,
     maxResults: 18,
@@ -29,6 +29,7 @@ final youtubeTrendingProvider = FutureProvider<List<YouTubeSearchResult>>((
   if (charts.isNotEmpty) return charts;
 
   // 2. Fallback: #trending hashtag feed via yt-dlp.
+  final repo = await ref.read(youtubeSearchRepositoryProvider.future);
   final result = await repo.trending(hashtag: 'trending', maxResults: 18);
   return result.when(
     success: (list) => list,

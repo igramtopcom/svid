@@ -1439,8 +1439,6 @@ class AppLocalizations {
   static String get youtubeSearchTrendingTitle =>
       'youtubeSearch.trendingTitle'.tr();
   static String get youtubeSearchPreview => 'youtubeSearch.preview'.tr();
-  static String get youtubeSearchOpenInBrowser =>
-      'youtubeSearch.openInBrowser'.tr();
   static String get youtubeSearchOpenFolder =>
       'youtubeSearch.openFolder'.tr();
   static String get youtubeSearchRetry => 'youtubeSearch.retry'.tr();

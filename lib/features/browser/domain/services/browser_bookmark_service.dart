@@ -60,13 +60,17 @@ List<({String url, String title})> parseNetscapeHtml(String html) {
 class BrowserBookmarkService {
   static const String _storageKey = 'browser_bookmarks_data';
   static const String _seededKey = 'browser_bookmarks_seeded_v1';
+  // One-time removal of the YouTube homepage that older builds auto-seeded —
+  // YouTube can't be sniffed in-browser, so it no longer belongs in defaults.
+  static const String _ytDeseedKey = 'browser_bookmarks_yt_deseed_v1';
   static const _uuid = Uuid();
 
   /// Popular video/audio/social platforms seeded on first run so the new-tab
   /// page starts useful. Users can freely remove these or add their own.
-  /// (TikTok is intentionally excluded — it crashes WebView2 on Windows.)
+  /// (TikTok is excluded — it crashes WebView2 on Windows. YouTube is excluded
+  /// because the in-browser sniffer can't grab its SABR streams — users are
+  /// steered to the Home tab / yt-dlp for YouTube instead.)
   static const List<({String url, String title})> defaultSeeds = [
-    (url: 'https://www.youtube.com', title: 'YouTube'),
     (url: 'https://www.facebook.com', title: 'Facebook'),
     (url: 'https://www.instagram.com', title: 'Instagram'),
     (url: 'https://x.com', title: 'X'),
@@ -87,6 +91,24 @@ class BrowserBookmarkService {
   BrowserBookmarkService(this._prefs) {
     _load();
     _seedDefaultsIfFirstRun();
+    _removeSeededYouTubeOnce();
+  }
+
+  /// Removes the auto-seeded YouTube homepage exactly once (migration). Only the
+  /// exact default URL is targeted, so a user's own YouTube video/channel
+  /// bookmarks are never touched.
+  void _removeSeededYouTubeOnce() {
+    if (_prefs.getBool(_ytDeseedKey) ?? false) return;
+    _prefs.setBool(_ytDeseedKey, true);
+    final before = _bookmarks.length;
+    _bookmarks.removeWhere((b) {
+      final u = b.url.toLowerCase().replaceAll(RegExp(r'/$'), '');
+      return u == 'https://www.youtube.com' || u == 'https://youtube.com';
+    });
+    if (_bookmarks.length != before) {
+      _save();
+      _controller.add(bookmarks);
+    }
   }
 
   /// Seeds [defaultSeeds] exactly once (first run). Guarded by a prefs flag so

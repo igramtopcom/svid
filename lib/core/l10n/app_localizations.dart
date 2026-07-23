@@ -2518,6 +2518,9 @@ class AppLocalizations {
   // ==================== BROWSER MEDIA SNIFFING (IDM) ====================
 
   static String get browserMediaSniffTitle => 'browser.mediaSniffTitle'.tr();
+  static String get browserYoutubeUseHomeHint =>
+      'browser.youtubeUseHomeHint'.tr();
+  static String get browserYoutubeOpenHome => 'browser.youtubeOpenHome'.tr();
   static String get browserMediaSniffEmpty => 'browser.mediaSniffEmpty'.tr();
   static String get browserMediaSniffDownload =>
       'browser.mediaSniffDownload'.tr();

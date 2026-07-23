@@ -20,11 +20,28 @@ class InterceptedMediaNotifier extends StateNotifier<List<InterceptedMedia>> {
 
   final Set<String> _seenKeys = {};
 
+  /// Hard cap on stored items per page. Heavy pages (infinite-scroll homepages
+  /// like a news site) can flood the interceptor with hundreds of resources;
+  /// without a bound the list grows unbounded, each add is an O(n) copy, and
+  /// every item fires a background HEAD probe — enough to exhaust memory/threads
+  /// and crash the app. The first N downloadable items are more than enough.
+  static const int _maxItems = 40;
+
   /// Process a raw message from the JS interceptor.
   /// Returns the parsed [InterceptedMedia] if new, null if duplicate or invalid.
   InterceptedMedia? processMessage(dynamic rawMessage) {
     final data = _parseMessage(rawMessage);
     if (data == null) return null;
+
+    // Drop HLS/DASH segments as early and cheaply as possible: they are the
+    // single biggest source of flood on streaming sites and are never an
+    // independently downloadable file (the .m3u8 manifest is the real item).
+    if (data['type'] == 'segment') return null;
+
+    // Bound memory/work on flood-heavy pages — once we've collected enough
+    // real media, stop ingesting (segments above are dropped for free and do
+    // not count toward this cap).
+    if (state.length >= _maxItems) return null;
 
     final url = data['url'] as String?;
     // MediaSource reports may have no URL (just mimeType)

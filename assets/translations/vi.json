@@ -1505,6 +1505,8 @@
     "bookmarkImportError": "Nhập dấu trang thất bại",
     "bookmarkImportNone": "Không có dấu trang mới để nhập (tất cả đã được lưu)",
     "mediaSniffTitle": "Media phát hiện",
+    "youtubeUseHomeHint": "Tải video YouTube nhanh hơn ở tab Home",
+    "youtubeOpenHome": "Mở Home",
     "mediaSniffEmpty": "Không phát hiện media trên trang này",
     "mediaSniffDownload": "Tải xuống",
     "mediaSniffDownloadAll": "Tải tất cả",

@@ -1505,6 +1505,8 @@
     "bookmarkImportError": "Failed to import bookmarks",
     "bookmarkImportNone": "No new bookmarks to import (all already saved)",
     "mediaSniffTitle": "Detected Media",
+    "youtubeUseHomeHint": "YouTube downloads are faster from the Home tab",
+    "youtubeOpenHome": "Open Home",
     "mediaSniffEmpty": "No media detected on this page",
     "mediaSniffDownload": "Download",
     "mediaSniffDownloadAll": "Download All",

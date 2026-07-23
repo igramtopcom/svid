@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/core.dart';
@@ -218,6 +219,35 @@ mixin BrowserNavigationMixin<T extends StatefulWidget> on State<T> {
     );
   }
 
+  /// URL we last showed the YouTube hint for, to avoid re-showing it on every
+  /// SPA page-finish for the same page.
+  String? _lastYtHintUrl;
+
+  /// On a YouTube page, show a one-tap hint to download via the Home tab. The
+  /// action copies the current URL and switches to Home so the user can paste
+  /// (Ctrl+V) into the download field.
+  void _maybeShowYouTubeDownloadHint(String pageUrl) {
+    if (!mounted) return;
+    if (pageUrl.isEmpty || pageUrl == 'about:blank') return;
+    if (PlatformDetector.detectPlatform(pageUrl) != VideoPlatform.youtube) {
+      return;
+    }
+    if (_lastYtHintUrl == pageUrl) return;
+    _lastYtHintUrl = pageUrl;
+
+    AppSnackBar.info(
+      context,
+      message: AppLocalizations.browserYoutubeUseHomeHint,
+      action: SnackBarAction(
+        label: AppLocalizations.browserYoutubeOpenHome,
+        onPressed: () {
+          Clipboard.setData(ClipboardData(text: pageUrl));
+          ref.read(navigationProvider.notifier).navigateToHome();
+        },
+      ),
+    );
+  }
+
   Future<void> _onPageFinished(String tabId, String pageUrl) async {
     if (!mounted) return;
     final activeId = ref.read(browserTabsProvider).activeTabId;
@@ -268,6 +298,11 @@ mixin BrowserNavigationMixin<T extends StatefulWidget> on State<T> {
 
       // Update browser page URL for unified media provider
       ref.read(browserPageUrlProvider.notifier).state = pageUrl;
+
+      // YouTube streams can't be captured by the in-browser sniffer (SABR /
+      // session-signed googlevideo URLs) — steer the user to the Home tab where
+      // yt-dlp handles it, instead of leaving them waiting on an empty panel.
+      _maybeShowYouTubeDownloadHint(pageUrl);
 
       // Update navigation state and cache on the tab entity
       if (ctrl != null) {

@@ -216,9 +216,18 @@ class _VideoPreviewDialogState extends State<VideoPreviewDialog> {
                 'Chrome/134.0.0.0 Safari/537.36',
           ),
           onLoadStop: (controller, url) async {
-            // Inject once the page is up; the <style> persists as YouTube's SPA
-            // hydrates, so the player stays maximised and the chrome hidden.
-            await controller.injectCSSCode(source: _cleanCss);
+            // Inject via evaluateJavascript (not injectCSSCode, which is a no-op
+            // on the Windows/WebView2 backend). The <style> tag persists as
+            // YouTube's SPA hydrates, keeping the chrome hidden + player maxed.
+            await controller.evaluateJavascript(
+              source:
+                  "(function(){try{"
+                  "if(document.getElementById('svid-clean'))return;"
+                  "var s=document.createElement('style');s.id='svid-clean';"
+                  "s.textContent=`$_cleanCss`;"
+                  "(document.head||document.documentElement).appendChild(s);"
+                  "}catch(e){}})();",
+            );
             if (mounted) setState(() => _loading = false);
           },
           onReceivedError: (controller, request, error) {

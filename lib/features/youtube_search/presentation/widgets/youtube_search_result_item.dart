@@ -1,14 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/core.dart';
-import '../../domain/entities/youtube_search_result.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Individual YouTube search result item
-class YouTubeSearchResultItem extends StatefulWidget {
+import '../../../../core/core.dart';
+import '../../../downloads/domain/entities/download_entity.dart';
+import '../../../downloads/domain/entities/download_status.dart';
+import '../../../downloads/domain/services/download_archive_service.dart';
+import '../../../downloads/presentation/providers/downloads_notifier.dart';
+import '../../../home/presentation/widgets/download_list_helpers.dart';
+import '../../domain/entities/youtube_search_result.dart';
+import 'video_preview_dialog.dart';
+
+/// Individual YouTube search / trending result item.
+///
+/// Beyond Download it offers an in-app **Preview** (mini-player) and — once a
+/// download for this video exists — shows its live progress inline and, on
+/// completion, an **Open folder** action. This means the user never has to
+/// switch to the Home tab to see what happened to a video they downloaded here.
+class YouTubeSearchResultItem extends ConsumerStatefulWidget {
   final YouTubeSearchResult video;
   final VoidCallback? onTap;
 
-  /// Called when the download button is tapped — does NOT close the search dialog
+  /// Called when the download button is tapped — does NOT close the search view.
   final VoidCallback? onDownload;
 
   const YouTubeSearchResultItem({
@@ -19,12 +32,47 @@ class YouTubeSearchResultItem extends StatefulWidget {
   });
 
   @override
-  State<YouTubeSearchResultItem> createState() =>
+  ConsumerState<YouTubeSearchResultItem> createState() =>
       _YouTubeSearchResultItemState();
 }
 
-class _YouTubeSearchResultItemState extends State<YouTubeSearchResultItem> {
+class _YouTubeSearchResultItemState
+    extends ConsumerState<YouTubeSearchResultItem> {
   bool _isHovered = false;
+
+  /// The most recent download whose URL / video-id matches this result, or null.
+  DownloadEntity? _matchDownload(List<DownloadEntity> downloads) {
+    final video = widget.video;
+    if (video.isChannel) return null;
+    final url = video.url;
+    final vid = video.id;
+    final matches =
+        downloads.where((d) {
+          if (UrlNormalizer.same(d.url, url)) return true;
+          if (d.sourceUrl.isNotEmpty && UrlNormalizer.same(d.sourceUrl, url)) {
+            return true;
+          }
+          if (vid.length == 11) {
+            if (DownloadArchiveService.extractVideoId(d.url) == vid) return true;
+            if (d.sourceUrl.isNotEmpty &&
+                DownloadArchiveService.extractVideoId(d.sourceUrl) == vid) {
+              return true;
+            }
+          }
+          return false;
+        }).toList();
+    if (matches.isEmpty) return null;
+    matches.sort((a, b) => b.id.compareTo(a.id));
+    return matches.first;
+  }
+
+  void _openPreview() {
+    VideoPreviewDialog.show(
+      context,
+      widget.video,
+      onDownload: widget.onDownload ?? widget.onTap,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +80,12 @@ class _YouTubeSearchResultItemState extends State<YouTubeSearchResultItem> {
     final isDark = theme.brightness == Brightness.dark;
     final video = widget.video;
 
-    final showDownloadButton =
+    // Rebuild only when *this* video's matching download changes.
+    final download = ref.watch(
+      downloadsNotifierProvider.select((s) => _matchDownload(s.downloads)),
+    );
+
+    final showActions =
         !video.isChannel && (widget.onDownload != null || widget.onTap != null);
 
     return MouseRegion(
@@ -102,10 +155,14 @@ class _YouTubeSearchResultItemState extends State<YouTubeSearchResultItem> {
                     ),
                     SizedBox(width: tight ? AppSpacing.sm : AppSpacing.md),
                     Expanded(child: _buildVideoInfo(theme, video)),
-                    if (showDownloadButton)
+                    if (showActions)
                       Padding(
                         padding: const EdgeInsets.only(left: AppSpacing.sm),
-                        child: _buildDownloadAction(context, compact: compact),
+                        child: _buildActions(
+                          context,
+                          compact: compact,
+                          download: download,
+                        ),
                       ),
                   ],
                 ),
@@ -117,10 +174,76 @@ class _YouTubeSearchResultItemState extends State<YouTubeSearchResultItem> {
     );
   }
 
-  Widget _buildDownloadAction(BuildContext context, {required bool compact}) {
+  // ===========================================================================
+  // Actions: Preview + (Download | Progress | Open folder | Retry)
+  // ===========================================================================
+
+  Widget _buildActions(
+    BuildContext context, {
+    required bool compact,
+    required DownloadEntity? download,
+  }) {
+    final Widget primary;
+    if (download == null) {
+      primary = _downloadButton(context, compact: compact);
+    } else if (download.isCompleted) {
+      primary = _openFolderButton(context, download, compact: compact);
+    } else if (download.isFailed) {
+      primary = _retryButton(context, download, compact: compact);
+    } else {
+      primary = _progressChip(context, download);
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _previewButton(context),
+        const SizedBox(width: AppSpacing.xs),
+        primary,
+      ],
+    );
+  }
+
+  Widget _previewButton(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 120),
-      opacity: _isHovered ? 1.0 : 0.76,
+      opacity: _isHovered ? 1.0 : 0.72,
+      child: Tooltip(
+        message: AppLocalizations.youtubeSearchPreview,
+        child: IconButton(
+          onPressed: _openPreview,
+          icon: const Icon(Icons.play_arrow_rounded, size: 20),
+          constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+          padding: EdgeInsets.zero,
+          style: IconButton.styleFrom(
+            foregroundColor:
+                isDark ? AppColors.darkLightText : theme.colorScheme.onSurface,
+            backgroundColor:
+                isDark
+                    ? AppColors.homeDarkAppBg
+                    : AppColors.surface3(context),
+            side: BorderSide(
+              color:
+                  isDark
+                      ? AppColors.homeDarkBorderStrong
+                      : AppColors.border(context),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.button),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _downloadButton(BuildContext context, {required bool compact}) {
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 120),
+      opacity: _isHovered ? 1.0 : 0.82,
       child:
           compact
               ? Tooltip(
@@ -184,6 +307,146 @@ class _YouTubeSearchResultItemState extends State<YouTubeSearchResultItem> {
     );
   }
 
+  /// Live progress while the matching download runs.
+  Widget _progressChip(BuildContext context, DownloadEntity download) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final accent = AppColors.accentHighlight;
+    final downloading = download.status == DownloadStatus.downloading;
+    final percent = download.progressPercentage.round().clamp(0, 100);
+    final label =
+        downloading ? '$percent%' : download.status.displayLabel;
+
+    return Container(
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.smMd),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: isDark ? 0.14 : 0.10),
+        borderRadius: BorderRadius.circular(AppRadius.button),
+        border: Border.all(color: accent.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 15,
+            height: 15,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              value: downloading && download.progress > 0
+                  ? download.progress
+                  : null,
+              color: accent,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Text(
+            label,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: accent,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// After completion: open the containing folder so the user finds the file.
+  Widget _openFolderButton(
+    BuildContext context,
+    DownloadEntity download, {
+    required bool compact,
+  }) {
+    final green = AppColors.lightStatusCompleted;
+    if (compact) {
+      return Tooltip(
+        message: AppLocalizations.youtubeSearchOpenFolder,
+        child: IconButton(
+          onPressed: () => openFileLocation(context, ref, download),
+          icon: const Icon(Icons.folder_open_rounded, size: 18),
+          constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+          padding: EdgeInsets.zero,
+          style: IconButton.styleFrom(
+            foregroundColor: green,
+            backgroundColor: green.withValues(alpha: 0.12),
+            side: BorderSide(color: green.withValues(alpha: 0.4)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.button),
+            ),
+          ),
+        ),
+      );
+    }
+    return OutlinedButton.icon(
+      onPressed: () => openFileLocation(context, ref, download),
+      icon: const Icon(Icons.check_circle_rounded, size: 18),
+      label: Text(AppLocalizations.youtubeSearchOpenFolder),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: green,
+        side: BorderSide(color: green.withValues(alpha: 0.5)),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.smMd,
+          vertical: AppSpacing.sm,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.button),
+        ),
+        textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+  Widget _retryButton(
+    BuildContext context,
+    DownloadEntity download, {
+    required bool compact,
+  }) {
+    final red = AppColors.lightStatusFailed;
+    void retry() =>
+        ref.read(downloadsNotifierProvider.notifier).retryDownload(download.id);
+    if (compact) {
+      return Tooltip(
+        message: AppLocalizations.youtubeSearchRetry,
+        child: IconButton(
+          onPressed: retry,
+          icon: const Icon(Icons.refresh_rounded, size: 18),
+          constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+          padding: EdgeInsets.zero,
+          style: IconButton.styleFrom(
+            foregroundColor: red,
+            backgroundColor: red.withValues(alpha: 0.10),
+            side: BorderSide(color: red.withValues(alpha: 0.4)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.button),
+            ),
+          ),
+        ),
+      );
+    }
+    return OutlinedButton.icon(
+      onPressed: retry,
+      icon: const Icon(Icons.refresh_rounded, size: 18),
+      label: Text(AppLocalizations.youtubeSearchRetry),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: red,
+        side: BorderSide(color: red.withValues(alpha: 0.5)),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.smMd,
+          vertical: AppSpacing.sm,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.button),
+        ),
+        textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
   Widget _buildThumbnail(
     ThemeData theme,
     YouTubeSearchResult video, {
@@ -212,48 +475,78 @@ class _YouTubeSearchResultItemState extends State<YouTubeSearchResultItem> {
       );
     }
 
-    // Video: rectangular 16:9 thumbnail
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(AppRadius.card),
-          child: SizedBox(
-            width: width,
-            height: height,
-            child:
-                video.highQualityThumbnail != null
-                    ? CachedNetworkImage(
-                      imageUrl: video.highQualityThumbnail!,
-                      fit: BoxFit.cover,
-                      memCacheWidth: 320,
-                      memCacheHeight: 180,
-                      placeholder: (_, __) => _buildPlaceholder(theme),
-                      errorWidget: (_, __, ___) => _buildPlaceholder(theme),
-                    )
-                    : _buildPlaceholder(theme),
-          ),
-        ),
-        // Duration badge
-        if (video.formattedDuration.isNotEmpty)
-          Positioned(
-            right: 4,
-            bottom: 4,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.xs,
-                vertical: AppSpacing.xxs,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: AppOpacity.nearOpaque),
-                borderRadius: BorderRadius.circular(2),
-              ),
-              child: Text(
-                video.formattedDuration,
-                style: AppTypography.statusBadge.copyWith(color: Colors.white),
+    // Video: rectangular 16:9 thumbnail with a hover play affordance.
+    return GestureDetector(
+      onTap: _openPreview,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.card),
+              child: SizedBox(
+                width: width,
+                height: height,
+                child:
+                    video.highQualityThumbnail != null
+                        ? CachedNetworkImage(
+                          imageUrl: video.highQualityThumbnail!,
+                          fit: BoxFit.cover,
+                          memCacheWidth: 320,
+                          memCacheHeight: 180,
+                          placeholder: (_, __) => _buildPlaceholder(theme),
+                          errorWidget: (_, __, ___) => _buildPlaceholder(theme),
+                        )
+                        : _buildPlaceholder(theme),
               ),
             ),
-          ),
-      ],
+            // Play overlay (appears on hover) — click thumbnail to preview.
+            Positioned.fill(
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 140),
+                opacity: _isHovered ? 1.0 : 0.0,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.28),
+                    borderRadius: BorderRadius.circular(AppRadius.card),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.play_circle_fill_rounded,
+                      size: 34,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // Duration badge
+            if (video.formattedDuration.isNotEmpty)
+              Positioned(
+                right: 4,
+                bottom: 4,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xs,
+                    vertical: AppSpacing.xxs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(
+                      alpha: AppOpacity.nearOpaque,
+                    ),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                  child: Text(
+                    video.formattedDuration,
+                    style: AppTypography.statusBadge.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 

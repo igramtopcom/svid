@@ -19,8 +19,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Match the SDK pinned in .fvmrc so the build matches dev/CI.
-  FLUTTER_VERSION: '3.29.3'
+  # Bumped from 3.29.3: flutter_inappwebview 6.2.0-beta.3 (WebView crash fix)
+  # requires Dart >=3.8.0. 3.41.6 ships Dart 3.11.4 and matches the local dev
+  # SDK the change was verified against.
+  FLUTTER_VERSION: '3.41.6'
 
 jobs:
   build-windows:

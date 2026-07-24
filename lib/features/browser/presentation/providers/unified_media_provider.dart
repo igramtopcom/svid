@@ -118,7 +118,14 @@ List<UnifiedMediaItem> _mergeAndClassify({
     // Skip undownloadable items entirely
     if (item == null || item.type == MediaItemType.undownloadable) continue;
 
-    final key = item.deduplicationKey;
+    // Collapse HLS renditions of the SAME video into one entry. A single video
+    // exposes a master playlist plus per-quality/token variants — all different
+    // URLs — which otherwise render as many identical "Download" rows. Grouping
+    // by the manifest's directory (ignoring filename + query) keeps one row per
+    // video while still separating genuinely different videos.
+    final key = item.type == MediaItemType.hlsManifest
+        ? _hlsGroupKey(item.displayUrl)
+        : item.deduplicationKey;
     if (seenKeys.contains(key)) continue;
     seenKeys.add(key);
 
@@ -308,6 +315,18 @@ bool _isFeedUrl(String url) {
 /// independently playable file). Matches `.ts`/`.m4s` files and the common
 /// seg-/segment/chunk/frag naming, so a single segment is never offered as a
 /// standalone download.
+/// Grouping key for HLS manifests: host + the directory holding the manifest
+/// (filename and query dropped). master.m3u8, 720p.m3u8, audio.m3u8 and
+/// token-varied copies under the same folder collapse to one video.
+String _hlsGroupKey(String url) {
+  final uri = Uri.tryParse(url);
+  if (uri == null) return 'hls:$url';
+  final segs = uri.pathSegments;
+  final dir =
+      segs.length > 1 ? segs.sublist(0, segs.length - 1).join('/') : '';
+  return 'hls:${uri.host}/$dir';
+}
+
 bool _looksLikeStreamSegment(String url) {
   final path = (Uri.tryParse(url)?.path ?? url).toLowerCase();
   if (path.endsWith('.ts') || path.endsWith('.m4s')) return true;

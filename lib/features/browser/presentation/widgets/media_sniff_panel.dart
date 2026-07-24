@@ -826,9 +826,11 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
     if (target == null) return;
 
     // Some CDNs (znews.vn) reject manifest/segment requests without the
-    // article page as Referer — stamp it so both yt-dlp runs send it.
+    // article page as Referer — stamp it so both yt-dlp runs send it. The
+    // card's human title rides along: raw-manifest extraction would otherwise
+    // name the download after the playlist file ("master"/"index").
     if (hasPage && target != pageUrl) {
-      DownloadRefererHolder.stamp(target, pageUrl);
+      DownloadRefererHolder.stamp(target, pageUrl, pageTitle: item.title);
     }
     _startYtdlpExtraction(target, skipFeedGuard: true);
   }

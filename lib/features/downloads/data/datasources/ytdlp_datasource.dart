@@ -1943,7 +1943,19 @@ class YtDlpDataSource {
         // app-support path with spaces inside extractor-args. Download uses
         // Process.start without shell wrapping, so PO-provider args are still
         // safe there.
-        final result = await ProcessHelper.run(ytdlpBinary, args).timeout(
+        //
+        // Windows lands here only for referer-stamped (browser-HLS)
+        // extractions. It MUST use runDirect: the yt-dlp binary lives under
+        // the company app-support dir, and when that path contains spaces
+        // (VidCombo's "Bui Xuan Mai"; svid pre-SsLabs) runInShell's cmd.exe
+        // wrapping truncates the executable at the first space ("'Bui' is not
+        // recognized…" — same P0 as the 2026-05-25 ffmpeg failure), which
+        // surfaced to users as a bogus "content removed" extraction error.
+        final runner =
+            Platform.isWindows
+                ? ProcessHelper.runDirect(ytdlpBinary, args)
+                : ProcessHelper.run(ytdlpBinary, args);
+        final result = await runner.timeout(
           Duration(seconds: timeout),
           onTimeout:
               () =>

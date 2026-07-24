@@ -14,27 +14,43 @@
 /// The map is capped FIFO so it can't grow unbounded over a long session.
 /// Downloads that were never stamped (Home tab, YouTube, playlists…) get no
 /// referer — behaviour is unchanged for every existing path.
+class SniffContext {
+  /// Page URL sent as `--referer` on both yt-dlp runs.
+  final String referer;
+
+  /// Human page/video title from the sniff card. Raw-manifest extraction can
+  /// only derive a junk title from the playlist filename ("master", "index"),
+  /// so the known-good title is carried along and applied to the result.
+  final String? pageTitle;
+
+  const SniffContext({required this.referer, this.pageTitle});
+}
+
 class DownloadRefererHolder {
   DownloadRefererHolder._();
 
   static const int _maxEntries = 32;
-  static final Map<String, String> _byUrl = {};
+  static final Map<String, SniffContext> _byUrl = {};
 
-  /// Register [referer] for [url] (and its yt-dlp-cleaned variant, which the
-  /// datasource may use as the lookup key).
-  static void stamp(String url, String referer) {
+  /// Register the sniff context for [url].
+  static void stamp(String url, String referer, {String? pageTitle}) {
     if (url.isEmpty || referer.isEmpty) return;
     // FIFO cap — Maps preserve insertion order.
     while (_byUrl.length >= _maxEntries) {
       _byUrl.remove(_byUrl.keys.first);
     }
-    _byUrl[url] = referer;
+    _byUrl[url] = SniffContext(referer: referer, pageTitle: pageTitle);
   }
 
   /// Referer for [url], or null when this download was never stamped.
+  static String? lookup(String url) => _entryFor(url)?.referer;
+
+  /// Stamped page title for [url], or null.
+  static String? lookupTitle(String url) => _entryFor(url)?.pageTitle;
+
   /// Falls back to a host+path match so URL normalisation (stripped query /
   /// fragment) between stamp- and lookup-time doesn't lose the entry.
-  static String? lookup(String url) {
+  static SniffContext? _entryFor(String url) {
     final exact = _byUrl[url];
     if (exact != null) return exact;
 

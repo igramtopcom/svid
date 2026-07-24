@@ -224,7 +224,7 @@ else
 
   compile_brand svid "1.0.0" \
     "/DMyAppName=Svid" "/DMyAppExeName=svid.exe" \
-    "/DMyAppPublisher=Svid" "/DMyAppCompany=Bui Xuan Mai" \
+    "/DMyAppPublisher=Svid" "/DMyAppCompany=SsLabs" \
     "/DMyAppProductName=Svid Desktop" \
     "/DMyAppFileDescription=Svid Desktop Installer" \
     "/DMyAppCopyright=Copyright (C) 2026 Bui Xuan Mai. All rights reserved." \

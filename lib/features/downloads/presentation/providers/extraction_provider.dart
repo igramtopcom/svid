@@ -4,6 +4,7 @@ import '../../../../core/errors/app_exception.dart';
 import '../../../../core/logging/app_logger.dart';
 import '../../../settings/domain/enums/download_engine.dart';
 import '../../domain/entities/video_info.dart';
+import '../../domain/services/download_referer_holder.dart';
 import '../../domain/usecases/extract_video_info_usecase.dart';
 import 'download_providers.dart';
 
@@ -110,10 +111,18 @@ class ExtractionNotifier extends StateNotifier<ExtractionState> {
 
       result.when(
         success: (videoInfo) {
-          appLogger.info('✅ [Extraction] Completed: ${videoInfo.title}');
+          // Browser-sniffed HLS: extraction ran on the raw manifest, so
+          // yt-dlp's title is the playlist filename ("master"/"index").
+          // Replace it with the page title stamped by the sniff panel.
+          final stampedTitle = DownloadRefererHolder.lookupTitle(url);
+          final effectiveInfo =
+              (stampedTitle != null && stampedTitle.trim().isNotEmpty)
+                  ? videoInfo.copyWith(title: stampedTitle.trim())
+                  : videoInfo;
+          appLogger.info('✅ [Extraction] Completed: ${effectiveInfo.title}');
           state = state.copyWith(
             isExtracting: false,
-            pendingVideoInfo: videoInfo,
+            pendingVideoInfo: effectiveInfo,
             clearError: true,
           );
         },

@@ -12,7 +12,9 @@
 #define BRAND_URL_SCHEME "svid://"
 #define BRAND_BUNDLE_ID "com.svid.app"
 #define BRAND_APP_USER_MODEL_ID L"com.svid.app"
-#define BRAND_COMPANY_NAME "Bui Xuan Mai"
+// No spaces: this becomes the %APPDATA% company dir, and a space here caused
+// the cmd.exe path-truncation P0 ("'Bui' is not recognized…", 2026-05-25).
+#define BRAND_COMPANY_NAME "SsLabs"
 #define BRAND_PRODUCT_NAME "Svid Desktop"
 #define BRAND_FILE_DESCRIPTION "Svid Desktop"
 #define BRAND_COPYRIGHT "Copyright (C) 2026 Bui Xuan Mai. All rights reserved."

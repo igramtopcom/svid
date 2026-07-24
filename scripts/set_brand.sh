@@ -147,7 +147,7 @@ else
 #define BRAND_URL_SCHEME "svid://"
 #define BRAND_BUNDLE_ID "com.svid.app"
 #define BRAND_APP_USER_MODEL_ID L"com.svid.app"
-#define BRAND_COMPANY_NAME "Bui Xuan Mai"
+#define BRAND_COMPANY_NAME "SsLabs"
 #define BRAND_PRODUCT_NAME "Svid Desktop"
 #define BRAND_FILE_DESCRIPTION "Svid Desktop"
 #define BRAND_COPYRIGHT "Copyright (C) 2026 Bui Xuan Mai. All rights reserved."

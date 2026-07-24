@@ -1508,6 +1508,8 @@
     "youtubeUseHomeHint": "YouTube downloads are faster from the Home tab",
     "youtubeOpenHome": "Open Home",
     "downloadStartedHome": "See download progress & save folder in the Home tab",
+    "drmTitle": "Copyright-protected content",
+    "drmMessage": "Downloads aren't supported for DRM-protected sources.",
     "mediaSniffEmpty": "No media detected on this page",
     "mediaSniffDownload": "Download",
     "mediaSniffDownloadAll": "Download All",

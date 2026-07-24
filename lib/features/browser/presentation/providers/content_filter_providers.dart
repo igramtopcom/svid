@@ -97,6 +97,11 @@ final mediaSniffingEnabledProvider =
 /// via the panel's ✕). Ephemeral UI state — not persisted.
 final sniffPanelOpenProvider = StateProvider<bool>((ref) => false);
 
+/// True when the current page uses DRM (Encrypted Media Extensions). Downloads
+/// are declined for such content by policy; the panel shows a notice instead of
+/// (bogus) media items. Reset on navigation. Ephemeral — not persisted.
+final browserDrmDetectedProvider = StateProvider<bool>((ref) => false);
+
 // ==================== SEARCH ENGINE & HOME PAGE ====================
 
 /// Selected search engine — reactive state mirroring service.

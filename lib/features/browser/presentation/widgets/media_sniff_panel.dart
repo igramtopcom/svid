@@ -41,8 +41,14 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
     final isOpen = ref.watch(sniffPanelOpenProvider);
     if (!isOpen) return const SizedBox.shrink();
 
-    final items = ref.watch(unifiedMediaProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // DRM (EME) page → declined by policy; show a clear notice, never media.
+    if (ref.watch(browserDrmDetectedProvider)) {
+      return _buildDrmState(isDark);
+    }
+
+    final items = ref.watch(unifiedMediaProvider);
     final panelWidth = _panelWidth(context);
 
     final downloadable = items.where((i) => i.isDownloadable).toList();
@@ -556,6 +562,76 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
   }
 
   // ── Scanning State (feed page) ──
+
+  /// Shown when the current page uses DRM (EME): downloads are declined by
+  /// policy, so state that clearly instead of listing (bogus) media.
+  Widget _buildDrmState(bool isDark) {
+    final baseBg = AppColors.surface1(context);
+    final panelWidth = _panelWidth(context);
+    final textPrimary =
+        isDark
+            ? AppColors.darkLightText
+            : Theme.of(context).colorScheme.onSurface;
+    final textTertiary =
+        isDark
+            ? AppColors.lightMetaText
+            : Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: AppOpacity.scrim);
+
+    return Container(
+      width: panelWidth,
+      decoration: BoxDecoration(
+        color: baseBg,
+        border: Border(
+          left: BorderSide(
+            color: AppColors.accentHighlight.withValues(alpha: AppOpacity.hover),
+          ),
+        ),
+      ),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: AppColors.accentHighlight.withValues(
+                alpha: AppOpacity.divider,
+              ),
+              borderRadius: BorderRadius.circular(AppRadius.card),
+            ),
+            child: Icon(
+              Icons.lock_rounded,
+              size: 26,
+              color: AppColors.accentHighlight.withValues(alpha: AppOpacity.scrim),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            AppLocalizations.browserDrmTitle,
+            textAlign: TextAlign.center,
+            style: AppTypography.compact.copyWith(
+              fontWeight: FontWeight.w600,
+              color: textPrimary,
+              letterSpacing: 0,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            AppLocalizations.browserDrmMessage,
+            textAlign: TextAlign.center,
+            style: AppTypography.statusBadge.copyWith(
+              fontWeight: FontWeight.w400,
+              color: textTertiary.withValues(alpha: AppOpacity.nearOpaque),
+              letterSpacing: 0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildScanningState(bool isDark) {
     final baseBg = AppColors.surface1(context);

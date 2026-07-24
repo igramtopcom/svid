@@ -1508,6 +1508,8 @@
     "youtubeUseHomeHint": "Tải video YouTube nhanh hơn ở tab Home",
     "youtubeOpenHome": "Mở Home",
     "downloadStartedHome": "Xem tiến trình tải & nơi lưu ở tab Home",
+    "drmTitle": "Nội dung được bảo vệ bản quyền",
+    "drmMessage": "Không hỗ trợ tải xuống từ nguồn có DRM.",
     "mediaSniffEmpty": "Không phát hiện media trên trang này",
     "mediaSniffDownload": "Tải xuống",
     "mediaSniffDownloadAll": "Tải tất cả",

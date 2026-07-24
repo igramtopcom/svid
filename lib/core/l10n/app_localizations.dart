@@ -2523,6 +2523,8 @@ class AppLocalizations {
   static String get browserYoutubeOpenHome => 'browser.youtubeOpenHome'.tr();
   static String get browserDownloadStartedHome =>
       'browser.downloadStartedHome'.tr();
+  static String get browserDrmTitle => 'browser.drmTitle'.tr();
+  static String get browserDrmMessage => 'browser.drmMessage'.tr();
   static String get browserMediaSniffEmpty => 'browser.mediaSniffEmpty'.tr();
   static String get browserMediaSniffDownload =>
       'browser.mediaSniffDownload'.tr();

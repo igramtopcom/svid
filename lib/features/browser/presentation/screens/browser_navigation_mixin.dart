@@ -74,6 +74,10 @@ mixin BrowserNavigationMixin<T extends StatefulWidget> on State<T> {
       MediaInterceptorService.channelName,
       (dynamic message) {
         if (!mounted) return;
+        if (_isDrmSignal(message)) {
+          ref.read(browserDrmDetectedProvider.notifier).state = true;
+          return;
+        }
         ref.read(interceptedMediaProvider.notifier).processMessage(message);
       },
     );
@@ -85,6 +89,17 @@ mixin BrowserNavigationMixin<T extends StatefulWidget> on State<T> {
         _handleSpaNavigation(message);
       },
     );
+  }
+
+  /// Whether an interceptor message is a DRM (EME) signal rather than a media
+  /// item — such pages are download-declined by policy.
+  bool _isDrmSignal(dynamic message) {
+    try {
+      final data = message is String ? jsonDecode(message) : message;
+      return data is Map && data['type'] == 'drm';
+    } catch (_) {
+      return false;
+    }
   }
 
   /// Timestamp of last scroll-triggered re-scan (rate-limiting).
@@ -191,6 +206,7 @@ mixin BrowserNavigationMixin<T extends StatefulWidget> on State<T> {
           ref.read(browserVideoDetectionProvider.notifier).state = null;
           ref.read(browserDetectedVideosProvider.notifier).state = [];
           ref.read(interceptedMediaProvider.notifier).clear();
+          ref.read(browserDrmDetectedProvider.notifier).state = false;
           setSuggestion(null);
         }
         ref

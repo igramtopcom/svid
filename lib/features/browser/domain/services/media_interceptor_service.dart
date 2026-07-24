@@ -51,6 +51,24 @@ class MediaInterceptorService {
     try { $reportFn; } catch(e) {}
   }
 
+  // ── DRM (EME) detection ─────────────────────────────────────────
+  // A page that uses Encrypted Media Extensions is DRM-protected. We decline
+  // downloads for such sources by policy, so surface a single 'drm' signal.
+  try {
+    var _rmksa = navigator.requestMediaKeySystemAccess;
+    if (typeof _rmksa === 'function') {
+      navigator.requestMediaKeySystemAccess = function() {
+        try { report({ source: 'drm', type: 'drm' }); } catch(e) {}
+        return _rmksa.apply(this, arguments);
+      };
+    }
+  } catch(e) {}
+  try {
+    document.addEventListener('encrypted', function() {
+      try { report({ source: 'drm', type: 'drm' }); } catch(e) {}
+    }, true);
+  } catch(e) {}
+
   // Media extension patterns
   var _videoExts = /\\.(mp4|webm|mkv|avi|mov|wmv|flv|f4v|m4v|3gp|3g2|ts|mts|m2ts|ogv|vob|divx)\$/i;
   var _audioExts = /\\.(mp3|m4a|aac|ogg|opus|flac|wav|wma|weba|aiff|aif)\$/i;

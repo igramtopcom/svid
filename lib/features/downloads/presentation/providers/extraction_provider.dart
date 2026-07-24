@@ -112,13 +112,21 @@ class ExtractionNotifier extends StateNotifier<ExtractionState> {
       result.when(
         success: (videoInfo) {
           // Browser-sniffed HLS: extraction ran on the raw manifest, so
-          // yt-dlp's title is the playlist filename ("master"/"index").
-          // Replace it with the page title stamped by the sniff panel.
+          // yt-dlp's title is the playlist filename ("master"/"index") and
+          // there's no thumbnail. Replace both with what the sniff panel
+          // stamped from the page (title + og:image).
           final stampedTitle = DownloadRefererHolder.lookupTitle(url);
-          final effectiveInfo =
-              (stampedTitle != null && stampedTitle.trim().isNotEmpty)
-                  ? videoInfo.copyWith(title: stampedTitle.trim())
-                  : videoInfo;
+          final stampedThumb = DownloadRefererHolder.lookupThumbnail(url);
+          var effectiveInfo = videoInfo;
+          if (stampedTitle != null && stampedTitle.trim().isNotEmpty) {
+            effectiveInfo = effectiveInfo.copyWith(title: stampedTitle.trim());
+          }
+          if (stampedThumb != null &&
+              stampedThumb.isNotEmpty &&
+              (effectiveInfo.thumbnail == null ||
+                  effectiveInfo.thumbnail!.isEmpty)) {
+            effectiveInfo = effectiveInfo.copyWith(thumbnail: stampedThumb);
+          }
           appLogger.info('✅ [Extraction] Completed: ${effectiveInfo.title}');
           state = state.copyWith(
             isExtracting: false,

@@ -23,7 +23,11 @@ class SniffContext {
   /// so the known-good title is carried along and applied to the result.
   final String? pageTitle;
 
-  const SniffContext({required this.referer, this.pageTitle});
+  /// Page's og:image, applied as the download thumbnail — raw-manifest
+  /// extraction yields none.
+  final String? thumbnail;
+
+  const SniffContext({required this.referer, this.pageTitle, this.thumbnail});
 }
 
 class DownloadRefererHolder {
@@ -33,13 +37,22 @@ class DownloadRefererHolder {
   static final Map<String, SniffContext> _byUrl = {};
 
   /// Register the sniff context for [url].
-  static void stamp(String url, String referer, {String? pageTitle}) {
+  static void stamp(
+    String url,
+    String referer, {
+    String? pageTitle,
+    String? thumbnail,
+  }) {
     if (url.isEmpty || referer.isEmpty) return;
     // FIFO cap — Maps preserve insertion order.
     while (_byUrl.length >= _maxEntries) {
       _byUrl.remove(_byUrl.keys.first);
     }
-    _byUrl[url] = SniffContext(referer: referer, pageTitle: pageTitle);
+    _byUrl[url] = SniffContext(
+      referer: referer,
+      pageTitle: pageTitle,
+      thumbnail: thumbnail,
+    );
   }
 
   /// Referer for [url], or null when this download was never stamped.
@@ -47,6 +60,9 @@ class DownloadRefererHolder {
 
   /// Stamped page title for [url], or null.
   static String? lookupTitle(String url) => _entryFor(url)?.pageTitle;
+
+  /// Stamped thumbnail (og:image) for [url], or null.
+  static String? lookupThumbnail(String url) => _entryFor(url)?.thumbnail;
 
   /// Falls back to a host+path match so URL normalisation (stripped query /
   /// fragment) between stamp- and lookup-time doesn't lose the entry.

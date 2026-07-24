@@ -1038,12 +1038,54 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
 
     // Some CDNs (znews.vn) reject manifest/segment requests without the
     // article page as Referer — stamp it so both yt-dlp runs send it. The
-    // card's human title rides along: raw-manifest extraction would otherwise
-    // name the download after the playlist file ("master"/"index").
+    // card's title and the page's og:image ride along: raw-manifest extraction
+    // would otherwise name the file after the playlist ("master"/"index") and
+    // have no thumbnail.
     if (hasPage && target != pageUrl) {
-      DownloadRefererHolder.stamp(target, pageUrl, pageTitle: item.title);
+      final thumb = await _readPageThumbnail();
+      if (!mounted) return;
+      DownloadRefererHolder.stamp(
+        target,
+        pageUrl,
+        pageTitle: item.title,
+        thumbnail: thumb,
+      );
     }
     _startYtdlpExtraction(target, skipFeedGuard: true);
+  }
+
+  /// Reads the current page's og:image / twitter:image via JS — the download
+  /// thumbnail for a raw-manifest HLS stream (yt-dlp can't derive one). Returns
+  /// null on any failure; the pipeline just proceeds without a thumbnail.
+  Future<String?> _readPageThumbnail() async {
+    final ctrl = widget.activeController;
+    if (ctrl == null) return null;
+    try {
+      const js = '''
+        (function(){
+          function pick(sel){var e=document.querySelector(sel);return e&&e.content?e.content:'';}
+          var u = pick('meta[property="og:image"]') ||
+                  pick('meta[name="og:image"]') ||
+                  pick('meta[name="twitter:image"]') ||
+                  pick('meta[property="twitter:image"]');
+          return u || '';
+        })()
+      ''';
+      final raw = await ctrl.runJavaScriptReturningResult(js);
+      var s = raw.toString().trim();
+      // Some WebView bridges wrap the result in quotes.
+      if (s.length >= 2 && s.startsWith('"') && s.endsWith('"')) {
+        s = s.substring(1, s.length - 1);
+      }
+      if (s.isEmpty || s == 'null') return null;
+      final uri = Uri.tryParse(s);
+      if (uri == null || !(uri.isScheme('http') || uri.isScheme('https'))) {
+        return null;
+      }
+      return s;
+    } catch (_) {
+      return null;
+    }
   }
 
   void _startYtdlpExtraction(String pageUrl, {bool skipFeedGuard = false}) {

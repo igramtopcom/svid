@@ -5,12 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/browser_tab.dart';
 import '../providers/browser_tab_providers.dart';
 
-enum _NewTabOption { normal, incognito }
-
-/// Horizontal scrollable tab bar for the in-app browser
+/// Horizontal tab bar for the in-app browser (single-tab mode: shows the one
+/// tab chip for its title + ✕; the new-tab affordances were removed — see the
+/// note in build()).
 class BrowserTabBar extends ConsumerWidget {
   final void Function(String tabId)? onTabSwitch;
   final void Function(String tabId)? onTabClose;
+  // Kept so BrowserScreen's wiring stays intact for an easy re-enable.
   final VoidCallback? onNewTab;
   final VoidCallback? onNewIncognitoTab;
 
@@ -60,52 +61,12 @@ class BrowserTabBar extends ConsumerWidget {
               },
             ),
           ),
-          // New tab / new incognito tab button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-            child: SizedBox(
-              width: 28,
-              height: 28,
-              child: PopupMenuButton<_NewTabOption>(
-                enabled: tabState.tabs.length < BrowserTabNotifier.maxTabs,
-                tooltip:
-                    tabState.tabs.length < BrowserTabNotifier.maxTabs
-                        ? AppLocalizations.browserNewTab
-                        : AppLocalizations.browserMaxTabsReached,
-                padding: EdgeInsets.zero,
-                icon: const Icon(Icons.add_rounded, size: 16),
-                iconSize: 16,
-                onSelected: (option) {
-                  if (option == _NewTabOption.normal) {
-                    onNewTab?.call();
-                  } else {
-                    onNewIncognitoTab?.call();
-                  }
-                },
-                itemBuilder:
-                    (_) => [
-                      PopupMenuItem(
-                        value: _NewTabOption.normal,
-                        child: Text(AppLocalizations.browserNewTab),
-                      ),
-                      PopupMenuItem(
-                        value: _NewTabOption.incognito,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.security_rounded,
-                              size: 16,
-                              color: AppColors.incognitoAccent,
-                            ),
-                            const SizedBox(width: AppSpacing.sm),
-                            Text(AppLocalizations.browserIncognitoNewTab),
-                          ],
-                        ),
-                      ),
-                    ],
-              ),
-            ),
-          ),
+          // Single-tab mode: the new-tab / incognito button is intentionally
+          // removed. Multiple tabs shared one global sniff/detection state
+          // (media from tab A showing — and downloading — in tab B) and each
+          // extra WebView2 instance widens the native-plugin crash surface.
+          // The tab chip stays for its ✕ (close page → bookmark start page).
+          // window.open/_blank links load in the current tab (onCreateWindow).
         ],
       ),
     );

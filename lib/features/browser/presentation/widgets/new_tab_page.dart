@@ -258,11 +258,23 @@ class _BookmarkTileState extends State<_BookmarkTile> {
     return h.startsWith('www.') ? h.substring(4) : h;
   }
 
-  String get _initial {
+  /// Bookmark title with junk values (empty / "about:blank" / a raw URL —
+  /// saved by older builds whose tab title lagged navigation) replaced by the
+  /// site's host, so existing bad entries display correctly too.
+  String get _displayTitle {
     final t = widget.bookmark.title.trim();
-    if (t.isNotEmpty) return t[0].toUpperCase();
-    final h = _host;
-    return h.isNotEmpty ? h[0].toUpperCase() : '?';
+    final isJunk =
+        t.isEmpty ||
+        t == 'about:blank' ||
+        t.startsWith('http://') ||
+        t.startsWith('https://');
+    if (!isJunk) return t;
+    return _host.isNotEmpty ? _host : widget.bookmark.url;
+  }
+
+  String get _initial {
+    final t = _displayTitle;
+    return t.isNotEmpty ? t[0].toUpperCase() : '?';
   }
 
   @override
@@ -275,8 +287,7 @@ class _BookmarkTileState extends State<_BookmarkTile> {
         hasIcon
             ? PlatformStyleHelper.getColorForPlatform(platform)
             : AppColors.accentHighlight;
-    final title =
-        widget.bookmark.title.isNotEmpty ? widget.bookmark.title : _host;
+    final title = _displayTitle;
 
     // Uniform neutral badge for EVERY tile (icon/letter carries the colour) —
     // avoids the previous look where each tile's badge took the platform tint

@@ -308,9 +308,9 @@ class _BrowserScreenState extends ConsumerState<BrowserScreen>
       case BrowserContextAction.copyLink:
         BrowserLinkContextMenu.copyToClipboard(context, currentUrl);
       case BrowserContextAction.openNewTab:
-        final tabNotifier = ref.read(browserTabsProvider.notifier);
-        final newId = tabNotifier.addTab(url: currentUrl);
-        if (newId != null) initControllerForTab(newId, currentUrl);
+        // Single-tab mode: open the link in the current tab instead of
+        // spawning a second WebView (see BrowserTabBar note).
+        _navigateToUrl(currentUrl);
       case BrowserContextAction.openExternal:
         final uri = Uri.tryParse(currentUrl);
         if (uri != null) {
@@ -325,7 +325,19 @@ class _BrowserScreenState extends ConsumerState<BrowserScreen>
 
     final bookmarkService = ref.read(browserBookmarkServiceProvider);
     final tabState = ref.read(browserTabsProvider);
-    final title = tabState.activeTab?.title ?? url;
+    // The tab's title can lag behind navigation (still "about:blank" or a raw
+    // URL right after load) — fall back to the site's host so the bookmark
+    // tile never shows junk.
+    final rawTitle = (tabState.activeTab?.title ?? '').trim();
+    final titleIsJunk =
+        rawTitle.isEmpty ||
+        rawTitle == 'about:blank' ||
+        rawTitle.startsWith('http://') ||
+        rawTitle.startsWith('https://');
+    final host = Uri.tryParse(url)?.host ?? '';
+    final cleanHost = host.startsWith('www.') ? host.substring(4) : host;
+    final title =
+        titleIsJunk ? (cleanHost.isNotEmpty ? cleanHost : url) : rawTitle;
     final added = bookmarkService.toggle(url, title);
     setState(() {});
 

@@ -46,9 +46,8 @@ class BrowserLinkContextMenu {
       ),
       _StyledMenuItem(
         value: BrowserContextAction.openNewTab,
-        icon: Icons.tab_rounded,
+        icon: Icons.open_in_new_rounded,
         label: AppLocalizations.browserMenuOpenNewTab,
-        shortcut: '⌘T',
         cs: cs,
       ),
       _StyledMenuItem(

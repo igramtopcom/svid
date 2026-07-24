@@ -1664,7 +1664,7 @@
   "browserMenu": {
     "downloadVideo": "Download Video",
     "copyLink": "Copy Link Address",
-    "openNewTab": "Open in New Tab",
+    "openNewTab": "Open Link",
     "openExternal": "Open in External Browser",
     "linkCopied": "Link copied to clipboard"
   },

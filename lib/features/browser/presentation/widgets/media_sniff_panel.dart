@@ -53,25 +53,6 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
       return _buildScanningState(isDark);
     }
 
-    // Classify: first video/page-link = PRIMARY, rest = SUPPORTING
-    final primary = <UnifiedMediaItem>[];
-    final supporting = <UnifiedMediaItem>[];
-
-    for (final item in downloadable) {
-      if (primary.isEmpty &&
-          (item.type == MediaItemType.videoPageLink ||
-              item.type == MediaItemType.streamingSignal ||
-              (item.type == MediaItemType.directMediaFile &&
-                  item.originalCategory != MediaCategory.audio))) {
-        primary.add(item);
-      } else {
-        supporting.add(item);
-      }
-    }
-    // If no video primary, promote first item
-    if (primary.isEmpty && supporting.isNotEmpty) {
-      primary.add(supporting.removeAt(0));
-    }
 
     final baseBg = AppColors.surface1(context);
     final cardBg = AppColors.surface2(context);
@@ -145,8 +126,8 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
                 vertical: AppSpacing.xs,
               ),
               children: [
-                // Primary media item(s)
-                for (final item in primary)
+                // Every detected video is shown as an equal, full card.
+                for (final item in downloadable)
                   _buildPrimaryTarget(
                     item,
                     cardBg,
@@ -154,40 +135,12 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
                     textSecondary,
                     textTertiary,
                   ),
-
-                if (supporting.isNotEmpty) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: AppSpacing.smMd,
-                      bottom: AppSpacing.sm,
-                      left: AppSpacing.xs,
-                    ),
-                    child: Text(
-                      AppLocalizations.browserMediaSniffCount(
-                        supporting.length,
-                      ),
-                      style: AppTypography.mini.copyWith(
-                        color: textTertiary,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                  ),
-                  for (final item in supporting)
-                    _buildSupportingItem(
-                      item,
-                      cardBg,
-                      textPrimary,
-                      textSecondary,
-                      textTertiary,
-                    ),
-                ],
               ],
             ),
           ),
 
           // ── Footer ──
-          _buildFooter(headerBg, textTertiary, downloadable, supporting.length),
+          _buildFooter(headerBg, textTertiary, downloadable, 0),
         ],
       ),
     );
@@ -496,7 +449,9 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
   }
 
   // ── Supporting Intel Item ──
-
+  // Retained for now (all media currently render as equal full cards); kept so
+  // a compact variant can be reintroduced without rewriting it.
+  // ignore: unused_element
   Widget _buildSupportingItem(
     UnifiedMediaItem item,
     Color cardBg,
@@ -831,12 +786,17 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
   /// segments into a real, playable MP4 (the Rust engine only concatenates raw
   /// TS). Falls back to the manifest URL when the page URL is unavailable.
   Future<void> _startHlsViaYtdlp(UnifiedMediaItem item) async {
-    final pageUrl = await _getPageUrl();
-    if (!mounted) return;
-    final hasPage =
-        pageUrl != null && pageUrl.isNotEmpty && pageUrl != 'about:blank';
-    final target = hasPage ? pageUrl : item.downloadUrl;
-    if (target == null || target.isEmpty) return;
+    // Hand yt-dlp the sniffed manifest URL directly so it does NOT rely on a
+    // site-specific extractor to discover the stream — that discovery is what
+    // fails on sites yt-dlp doesn't recognise (e.g. znews.vn). yt-dlp downloads
+    // the HLS from the manifest and remuxes to a real MP4. Only fall back to the
+    // page URL if we somehow lack the manifest URL.
+    var target = item.downloadUrl;
+    if (target == null || target.isEmpty) {
+      target = await _getPageUrl();
+      if (!mounted) return;
+    }
+    if (target == null || target.isEmpty || target == 'about:blank') return;
     _startYtdlpExtraction(target, skipFeedGuard: true);
   }
 

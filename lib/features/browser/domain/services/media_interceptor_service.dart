@@ -40,15 +40,37 @@ class MediaInterceptorService {
   // ── Shared helpers ──────────────────────────────────────────────
 
   var _reported = {};
+  var _pending = [];
+  var _flushTimer = null;
+  var _sentCount = 0;
+  var MAX_REPORTS = 120;
 
-  function report(data) {
-    var key = data.url || data.mimeType || '';
+  // Batch reports into ONE bridge call per 400ms window (data = array).
+  // Per-event callHandler calls hammered the native message channel on heavy
+  // SPA pages (vnexpress Shorts) and correlated with an access-violation
+  // crash inside flutter_inappwebview_windows_plugin.dll — batching plus the
+  // MAX_REPORTS cap keeps bridge pressure low and bounded.
+  function _flush() {
+    _flushTimer = null;
+    if (!_pending.length) return;
+    var data = _pending.splice(0, _pending.length);
+    try { $reportFn; } catch(e) {}
+  }
+
+  function report(item) {
+    var key = item.url || item.mimeType || '';
     if (_reported[key]) return;
     _reported[key] = true;
+    if (_sentCount >= MAX_REPORTS) return;
+    _sentCount++;
     // Enrich with page context for smart titles
-    data.pageTitle = document.title || '';
-    data.pageUrl = location.href;
-    try { $reportFn; } catch(e) {}
+    item.pageTitle = document.title || '';
+    item.pageUrl = location.href;
+    _pending.push(item);
+    // DRM signals flush immediately (the policy notice should not lag);
+    // everything else waits for the batch window.
+    if (item.type === 'drm') { _flush(); return; }
+    if (!_flushTimer) _flushTimer = setTimeout(_flush, 400);
   }
 
   // ── DRM (EME) detection ─────────────────────────────────────────

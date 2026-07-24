@@ -74,11 +74,22 @@ mixin BrowserNavigationMixin<T extends StatefulWidget> on State<T> {
       MediaInterceptorService.channelName,
       (dynamic message) {
         if (!mounted) return;
-        if (_isDrmSignal(message)) {
-          ref.read(browserDrmDetectedProvider.notifier).state = true;
-          return;
+        // The interceptor batches reports into arrays (one bridge call per
+        // window); older single-object messages still arrive for DRM signals.
+        dynamic decoded = message;
+        if (decoded is String) {
+          try {
+            decoded = jsonDecode(decoded);
+          } catch (_) {}
         }
-        ref.read(interceptedMediaProvider.notifier).processMessage(message);
+        final items = decoded is List ? decoded : <dynamic>[decoded];
+        for (final item in items) {
+          if (_isDrmSignal(item)) {
+            ref.read(browserDrmDetectedProvider.notifier).state = true;
+            continue;
+          }
+          ref.read(interceptedMediaProvider.notifier).processMessage(item);
+        }
       },
     );
     // SPA navigation channel — detects URL changes in single-page apps

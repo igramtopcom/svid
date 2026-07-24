@@ -17,6 +17,7 @@ import '../../data/remote/api/svid_api_service.dart';
 import '../entities/download_error_code.dart';
 import '../entities/video_info.dart';
 import '../services/download_error_classifier.dart';
+import '../services/download_referer_holder.dart';
 import '../services/platform_quality_hint.dart';
 import '../services/telemetry_metadata_keys.dart';
 
@@ -1385,8 +1386,29 @@ class ExtractVideoInfoUseCase {
     if (!hasMediaQualities &&
         subtitlesList.isEmpty &&
         autoSubtitlesList.isEmpty) {
-      appLogger.warning('⚠️ [yt-dlp] No usable video/audio formats found');
-      return null;
+      // Browser-sniffed HLS (referer-stamped): znews-style pages embed a bare
+      // VARIANT playlist (no master), so yt-dlp's single format carries no
+      // height/vcodec metadata and the quality filter above drops it. We still
+      // KNOW it's a video stream — synthesize a Best entry instead of failing
+      // over to gallery-dl (which cannot handle m3u8 at all).
+      if (info.formats.isNotEmpty &&
+          DownloadRefererHolder.lookup(url) != null) {
+        appLogger.info(
+          '[yt-dlp] Sniffed HLS with metadata-less formats — '
+          'synthesizing Best quality',
+        );
+        qualities.add(
+          Quality(
+            qualityText: 'Best Available',
+            size: 'Highest quality available',
+            encryptedUrl: 'ytdlp:best:mp4',
+            mediaType: MediaType.video,
+          ),
+        );
+      } else {
+        appLogger.warning('⚠️ [yt-dlp] No usable video/audio formats found');
+        return null;
+      }
     }
 
     final videoInfo = VideoInfo(

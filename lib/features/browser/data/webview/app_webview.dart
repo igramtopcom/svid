@@ -514,6 +514,17 @@ class _WindowsWebViewController implements AppWebViewController {
         _onLoadStop(urlStr);
         _callbacks.onPageFinished?.call(urlStr);
       },
+      // Deny all page permission requests (notifications, geolocation, camera,
+      // mic…). This is a download tool, not a general browser, so there's no
+      // reason to grant them — and denying keeps things quiet + private. (On
+      // the old windows plugin an unhandled request crashed the native view;
+      // 0.7.0-beta wires the event up, and we answer DENY here.)
+      onPermissionRequest: (controller, request) async {
+        return iaw.PermissionResponse(
+          resources: request.resources,
+          action: iaw.PermissionResponseAction.DENY,
+        );
+      },
       onReceivedError: (controller, request, error) {
         _onLoadError(
           error.description,

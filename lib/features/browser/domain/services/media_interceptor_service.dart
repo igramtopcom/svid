@@ -53,8 +53,16 @@ class MediaInterceptorService {
   function _flush() {
     _flushTimer = null;
     if (!_pending.length) return;
-    var data = _pending.splice(0, _pending.length);
+    // Cap the payload size per bridge call. A large JSON array handed to the
+    // Windows plugin's message channel in one shot correlates with a native
+    // access-violation crash (flutter_inappwebview_windows_plugin.dll @0x7ae65,
+    // reproducible on resource-heavy news pages). Send in small chunks and
+    // re-schedule the remainder.
+    var data = _pending.splice(0, 15);
     try { $reportFn; } catch(e) {}
+    if (_pending.length && !_flushTimer) {
+      _flushTimer = setTimeout(_flush, 60);
+    }
   }
 
   function _ogImage() {

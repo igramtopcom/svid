@@ -99,7 +99,11 @@ dependencies:
   webview_flutter_wkwebview: ^3.9.4
 
   # WebView2 for Windows browser (InAppWebView)
-  flutter_inappwebview: ^6.1.0
+  # 6.2.0-beta.3 pulls flutter_inappwebview_windows 0.7.0-beta.3, which
+  # implements the native onPermissionRequest handler — 0.6.0's missing handler
+  # crashes (access violation) when a page requests notification/geolocation
+  # permission (common on news sites). See #2404.
+  flutter_inappwebview: 6.2.0-beta.3
 
   # Crypto
   crypto: ^3.0.3

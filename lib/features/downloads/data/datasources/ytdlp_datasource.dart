@@ -3563,10 +3563,18 @@ class YtDlpDataSource {
       isYouTube: isYouTube && hasYouTubeCookies,
     );
     final youtubePlayerClientLabel = hasYouTubeCookies ? 'tv,mweb' : 'default';
+    // Browser-sniffed HLS handed to yt-dlp as a raw .m3u8: the per-variant
+    // format IDs (index / index-v1-a1) are re-minted with a fresh token each
+    // fetch, so a stored selector no longer resolves ("Requested format is not
+    // available"). Force a name-independent best selector that re-resolves live.
+    // Audio-only downloads keep their own selector (handled elsewhere).
+    final isRawHls = ytdlpUrl.toLowerCase().contains('.m3u8');
     final effectiveFormat =
-        isYouTube && !extractAudio
-            ? _stripYouTubeProgressiveBestFallback(format)
-            : format;
+        (isRawHls && !extractAudio)
+            ? 'bestvideo+bestaudio/best'
+            : (isYouTube && !extractAudio
+                ? _stripYouTubeProgressiveBestFallback(format)
+                : format);
 
     // ── Compute effective network values (platform overrides) ──
     // Each arg appears exactly once — no duplicate flags.

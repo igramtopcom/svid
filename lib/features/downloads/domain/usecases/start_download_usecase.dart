@@ -2042,10 +2042,15 @@ class StartDownloadUseCase {
               // 2026-05-12 §138 caught exactly this). cookieDbLocked
               // is the canonical signal to advance — the named browser
               // could not be read (yt-dlp issue 7271, Chrome running).
+              // A raw HLS (.m3u8) 'format not available' is a stale-token/
+              // variant issue, NOT a cookie problem — cycling browser cookies
+              // just fails with confusing "Browser Cookies Unavailable" errors.
+              final urlIsHls = download.url.toLowerCase().contains('.m3u8');
               final isCookieRecoverable =
                   errorCode == DownloadErrorCode.loginRequired ||
                   errorCode == DownloadErrorCode.cookieDbLocked ||
-                  errorCode == DownloadErrorCode.formatUnavailable;
+                  (errorCode == DownloadErrorCode.formatUnavailable &&
+                      !urlIsHls);
 
               // Codex review round 2: the original guard
               // (`localCookiesFromBrowser == null`) would only fire

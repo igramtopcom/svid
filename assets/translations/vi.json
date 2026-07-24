@@ -1659,7 +1659,14 @@
     "addBookmarkHint": "Nhập địa chỉ website",
     "removeBookmark": "Xoá",
     "browserTitle": "Duyệt web & tải media",
-    "browserSubtitle": "Tải video & audio từ hàng nghìn website — dán link hoặc mở nền tảng bên dưới"
+    "browserSubtitle": "Tải video & audio từ hàng nghìn website — dán link hoặc mở nền tảng bên dưới",
+    "howTitle": "Cách tải video",
+    "howStep1Title": "Mở một trang",
+    "howStep1Desc": "Dán link ở trên hoặc bấm một dấu trang để mở trang có video.",
+    "howStep2Title": "Bắt media",
+    "howStep2Desc": "Khi phát hiện media, nút ⬇ sẽ sáng lên — bấm vào để tải.",
+    "howStep3Title": "Xem & quản lý",
+    "howStep3Desc": "Phát hoặc mở file ngay tại đây; tất cả cũng có ở tab Home."
   },
   "browserMenu": {
     "downloadVideo": "Tải video",

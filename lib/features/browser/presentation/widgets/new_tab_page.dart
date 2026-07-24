@@ -133,6 +133,14 @@ class NewTabPage extends ConsumerWidget {
                   cardBg: cardBg,
                   textSecondary: textSecondary,
                 ),
+                const SizedBox(height: AppSpacing.xxl),
+                // Quick 3-step guide — orients new users and keeps the page
+                // balanced now that the bookmark grid ships nearly empty.
+                _HowItWorks(
+                  cardBg: cardBg,
+                  textPrimary: isDark ? Colors.white : cs.onSurface,
+                  textSecondary: textSecondary,
+                ),
                 const SizedBox(height: AppSpacing.xl),
               ],
             ),
@@ -586,6 +594,164 @@ class _AddBookmarkDialogState extends State<_AddBookmarkDialog> {
           child: Text(AppLocalizations.newTabAddBookmark),
         ),
       ],
+    );
+  }
+}
+
+// ── How it works (3-step guide) ──
+
+class _HowItWorks extends StatelessWidget {
+  const _HowItWorks({
+    required this.cardBg,
+    required this.textPrimary,
+    required this.textSecondary,
+  });
+
+  final Color cardBg;
+  final Color textPrimary;
+  final Color textSecondary;
+
+  @override
+  Widget build(BuildContext context) {
+    final steps = <({IconData icon, String title, String desc})>[
+      (
+        icon: Icons.public_rounded,
+        title: AppLocalizations.newTabHowStep1Title,
+        desc: AppLocalizations.newTabHowStep1Desc,
+      ),
+      (
+        icon: Icons.download_rounded,
+        title: AppLocalizations.newTabHowStep2Title,
+        desc: AppLocalizations.newTabHowStep2Desc,
+      ),
+      (
+        icon: Icons.play_circle_outline_rounded,
+        title: AppLocalizations.newTabHowStep3Title,
+        desc: AppLocalizations.newTabHowStep3Desc,
+      ),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SectionHeader(
+          label: AppLocalizations.newTabHowTitle,
+          icon: Icons.auto_awesome_rounded,
+          textColor: textPrimary,
+        ),
+        const SizedBox(height: AppSpacing.smMd),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            // One column when narrow, a 3-up row when there's room.
+            final isRow = constraints.maxWidth >= 560;
+            final cards = [
+              for (var i = 0; i < steps.length; i++)
+                _stepCard(context, i + 1, steps[i]),
+            ];
+            if (!isRow) {
+              return Column(
+                children: [
+                  for (var i = 0; i < cards.length; i++) ...[
+                    if (i > 0) const SizedBox(height: AppSpacing.md),
+                    cards[i],
+                  ],
+                ],
+              );
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var i = 0; i < cards.length; i++) ...[
+                  if (i > 0) const SizedBox(width: AppSpacing.md),
+                  Expanded(child: cards[i]),
+                ],
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _stepCard(
+    BuildContext context,
+    int number,
+    ({IconData icon, String title, String desc}) step,
+  ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = AppColors.accentHighlight;
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.mdLg),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.homeDarkCardBg : Colors.white,
+        borderRadius: BorderRadius.circular(_kTileRadius),
+        border: Border.all(
+          color:
+              isDark
+                  ? AppColors.homeDarkBorderStrong
+                  : Theme.of(
+                    context,
+                  ).colorScheme.outline.withValues(alpha: 0.4),
+        ),
+        boxShadow:
+            isDark
+                ? null
+                : const [
+                  BoxShadow(
+                    color: Color(0x0F000000),
+                    blurRadius: 7,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: AppOpacity.hover),
+                  borderRadius: BorderRadius.circular(_kBadgeRadius),
+                ),
+                child: Text(
+                  '$number',
+                  style: AppTypography.compact.copyWith(
+                    color: accent,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Icon(step.icon, size: 18, color: accent),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.smMd),
+          Text(
+            step.title,
+            style: AppTypography.compact.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: textPrimary,
+              letterSpacing: 0,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            step.desc,
+            style: AppTypography.statusBadge.copyWith(
+              color: textSecondary,
+              height: 1.4,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

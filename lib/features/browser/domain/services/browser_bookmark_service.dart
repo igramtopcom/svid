@@ -63,24 +63,33 @@ class BrowserBookmarkService {
   // One-time removal of the YouTube homepage that older builds auto-seeded —
   // YouTube can't be sniffed in-browser, so it no longer belongs in defaults.
   static const String _ytDeseedKey = 'browser_bookmarks_yt_deseed_v1';
+  // One-time removal of the copyright-heavy default seeds (FB/IG/X/…) that
+  // older builds shipped — those sites host mostly rights-protected video, so
+  // only Bilibili remains a default.
+  static const String _copyrightDeseedKey =
+      'browser_bookmarks_copyright_deseed_v1';
   static const _uuid = Uuid();
 
-  /// Popular video/audio/social platforms seeded on first run so the new-tab
-  /// page starts useful. Users can freely remove these or add their own.
-  /// (TikTok is excluded — it crashes WebView2 on Windows. YouTube is excluded
-  /// because the in-browser sniffer can't grab its SABR streams — users are
-  /// steered to the Home tab / yt-dlp for YouTube instead.)
+  /// Seeded on first run so the new-tab page starts with one useful example.
+  /// Kept intentionally minimal — most social/video platforms host
+  /// rights-protected content, so we don't pre-populate them; users add their
+  /// own sites. (TikTok crashes WebView2; YouTube can't be sniffed in-browser.)
   static const List<({String url, String title})> defaultSeeds = [
-    (url: 'https://www.facebook.com', title: 'Facebook'),
-    (url: 'https://www.instagram.com', title: 'Instagram'),
-    (url: 'https://x.com', title: 'X'),
-    (url: 'https://www.reddit.com', title: 'Reddit'),
-    (url: 'https://vimeo.com', title: 'Vimeo'),
-    (url: 'https://www.dailymotion.com', title: 'Dailymotion'),
-    (url: 'https://www.twitch.tv', title: 'Twitch'),
-    (url: 'https://soundcloud.com', title: 'SoundCloud'),
     (url: 'https://www.bilibili.com', title: 'Bilibili'),
-    (url: 'https://www.pinterest.com', title: 'Pinterest'),
+  ];
+
+  /// Default seeds older builds shipped that are now removed on upgrade (only
+  /// the exact seed URLs — a user's own bookmark of these sites is untouched).
+  static const List<String> _retiredSeedUrls = [
+    'https://www.facebook.com',
+    'https://www.instagram.com',
+    'https://x.com',
+    'https://www.reddit.com',
+    'https://vimeo.com',
+    'https://www.dailymotion.com',
+    'https://www.twitch.tv',
+    'https://soundcloud.com',
+    'https://www.pinterest.com',
   ];
 
   final SharedPreferences _prefs;
@@ -92,6 +101,27 @@ class BrowserBookmarkService {
     _load();
     _seedDefaultsIfFirstRun();
     _removeSeededYouTubeOnce();
+    _removeRetiredSeedsOnce();
+  }
+
+  /// Removes the retired default seeds exactly once (migration). Only the exact
+  /// seed URLs are targeted, so a user's own bookmark of these sites survives.
+  void _removeRetiredSeedsOnce() {
+    if (_prefs.getBool(_copyrightDeseedKey) ?? false) return;
+    _prefs.setBool(_copyrightDeseedKey, true);
+    final before = _bookmarks.length;
+    final retired = _retiredSeedUrls
+        .map((u) => u.toLowerCase().replaceAll(RegExp(r'/$'), ''))
+        .toSet();
+    _bookmarks.removeWhere(
+      (b) => retired.contains(
+        b.url.toLowerCase().replaceAll(RegExp(r'/$'), ''),
+      ),
+    );
+    if (_bookmarks.length != before) {
+      _save();
+      _controller.add(bookmarks);
+    }
   }
 
   /// Removes the auto-seeded YouTube homepage exactly once (migration). Only the

@@ -2671,6 +2671,13 @@ class AppLocalizations {
   static String get newTabRemoveBookmark => 'newTab.removeBookmark'.tr();
   static String get newTabBrowserTitle => 'newTab.browserTitle'.tr();
   static String get newTabBrowserSubtitle => 'newTab.browserSubtitle'.tr();
+  static String get newTabHowTitle => 'newTab.howTitle'.tr();
+  static String get newTabHowStep1Title => 'newTab.howStep1Title'.tr();
+  static String get newTabHowStep1Desc => 'newTab.howStep1Desc'.tr();
+  static String get newTabHowStep2Title => 'newTab.howStep2Title'.tr();
+  static String get newTabHowStep2Desc => 'newTab.howStep2Desc'.tr();
+  static String get newTabHowStep3Title => 'newTab.howStep3Title'.tr();
+  static String get newTabHowStep3Desc => 'newTab.howStep3Desc'.tr();
 
   // ==================== BROWSER CONTEXT MENU ====================
 

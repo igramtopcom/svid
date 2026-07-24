@@ -1659,7 +1659,14 @@
     "addBookmarkHint": "Enter a website URL",
     "removeBookmark": "Remove",
     "browserTitle": "Browse & download media",
-    "browserSubtitle": "Download video & audio from thousands of websites — paste a link or open a platform below"
+    "browserSubtitle": "Download video & audio from thousands of websites — paste a link or open a platform below",
+    "howTitle": "How it works",
+    "howStep1Title": "Open a page",
+    "howStep1Desc": "Paste a link above or tap a bookmark to open a site with video.",
+    "howStep2Title": "Grab the media",
+    "howStep2Desc": "When media is found, the ⬇ button lights up — click it to download.",
+    "howStep3Title": "Play & manage",
+    "howStep3Desc": "Play or open the file right here; everything also lands in the Home tab."
   },
   "browserMenu": {
     "downloadVideo": "Download Video",

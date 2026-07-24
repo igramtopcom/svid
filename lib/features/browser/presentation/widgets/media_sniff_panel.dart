@@ -770,8 +770,14 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
           _startYtdlpExtraction(item.pageUrl!);
         }
         break;
-      case MediaItemType.directMediaFile:
       case MediaItemType.hlsManifest:
+        // HLS must go through yt-dlp so the segments are muxed into a real,
+        // playable MP4. The Rust engine only concatenates raw TS, which players
+        // reject even when the output is named .mp4.
+        _startHlsViaYtdlp(item);
+        break;
+      case MediaItemType.directMediaFile:
+        // A complete file (e.g. an fbcdn .mp4) — the Rust engine handles it fine.
         _startDirectRustDownload(item);
         break;
       case MediaItemType.undownloadable:
@@ -790,7 +796,10 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
     if (!_ensureMediaSniffPremiumAccess()) return;
 
     final ytdlpItems = items.where((i) => i.usesYtdlp).toList();
-    final directItems = items.where((i) => i.usesRustEngine).toList();
+    final hlsItems =
+        items.where((i) => i.type == MediaItemType.hlsManifest).toList();
+    final directItems =
+        items.where((i) => i.type == MediaItemType.directMediaFile).toList();
 
     if (ytdlpItems.isNotEmpty) {
       final pageUrls =
@@ -803,6 +812,12 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
       }
     }
 
+    // HLS items on a page share the same stream/extraction; one yt-dlp run
+    // covers it (extraction is single-flight anyway).
+    if (hlsItems.isNotEmpty) {
+      await _startHlsViaYtdlp(hlsItems.first);
+    }
+
     for (final item in directItems) {
       await _startDirectRustDownload(item);
       if (directItems.length > 1) {
@@ -811,35 +826,55 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
     }
   }
 
-  void _startYtdlpExtraction(String pageUrl) {
+  /// Routes an HLS manifest through yt-dlp using the current page URL, so yt-dlp
+  /// resolves the stream with the correct Referer/cookies and remuxes the
+  /// segments into a real, playable MP4 (the Rust engine only concatenates raw
+  /// TS). Falls back to the manifest URL when the page URL is unavailable.
+  Future<void> _startHlsViaYtdlp(UnifiedMediaItem item) async {
+    final pageUrl = await _getPageUrl();
+    if (!mounted) return;
+    final hasPage =
+        pageUrl != null && pageUrl.isNotEmpty && pageUrl != 'about:blank';
+    final target = hasPage ? pageUrl : item.downloadUrl;
+    if (target == null || target.isEmpty) return;
+    _startYtdlpExtraction(target, skipFeedGuard: true);
+  }
+
+  void _startYtdlpExtraction(String pageUrl, {bool skipFeedGuard = false}) {
     final uri = Uri.tryParse(pageUrl);
     if (uri == null) return;
 
-    final path = uri.path;
-    final isFeed =
-        path == '/' ||
-        path.isEmpty ||
-        path == '/explore' ||
-        path == '/reels' ||
-        path == '/feed' ||
-        path == '/home' ||
-        path == '/foryou' ||
-        path == '/following';
+    // The feed/profile guard rejects single-segment paths (e.g. an Instagram
+    // profile root) — but a news-article path like "/title-12345.html" also
+    // looks single-segment, so skip the guard when we already KNOW there's a
+    // concrete stream to fetch (HLS routing).
+    if (!skipFeedGuard) {
+      final path = uri.path;
+      final isFeed =
+          path == '/' ||
+          path.isEmpty ||
+          path == '/explore' ||
+          path == '/reels' ||
+          path == '/feed' ||
+          path == '/home' ||
+          path == '/foryou' ||
+          path == '/following';
 
-    final isProfileRoot =
-        RegExp(r'^/[^/]+/?$').hasMatch(path) &&
-        !RegExp(
-          r'^/(p|reel|tv|watch|shorts|video|status|comments)/',
-        ).hasMatch(path);
+      final isProfileRoot =
+          RegExp(r'^/[^/]+/?$').hasMatch(path) &&
+          !RegExp(
+            r'^/(p|reel|tv|watch|shorts|video|status|comments)/',
+          ).hasMatch(path);
 
-    if (isFeed || isProfileRoot) {
-      if (mounted) {
-        AppSnackBar.info(
-          context,
-          message: AppLocalizations.browserMediaSniffOpenSpecificVideo,
-        );
+      if (isFeed || isProfileRoot) {
+        if (mounted) {
+          AppSnackBar.info(
+            context,
+            message: AppLocalizations.browserMediaSniffOpenSpecificVideo,
+          );
+        }
+        return;
       }
-      return;
     }
 
     final extractionNotifier = ref.read(extractionProvider.notifier);

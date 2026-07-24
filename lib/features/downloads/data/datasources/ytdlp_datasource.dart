@@ -16,6 +16,7 @@ import '../../../../core/utils/file_utils.dart';
 import '../../../../core/utils/platform_detector.dart';
 import '../../../../core/utils/process_helper.dart';
 import '../../domain/services/container_planner.dart';
+import '../../domain/services/download_referer_holder.dart';
 import '../../domain/services/resolution_filter_utils.dart';
 import '../remote/ytdlp/youtube_pot_provider_service.dart';
 
@@ -1817,6 +1818,12 @@ class YtDlpDataSource {
     final cleanedUrl = _cleanUrlForYtDlp(url);
     final isYouTube = platform == 'youtube' || _isYouTubeUrl(cleanedUrl);
     final isTikTok = _isTikTokUrl(cleanedUrl);
+    // Browser-sniffed HLS carries the page URL as Referer (see
+    // DownloadRefererHolder). Non-stamped downloads (the overwhelming
+    // majority) resolve to null and are completely unaffected.
+    final sniffReferer =
+        DownloadRefererHolder.lookup(cleanedUrl) ??
+        DownloadRefererHolder.lookup(url);
     final useDefaultNetworkProfile = _usesDefaultNetworkProfileForUrl(
       cleanedUrl,
     );
@@ -1856,7 +1863,12 @@ class YtDlpDataSource {
       // Skip the flag when Deno is unavailable so non-YouTube extractors
       // (TikTok, IG, Vimeo, etc) keep working — yt-dlp ignores missing
       // runtimes for paths that don't need them.
-      if (!useDefaultNetworkProfile && _denoPath != null) ...[
+      // Also skipped for referer-stamped (browser-HLS) extractions: those are
+      // never YouTube, and on Windows they run through Process.run with
+      // runInShell, where a Deno path containing spaces can't be quoted safely.
+      if (!useDefaultNetworkProfile &&
+          _denoPath != null &&
+          sniffReferer == null) ...[
         '--js-runtimes',
         'deno:$_denoPath',
       ],
@@ -1879,6 +1891,10 @@ class YtDlpDataSource {
         cookiesFromBrowser,
       ],
       if (proxyUrl != null && proxyUrl.isNotEmpty) ...['--proxy', proxyUrl],
+      // Referer stamped by the browser media-sniff panel (CDNs like znews.vn
+      // reject manifest requests without the article page as Referer). Null
+      // for every non-stamped download — no behaviour change.
+      if (sniffReferer != null) ...['--referer', sniffReferer],
       cleanedUrl,
     ];
 
@@ -1898,7 +1914,11 @@ class YtDlpDataSource {
         throw YtDlpException(YtDlpErrorType.unknown, ytdlpBinaryMissingMessage);
       }
 
-      if (Platform.isWindows) {
+      // The Rust executor's signature has no referer parameter, so the rare
+      // referer-stamped extraction (browser-sniffed HLS) takes the Dart
+      // Process.run path on every platform — it's a one-off --dump-json call,
+      // not a streaming download, so the shell-wrapping concerns don't apply.
+      if (Platform.isWindows && sniffReferer == null) {
         // Windows fast path: avoid Process.run(runInShell: true), which wraps
         // every extract in cmd.exe. The Rust executor launches yt-dlp directly
         // with CREATE_NO_WINDOW, avoiding console flashes without shell overhead.
@@ -3356,6 +3376,12 @@ class YtDlpDataSource {
     _denoPath = await _binaryManager.getBinaryPath(BinaryType.deno);
     final ytdlpUrl = _cleanUrlForYtDlp(url);
     final useDefaultNetworkProfile = _usesDefaultNetworkProfileForUrl(ytdlpUrl);
+    // Referer stamped by the browser media-sniff panel — some CDNs (znews.vn)
+    // reject segment requests without the article page as Referer. Null for
+    // all non-stamped downloads; see DownloadRefererHolder.
+    final sniffReferer =
+        DownloadRefererHolder.lookup(ytdlpUrl) ??
+        DownloadRefererHolder.lookup(url);
 
     final args = <String>[
       '--newline', // Progress on each line
@@ -3390,6 +3416,7 @@ class YtDlpDataSource {
       // profile, while the app network profile can fail extraction with
       // "universal data for rehydration".
       if (_shouldForceIpv4ForUrl(ytdlpUrl)) '--force-ipv4',
+      if (sniffReferer != null) ...['--referer', sniffReferer],
       '-o', outputPath,
       // WIN-1b: for a custom user `filenameTemplate` the app cannot literal-
       // bound (yt-dlp expands `%(title)s` etc. after launch), cap the expanded

@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/auth/data/native/native_cookie_extractor.dart';
 import '../../../../core/core.dart';
+import '../../../downloads/domain/services/download_referer_holder.dart';
 import '../../../downloads/presentation/providers/download_providers.dart';
 import '../../../downloads/presentation/providers/extraction_provider.dart';
 import '../../../premium/domain/entities/premium_feature.dart';
@@ -813,12 +814,22 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
     // fails on sites yt-dlp doesn't recognise (e.g. znews.vn). yt-dlp downloads
     // the HLS from the manifest and remuxes to a real MP4. Only fall back to the
     // page URL if we somehow lack the manifest URL.
-    var target = item.downloadUrl;
-    if (target == null || target.isEmpty) {
-      target = await _getPageUrl();
-      if (!mounted) return;
+    final pageUrl = await _getPageUrl();
+    if (!mounted) return;
+    final hasPage =
+        pageUrl != null && pageUrl.isNotEmpty && pageUrl != 'about:blank';
+
+    final target =
+        (item.downloadUrl?.isNotEmpty ?? false)
+            ? item.downloadUrl!
+            : (hasPage ? pageUrl : null);
+    if (target == null) return;
+
+    // Some CDNs (znews.vn) reject manifest/segment requests without the
+    // article page as Referer — stamp it so both yt-dlp runs send it.
+    if (hasPage && target != pageUrl) {
+      DownloadRefererHolder.stamp(target, pageUrl);
     }
-    if (target == null || target.isEmpty || target == 'about:blank') return;
     _startYtdlpExtraction(target, skipFeedGuard: true);
   }
 

@@ -59,7 +59,8 @@ class BrowserTabNotifier extends StateNotifier<BrowserTabState> {
     final id = _uuid.v4();
     final newTab = BrowserTab(
       id: id,
-      url: url ?? 'https://www.google.com',
+      // Open the bookmark start page by default (not an external search engine).
+      url: url ?? 'about:blank',
       title: AppLocalizations.browserNewTabTitle,
       isActive: true,
       createdAt: DateTime.now(),
@@ -102,13 +103,14 @@ class BrowserTabNotifier extends StateNotifier<BrowserTabState> {
   /// Close a tab by ID. If last tab, creates a new blank one.
   void closeTab(String id) {
     if (state.tabs.length == 1) {
-      // Last tab — replace with new blank tab
+      // Last tab — replace with a blank tab that shows the bookmark start page
+      // (same as the Home button), not an external search engine.
       final newId = _uuid.v4();
       state = BrowserTabState(
         tabs: [
           BrowserTab(
             id: newId,
-            url: 'https://www.google.com',
+            url: 'about:blank',
             title: AppLocalizations.browserNewTabTitle,
             isActive: true,
             createdAt: DateTime.now(),

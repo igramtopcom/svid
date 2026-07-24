@@ -658,14 +658,19 @@ class _HowItWorks extends StatelessWidget {
                 ],
               );
             }
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (var i = 0; i < cards.length; i++) ...[
-                  if (i > 0) const SizedBox(width: AppSpacing.md),
-                  Expanded(child: cards[i]),
+            // IntrinsicHeight gives the Row a bounded cross-axis so the equal-
+            // height (stretch) cards don't blow up inside the unbounded-height
+            // scroll view.
+            return IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var i = 0; i < cards.length; i++) ...[
+                    if (i > 0) const SizedBox(width: AppSpacing.md),
+                    Expanded(child: cards[i]),
+                  ],
                 ],
-              ],
+              ),
             );
           },
         ),

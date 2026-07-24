@@ -1384,8 +1384,14 @@ class ExtractVideoInfoUseCase {
     // Since a sniffed HLS stream is ALWAYS a playable video, guarantee a
     // synthesized "Best" video entry (prepended) whenever no real video
     // quality survived — independent of any audio entries.
+    // Detect a raw HLS manifest handed straight to yt-dlp (browser sniff): the
+    // URL is an .m3u8, OR it was referer-stamped by the panel. Independent of
+    // the holder so a lookup miss (cleaned/redirected URL) can't strip the
+    // Video option.
     final isSniffedHls =
-        info.formats.isNotEmpty && DownloadRefererHolder.lookup(url) != null;
+        info.formats.isNotEmpty &&
+        (url.toLowerCase().contains('.m3u8') ||
+            DownloadRefererHolder.lookup(url) != null);
     final hasVideoQuality = qualities.any((q) => q.mediaType == MediaType.video);
     if (isSniffedHls && !hasVideoQuality) {
       appLogger.info(

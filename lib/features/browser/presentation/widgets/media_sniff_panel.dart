@@ -246,8 +246,6 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
             : null;
     final platformName =
         item.platform != VideoPlatform.unknown ? item.platform.name : '';
-    final hasPlatformIcon =
-        platformName.isNotEmpty && PlatformStyleHelper.hasSvgIcon(platformName);
     final platformColor =
         platformName.isNotEmpty
             ? PlatformStyleHelper.getColorForPlatform(platformName)
@@ -309,61 +307,9 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
             ),
           ),
 
-          // Thumbnail with platform overlay
-          ClipRRect(
-            child: Container(
-              width: double.infinity,
-              height: 120,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.brand.withValues(alpha: AppOpacity.quarter),
-                    cardBg,
-                    AppColors.accentMuted.withValues(alpha: AppOpacity.pressed),
-                  ],
-                ),
-              ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: const BoxDecoration(
-                        color: Colors.black38,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        item.usesYtdlp
-                            ? Icons.auto_awesome_rounded
-                            : Icons.play_arrow_rounded,
-                        color: Colors.white70,
-                        size: 22,
-                      ),
-                    ),
-                  ),
-                  if (hasPlatformIcon)
-                    Positioned(
-                      left: 8,
-                      top: 8,
-                      child: Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          color: Colors.black54,
-                          borderRadius: BorderRadius.circular(AppRadius.card),
-                        ),
-                        child: Center(
-                          child: PlatformIcon(platform: platformName, size: 13),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
+          // No real thumbnail is available from network sniffing, so the card
+          // stays compact (badge bar + title + Download) rather than showing a
+          // generic placeholder image.
 
           // Title + metadata
           Padding(
@@ -882,6 +828,20 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
         stopOnLoginRequired: stopOnLoginRequired,
       );
     }();
+
+    // Tell the user the download is underway and where to watch it — otherwise
+    // it downloads silently in the Home tab with no feedback here.
+    if (mounted) {
+      AppSnackBar.success(
+        context,
+        message: AppLocalizations.browserDownloadStartedHome,
+        action: SnackBarAction(
+          label: AppLocalizations.browserYoutubeOpenHome,
+          onPressed: () =>
+              ref.read(navigationProvider.notifier).navigateToHome(),
+        ),
+      );
+    }
   }
 
   Future<void> _startDirectRustDownload(UnifiedMediaItem item) async {

@@ -1507,6 +1507,7 @@
     "mediaSniffTitle": "Detected Media",
     "youtubeUseHomeHint": "YouTube downloads are faster from the Home tab",
     "youtubeOpenHome": "Open Home",
+    "downloadStartedHome": "See download progress & save folder in the Home tab",
     "mediaSniffEmpty": "No media detected on this page",
     "mediaSniffDownload": "Download",
     "mediaSniffDownloadAll": "Download All",

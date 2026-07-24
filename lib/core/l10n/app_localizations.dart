@@ -2521,6 +2521,8 @@ class AppLocalizations {
   static String get browserYoutubeUseHomeHint =>
       'browser.youtubeUseHomeHint'.tr();
   static String get browserYoutubeOpenHome => 'browser.youtubeOpenHome'.tr();
+  static String get browserDownloadStartedHome =>
+      'browser.downloadStartedHome'.tr();
   static String get browserMediaSniffEmpty => 'browser.mediaSniffEmpty'.tr();
   static String get browserMediaSniffDownload =>
       'browser.mediaSniffDownload'.tr();

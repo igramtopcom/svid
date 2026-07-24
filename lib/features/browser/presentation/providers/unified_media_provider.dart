@@ -165,6 +165,7 @@ UnifiedMediaItem? _classifyInterceptedMedia(
       source: MediaItemSource.network,
       supportsRange: media.supportsRange,
       originalCategory: media.category,
+      thumbnail: media.pageThumb,
     );
   }
 
@@ -196,6 +197,7 @@ UnifiedMediaItem? _classifyInterceptedMedia(
         source: MediaItemSource.network,
         supportsRange: media.supportsRange,
         originalCategory: media.category,
+        thumbnail: media.pageThumb,
       );
     }
 
@@ -219,6 +221,7 @@ UnifiedMediaItem? _classifyInterceptedMedia(
       detectedAt: media.detectedAt,
       source: MediaItemSource.network,
       originalCategory: media.category,
+      thumbnail: media.pageThumb,
     );
   }
 
@@ -246,6 +249,7 @@ UnifiedMediaItem? _classifyInterceptedMedia(
       source: MediaItemSource.network,
       supportsRange: media.supportsRange,
       originalCategory: media.category,
+      thumbnail: media.pageThumb,
     );
   }
 

@@ -76,6 +76,9 @@ class UnifiedMediaItem {
   /// Original media category (for network-intercepted items).
   final MediaCategory? originalCategory;
 
+  /// Page og:image captured at detection time (in sync with [title]).
+  final String? thumbnail;
+
   const UnifiedMediaItem({
     required this.displayUrl,
     this.downloadUrl,
@@ -91,6 +94,7 @@ class UnifiedMediaItem {
     required this.source,
     this.supportsRange,
     this.originalCategory,
+    this.thumbnail,
   });
 
   /// Whether this item can be downloaded (has a valid route).

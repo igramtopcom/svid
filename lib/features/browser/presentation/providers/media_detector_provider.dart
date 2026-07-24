@@ -49,6 +49,7 @@ class InterceptedMediaNotifier extends StateNotifier<List<InterceptedMedia>> {
 
     final pageTitle = data['pageTitle'] as String?;
     final pageUrl = data['pageUrl'] as String?;
+    final pageThumb = data['pageThumb'] as String?;
 
     final media = InterceptedMedia(
       url: url ?? '',
@@ -63,6 +64,7 @@ class InterceptedMediaNotifier extends StateNotifier<List<InterceptedMedia>> {
       filename: url != null ? InterceptedMedia.extractFilename(url) : null,
       pageTitle: pageTitle != null && pageTitle.isNotEmpty ? pageTitle : null,
       pageUrl: pageUrl,
+      pageThumb: pageThumb != null && pageThumb.isNotEmpty ? pageThumb : null,
       detectedAt: DateTime.now(),
     );
 

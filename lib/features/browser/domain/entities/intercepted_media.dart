@@ -34,6 +34,11 @@ class InterceptedMedia {
   /// Page URL at time of interception (from `location.href`).
   final String? pageUrl;
 
+  /// Page og:image at time of interception — kept in lockstep with [pageTitle]
+  /// so a Shorts feed's auto-advance can't pair this stream with another
+  /// video's thumbnail.
+  final String? pageThumb;
+
   /// When this media was first intercepted.
   final DateTime detectedAt;
 
@@ -48,6 +53,7 @@ class InterceptedMedia {
     this.supportsRange,
     this.pageTitle,
     this.pageUrl,
+    this.pageThumb,
     required this.detectedAt,
   });
 

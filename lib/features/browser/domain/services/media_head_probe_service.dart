@@ -112,6 +112,7 @@ class MediaHeadProbeService {
       supportsRange: result.supportsRange,
       pageTitle: media.pageTitle,
       pageUrl: media.pageUrl,
+      pageThumb: media.pageThumb,
       detectedAt: media.detectedAt,
     );
   }

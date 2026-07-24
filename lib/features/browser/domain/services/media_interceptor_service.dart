@@ -57,15 +57,27 @@ class MediaInterceptorService {
     try { $reportFn; } catch(e) {}
   }
 
+  function _ogImage() {
+    try {
+      var e = document.querySelector('meta[property="og:image"]') ||
+              document.querySelector('meta[name="twitter:image"]') ||
+              document.querySelector('meta[property="twitter:image"]');
+      return (e && e.content) ? e.content : '';
+    } catch(_) { return ''; }
+  }
+
   function report(item) {
     var key = item.url || item.mimeType || '';
     if (_reported[key]) return;
     _reported[key] = true;
     if (_sentCount >= MAX_REPORTS) return;
     _sentCount++;
-    // Enrich with page context for smart titles
+    // Enrich with page context captured AT DETECTION TIME so title + thumbnail
+    // stay in sync with this exact stream (a Shorts feed swaps document.title /
+    // og:image as it auto-advances — reading them later would mismatch).
     item.pageTitle = document.title || '';
     item.pageUrl = location.href;
+    item.pageThumb = _ogImage();
     _pending.push(item);
     // DRM signals flush immediately (the policy notice should not lag);
     // everything else waits for the batch window.

@@ -155,6 +155,10 @@ UnifiedMediaItem? _classifyInterceptedMedia(
     return UnifiedMediaItem(
       displayUrl: media.url,
       downloadUrl: media.url,
+      // Detection-time page URL — this is what the download actually uses
+      // (yt-dlp re-resolves a fresh manifest from it), so it's also the key the
+      // panel matches the live download by.
+      pageUrl: media.pageUrl,
       type: MediaItemType.hlsManifest,
       title: _smartTitle(media),
       filename: media.filename,

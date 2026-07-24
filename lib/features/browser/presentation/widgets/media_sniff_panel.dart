@@ -1026,8 +1026,14 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
     // page URL, yt-dlp's generic extractor re-fetches the manifest with a FRESH
     // token at both extract and download time (verified on znews.vn). Fall back
     // to the manifest only when there's no usable page URL.
-    final pageUrl = await _getPageUrl();
-    if (!mounted) return;
+    // Prefer the item's own detection-time page (this exact stream's page); the
+    // live controller URL can have moved on (Shorts auto-advance). Both make the
+    // download URL deterministic so the panel matches its progress.
+    var pageUrl = item.pageUrl;
+    if (pageUrl == null || pageUrl.isEmpty || pageUrl == 'about:blank') {
+      pageUrl = await _getPageUrl();
+      if (!mounted) return;
+    }
     final hasPage =
         pageUrl != null && pageUrl.isNotEmpty && pageUrl != 'about:blank';
 

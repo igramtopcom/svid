@@ -1392,20 +1392,38 @@ class ExtractVideoInfoUseCase {
         info.formats.isNotEmpty &&
         (url.toLowerCase().contains('.m3u8') ||
             DownloadRefererHolder.lookup(url) != null);
-    final hasVideoQuality = qualities.any((q) => q.mediaType == MediaType.video);
-    if (isSniffedHls && !hasVideoQuality) {
-      appLogger.info(
-        '[yt-dlp] Sniffed HLS without a real video quality — '
-        'synthesizing Best video',
+    if (isSniffedHls) {
+      // WARNING level so it survives the log filter (info/debug are dropped).
+      appLogger.warning(
+        '[hls-diag] formats=${info.formats.length} qBefore=${qualities.length} '
+        'v=${qualities.where((q) => q.mediaType == MediaType.video).length} '
+        'a=${qualities.where((q) => q.mediaType == MediaType.audio).length} '
+        'url=$url',
       );
-      qualities.insert(
-        0,
-        const Quality(
-          qualityText: 'Best Available',
-          size: 'Highest quality available',
-          encryptedUrl: 'ytdlp:best:mp4',
-          mediaType: MediaType.video,
-        ),
+      // Per-variant HLS format IDs (e.g. index-v1-a1) and height-based
+      // selectors are unstable: the manifest is re-fetched at download time
+      // with a new token, so those IDs no longer resolve ("Requested format is
+      // not available"). Drop every video quality tied to a specific stream and
+      // offer ONE Best video that downloads via `-f best`, re-resolved live.
+      qualities.removeWhere(
+        (q) =>
+            q.mediaType == MediaType.video &&
+            q.encryptedUrl != 'ytdlp:best:mp4',
+      );
+      if (!qualities.any((q) => q.encryptedUrl == 'ytdlp:best:mp4')) {
+        qualities.insert(
+          0,
+          const Quality(
+            qualityText: 'Best Available',
+            size: 'Highest quality available',
+            encryptedUrl: 'ytdlp:best:mp4',
+            mediaType: MediaType.video,
+          ),
+        );
+      }
+      appLogger.warning(
+        '[hls-diag] qAfter=${qualities.length} '
+        'v=${qualities.where((q) => q.mediaType == MediaType.video).length}',
       );
     }
 

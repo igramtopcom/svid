@@ -1019,6 +1019,16 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
   /// resolves the stream with the correct Referer/cookies and remuxes the
   /// segments into a real, playable MP4 (the Rust engine only concatenates raw
   /// TS). Falls back to the manifest URL when the page URL is unavailable.
+  /// Whether [url] is a specific article/video page (yt-dlp can re-resolve a
+  /// fresh manifest from it) rather than a feed/Shorts landing page.
+  bool _isSpecificVideoPage(String url) {
+    final path = (Uri.tryParse(url)?.path ?? '').toLowerCase();
+    if (path.endsWith('.html') || path.endsWith('.htm')) return true;
+    // A long descriptive last segment is an article slug, not a feed.
+    final segs = path.split('/').where((s) => s.isNotEmpty).toList();
+    return segs.isNotEmpty && segs.last.length >= 20;
+  }
+
   Future<void> _startHlsViaYtdlp(UnifiedMediaItem item) async {
     // Prefer the PAGE URL over the sniffed .m3u8. The sniffed manifest carries
     // a short-lived token that expires before the download runs, so yt-dlp
@@ -1027,8 +1037,7 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
     // token at both extract and download time (verified on znews.vn). Fall back
     // to the manifest only when there's no usable page URL.
     // Prefer the item's own detection-time page (this exact stream's page); the
-    // live controller URL can have moved on (Shorts auto-advance). Both make the
-    // download URL deterministic so the panel matches its progress.
+    // live controller URL can have moved on (Shorts auto-advance).
     var pageUrl = item.pageUrl;
     if (pageUrl == null || pageUrl.isEmpty || pageUrl == 'about:blank') {
       pageUrl = await _getPageUrl();
@@ -1037,7 +1046,14 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
     final hasPage =
         pageUrl != null && pageUrl.isNotEmpty && pageUrl != 'about:blank';
 
-    final target = hasPage ? pageUrl : item.downloadUrl;
+    // Hybrid: a SPECIFIC article page (e.g. znews '/video-….html') lets yt-dlp
+    // re-resolve a fresh manifest token, so prefer it — the sniffed .m3u8 token
+    // expires before download. But a FEED / Shorts URL (e.g. vnexpress
+    // '/vne-go') has no single video for yt-dlp to pick, so use the sniffed
+    // manifest there (its token is stable enough).
+    final pageIsSpecific =
+        hasPage && pageUrl != null && _isSpecificVideoPage(pageUrl);
+    final target = pageIsSpecific ? pageUrl : (item.downloadUrl ?? pageUrl);
     if (target == null || target.isEmpty) return;
 
     // Title + thumbnail ride along from the ITEM (captured together with this

@@ -1020,35 +1020,30 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
   /// segments into a real, playable MP4 (the Rust engine only concatenates raw
   /// TS). Falls back to the manifest URL when the page URL is unavailable.
   Future<void> _startHlsViaYtdlp(UnifiedMediaItem item) async {
-    // Hand yt-dlp the sniffed manifest URL directly so it does NOT rely on a
-    // site-specific extractor to discover the stream — that discovery is what
-    // fails on sites yt-dlp doesn't recognise (e.g. znews.vn). yt-dlp downloads
-    // the HLS from the manifest and remuxes to a real MP4. Only fall back to the
-    // page URL if we somehow lack the manifest URL.
+    // Prefer the PAGE URL over the sniffed .m3u8. The sniffed manifest carries
+    // a short-lived token that expires before the download runs, so yt-dlp
+    // fails at download with "Requested format is not available". Given the
+    // page URL, yt-dlp's generic extractor re-fetches the manifest with a FRESH
+    // token at both extract and download time (verified on znews.vn). Fall back
+    // to the manifest only when there's no usable page URL.
     final pageUrl = await _getPageUrl();
     if (!mounted) return;
     final hasPage =
         pageUrl != null && pageUrl.isNotEmpty && pageUrl != 'about:blank';
 
-    final target =
-        (item.downloadUrl?.isNotEmpty ?? false)
-            ? item.downloadUrl!
-            : (hasPage ? pageUrl : null);
-    if (target == null) return;
+    final target = hasPage ? pageUrl : item.downloadUrl;
+    if (target == null || target.isEmpty) return;
 
-    // Some CDNs (znews.vn) reject manifest/segment requests without the
-    // article page as Referer — stamp it so both yt-dlp runs send it. Title and
-    // thumbnail ride along from the ITEM (captured together with this exact
-    // stream at detection time), so a Shorts feed's auto-advance can't pair the
-    // wrong title/thumbnail with the download.
-    if (hasPage && target != pageUrl) {
-      DownloadRefererHolder.stamp(
-        target,
-        pageUrl,
-        pageTitle: item.title,
-        thumbnail: item.thumbnail,
-      );
-    }
+    // Title + thumbnail ride along from the ITEM (captured together with this
+    // exact stream at detection time), keyed on the extraction target so
+    // extraction applies them (raw-manifest yt-dlp would otherwise name the
+    // file after the playlist and have no thumbnail).
+    DownloadRefererHolder.stamp(
+      target,
+      hasPage ? pageUrl : target,
+      pageTitle: item.title,
+      thumbnail: item.thumbnail,
+    );
     _startYtdlpExtraction(target, skipFeedGuard: true);
   }
 

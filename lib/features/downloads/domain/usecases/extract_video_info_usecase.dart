@@ -1377,6 +1377,32 @@ class ExtractVideoInfoUseCase {
     );
     appLogger.debug('[yt-dlp] Found ${qualities.length} qualities');
 
+    // Browser-sniffed HLS (referer-stamped): znews-style pages embed a bare
+    // VARIANT playlist whose single muxed .ts format carries no
+    // height/vcodec/acodec metadata. The quality filters above either drop it
+    // entirely or misread it as audio-only, so the user loses the Video option.
+    // Since a sniffed HLS stream is ALWAYS a playable video, guarantee a
+    // synthesized "Best" video entry (prepended) whenever no real video
+    // quality survived — independent of any audio entries.
+    final isSniffedHls =
+        info.formats.isNotEmpty && DownloadRefererHolder.lookup(url) != null;
+    final hasVideoQuality = qualities.any((q) => q.mediaType == MediaType.video);
+    if (isSniffedHls && !hasVideoQuality) {
+      appLogger.info(
+        '[yt-dlp] Sniffed HLS without a real video quality — '
+        'synthesizing Best video',
+      );
+      qualities.insert(
+        0,
+        const Quality(
+          qualityText: 'Best Available',
+          size: 'Highest quality available',
+          encryptedUrl: 'ytdlp:best:mp4',
+          mediaType: MediaType.video,
+        ),
+      );
+    }
+
     // No usable video/audio formats — likely image-only content
     // Return null to signal caller to try gallery-dl fallback
     // Note: subtitle-only results are still valid
@@ -1386,29 +1412,8 @@ class ExtractVideoInfoUseCase {
     if (!hasMediaQualities &&
         subtitlesList.isEmpty &&
         autoSubtitlesList.isEmpty) {
-      // Browser-sniffed HLS (referer-stamped): znews-style pages embed a bare
-      // VARIANT playlist (no master), so yt-dlp's single format carries no
-      // height/vcodec metadata and the quality filter above drops it. We still
-      // KNOW it's a video stream — synthesize a Best entry instead of failing
-      // over to gallery-dl (which cannot handle m3u8 at all).
-      if (info.formats.isNotEmpty &&
-          DownloadRefererHolder.lookup(url) != null) {
-        appLogger.info(
-          '[yt-dlp] Sniffed HLS with metadata-less formats — '
-          'synthesizing Best quality',
-        );
-        qualities.add(
-          Quality(
-            qualityText: 'Best Available',
-            size: 'Highest quality available',
-            encryptedUrl: 'ytdlp:best:mp4',
-            mediaType: MediaType.video,
-          ),
-        );
-      } else {
-        appLogger.warning('⚠️ [yt-dlp] No usable video/audio formats found');
-        return null;
-      }
+      appLogger.warning('⚠️ [yt-dlp] No usable video/audio formats found');
+      return null;
     }
 
     final videoInfo = VideoInfo(

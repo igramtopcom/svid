@@ -46,7 +46,6 @@ import '../../../premium/domain/entities/premium_feature.dart';
 import '../../../premium/domain/entities/premium_limits.dart';
 import '../../../premium/presentation/providers/premium_providers.dart';
 import '../../../premium/presentation/widgets/upgrade_prompt_dialog.dart';
-import '../../../support/presentation/widgets/rating_dialog.dart';
 import 'home_download_mixin.dart';
 import 'home_batch_download_mixin.dart';
 
@@ -760,15 +759,13 @@ class HomeScreenState extends ConsumerState<HomeScreen>
       _handleFailedDownloadRouting(previous, next);
     });
 
-    // Auto-trigger rating dialog after N successful downloads
+    // Auto-rating prompt disabled (user request): the "Rate Svid" popup's
+    // Submit flow errors out (no live backend), so we consume the trigger to
+    // keep the counter from firing but never show the dialog. Rating stays
+    // available manually from Settings → About.
     ref.listen<bool>(ratingTriggerProvider, (prev, shouldShow) {
-      if (shouldShow && mounted) {
+      if (shouldShow) {
         ref.read(ratingTriggerProvider.notifier).state = false;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            showDialog(context: context, builder: (_) => const RatingDialog());
-          }
-        });
       }
     });
 

@@ -93,6 +93,10 @@ List<UnifiedMediaItem> _mergeAndClassify({
         source: MediaItemSource.dom,
       ),
     );
+    // Register this video's title so a later network manifest for the same
+    // video doesn't add a duplicate row.
+    final domTitleKey = _titleKey(title, _extractDomain(video.url));
+    if (domTitleKey != null) seenKeys.add(domTitleKey);
     domCount++;
   }
 
@@ -118,14 +122,16 @@ List<UnifiedMediaItem> _mergeAndClassify({
     // Skip undownloadable items entirely
     if (item == null || item.type == MediaItemType.undownloadable) continue;
 
-    // Collapse HLS renditions of the SAME video into one entry. A single video
-    // exposes a master playlist plus per-quality/token variants — all different
-    // URLs — which otherwise render as many identical "Download" rows. Grouping
-    // by the manifest's directory (ignoring filename + query) keeps one row per
-    // video while still separating genuinely different videos.
-    final key = item.type == MediaItemType.hlsManifest
-        ? _hlsGroupKey(item.displayUrl)
-        : item.deduplicationKey;
+    // Collapse every rendition/CDN variant of the SAME video into one row. A
+    // single video exposes a master playlist plus per-quality and token-varied
+    // manifests (all different URLs) that otherwise show as many identical
+    // "Download" rows. The human title is the most reliable "same video" signal,
+    // so group by it; fall back to the HLS directory or the URL when there is no
+    // meaningful title.
+    final key = _titleKey(item.title, item.domain) ??
+        (item.type == MediaItemType.hlsManifest
+            ? _hlsGroupKey(item.displayUrl)
+            : item.deduplicationKey);
     if (seenKeys.contains(key)) continue;
     seenKeys.add(key);
 
@@ -315,6 +321,16 @@ bool _isFeedUrl(String url) {
 /// independently playable file). Matches `.ts`/`.m4s` files and the common
 /// seg-/segment/chunk/frag naming, so a single segment is never offered as a
 /// standalone download.
+/// Grouping key derived from a human title, or null when the title is missing,
+/// too short, or just the domain (which would over-collapse unrelated media).
+/// Lets every rendition/CDN variant of one video collapse to a single row.
+String? _titleKey(String? title, String domain) {
+  final t = title?.trim() ?? '';
+  if (t.length <= 3) return null;
+  if (t.toLowerCase() == domain.toLowerCase()) return null;
+  return 'title:${t.toLowerCase()}';
+}
+
 /// Grouping key for HLS manifests: host + the directory holding the manifest
 /// (filename and query dropped). master.m3u8, 720p.m3u8, audio.m3u8 and
 /// token-varied copies under the same folder collapse to one video.

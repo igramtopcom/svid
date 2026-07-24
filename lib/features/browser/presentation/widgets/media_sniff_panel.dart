@@ -9,8 +9,12 @@ import 'package:path_provider/path_provider.dart';
 import '../../../../core/auth/data/native/native_cookie_extractor.dart';
 import '../../../../core/core.dart';
 import '../../../downloads/domain/services/download_referer_holder.dart';
+import '../../../downloads/domain/entities/download_entity.dart';
+import '../../../downloads/domain/entities/download_status.dart';
 import '../../../downloads/presentation/providers/download_providers.dart';
+import '../../../downloads/presentation/providers/downloads_notifier.dart';
 import '../../../downloads/presentation/providers/extraction_provider.dart';
+import '../../../home/presentation/widgets/download_list_helpers.dart';
 import '../../../premium/domain/entities/premium_feature.dart';
 import '../../../premium/presentation/providers/premium_providers.dart';
 import '../../../premium/presentation/widgets/upgrade_prompt_dialog.dart';
@@ -360,7 +364,9 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
               ),
             ),
 
-          // Download button
+          // Download-state-aware action area — progress and post-download
+          // actions live right here so the user never has to switch to Home
+          // to know whether/where the file landed.
           Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.smMd,
@@ -368,35 +374,240 @@ class _MediaSniffPanelState extends ConsumerState<MediaSniffPanel> {
               AppSpacing.smMd,
               AppSpacing.smMd,
             ),
-            child: SizedBox(
-              width: double.infinity,
-              height: 36,
-              child: FilledButton.icon(
-                onPressed: () => _downloadItem(item),
-                icon: Icon(
-                  item.usesYtdlp
-                      ? Icons.auto_awesome_rounded
-                      : Icons.download_rounded,
-                  size: 15,
-                ),
-                label: Text(
-                  AppLocalizations.browserMediaSniffDownload,
-                  style: AppTypography.statusBadge.copyWith(
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0,
+            child: _buildItemAction(item),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Resolves this item's live download state and renders the matching
+  /// control: Download → preparing spinner → progress % → completed
+  /// (Play + folder + re-download) → failed (Retry).
+  Widget _buildItemAction(UnifiedMediaItem item) {
+    final matchUrls = <String>[
+      if (item.downloadUrl != null) item.downloadUrl!,
+      if (item.pageUrl != null) item.pageUrl!,
+    ];
+
+    DownloadEntity? matchDownload(List<DownloadEntity> downloads) {
+      final matches =
+          downloads.where((d) {
+            for (final u in matchUrls) {
+              if (UrlNormalizer.same(d.url, u)) return true;
+              if (d.sourceUrl.isNotEmpty && UrlNormalizer.same(d.sourceUrl, u)) {
+                return true;
+              }
+            }
+            return false;
+          }).toList();
+      if (matches.isEmpty) return null;
+      matches.sort((a, b) => b.id.compareTo(a.id));
+      return matches.first;
+    }
+
+    final download = ref.watch(
+      downloadsNotifierProvider.select((s) => matchDownload(s.downloads)),
+    );
+    final isPreparing = ref.watch(
+      extractionProvider.select(
+        (s) =>
+            s.isExtracting &&
+            s.extractingUrl != null &&
+            matchUrls.any((u) => UrlNormalizer.same(s.extractingUrl!, u)),
+      ),
+    );
+
+    final accent = AppColors.accentHighlight;
+
+    if (isPreparing) {
+      return SizedBox(
+        width: double.infinity,
+        height: 36,
+        child: FilledButton.icon(
+          onPressed: null,
+          icon: const SizedBox(
+            width: 14,
+            height: 14,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+          label: Text(
+            AppLocalizations.youtubeSearchPreparing,
+            style: AppTypography.statusBadge.copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0,
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (download != null) {
+      if (download.status == DownloadStatus.completed) {
+        return Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 36,
+                child: FilledButton.icon(
+                  onPressed:
+                      () => openPlayerForDownload(context, ref, download),
+                  icon: const Icon(Icons.play_arrow_rounded, size: 16),
+                  label: Text(
+                    AppLocalizations.youtubeSearchPlay,
+                    style: AppTypography.statusBadge.copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.successGreen,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.card),
+                    ),
                   ),
                 ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.accentHighlight,
-                  foregroundColor: Colors.white,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Tooltip(
+              message: AppLocalizations.youtubeSearchOpenFolder,
+              child: IconButton(
+                onPressed: () => openFileLocation(context, ref, download),
+                icon: const Icon(Icons.folder_open_rounded, size: 17),
+                constraints:
+                    const BoxConstraints.tightFor(width: 36, height: 36),
+                padding: EdgeInsets.zero,
+                style: IconButton.styleFrom(
+                  foregroundColor: accent,
+                  backgroundColor: accent.withValues(alpha: AppOpacity.hover),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.card),
                   ),
                 ),
               ),
             ),
+            const SizedBox(width: AppSpacing.xs),
+            Tooltip(
+              message: AppLocalizations.browserMediaSniffDownload,
+              child: IconButton(
+                onPressed: () => _downloadItem(item),
+                icon: const Icon(Icons.download_rounded, size: 17),
+                constraints:
+                    const BoxConstraints.tightFor(width: 36, height: 36),
+                padding: EdgeInsets.zero,
+                style: IconButton.styleFrom(
+                  foregroundColor: accent,
+                  backgroundColor: accent.withValues(alpha: AppOpacity.hover),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.card),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      }
+
+      if (download.status == DownloadStatus.failed) {
+        final red = AppColors.lightStatusFailed;
+        return SizedBox(
+          width: double.infinity,
+          height: 36,
+          child: OutlinedButton.icon(
+            onPressed:
+                () => ref
+                    .read(downloadsNotifierProvider.notifier)
+                    .retryDownload(download.id),
+            icon: const Icon(Icons.refresh_rounded, size: 16),
+            label: Text(
+              AppLocalizations.youtubeSearchRetry,
+              style: AppTypography.statusBadge.copyWith(
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0,
+              ),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: red,
+              side: BorderSide(color: red.withValues(alpha: 0.5)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.card),
+              ),
+            ),
           ),
-        ],
+        );
+      }
+
+      // Queued / downloading / remuxing — live progress in place.
+      final downloading = download.status == DownloadStatus.downloading;
+      final percent = download.progressPercentage.round().clamp(0, 100);
+      final label =
+          downloading ? '$percent%' : download.status.displayLabel;
+      return Container(
+        width: double.infinity,
+        height: 36,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.smMd),
+        decoration: BoxDecoration(
+          color: accent.withValues(alpha: AppOpacity.hover),
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          border: Border.all(color: accent.withValues(alpha: 0.35)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                value:
+                    downloading && download.progress > 0
+                        ? download.progress
+                        : null,
+                color: accent,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              label,
+              style: AppTypography.statusBadge.copyWith(
+                color: accent,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // No download yet — plain Download button.
+    return SizedBox(
+      width: double.infinity,
+      height: 36,
+      child: FilledButton.icon(
+        onPressed: () => _downloadItem(item),
+        icon: Icon(
+          item.usesYtdlp
+              ? Icons.auto_awesome_rounded
+              : Icons.download_rounded,
+          size: 15,
+        ),
+        label: Text(
+          AppLocalizations.browserMediaSniffDownload,
+          style: AppTypography.statusBadge.copyWith(
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0,
+          ),
+        ),
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.accentHighlight,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.card),
+          ),
+        ),
       ),
     );
   }
